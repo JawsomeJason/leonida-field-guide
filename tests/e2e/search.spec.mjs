@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { saved, measure, press, records } from './helpers.mjs';
@@ -30,11 +31,11 @@ test.describe('plain sentences find the right answer', () => {
 });
 
 // No real match (no meaningful word of the question found in an answer's question or keywords): the floor line and the way to Topics, nothing else. Never a dead end, never a weak card.
-const NONE = ['zzyzx qqqq', 'how do i get a million dollars fast', 'my kid wants to play too', 'how do i unlock the secret car', 'where is the nearest gun shop in the city', 'how do i get a better weapon', 'who is the main character', 'what is the best car'];
+const NONE = ['zzyzx qqqq', 'how do i get a million dollars fast', 'my kid wants to play too', 'how do i get a better weapon', 'what is the best car'];
 for (const query of NONE) {
   test(`"${query}" has no answer: the floor line and a way to Topics, no Possibly related`, async ({ page }) => {
     await ask(page, query);
-    if (!query.startsWith('where')) await expect(page.getByRole('status')).toHaveText('This guide has no answer for that yet.'); // a place question shows its own note instead, with no count line above it
+    await expect(page.getByRole('status')).toHaveText('This guide has no answer for that yet.');
     await expect(page.getByText('Possibly related')).toHaveCount(0);
     const links = results(page).getByRole('link');
     await expect(links).toHaveCount(1);
@@ -57,8 +58,28 @@ test('one word that only an unrelated answer holds is no answer: no cards under 
     await expect(results(page).getByRole('link')).toHaveAttribute('href', '/topics/');
     await expect(page.locator('#q-results a[href^="/a/"]')).toHaveCount(0);
   }
-  await expect(page.getByRole('status')).toHaveText('This guide has no answer for that yet.');
+  await expect(page.locator('#q-where')).toBeVisible(); // the last query is a places question: its note, not a count line
+  await expect(page.getByRole('status')).toHaveText('');
 });
+
+// The honest reason at Off for what the guide deliberately does not show: every NONE row of the question table that names a note.
+const STORY = 'This guide carries no story content, by design.';
+const noted = JSON.parse(readFileSync(new URL('../search/questions.json', import.meta.url), 'utf8')).filter((r) => r.note && r.first === 'NONE' && !r.dial);
+for (const { q, note } of noted) {
+  test(`"${q}" at Off gets the ${note} reason and a way to Topics`, async ({ page }) => {
+    await ask(page, q);
+    const where = page.locator('#q-where');
+    if (note === 'places') {
+      await expect(where.locator('.where-off p')).toHaveText('Places are hidden by design. Outside maps exist; they appear here once Places is on.');
+      await expect(where.getByRole('link', { name: 'Places: turn them on' })).toHaveAttribute('href', '/places/');
+      await expect(page.getByRole('status')).toHaveText('');
+    } else {
+      await expect(page.getByRole('status')).toHaveText(STORY);
+      await expect(where).toBeHidden();
+    }
+    await expect(results(page).getByRole('link')).toHaveText(['Browse all topics']);
+  });
+}
 
 test('no answer says so plainly and hints at nothing hidden: no Mild line, no settings button', async ({ page }) => {
   await ask(page, 'zzyzx qqqq');

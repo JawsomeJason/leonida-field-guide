@@ -1,5 +1,5 @@
 // Plain-words check. On every page of the build, every string a script renders and every record, a listed jargon term
-// (src/data/jargon.js) is either absent or has its plain words in the same sentence the first time it appears.
+// (src/data/jargon.js) is either absent or has its plain words in the same sentence or the next one the first time it appears.
 // Usage: node scripts/check-plain-words.mjs [distDir=dist] [contentDir=src/content/answers] [scriptsDir=src/scripts]
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -30,8 +30,10 @@ export function plainWordHits(page, text) {
   const hits = [];
   const sentences = text.split(SENTENCES);
   for (const { term, forms, means } of jargon) {
-    const first = sentences.find((s) => (forms.lastIndex = 0, forms.test(s)));
-    if (first && !means.test(first)) hits.push({ page, term, sentence: first.trim().slice(0, 160) });
+    const at = sentences.findIndex((s) => (forms.lastIndex = 0, forms.test(s)));
+    const first = sentences[at];
+    // The plain words may sit in the same sentence or the one right after it ("Not syncing right now. Your ticks are saved on this device.").
+    if (first && !means.test(first) && !means.test(sentences[at + 1] ?? '')) hits.push({ page, term, sentence: first.trim().slice(0, 160) });
   }
   return hits;
 }

@@ -4,6 +4,7 @@ interface Props {
 }
 const { answers } = Astro.props;
 import OutsideMaps from './OutsideMaps.astro';
+import './Reveal.css';
 import { mapsOffLine } from '../data/outside-maps.js';
 ---
 
@@ -21,6 +22,8 @@ import { mapsOffLine } from '../data/outside-maps.js';
       spellcheck="false"
       enterkeyhint="search"
     />
+    {/* Our own clear control instead of the browser's blue cross (hidden below): shown only while the field holds text (CSS, :placeholder-shown), so the form needs no script to work. */}
+    <button type="button" class="ask-clear needs-js" aria-label="Clear search"></button>
   </form>
   <p id="q-status" role="status" class="ask-status"></p>
   <div id="q-where" hidden>
@@ -47,6 +50,7 @@ import { mapsOffLine } from '../data/outside-maps.js';
 
 <script>
   import '../scripts/search.js';
+  import '../scripts/search-clear.js';
 </script>
 
 <style is:global>
@@ -65,6 +69,36 @@ import { mapsOffLine } from '../data/outside-maps.js';
     appearance: none;
     box-shadow: var(--shadow);
   }
+  /* The clear button sits beside the field, 8px away (--gap-tap), never on top of it: two targets that touch fail the touch rule. While the field is empty it is not there and the field is the whole row. */
+  .ask-search form { display: flex; align-items: center; gap: var(--gap-tap); }
+  .ask-search input { flex: 1 1 auto; min-inline-size: 0; }
+  .ask-search input::-webkit-search-cancel-button { appearance: none; display: none; }
+  .ask-clear {
+    flex: none;
+    display: none;
+    inline-size: var(--tap);
+    block-size: var(--tap);
+    padding: 0;
+    border: 1px solid var(--edge);
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .ask-clear::before { /* the cross, drawn in CSS: it takes the text colour in both themes */
+    content: '';
+    display: block;
+    margin: auto;
+    inline-size: 1.125rem;
+    block-size: 1.125rem;
+    background: currentColor;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'><path d='m6 6 12 12M18 6 6 18'/></svg>") no-repeat center / contain;
+  }
+  html.js .ask-search form:has(input:not(:placeholder-shown)) .ask-clear { display: block; }
+  .ask-clear:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .ask-clear:active { background-color: var(--press); }
+  @media (hover: hover) and (pointer: fine) { .ask-clear:hover { background-color: var(--wash); } }
   .ask-search input:focus-visible { outline-offset: 3px; border-color: var(--accent); }
   .ask-search input::placeholder { color: var(--muted); opacity: 1; }
   .ask-status { min-block-size: 1.5rem; margin: var(--space-2) 0 var(--space-1); color: var(--muted); font-size: var(--text-small); }
@@ -90,6 +124,16 @@ import { mapsOffLine } from '../data/outside-maps.js';
   .tap-list.ask-rows a { flex-direction: column; align-items: flex-start; justify-content: center; }
   .ask-rows .q { color: var(--text); font-weight: 650; } /* a step heavier than the snippet under it */
   .ask-rows .s { color: var(--muted); font-size: var(--text-small); font-weight: 400; line-height: 1.35; }
+
+  /* A result that warns of a loss is a card: the answer link, then the one filled button under it. Two controls, 8px apart. */
+  .ask-rows li.ask-loss { padding: 0 var(--space-4) var(--space-3); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+  .ask-rows li.ask-loss::after { display: none; }
+  .tap-list.ask-rows li.ask-loss a:not(.reveal__btn) { margin: 0; padding-inline: 0 1.75rem; border-inline-start: 0; }
+  .ask-rows li.ask-loss a:not(.reveal__btn)::after { inset-inline-end: 0; }
+  .ask-rows li.ask-loss .reveal { margin-block-start: var(--gap-tap); }
+  /* The button is an <a> inside .tap-list: take back the list row's margin, padding, left edge and arrow. */
+  .tap-list.ask-rows li.ask-loss .reveal__btn { margin: 0; padding: var(--space-2) var(--space-4); border: 1px solid var(--action); align-items: center; }
+  .tap-list.ask-rows li.ask-loss .reveal__btn::after { display: none; }
 
   /* The known-problems row ahead of the answers: a raised row with the arrow the checklist rows end on, like the other primary rows. */
   .ask-rows li.ask-known { margin-block-end: var(--gap-tap); border-block-end: 0; }

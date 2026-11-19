@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import AnswerCard from '../../components/AnswerCard.astro';
 import Gate from '../../components/Gate.astro';
+import '../../components/Gate.css';
 import RevealList from '../../components/RevealList.astro';
 import OutsideMaps from '../../components/OutsideMaps.astro';
 import OtherConsoles from '../../components/OtherConsoles.astro';
@@ -37,7 +38,16 @@ const until = answers.length || isPlaces ? '' : hiddenUntil(Object.fromEntries((
     </>
   ) : (
     <>
-      {answers.length === 0 && (until ? <p class="topic-hidden" data-until={until.toLowerCase()}>The answers on this topic are hidden until the spoiler setting is {until}.</p> : <p>No answers here yet.</p>)}
+      {answers.length === 0 && (until ? (
+        // The Places gate's pattern for a locked topic: what is hidden, why, and the control. Generic words only; none of the hidden text.
+        <section class="gate topic-hidden" data-until={until.toLowerCase()} aria-labelledby="topic-gate-title">
+          <h2 id="topic-gate-title">Hidden until the spoiler setting is {until}</h2>
+          <p>The answers on this topic are hidden. The spoiler setting is below {until}, which adds {until === 'Mild' ? "how the game's systems work in play" : 'where things are'}. Nothing about them is on this page.</p>
+          {/* No script: a plain link to that level's gate page. With script: a real button that sets the dial the way the sheet does (settings.js reads data-set). */}
+          <a class="gate__on" href={`/${until.toLowerCase()}/`}>Show {until} topics</a>
+          <button class="gate__on needs-js" type="button" data-set="dial" data-value={until.toLowerCase()} data-focus="#hidden-list" data-action>Show {until} topics</button>
+        </section>
+      ) : <p>No answers here yet.</p>)}
       <ul class="cards">{answers.map((a) => <li data-only={onlyOf(a.consoles)}><AnswerCard answer={a} /></li>)}</ul>
       <OtherConsoles items={answers.map((a) => ({ ...a, label: a.question }))} />
       <RevealList tiers="places mild" topic={topic} />

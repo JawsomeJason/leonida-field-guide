@@ -1,16 +1,16 @@
 id: will-i-lose-anything
 question: "Will I lose my progress, saves or cash?"
-short: "Console makers say deleting a game keeps what you bought. Saves for this game are not confirmed as backed up, so check first. You can lose in-game money."
+short: "Console makers say deleting a game keeps what you bought. Saves for this game are not confirmed as backed up, so check first. You can lose in-game money. There is a simple way to keep it safe."
 byConsole:
-  ps5: "PlayStation says PlayStation Plus members can upload saved data online. Backup for this game is not confirmed: upload them first (Settings, Saved Data and Game/App Settings). You can lose in-game money."
-  xbox-x: "Xbox says saved games are copied online (synced) when you sign in and return after a reinstall. Cultured Vultures reports this game supports it; not confirmed by Xbox. Stay signed in until it syncs. You can lose in-game money."
-  xbox-s: "Xbox says saved games are copied online (synced) when you sign in and return after a reinstall. Cultured Vultures reports this game supports it; not confirmed by Xbox. Stay signed in until it syncs. You can lose in-game money."
+  ps5: "PlayStation says PlayStation Plus members can upload saved data online. Backup for this game is not confirmed: upload it first (Settings, Saved Data and Game/App Settings). You can lose in-game money. There is a simple way to keep it safe."
+  xbox-x: "Xbox says saved games are copied online (synced) when you sign in. Cultured Vultures reports this game supports it; not confirmed by Xbox. Stay signed in until it syncs. You can lose in-game money. There is a simple way to keep it safe."
+  xbox-s: "Xbox says saved games are copied online (synced) when you sign in. Cultured Vultures reports this game supports it; not confirmed by Xbox. Stay signed in until it syncs. You can lose in-game money. There is a simple way to keep it safe."
 body: |-
   What we know
   - Your console maker says deleting or uninstalling a game does not remove your right to play it. You download it again from your library. Your saves are a separate matter.
   - <span data-only="ps5">PlayStation's own pages say PlayStation Plus members can upload saved data to online storage and have it copied automatically. That is about games in general; for this game, backup is not confirmed.</span><span data-only="xbox-x xbox-s">Xbox's own page says saved games are copied online (synced) when you sign in and come back when you reinstall a game. That is about games in general. Cultured Vultures reports that this game's Xbox listing shows saves kept online (cloud saves), but we have not seen that on an Xbox or Rockstar page, so for this game it is not confirmed.</span>
   - A saved game is separate from the game files. Before you delete, check your save is backed up: your console's steps are in [Are my saves backed up in the cloud?](/a/cloud-saves-and-backup/).
-  - You can lose in-game money.
+  - You can lose in-game money. There is a simple way to keep it safe.
 
   What we do not know
   - <span data-only="ps5">Whether this game backs up saves to PlayStation's online storage. Rockstar has not said.</span><span data-only="xbox-x xbox-s">Whether this game's Xbox saves kept online work as Cultured Vultures reports. Rockstar has not said.</span>
@@ -42,5 +42,5 @@ rank: 6
 keywords: ["lose progress", "lose my save", "uninstall", "delete the game", "lose my money", "keep my progress"]
 reveal:
   - tier: mild
-    label: "Show how to keep it safe (one small game rule)"
+    label: "Show how to keep it safe"
     text: "Cash you carry is lost if you die before you deposit it at an ATM, and money in the bank is safe (Vice Atlas, before launch). Dying while you hold stash bags loses the bags and your cash on hand (GameSpot, after playing). Neither source says what happens on arrest, so we claim nothing there. To keep it safe, deposit it before you take risks."

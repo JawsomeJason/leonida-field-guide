@@ -56,11 +56,23 @@ function fillExport() {
 }
 
 $('#backup')?.addEventListener('toggle', fillExport);
-$('#copy-code')?.addEventListener('click', async () => {
+const copy = $('#copy-code');
+let copiedTimer;
+copy?.addEventListener('click', async () => {
   const note = $('#export-note');
   try {
     await navigator.clipboard.writeText(out.value);
-    say(note, 'Copied.');
+    // The button says Copied for two seconds (same width, so nothing shifts) and the status line says it too, then both go back.
+    clearTimeout(copiedTimer);
+    copy.style.minInlineSize = `${copy.offsetWidth}px`;
+    copy.textContent = 'Copied';
+    copy.dataset.copied = '';
+    say(note, 'Copied the code');
+    copiedTimer = setTimeout(() => {
+      copy.textContent = 'Copy code';
+      delete copy.dataset.copied;
+      say(note, '');
+    }, 2000);
   } catch {
     out.select(); // no clipboard here: leave the code selected for the player to copy
     say(note, 'Copying did not work here. The code is selected, so copy it by hand.', true);

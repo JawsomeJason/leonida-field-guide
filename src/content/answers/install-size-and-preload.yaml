@@ -2,9 +2,8 @@ id: install-size-and-preload
 question: "How big is the game, and will it fit on my console?"
 short: "Rockstar says to plan for up to 212 GB of free space. Check your console's free space before you start. If you have less free than 212 GB, clear the difference."
 body: |-
-  - Rockstar says the game needs "up to 212 GB of available space depending on your device". It gives no per-console figures.
+  - Rockstar says the game needs "up to 212 GB of available space depending on your device". It gives no per-console figures. Check your free space; if you have less free than 212 GB, clear the difference.
   - Downloading before launch (pre-load) opened on 10 November. Boxed copies went to retailers from 12 November.
-  - Check your free space, then clear the difference.
   - Part of every drive is reserved for the system, so a 512 GB model has less free than it says. How much less is a news report, not an official figure: [Will it fit on a 512 GB drive?](/a/series-s-space/)
 
   <span data-only="ps5">Short of room? [How to check free space and clear space](/a/free-space-ps5/).</span><span data-only="xbox-x xbox-s">Short of room? [How to check free space and clear space](/a/free-space-xbox/).</span>
@@ -13,9 +12,9 @@ stage: before
 tier: none
 consoles: all
 byConsole:
-  ps5: "Rockstar says to plan for up to 212 GB free. The smallest PS5 has 825 GB of storage. To see your free space: Settings, then Storage. If you have less free than 212 GB, clear the difference."
-  xbox-x: "Rockstar says to plan for up to 212 GB free. A Series X has 1 TB or more of storage. To see your free space: Profile & system, Settings, System, Storage devices. If you have less free than 212 GB, clear the difference."
-  xbox-s: "Rockstar says to plan for up to 212 GB free. IGN reports about 364 GB of a 512 GB Series S is usable. To see your free space: Profile & system, Settings, System, Storage devices. If you have less free than 212 GB, clear the difference."
+  ps5: "It fits on any PS5: the smallest has 825 GB of storage. Rockstar says to plan for up to 212 GB free. To see your free space: Settings, then Storage. If you have less free than 212 GB, clear the difference."
+  xbox-x: "It fits on a Series X, which has 1 TB or more of storage. Rockstar says to plan for up to 212 GB free. To see your free space: Profile & system, Settings, System, Storage devices. If you have less free than 212 GB, clear the difference."
+  xbox-s: "A 512 GB Series S should fit it, but not by much: IGN reports about 364 GB is usable and Rockstar says to plan for up to 212 GB free. Check free space: Profile & system, Settings, System, Storage devices."
 confidence: reported
 sources:
   - url: "https://support.rockstargames.com/articles/M6h7B5fJZMwG1dnzQkt4Z/grand-theft-auto-vi-installation-requirements"

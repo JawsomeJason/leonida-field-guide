@@ -33,8 +33,8 @@ const html = (page) => page.evaluate(() => ({ ...document.documentElement.datase
 const phone = { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true };
 // The three things the status line may say, in the words a player reads (the line is one role=status region).
 const SYNCED = /^Copied online \(synced\) at .+: your ticks are saved on this device and in this site's private store\.$/;
-const KEPT = 'Could not reach the online store (the sync service) for this site. Your ticks are kept on this device for now and will be sent later.';
-const NOT_HERE = 'Copying ticks online (syncing) is not available here. Your ticks are saved on this device only.';
+const KEPT = 'Not syncing right now. Your ticks are saved on this device. We will try again.';
+const NOT_HERE = 'Syncing is not available here. Your ticks are saved on this device only.';
 const status = (page) => page.locator('[data-sync]');
 
 // Opens the checklist and returns its first to-do (the fixture content always has some).
@@ -219,7 +219,7 @@ test('status line, synced: the store answered, so the line says the ticks are on
   await ctx.close();
 });
 
-test('status line, could not reach: a 500 and an unreachable store both say ticks are kept here and will be sent later', async ({ browser }) => {
+test('status line, could not reach: a 500 and an unreachable store both say ticks are saved here and we will try again', async ({ browser }) => {
   for (const mode of ['500', 'abort']) {
     const server = stubbed();
     server.mode = mode;
@@ -350,7 +350,7 @@ test('About: "Your spoiler setting stays on this device, and its level is also s
   await expect(para).toContainText('the server reads it on each request and keeps nothing, so it is not stored there or tied to a person.');
   await expect.poll(() => sent.join()).toContain('lfg_dial=places'); // the level really is sent with the request
   expect(JSON.parse(await page.evaluate(() => localStorage.getItem('lfg:v1'))).settings.dial.value).toBe('places'); // and really is kept on the device
-  for (const body of server.puts) expect(JSON.stringify(body)).not.toMatch(/places|dial/); // the sync store never receives it
+  for (const body of server.puts) expect(JSON.stringify(body)).not.toMatch(/places|dial/); // the online copy never receives it
   await ctx.close();
 });
 

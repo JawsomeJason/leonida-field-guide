@@ -1,6 +1,6 @@
 id: wanted-and-police
 question: "How do wanted levels and the police work?"
-short: "IGGM reports that police now remember what they saw, such as your face, clothes, weapons or car. It says a solid white star means they can see you, flashing white stars mean they are searching, and higher levels widen the search."
+short: "Police now remember what they saw, such as your face, clothes, weapons or car, IGGM reports. It says a solid white star means they can see you, flashing white stars mean they are searching, and higher levels widen the search."
 body: |-
   - IGGM wrote this before launch, from official clips. Treat it as a guide to what to look for, and check it against what you see in the game.
   - Hollow stars mean an alarm went off but the police do not know who they want. Red stars with a red radius on the minimap mean you got out of sight but are still inside the search area.

@@ -18,6 +18,14 @@ export const byTier = (all: AnswerData[], tier: Tier) => all.filter((a) => a.tie
 /** Hidden tiers that a `none` answer carries details for. */
 export const revealTiers = (a: AnswerData) => hiddenTiers.filter((t) => a.reveal?.some((r) => r.tier === t));
 export const revealsOf = (a: AnswerData, tier: HiddenTier) => (a.reveal ?? []).filter((r) => r.tier === tier).map((r) => r.text);
+/** A revealed detail is set as short paragraphs: a blank line starts one, and so does every second sentence. One or two sentences stay as they are. */
+export const paragraphs = (text: string) =>
+  text.split(/\n\s*\n/).flatMap((block) => {
+    const s = block.split(/(?<=[.!?])\s+/);
+    return Array.from({ length: Math.ceil(s.length / 2) }, (_, i) => s.slice(i * 2, i * 2 + 2).join(' '));
+  });
+/** The reveal that carries a loss warning: the one with a `label` (generic words written for Off). The Ask search rows, the cards and the answer page all key on it. */
+export const lossReveal = (a: Pick<AnswerData, 'reveal'>) => a.reveal?.find((r) => r.label);
 
 /** Every string a reader sees for a record on its own page. */
 export const visibleText = (a: AnswerData): string[] =>

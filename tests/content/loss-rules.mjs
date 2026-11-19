@@ -1,6 +1,8 @@
 // Shared by tests/content/loss.test.mjs and tests/leak/loss-leak.test.mjs (round 5, the loss-warning rule in docs/spec.md "The spoiler dial").
-export const GENERIC = 'You can lose in-game money.';
-export const LABEL = 'Show how to keep it safe (one small game rule)';
+// Round 7: the warning is two sentences. The second sends the player to the button under it; neither states a game rule.
+export const WARNING = 'You can lose in-game money.';
+export const GENERIC = `${WARNING} There is a simple way to keep it safe.`;
+export const LABEL = 'Show how to keep it safe';
 
 // What makes a sentence a game rule rather than a generic warning: who carries what, the bank and ATM, dying, loot, deposits, drops of cash.
 // (A frame-rate "drop" is not a rule, so "drop" counts only beside cash, money or loot.)

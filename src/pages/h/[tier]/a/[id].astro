@@ -1,7 +1,7 @@
 ---
 // Fragment: the details of one none answer at one hidden tier, for the in-place Show control.
 import { getCollection } from 'astro:content';
-import { hiddenTiers, pageIds, revealsOf, textHtml } from '../../../../lib/answers';
+import { hiddenTiers, pageIds, paragraphs, revealsOf, textHtml } from '../../../../lib/answers';
 
 export async function getStaticPaths() {
   const all = (await getCollection('answers')).map((e) => e.data);
@@ -15,4 +15,4 @@ export async function getStaticPaths() {
 const { texts } = Astro.props;
 ---
 
-{texts.map((t) => <p set:html={textHtml(t)} />)}
+{texts.flatMap(paragraphs).map((t) => <p set:html={textHtml(t)} />)}

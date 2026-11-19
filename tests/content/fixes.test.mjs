@@ -17,28 +17,33 @@ test('"Before you start" lists steps by what depends on what: redeem, then room,
   assert.ok(at('ps5-system-update') < at('install-size-and-preload') && at('xbox-system-update') < at('install-size-and-preload'), 'update the console before the download');
 });
 
-test('install size: the headline of each console holds the game size and that console\'s own figure; IGN\'s usable-space figure is attributed and labels the answer reported', () => {
+test('install size: each console line says first what it means for that console, then the figures, then where to check free space; IGN\'s usable-space figure is attributed and labels the answer reported', () => {
   const a = get('install-size-and-preload');
-  // Round 6: the usable-space figure is now in the top box, so the answer takes the weakest source's label (it was official without it).
   assert.equal(a.confidence, 'reported');
-  assert.match(a.byConsole['xbox-s'], /IGN reports about 364 GB of a 512 GB Series S is usable/);
+  assert.match(a.byConsole['xbox-s'], /IGN reports about 364 GB is usable/);
   assert.doesNotMatch([a.short, a.byConsole.ps5, a.byConsole['xbox-x'], a.body].join(' '), /364|IGN/, 'only the Series S line carries the reported figure');
   assert.ok(a.sources.some((s) => s.url.includes('ign.com')), 'IGN is cited');
   assert.ok(a.sources.filter((s) => !/(^|\.)(rockstargames|playstation|xbox)\.com$/.test(new URL(s.url).hostname)).every((s) => s.url.includes('ign.com')), 'the only outside source is IGN');
   assert.match(a.body, /\]\(\/a\/series-s-space\/\)/);
-  assert.match(a.body, /check your free space, then clear the difference/i);
+  assert.match(a.body.split('\n')[0], /less free than 212 GB, clear the difference/i, 'the clearing line is in the first body line');
   for (const line of [a.short, ...Object.values(a.byConsole)]) {
     assert.ok(line.length <= 240, line);
     assert.match(line, /\b\d+ GB\b/, 'a GB figure');
-    assert.match(line, /clear the difference/, 'the clear-the-difference idea');
-    assert.match(line, /less free than 212 GB/, 'the shortfall is stated against the game size');
   }
+  const first = (c) => a.byConsole[c].split(/(?<=[.:])\s/)[0];
+  assert.match(first('ps5'), /^It fits on any PS5/);
+  assert.match(first('xbox-x'), /^It fits on a Series X/);
+  assert.match(first('xbox-s'), /^A 512 GB Series S should fit it, but not by much/);
   for (const c of ['ps5', 'xbox-x', 'xbox-s']) assert.match(a.byConsole[c], /Rockstar says to plan for up to 212 GB/, c);
   assert.match(a.byConsole.ps5, /825 GB of storage[\s\S]*Settings, then Storage/);
   assert.match(a.byConsole['xbox-x'], /1 TB or more of storage[\s\S]*Storage devices/);
   assert.match(a.byConsole['xbox-s'], /Storage devices/);
+  // Order: meaning, then the figures, then where to look. The clearing line sits in the headline when it fits (240 limit), else only in the body.
+  for (const c of ['ps5', 'xbox-x']) assert.match(a.byConsole[c], /212 GB[\s\S]*Settings[\s\S]*less free than 212 GB, clear the difference/, c);
+  assert.ok(a.byConsole['xbox-s'].indexOf('212 GB') < a.byConsole['xbox-s'].indexOf('Storage devices'));
   const s = get('series-s-space');
   assert.equal(s.confidence, 'reported');
+  assert.match(s.short, /^It should fit, but not by much/);
   assert.match(s.short, /364 GB/);
   assert.ok(s.sources.some((x) => x.url.includes('ign.com')));
 });
@@ -163,7 +168,7 @@ test('Will I lose anything? is the one place for uninstalling, saves and cash, s
     assert.doesNotMatch(h, /loses nothing|comes? (right )?back|will be (kept|safe)|nothing (is|will be) lost/i, h);
     assert.match(h, /not confirmed|does not say/, `a headline says saves are unconfirmed: ${h}`);
     assert.match(h, /before you (delete|uninstall)|check first|upload (it|them) first|stay signed in/i, `a headline says what to do first: ${h}`);
-    assert.match(h, /You can lose in-game money\.$/, h);
+    assert.match(h, /You can lose in-game money\. There is a simple way to keep it safe\.$/, h);
   }
   for (const c of ['ps5', 'xbox-x', 'xbox-s']) assert.ok(a.byConsole[c].length <= 240, c);
   assert.match(a.byConsole.ps5, /Settings, Saved Data and Game\/App Settings/, 'PlayStation steps for checking, from its own support page');
@@ -176,7 +181,7 @@ test('Will I lose anything? is the one place for uninstalling, saves and cash, s
 test('keep your cash: Off says only that money can be lost, and the rule, with how to avoid it, is the Mild detail', () => {
   const a = get('keep-your-cash');
   assert.equal(a.tier, 'none');
-  assert.equal(a.short, 'You can lose in-game money.');
+  assert.equal(a.short, 'You can lose in-game money. There is a simple way to keep it safe.');
   assert.doesNotMatch([a.short, a.body].join(' '), /ATM|deposit|bank|die/i);
   assert.match(a.reveal[0].text, /ATM/);
   assert.match(a.reveal[0].text, /deposit after a big score, before you take risks/i);

@@ -9,7 +9,7 @@
 export const jargon = [
   { term: 'pre-load', forms: /\bpre-?load\w*/gi, means: /before (?:the )?(?:launch|release)|ahead of launch|before it (?:launches|comes out)/i, plain: 'downloading before launch' },
   { term: 'licence', forms: /\blicen[cs]e\w*/gi, means: /right to (?:play|use)|what you (?:bought|paid)|you (?:bought|own)/i, plain: 'your right to play' },
-  { term: 'sync', forms: /\bsync(?:s|ed|ing|hron\w+)?\b/gi, means: /cop(?:y|ies|ied|ying) (?:\w+ )?(?:online|to|between)|saved online|kept online|online (?:copy|store)|updated everywhere|across (?:your )?devices/i, plain: 'copied online' },
+  { term: 'sync', forms: /\bsync(?:s|ed|ing|hron\w+)?\b/gi, means: /cop(?:y|ies|ied|ying) (?:\w+ )?(?:online|to|between)|saved on this device|saved online|kept online|online (?:copy|store)|updated everywhere|across (?:your )?devices/i, plain: 'copied online' },
   { term: 'cross-progression', forms: /\bcross-?progression\b/gi, means: /progress (?:shared|moving|that moves|carr\w+|moves)|between (?:consoles|console families)/i, plain: 'progress shared between consoles' },
   { term: 'Optimized for Series X|S', forms: /\bOptimized for Series X\|S/g, means: /\b(?:store )?label\b|\bbadge\b|\btag\b/i, plain: 'the store label for games made for the newer Xbox consoles' },
   { term: 'Storage Expansion Card', forms: /\bStorage Expansion Cards?\b/gi, means: /plug-?in|slots? in(?:to)?|extra storage|more storage|extra room|add-on/i, plain: 'the plug-in storage card' },

@@ -14,7 +14,7 @@ rank: 2
 todo: "Do sample thing 02"
 reveal:
   - tier: mild
-    label: Show how to keep it safe (one small game rule)
+    label: Show how to keep it safe
     text: Wombat note one for the mild reveal of sample two.
   - tier: places
     text: Quokka note one for the places reveal of sample two.
