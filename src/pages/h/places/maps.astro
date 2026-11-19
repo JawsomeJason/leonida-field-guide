@@ -1,0 +1,9 @@
+---
+// Fragment (Places tier): the outside map links and their dated line, for maps.js to insert once the dial allows Places.
+// The server refuses /h/places/** below that dial (see dialRule), so these addresses are never in a default page.
+import OutsideList from '../../../components/OutsideList.astro';
+import { mapLinks, mapsLine } from '../../../data/outside-maps.js';
+---
+
+<OutsideList links={mapLinks} />
+<p class="maps__line">{mapsLine}</p>

@@ -78,7 +78,7 @@ async function update() {
   list.hidden = !typed;
   maybe.hidden = !none;
   more.hidden = !cut;
-  // A question about where something is gets the where-is note (OutsideMaps and the Off sentence swap by CSS on the dial). At Off the note says it all: no count above it.
+  // A question about where something is gets the where-is note (the Off sentence shows by CSS until the dial allows Places; maps.js then fills OutsideMaps from the Places tier). At Off the note says it all: no count above it.
   where.hidden = !(typed && asksWhere(query));
   const offNote = !where.hidden && dial === 'off';
   status.toggleAttribute('data-floor', none && !offNote);

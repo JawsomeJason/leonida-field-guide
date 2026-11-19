@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { SCREENS, saved, press, NIGHT, DAY } from './helpers.mjs';
-import { lowContrast } from './contrast.mjs';
+import { lowContrast, lowNonText } from './contrast.mjs';
 
 const states = [
   ...SCREENS.map((path) => ({ name: path, path, settings: {} })),
@@ -19,7 +19,7 @@ for (const [theme, bg, scheme, token] of [['day', DAY, 'light', '#f6efe2'], ['ni
   test.describe(`${theme} theme`, () => {
     test.use({ colorScheme: scheme });
     for (const s of states) {
-      test(`${s.name} in ${theme}: no axe violations and every text reads at 4.5 to 1`, async ({ page }) => {
+      test(`${s.name} in ${theme}: no axe violations and every text reads at 4.5 to 1 and every control part at 3 to 1`, async ({ page }) => {
         await saved(page, { ...s.settings, theme });
         await page.goto(s.path);
         await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
@@ -33,6 +33,7 @@ for (const [theme, bg, scheme, token] of [['day', DAY, 'light', '#f6efe2'], ['ni
         if (s.settings.dial) await page.waitForLoadState('networkidle');
         // Pass 2 first: it settles every running fade, which would otherwise blend the colours.
         expect(await lowContrast(page), 'text under the contrast floor, as drawn').toEqual([]);
+        expect(await lowNonText(page), 'control parts (edges, tracks, selected states, focus rings) under 3 to 1, as drawn').toEqual([]);
         const { violations } = await new AxeBuilder({ page }).analyze();
         expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`)).toEqual([]);
       });
@@ -49,4 +50,14 @@ test('the contrast walk can fail: it flags text drawn under the floor', async ({
     document.querySelector('main').append(p);
   });
   expect((await lowContrast(page)).map((f) => f.text)).toContain('faint');
+});
+
+test('the non-text walk can fail: it flags the old progress track, a --line bar on the page', async ({ page }) => {
+  await page.goto('/about/');
+  await page.evaluate(() => {
+    const bar = document.createElement('progress');
+    bar.style.cssText = 'appearance:none;display:block;inline-size:10rem;block-size:0.5rem;border:0;background:var(--line)';
+    document.querySelector('main').append(bar);
+  });
+  expect((await lowNonText(page)).map((f) => f.part)).toContain('progress track');
 });

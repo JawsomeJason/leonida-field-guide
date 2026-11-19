@@ -6,6 +6,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml'; // astro's own dependency, hoisted; no new package
+import { mapLinks } from '../src/data/outside-maps.js';
 
 const MIN = 12; // shorter strings are not distinctive enough to search for
 const HIDDEN = ['places', 'mild'];
@@ -60,6 +61,11 @@ const searchable = (file, raw) => {
   }
 };
 
+// Outside map sites (hostname and name, read from the one module so the list cannot drift) are Places-tier content: only the explicit
+// places pages and /h/places/ may name them, so no Off page, search index or script bundle does.
+const mapNames = mapLinks.flatMap((l) => [new URL(l.href).hostname, l.title]).map((n) => n.toLowerCase());
+const mapOwned = (path) => path.startsWith('h/places/') || /^places\/[^/]+\/show\//.test(path);
+
 /** A build path may hold a tier's text when it is that tier's explicit-show page or sits under /h/<tier>/. */
 const ownedBy = (path) => HIDDEN.find((t) => path.startsWith(`h/${t}/`) || new RegExp(`^${t}/[^/]+/show/`).test(path));
 // A hidden address named in a prefetch-like hint would fetch it ahead of the tap.
@@ -77,6 +83,8 @@ export function findLeaks({ dist, records }) {
     const raw = readFileSync(file, 'utf8');
     const hay = searchable(file, raw);
     for (const s of strings) if (ownedBy(path) !== s.tier && hay.includes(s.text)) problems.push(`${path}: contains ${s.tier} text of "${s.id}"`);
+
+    if (!mapOwned(path)) for (const n of mapNames) if (raw.toLowerCase().includes(n)) problems.push(`${path}: names outside map site "${n}"`);
 
     if (path.endsWith('.html') && hintsHidden(raw)) problems.push(`${path}: prefetches a hidden address or has speculation rules`);
 
