@@ -1,9 +1,169 @@
 ---
 import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
 import { stages } from '../data/stages';
+
+// Default page: `none` tier only, so a hidden to-do never reaches this HTML.
+const todos = (await getCollection('answers'))
+  .filter((a) => a.data.todo && a.data.tier === 'none')
+  .sort((a, b) => (a.data.rank ?? 999) - (b.data.rank ?? 999) || a.data.id.localeCompare(b.data.id));
+const groups = stages.map((s) => ({ ...s, items: todos.filter((a) => a.data.stage === s.id) }));
+const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
 ---
 
 <Base title="Checklist" description="Your to-dos, by stage of play.">
   <h1>Your checklist</h1>
-  {stages.map((s) => <h2 id={s.id}>{s.label}</h2>)}
+
+  {todos.length === 0 ? (
+    <p>No to-dos yet. Check back after the next refresh.</p>
+  ) : (
+    <div class="overall" data-overall>
+      <p class="overall__text"><span data-count>{noun(todos.length)}</span></p>
+      <progress class="needs-js" max={todos.length} value="0" aria-label="Overall progress"></progress>
+    </div>
+  )}
+
+  {groups.map((g) => (
+    <section class="stage" data-stage aria-labelledby={g.id}>
+      <h2 id={g.id}>{g.label}</h2>
+      {g.items.length === 0 ? (
+        <p class="quiet">Nothing here yet.</p>
+      ) : (
+        <>
+          <p class="quiet"><span data-count>{noun(g.items.length)}</span></p>
+          <progress class="needs-js" max={g.items.length} value="0" aria-label={`${g.label} progress`}></progress>
+          <ul class="tap-list todos">
+            {g.items.map((a) => (
+              <li class="todo">
+                <a class="todo__go" href={`/a/${a.data.id}/`}>{a.data.todo}</a>
+                <label class="todo__tick needs-js">
+                  <input type="checkbox" value={a.data.id} data-todo />
+                  <span>{a.data.todo}</span>
+                </label>
+                <a class="todo__open needs-js" href={`/a/${a.data.id}/`} aria-label={`Open answer: ${a.data.todo}`}>Answer</a>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </section>
+  ))}
+
+  <details class="backup needs-js" id="backup">
+    <summary>Back up or move your progress</summary>
+    <div class="backup__body">
+      <p class="quiet">The code holds your to-dos and settings. It stays on this device until you copy it somewhere.</p>
+
+      <label for="export-code">Your code</label>
+      <textarea id="export-code" rows="4" readonly spellcheck="false" autocomplete="off"></textarea>
+      <button type="button" class="btn" id="copy-code">Copy code</button>
+      <p class="note" id="export-note" role="status"></p>
+
+      <label for="import-code">Restore from a code</label>
+      <textarea id="import-code" rows="4" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Paste a code here"></textarea>
+      <button type="button" class="btn" id="import-go">Restore progress</button>
+      <p class="note" id="import-note" role="status"></p>
+    </div>
+  </details>
+
+  <script>
+    import '../scripts/checklist.js';
+  </script>
 </Base>
+
+<style>
+  .quiet { color: var(--muted); margin-block: 0 var(--space-2); }
+  .stage { margin-block-start: var(--space-5); }
+  .stage h2 { margin-block: 0 var(--space-1); }
+
+  /* Without JS the page is a list of links; JS swaps in the tick rows. */
+  :global(html.js) .todo__go { display: none; }
+  :global(html.js) .todo { display: flex; gap: var(--gap-tap); }
+  .todo__tick {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-block-size: var(--tap);
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    cursor: pointer;
+  }
+  .todo__tick input {
+    flex: none;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    margin: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .todo__tick:has(:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
+  /* Done: colour and a line through, never a change of size. */
+  .todo__tick:has(:checked) span { color: var(--muted); text-decoration: line-through; }
+  .todo__open { flex: none; justify-content: center; }
+  @media (hover: hover) {
+    .todo__tick:hover { background-color: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+  }
+
+  /* Progress: a thin bar, filled with the accent. The count beside it is the real information. */
+  progress {
+    appearance: none;
+    display: block;
+    inline-size: 100%;
+    block-size: 0.5rem;
+    margin-block: var(--space-2) var(--space-3);
+    border: 0 solid;
+    border-radius: 0.25rem;
+    overflow: clip;
+    background: var(--line);
+  }
+  progress::-webkit-progress-bar { background: transparent; }
+  progress::-webkit-progress-value { background: var(--accent); }
+  progress::-moz-progress-bar { background: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    progress::-webkit-progress-value { transition: inline-size 0.2s cubic-bezier(0.23, 1, 0.32, 1); }
+  }
+  .overall__text { margin: 0; font: 600 var(--text-h2) / 1.3 var(--font-text); }
+
+  .backup { margin-block: var(--space-6) var(--space-4); }
+  .backup summary {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--tap);
+    padding-inline: var(--space-4);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    cursor: pointer;
+  }
+  .backup__body { display: grid; gap: var(--space-2); padding-block-start: var(--space-4); max-inline-size: 40rem; }
+  .backup label { font: var(--text-small) / 1.3 var(--font-mono); color: var(--muted); margin-block-start: var(--space-3); }
+  .backup textarea {
+    inline-size: 100%;
+    padding: var(--space-3);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--font-mono);
+    word-break: break-all;
+    resize: vertical;
+  }
+  .btn {
+    min-block-size: var(--tap);
+    padding-inline: var(--space-5);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: var(--bg);
+    font: 600 var(--text-body) / 1 var(--font-text);
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .btn:active { background-color: color-mix(in srgb, var(--accent) 75%, var(--text)); }
+  .note { min-block-size: 1.5em; margin: 0; }
+  .note[data-error] { color: var(--accent-2); }
+</style>
