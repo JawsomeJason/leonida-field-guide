@@ -9,7 +9,7 @@ tier: none
 consoles: all
 byConsole:
   ps5: "Rockstar says Remote Play is fully supported on PS5, and the PlayStation Store page lists it too, so you can play your PS5 game on another screen. Rockstar lists no cloud streaming for PS5."
-  xbox-x: "Xbox Cloud Gaming can stream it to Xbox Series X|S and Xbox One consoles. You must own the game, and streaming uses cloud playtime from Game Pass or a purchase, or ad-supported cloud gaming. Rockstar says Remote Play is also fully supported."
+  xbox-x: "In select regions, Xbox Cloud Gaming can stream it to Xbox Series X|S and Xbox One consoles. You must own the game, and streaming uses cloud playtime from Game Pass or a purchase, or ad-supported cloud gaming. Rockstar says Remote Play is also fully supported."
   xbox-s: "Xbox Cloud Gaming can stream it to Xbox Series X|S and Xbox One consoles. You must own the game, and streaming uses cloud playtime from Game Pass or a purchase, or ad-supported cloud gaming. Rockstar says Remote Play is also fully supported."
 confidence: official
 sources:

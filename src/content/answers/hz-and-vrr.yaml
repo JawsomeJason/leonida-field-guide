@@ -1,6 +1,6 @@
 id: hz-and-vrr
 question: "Do 120 Hz or VRR help?"
-short: "Not for frame rate. The game targets 30 fps, so a 120 Hz screen setting or VRR (variable refresh rate) gives you nothing you would notice. There is no 40 or 60 fps mode to unlock."
+short: "Reportedly not for frame rate: KeenGamer and Digital Foundry say 120 Hz or VRR (variable refresh rate) does little at 30 fps, though Digital Foundry says Xbox can feel slightly smoother.."
 body: |-
   - KeenGamer says to leave 120 Hz on for other games but expect nothing here.
   - Where Digital Foundry and KeenGamer differ, the answer for your console says so.
@@ -9,9 +9,9 @@ stage: hour-1
 tier: none
 consoles: all
 byConsole:
-  ps5: "Not for frame rate. The game targets 30 fps. KeenGamer says 120 Hz output has no effect, and Digital Foundry says PS5 has no 120 Hz option and its VRR only works above 48 fps, so it does little at 30 fps."
-  xbox-x: "Not for frame rate. The game targets 30 fps. KeenGamer says 120 Hz output has no effect, but Digital Foundry says Xbox runs the game in a 120 Hz VRR container that can feel slightly smoother. No 40 or 60 fps mode either way."
-  xbox-s: "Not for frame rate. The game targets 30 fps. KeenGamer says 120 Hz output has no effect, but Digital Foundry says Xbox runs the game in a 120 Hz VRR container that can feel slightly smoother. No 40 or 60 fps mode either way."
+  ps5: "Reportedly not for frame rate. The game targets 30 fps. KeenGamer says 120 Hz output has no effect, and Digital Foundry says PS5 has no 120 Hz option and its VRR only works above 48 fps, so it does little at 30 fps."
+  xbox-x: "Reportedly not for frame rate. The game targets 30 fps. KeenGamer says 120 Hz output has no effect, but Digital Foundry says Xbox runs the game in a 120 Hz VRR container that can feel slightly smoother. Digital Foundry found no 40 or 60 fps mode either way."
+  xbox-s: "Reportedly not for frame rate. The game targets 30 fps. KeenGamer says 120 Hz output has no effect, but Digital Foundry says Xbox runs the game in a 120 Hz VRR container that can feel slightly smoother. Digital Foundry found no 40 or 60 fps mode either way."
 confidence: reported
 sources:
   - url: "https://www.keengamer.com/articles/guides/best-gta-6-settings-to-change-first-motion-blur-aim-and-ps5-pro/"

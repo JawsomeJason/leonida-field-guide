@@ -1,10 +1,10 @@
 id: will-i-lose-anything
 question: "Will I lose my progress, saves or cash?"
-short: "Deleting the game does not take back what you bought, and your console can back up saved data. Carried cash can be lost. Below is what we know, and what nobody has confirmed yet."
+short: "Console makers say deleting a game keeps what you bought. Whether this game's saves are backed up is not confirmed, so check first. GameSpot reports carried cash can be lost. Below: what we know, and what we do not."
 byConsole:
-  ps5: "Deleting the game does not lose it: you can download it again from your Game Library. PlayStation's page does not say what happens to saved data, so upload it first with PlayStation Plus. Carried cash can be lost."
-  xbox-x: "Uninstalling loses nothing: Xbox says your licence and game progress stay in the cloud, and saved data comes back when you reinstall. Carried cash can be lost. Cloud saves for this game are reported, not confirmed."
-  xbox-s: "Uninstalling loses nothing: Xbox says your licence and game progress stay in the cloud, and saved data comes back when you reinstall. Carried cash can be lost. Cloud saves for this game are reported, not confirmed."
+  ps5: "PlayStation says a deleted game can be downloaded again from your Game Library. Saved data for this game is not confirmed as backed up: upload it first with PlayStation Plus. Carried cash can be lost, GameSpot reports."
+  xbox-x: "Xbox says uninstalling keeps your licence and progress in the cloud, and saved data syncs online. Cloud saves for this game are reported, not confirmed: stay signed in and online until it syncs. Carried cash can be lost, GameSpot reports."
+  xbox-s: "Xbox says uninstalling keeps your licence and progress in the cloud, and saved data syncs online. Cloud saves for this game are reported, not confirmed: stay signed in and online until it syncs. Carried cash can be lost, GameSpot reports."
 body: |-
   What we know
   - Your console maker says deleting or uninstalling a game does not remove your right to play it. You download it again from your library.
