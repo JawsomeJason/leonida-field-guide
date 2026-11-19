@@ -18,6 +18,7 @@ createServer(async (req, res) => {
     const body = await readFile(join(DIST, path)); // read first: a missing file must still be able to answer 404
     res.writeHead(200, { 'content-type': types[extname(path)] ?? 'application/octet-stream' }).end(body);
   } catch {
-    res.writeHead(404).end('Not found');
+    // Like Vercel on a static site: an unknown path gets the site's own 404.html, with a 404 status.
+    res.writeHead(404, { 'content-type': 'text/html' }).end(await readFile(join(DIST, '404.html')).catch(() => 'Not found'));
   }
 }).listen(Number(process.env.LFG_PORT ?? 4399), '127.0.0.1', () => console.log('serving', DIST, 'on', process.env.LFG_PORT ?? 4399));

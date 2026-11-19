@@ -16,8 +16,21 @@ const todos = todosOf(answers);
 
 <Base>
   <ConsoleCard />
-  <h1 id="ask-title" tabindex="-1">Ask the field guide</h1>
-  <Search answers={answers} />
-  <MostAsked answers={answers} />
-  <StagePicker todos={todos} />
+  <div class="home"><div class="home__grid">
+    <div class="home__ask">
+      <h1 id="ask-title" tabindex="-1">Ask the field guide</h1>
+      <p class="lede">Plain answers about setup, settings and getting started. Spoilers stay off until you turn them on.</p>
+      <Search answers={answers} />
+      <MostAsked answers={answers} />
+    </div>
+    <div class="home__stage"><StagePicker todos={todos} /></div>
+  </div></div>
 </Base>
+
+<style>
+  /* Phone and tablet: one column. With room, the questions sit beside the player's stage, so the width is used and nothing is stretched. */
+  .home { container-type: inline-size; }
+  @container (min-width: 48rem) {
+    .home__grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  }
+</style>

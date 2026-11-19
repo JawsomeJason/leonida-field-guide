@@ -73,8 +73,8 @@ const short: Record<string, string> = { before: 'Before', 'hour-1': 'Hour 1', 'd
 <style is:global>
   .stages { margin-block-end: var(--space-6); }
   .stage-pick { margin-block-end: var(--space-4); }
-  /* Wrap, so a wider system font at 320px makes a second row (8px gap) instead of squeezing the labels together. */
-  .stage-pick .seg { flex-basis: 100%; flex-wrap: wrap; }
+  .stage-pick .seg { flex-basis: 100%; }
+  @media (max-width: 37.5em) { .stage-pick .seg { display: grid; grid-template-columns: 1fr 1fr; } } /* two by two: four labels never wrap at 320 */
   .sr-only {
     position: absolute;
     inline-size: 1px;
@@ -86,7 +86,7 @@ const short: Record<string, string> = { before: 'Before', 'hour-1': 'Hour 1', 'd
   }
 
   .stage h3 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--space-3); margin: 0 0 var(--space-3); font-size: var(--text-body); }
-  .stage__count { color: var(--muted); font: var(--text-small) / 1.5 var(--font-mono); }
+  .stage__count { color: var(--muted); font: var(--font-label); }
   .stage__empty { margin: 0; color: var(--muted); }
   html:not(.js) .stage { margin-block-end: var(--space-5); }
   html.js .todo-links { display: none; }

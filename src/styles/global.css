@@ -33,6 +33,7 @@ body {
 h1 { font-size: var(--text-h1); font-weight: 750; letter-spacing: -0.02em; line-height: 1.15; margin-block: var(--space-2) var(--space-4); text-wrap: balance; }
 h2 { font-size: var(--text-h2); font-weight: 650; letter-spacing: -0.01em; line-height: 1.3; }
 a { color: var(--accent); }
+.lede { max-inline-size: 60ch; margin-block: 0 var(--space-4); color: var(--muted); }
 kbd, code { font-family: var(--font-mono); }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 input, select, textarea { font-size: var(--text-input); }
@@ -112,7 +113,7 @@ a, button, summary, label, input { touch-action: manipulation; }
   content: '';
   display: block;
   block-size: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  background: linear-gradient(90deg, var(--action), var(--accent-2));
 }
 .site-header__row {
   display: flex;
@@ -233,7 +234,7 @@ html[data-console='xbox-s'] .chip [data-c='xbox-s'] { display: inline; }
 
 /* Page frame: phone is one column with a bottom bar. */
 .frame { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); }
-.main { min-inline-size: 0; max-inline-size: 64rem; padding: var(--space-4) max(var(--space-4), var(--safe-right)) var(--space-5) max(var(--space-4), var(--safe-left)); }
+.main { min-inline-size: 0; max-inline-size: 80rem; padding: var(--space-4) max(var(--space-4), var(--safe-right)) var(--space-5) max(var(--space-4), var(--safe-left)); }
 .list { display: none; }
 
 .nav {
@@ -310,12 +311,12 @@ html[data-console='xbox-s'] .chip [data-c='xbox-s'] { display: inline; }
 .btn {
   min-block-size: var(--tap);
   padding-inline: var(--space-5);
-  border: 1px solid var(--accent);
+  border: 1px solid var(--action);
   border-radius: var(--radius);
-  background: var(--accent);
+  background: var(--action);
   color: var(--bg);
   font: 600 var(--text-body) / 1 var(--font-text);
   cursor: pointer;
   touch-action: manipulation;
 }
-.btn:active { background-color: color-mix(in srgb, var(--accent) 75%, var(--text)); }
+.btn:active { background-color: color-mix(in srgb, var(--action) 75%, var(--text)); }

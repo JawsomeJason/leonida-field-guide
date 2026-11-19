@@ -5,6 +5,7 @@ import Reveal from './Reveal.astro';
 import OtherConsoles from './OtherConsoles.astro';
 import OutsideLink from './OutsideLink.astro';
 import { onlyOf } from '../lib/console.js';
+import { confidence } from '../data/confidence.js';
 import { consoleLabels, pathOf, renderBody, type AnswerData } from '../lib/answers';
 import './AnswerCard.css';
 
@@ -16,11 +17,7 @@ interface Props {
 const { answer: a, full = false, related = [] } = Astro.props;
 
 const only = a.consoles === 'all' ? '' : `${a.consoles.map((c) => consoleLabels[c]).join(' and ')} only`;
-const trust = {
-  official: ['Official', 'Stated by the publisher or the console maker.'],
-  reported: ['Reported', 'Seen in credible coverage. The publisher has not confirmed it.'],
-  community: ['Community', 'Shared by players. Treat it as a tip.'],
-}[a.confidence];
+const trust = confidence[a.confidence];
 const checked = new Date(`${a.checked}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 const body = full && a.body ? await renderBody(a.body) : '';
 const consoles = [['ps5', 'PS5'], ['xbox-x', 'Xbox X'], ['xbox-s', 'Xbox S']];
@@ -42,7 +39,15 @@ const consoles = [['ps5', 'PS5'], ['xbox-x', 'Xbox X'], ['xbox-s', 'Xbox S']];
     {body && <div class="prose" set:html={body} />}
     <Reveal answer={a} />
     <dl class="facts">
-      <div><dt>Confidence</dt><dd><strong>{trust[0]}.</strong> {trust[1]}</dd></div>
+      <div>
+        <dt>Confidence</dt>
+        <dd>
+          <details class="trust">
+            <summary><strong>{trust.label}</strong> <span>What this means</span></summary>
+            <p>{trust.text}</p>
+          </details>
+        </dd>
+      </div>
       <div><dt>Checked</dt><dd><time datetime={a.checked}>{checked}</time></dd></div>
       <div>
         <dt>Sources</dt>

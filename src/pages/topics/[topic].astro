@@ -19,6 +19,10 @@ const answers = isPlaces ? [] : byTier((await getCollection('answers')).map((e) 
 ---
 
 <Base title={label} description={`Answers about ${label.toLowerCase()}.`}>
+  <Fragment slot="list">
+    <p class="list__title">Topics</p>
+    <ul class="tap-list">{topics.map((t) => <li><a href={`/topics/${t.id}/`} aria-current={t.id === topic ? 'page' : undefined}>{t.label}</a></li>)}</ul>
+  </Fragment>
   <h1>{label}</h1>
   {isPlaces ? (
     <>

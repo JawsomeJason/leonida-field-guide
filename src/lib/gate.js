@@ -62,7 +62,7 @@ export const loginPage = (error) => `<!doctype html>
 <meta name="color-scheme" content="light dark">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#f6efe2" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0b1020" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#181320" media="(prefers-color-scheme: dark)">
 <title>Leonida Field Guide</title>
 <style>
 :root {
@@ -75,7 +75,7 @@ export const loginPage = (error) => `<!doctype html>
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0b1020; --surface: #141b34; --text: #eef1ff; --muted: #a3acd0; --accent: #3ee6e0; --accent-2: #ff6f91;
+    --bg: #181320; --surface: #231c2a; --text: #f7efe6; --muted: #c5b6bd; --accent: #3ee6e0; --accent-2: #ff6f91;
     --on-accent: var(--bg);
     color-scheme: dark;
   }

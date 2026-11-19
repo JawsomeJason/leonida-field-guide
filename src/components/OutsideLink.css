@@ -1,3 +1,4 @@
 /* One row, the whole row is the target. Used inside a .tap-list item. */
 .tap-list a.outside { flex-direction: column; align-items: flex-start; justify-content: center; gap: var(--space-1); }
+.outside__about { font-size: var(--text-small); }
 .outside__note { color: var(--muted); font: var(--text-small) / 1.3 var(--font-text); }

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { tiersFor, hiddenText, pageIds, related, textHtml, revealTiers, todosOf } from '../../src/lib/answers.ts';
+import { tiersFor, hiddenText, pageIds, related, textHtml, revealTiers, todosOf, markOutside, renderBody } from '../../src/lib/answers.ts';
 import { applies, onlyOf } from '../../src/lib/console.js';
 
 const base = { stage: 'before', consoles: 'all', confidence: 'reported', sources: [{ url: 'https://example.com', title: 't' }], checked: '2026-01-01' };
@@ -53,4 +53,11 @@ test('console rule: every-console records always show; a console-only record sho
   for (const c of ['', 'ps5', 'xbox-x', 'xbox-s']) assert.equal(applies(onlyOf('all'), c), true);
   assert.deepEqual(['', 'ps5', 'xbox-x', 'xbox-s'].map((c) => applies('ps5', c)), [false, true, false, false]);
   assert.deepEqual(['', 'ps5', 'xbox-x', 'xbox-s'].map((c) => applies('xbox-x xbox-s', c)), [false, false, true, true]);
+});
+
+test('a link in a body to another site says it is an outside site that may contain spoilers; a path on this site does not', async () => {
+  const html = await renderBody('See [a page](https://example.com/x) and [another answer](/a/other/).');
+  assert.match(html, /<a href="https:\/\/example.com\/x">a page <span class="outside__note">\(outside site, may contain spoilers\)<\/span><\/a>/);
+  assert.match(html, /<a href="\/a\/other\/">another answer<\/a>/);
+  assert.equal(markOutside('<p>no links</p>'), '<p>no links</p>');
 });

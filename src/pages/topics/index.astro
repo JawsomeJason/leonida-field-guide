@@ -12,11 +12,14 @@ const count = (id: string) => none.filter((a) => a.topic === id).length;
   <h1>Topics</h1>
   <ul class="tiles">
     {topics.map((t) => (
-      <li>
+      <li class:list={{ wide: t.id === 'places' }}>
         <a class:list={['tile', { 'tile--places': t.id === 'places' }]} href={`/topics/${t.id}/`}>
           <span class="tile__name">{t.label}</span>
           {t.id === 'places' ? (
-            <span class="tile__meta"><span class="locked">Locked</span><span class="open">Open</span></span>
+            <span class="tile__meta">
+              <span class="locked">Hidden until the spoiler setting is raised to Places. That adds where things are.</span>
+              <span class="open">Shown, because the spoiler setting is Places or higher.</span>
+            </span>
           ) : (
             <span class="tile__meta">{count(t.id)} {count(t.id) === 1 ? 'answer' : 'answers'}</span>
           )}
@@ -27,7 +30,7 @@ const count = (id: string) => none.filter((a) => a.topic === id).length;
 </Base>
 
 <style>
-  .tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr)); gap: var(--gap-tap); }
+  .tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr)); gap: var(--gap-tap); max-inline-size: 64rem; }
   /* Every tile is one tap target. */
   .tile {
     display: grid;
@@ -43,8 +46,9 @@ const count = (id: string) => none.filter((a) => a.topic === id).length;
     touch-action: manipulation;
   }
   .tile__name { font-weight: 650; line-height: 1.3; }
-  .tile__meta { color: var(--muted); font: var(--text-small) / 1.3 var(--font-mono); }
+  .tile__meta { color: var(--muted); font: var(--font-label); }
   /* Dashed edge means "hidden until you ask", here and on the Show controls. */
+  .wide { grid-column: 1 / -1; }
   .tile--places { border-style: dashed; border-color: var(--muted); }
   .open { display: none; }
   :global(html:is([data-dial='places'], [data-dial='mild'])) .tile--places { border-style: solid; border-color: var(--line); }
