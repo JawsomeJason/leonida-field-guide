@@ -1,6 +1,6 @@
 id: motion-blur-and-camera-shake
 question: "How do I turn off motion blur and camera shake?"
-short: "KeenGamer's guide: Settings, Display: drag Motion Blur Strength to 0. Settings, Camera: Camera Shake off. It says both help if fast camera moves make you queasy."
+short: "Settings, Display: drag Motion Blur Strength to 0. Settings, Camera: Camera Shake off. KeenGamer's guide says both help if fast camera moves make you queasy."
 body: |-
   - KeenGamer says blur smears the picture on fast turns at a locked 30 fps.
   - It also suggests turning off your TV's motion smoothing.

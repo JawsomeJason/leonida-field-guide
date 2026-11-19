@@ -41,3 +41,39 @@ test('planted: the attribution must sit in the same sentence', () => {
 test('real records: no headline that is not official reads as certain without saying who says it', () => {
   assert.deepEqual(headlineHits(loadRecords('src/content/answers')), []);
 });
+
+// A player wants the plain answer first, not an outlet's name: no headline's FIRST sentence opens with one. Extend the list as sources are added.
+const OUTLETS = ['PC Gamer', 'IGN', 'GameSpot', 'Notebookcheck', 'Cultured Vultures', 'Digital Foundry', 'Forbes', 'GTA Intel', 'Insider Gaming', 'KeenGamer', 'Vice Atlas', 'Crime Net Gazette', 'Xbox Wire', 'MakeTechEasier', 'GTABoom', 'IGGM', 'Eurogamer', 'Polygon', 'Kotaku', 'VGC', 'GamesRadar', 'Reuters', 'Bloomberg'];
+const OUTLET_FIRST = new RegExp(`^(?:(?:according to|reported by|per)\\s+)?(?:the\\s+|a\\s+)?(?:${OUTLETS.join('|')})\\b`, 'i');
+
+/** [{ id, where, sentence }] for each headline (any tier, any confidence) whose first sentence begins with an outlet. */
+const outletFirst = (records) =>
+  records.flatMap((a) =>
+    [['short', a.short], ...Object.entries(a.byConsole ?? {})]
+      .map(([where, text]) => ({ id: a.id, where, sentence: text.split(/(?<=[.!?])\s+/)[0] }))
+      .filter((h) => OUTLET_FIRST.test(h.sentence)),
+  );
+
+test('planted: a headline that opens with an outlet name is caught, in short and a console line, also as "According to" and a possessive', () => {
+  const bad = { id: 'x', short: 'PC Gamer says you save from the menu.', byConsole: { ps5: "KeenGamer's guide: turn it off.", 'xbox-x': 'According to IGN, it fits.', 'xbox-s': 'Digital Foundry found no 60 fps mode.' } };
+  assert.deepEqual(outletFirst([bad]).map((h) => h.where), ['short', 'ps5', 'xbox-x', 'xbox-s']);
+});
+
+test('planted: the outlet later in the first sentence, or in a later sentence, passes', () => {
+  const ok = { id: 'x', short: 'Save from the menu, PC Gamer says.', byConsole: { ps5: 'Turn it off. KeenGamer lists the steps.', 'xbox-x': 'It fits on any Series X, IGN reports.' } };
+  assert.deepEqual(outletFirst([ok]), []);
+  assert.deepEqual(outletFirst([{ id: 'y', short: 'Signs of a fake: pcgamer.com is not involved.' }]), []);
+});
+
+test('real records: no headline, at any tier, opens with an outlet name', () => {
+  assert.deepEqual(outletFirst(loadRecords('src/content/answers')), []);
+});
+
+test('save answer: leads with the plain answer, names the outlet later in the line and in the body, and says the slot count is unconfirmed', () => {
+  const a = loadRecords('src/content/answers').find((r) => r.id === 'how-to-save');
+  assert.match(a.short, /^Save by hand from the main menu/);
+  assert.match(a.short, /PC Gamer[^.]*reports 15 manual slots/);
+  assert.match(a.short, /no Rockstar page confirms/);
+  assert.match(a.body, /PC Gamer/);
+  assert.ok(a.sources.some((x) => x.title.includes('PC Gamer')));
+});
