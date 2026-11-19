@@ -25,5 +25,5 @@ export const hiddenUntil = (counts) => tileStates(counts).find((s) => s.levels.s
  *  the page never carries a number a level hides, so the script counts from the hidden index once the dial reaches it. Other topics render as tileStates says. */
 export function tileRows(counts) {
   const [first, ...rest] = tileStates(counts);
-  return first.count === 0 && rest.length ? [{ ...first, open: false }, { levels: rest.map((s) => s.levels).join(' '), open: true }] : tileStates(counts).map((s) => ({ ...s, open: s.count > 0 }));
+  return first.count === 0 && rest.length ? [{ ...first, open: false }, { levels: rest.map((s) => s.levels).join(' '), open: true, until: '' }] : tileStates(counts).map((s) => ({ ...s, open: s.count > 0 }));
 }

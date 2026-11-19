@@ -21,8 +21,8 @@ test('a topic with nothing anywhere has no level to point to', () => {
 
 test('a topic with nothing at Off renders a closed row and one open row, and no row carries a count', () => {
   const rows = tileRows({ places: 2, mild: 1 });
-  assert.deepEqual(rows, [{ levels: 'off', count: 0, until: 'Places', open: false }, { levels: 'places mild', open: true }]);
-  assert.deepEqual(tileRows({ mild: 1 }), [{ levels: 'off places', count: 0, until: 'Mild', open: false }, { levels: 'mild', open: true }]);
+  assert.deepEqual(rows, [{ levels: 'off', count: 0, until: 'Places', open: false }, { levels: 'places mild', open: true, until: '' }]);
+  assert.deepEqual(tileRows({ mild: 1 }), [{ levels: 'off places', count: 0, until: 'Mild', open: false }, { levels: 'mild', open: true, until: '' }]);
   assert.equal(JSON.stringify(rows.filter((r) => r.open)).includes('count'), false); // the open row holds no number at all
 });
 

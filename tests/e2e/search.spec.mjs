@@ -3,6 +3,8 @@ import AxeBuilder from '@axe-core/playwright';
 import { saved, measure, press, records } from './helpers.mjs';
 import { FIXTURE_QUERIES } from '../search/queries.mjs';
 
+// A service worker would answer the index fetches before a stub could, so a stubbed index is only a stub with it blocked (the flake this fixes: a fast machine let the worker take over first).
+test.use({ serviceWorkers: 'block' });
 // The sync call never leaves this machine: the page is served locally and this answers it with an empty record.
 test.beforeEach(({ page }) => page.route('**/api/progress', (route) => route.fulfill({ json: { v: 2, settings: {}, items: {} } })));
 
@@ -31,8 +33,7 @@ const NONE = ['zzyzx qqqq', 'how do i get a million dollars fast', 'my kid wants
 for (const query of NONE) {
   test(`"${query}" has no answer: the floor line and a way to Topics, no Possibly related`, async ({ page }) => {
     await ask(page, query);
-    const where = await page.locator('#q-where').isVisible(); // a place question shows its own note instead of the floor line
-    if (!where) await expect(page.getByRole('status')).toHaveText('This guide has no answer for that yet.');
+    if (!query.startsWith('where')) await expect(page.getByRole('status')).toHaveText('This guide has no answer for that yet.'); // a place question shows its own note instead, with no count line above it
     await expect(page.getByText('Possibly related')).toHaveCount(0);
     const links = results(page).getByRole('link');
     await expect(links).toHaveCount(1);
@@ -171,7 +172,7 @@ for (const scheme of ['light', 'dark']) {
     await page.emulateMedia({ colorScheme: scheme });
     await ask(page, 'where is the zzyzx');
     await expect(page.locator('#q-where')).toBeVisible();
-    await expect(results(page).getByRole('link')).toHaveCount(4);
+    await expect(results(page).getByRole('link')).toHaveCount(1); // the Topics row only
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   });
 }
