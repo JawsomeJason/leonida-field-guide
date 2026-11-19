@@ -1,10 +1,12 @@
 id: code-regions
 question: "Will my code work on my account's country?"
-short: "Rockstar advises buying from a retailer in the country of your platform account. Some consoles lock a code to a country group; see the answer for your console."
+short: "Rockstar advises buying from a retailer in the country of your platform account. Some consoles lock a code to a country group; the rule differs by console."
 body: |-
   - Region limits are based on the region tied to your platform account.
   - If you buy in a different region from your account, the version you buy has to match the account's region.
   - Rockstar's advice is to buy and play from a retailer in the country of your platform account, to avoid activation problems.
+
+  <span data-only="ps5">Which accounts share a code: [Which countries share a PlayStation code group?](/a/code-regions-ps5/).</span>
 topic: bonuses
 stage: before
 tier: none

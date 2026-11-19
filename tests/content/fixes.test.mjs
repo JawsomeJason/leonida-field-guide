@@ -60,6 +60,21 @@ test('frame rate: the measured dips and the input lag are stated, with the sourc
   assert.match(all(a), /Digital Foundry/);
 });
 
+test('round 4 jargon (power cycle, pre-load, cross-progression, Optimized for Series X|S) comes second in every record, detail and to-do', () => {
+  const terms = [/power[- ]?cycl\w*/gi, /pre-?load\w*/gi, /cross-progression/gi, /Optimized for Series X\|S/g];
+  const seen = (a) => [a.question, a.short, ...Object.values(a.byConsole ?? {}), a.body, a.todo, ...(a.reveal ?? []).map((r) => r.text)].filter(Boolean);
+  const first = (text) => terms.flatMap((re) => [...text.matchAll(re)]).filter((m) => {
+    const before = text.slice(Math.max(0, m.index - 70), m.index);
+    return !(before.lastIndexOf('(') > before.lastIndexOf(')') || /called $/.test(before));
+  }).map((m) => m[0]);
+  assert.deepEqual(records.flatMap((a) => seen(a).flatMap(first).map((w) => `${a.id}: ${w}`)), []);
+  // planted: the term first fails, the plain phrase first passes
+  assert.deepEqual(first('Power cycle the console.'), ['Power cycle']);
+  assert.deepEqual(first('Pre-load opens early.'), ['Pre-load']);
+  assert.deepEqual(first('Progress shared between consoles (cross-progression) is not announced.'), []);
+  assert.deepEqual(first('Switch it fully off and on again (a power cycle).'), []);
+});
+
 test('jargon comes second: a plain phrase first, the term after it in brackets or "called"', () => {
   const terms = ['PSSR', 'Optimized for Series X|S', 'ray tracing', 'ray-traced', 'temporal upscaling', 'FSR 4', 'infostealers', 'reticle', 'haptic feedback'];
   for (const a of records)
@@ -111,16 +126,66 @@ test('launch day has come: no step or question speaks of the launch as still to 
   assert.match(get('ps5-system-update').short, /Launch day has come/);
 });
 
-test('Will I lose anything? is the one place for uninstalling, saves and cash, and says what is not known', () => {
+test('Will I lose anything? is the one place for uninstalling, saves and cash, says what is not known, and its headline claims no more than its weakest source', () => {
   const a = get('will-i-lose-anything');
   assert.equal(a.tier, 'none');
+  assert.equal(a.confidence, 'reported');
   assert.ok(a.rank <= 8, 'it is in the first Most asked rows');
   assert.match(a.body, /What we do not know/);
-  assert.doesNotMatch([a.short, a.body, ...Object.values(a.byConsole)].join(' '), /ATM|bank|deposit/i);
-  for (const c of ['ps5', 'xbox-x', 'xbox-s']) assert.ok(a.byConsole[c].length <= 240 && /Carried cash can be lost/.test(a.byConsole[c]), c);
+  // The details of cash stay Mild: no ATM or deposit at Off. "Bank it" is the plain remedy.
+  assert.doesNotMatch([a.short, a.body, ...Object.values(a.byConsole)].join(' '), /ATM|deposit/i);
+  const headlines = [a.short, ...Object.values(a.byConsole)];
+  for (const h of headlines) {
+    // A reported record's headline never reads as certain that saves come back: round 4 found "Uninstalling loses nothing ... saved data comes back".
+    assert.doesNotMatch(h, /loses nothing|comes? (right )?back|will be (kept|safe)|nothing (is|will be) lost/i, h);
+    assert.match(h, /not confirmed|does not say/, `a headline says saves are unconfirmed: ${h}`);
+    assert.match(h, /before you (delete|uninstall)|Before you delete|before you uninstall/i, `a headline says to check first: ${h}`);
+    assert.match(h, /Carried cash can be lost/, h);
+    assert.match(h, /bank it/i, `the cash warning carries its remedy: ${h}`);
+  }
+  for (const c of ['ps5', 'xbox-x', 'xbox-s']) assert.ok(a.byConsole[c].length <= 240, c);
+  assert.match(a.byConsole.ps5, /Settings, Saved Data and Game\/App Settings/, 'PlayStation steps for checking, from its own support page');
+  assert.match(a.byConsole['xbox-x'], /go online|stay online|connected/i, 'Xbox says its saves sync while connected');
   assert.ok(a.sources.some((s) => s.console === 'ps5') && a.sources.some((s) => Array.isArray(s.console)));
   for (const id of ['free-space-xbox', 'free-space-ps5', 'cloud-saves-and-backup', 'keep-your-cash'])
-    assert.match(all(get(id)), /\]\(\/a\/will-i-lose-anything\/\)|\"Will I lose anything\?\" answer/, `${id} points to it`);
+    assert.match(all(get(id)), /\]\(\/a\/will-i-lose-anything\/\)/, `${id} points to it with a link`);
+});
+
+test('keep your cash: the Off line warns and says what to do, and the how stays Mild', () => {
+  const a = get('keep-your-cash');
+  assert.equal(a.tier, 'none');
+  assert.match(a.short, /can be lost if you die\. Bank it before you take risks/);
+  assert.doesNotMatch([a.short, a.body].join(' '), /ATM|deposit/i);
+  assert.match(a.reveal[0].text, /ATM/);
+});
+
+test('Xbox control schemes: the face buttons are said to be unconfirmed, never translated from PlayStation names', () => {
+  const a = get('control-schemes');
+  for (const c of ['xbox-x', 'xbox-s']) {
+    assert.match(a.byConsole[c], /face buttons \(A, B, X, Y\) are unconfirmed/, c);
+    assert.doesNotMatch(a.byConsole[c], /\{(cross|circle|square|triangle)\}/, `${c} must not translate a face button`);
+  }
+});
+
+test('the checklist step "Free up 212 GB" opens the answer that carries the figure and its official sources, and links how to make room for each console', () => {
+  const a = get('install-size-and-preload');
+  assert.match(a.todo, /212 GB/);
+  assert.match(a.short, /212 GB/);
+  assert.ok(a.sources.some((s) => s.url.includes('support.rockstargames.com')), 'the 212 GB figure has its Rockstar source');
+  assert.match(a.body, /data-only="ps5">[^<]*\]\(\/a\/free-space-ps5\/\)/);
+  assert.match(a.body, /data-only="xbox-x xbox-s">[^<]*\]\(\/a\/free-space-xbox\/\)/);
+  assert.doesNotMatch(all(a), /Make room card/);
+});
+
+test('a to-do that states a size opens an answer that states the same size', () => {
+  for (const a of records.filter((r) => /\d+ ?GB/.test(r.todo ?? ''))) assert.ok(all({ ...a, todo: '' }).includes(a.todo.match(/\d+ ?GB/)[0]), `${a.id}: the figure in the step is not in its answer`);
+});
+
+test('avoid-spoilers names its source for each claim about an outside site and gives the date', () => {
+  const a = get('avoid-spoilers');
+  assert.match(a.body, /GTA Intel \(checked 19 November\)/);
+  for (const site of ['X', 'YouTube', 'Reddit']) assert.match(a.body, new RegExp(`${site}:[^\\n]*GTA Intel`), `${site} is attributed`);
+  assert.doesNotMatch(a.body, /: its keyword filtering is weak|It does not hide direct searches/);
 });
 
 test('the printable map answer says where in the cited post the announcement sits', () => {

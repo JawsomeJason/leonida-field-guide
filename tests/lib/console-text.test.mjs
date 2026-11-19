@@ -36,3 +36,9 @@ test('question, to-do and hidden details count as shown text', () => {
   const hits = words([rec({ consoles: ['xbox-s'], question: 'On PS5?', todo: 'Sony step', reveal: [{ tier: 'mild', text: 'PlayStation tip' }] })]);
   assert.deepEqual(hits, ['r:xbox-s:PS5', 'r:xbox-s:Sony', 'r:xbox-s:PlayStation']);
 });
+
+test('a body line in <span data-only="..."> is read only by the consoles it is for', () => {
+  const body = '<span data-only="ps5">Open the PlayStation Store.</span><span data-only="xbox-x xbox-s">Open the Xbox button menu.</span>';
+  assert.deepEqual(words([rec({ body })]), []);
+  assert.deepEqual(words([rec({ body: '<span data-only="ps5">Open the Xbox menu.</span>' })]), ['r:ps5:Xbox']);
+});

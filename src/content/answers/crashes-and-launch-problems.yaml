@@ -5,15 +5,16 @@ body: |-
   - Rockstar's service status page lists its online services and has no separate row for this game. On 19 November it showed all services operational.
   - We found no confirmed game-wide crash or launch fault on 19 November. If one is confirmed, it will be on the What's new screen.
   - Report a crash to Rockstar with its [support request form](https://support.rockstargames.com/request), open 24 hours a day. Say what happened, how to repeat it, any error code and the time, and add a screenshot or video if you can.
-  - Full steps for your console are in the "crashes or freezes" card in Fixes.
+
+  <span data-only="ps5">Full steps for your console: [what to try, in order](/a/crash-steps-ps5/).</span><span data-only="xbox-x xbox-s">Full steps for your console: [what to try, in order](/a/crash-steps-xbox/).</span>
 topic: fixes
 stage: hour-1
 tier: none
 consoles: all
 byConsole:
   ps5: "Check status.playstation.com. Restart the game, then update the game and the PS5 system software. Still crashing: delete and reinstall it, or use Safe Mode (a start-up menu with repair tools) to rebuild the database. Then contact PlayStation Support."
-  xbox-x: "Check Xbox's status page. Quit and restart the game, then power cycle the console (hold its Xbox button for 10 seconds). Then update the console and test your network. Still crashing: contact Xbox Support."
-  xbox-s: "Check Xbox's status page. Quit and restart the game, then power cycle the console (hold its Xbox button for 10 seconds). Then update the console and test your network. Still crashing: contact Xbox Support."
+  xbox-x: "Check Xbox's status page. Quit and restart the game, then switch the console fully off and on again (a power cycle: hold its Xbox button for 10 seconds). Then update the console and test your network. Still crashing: contact Xbox Support."
+  xbox-s: "Check Xbox's status page. Quit and restart the game, then switch the console fully off and on again (a power cycle: hold its Xbox button for 10 seconds). Then update the console and test your network. Still crashing: contact Xbox Support."
 confidence: official
 sources:
   - url: "https://support.rockstargames.com/servicestatus"

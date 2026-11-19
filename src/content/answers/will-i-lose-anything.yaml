@@ -1,15 +1,15 @@
 id: will-i-lose-anything
 question: "Will I lose my progress, saves or cash?"
-short: "Deleting the game does not take back what you bought, and your console can back up saved data. Carried cash can be lost. Below is what we know, and what nobody has confirmed yet."
+short: "Deleting a game keeps what you bought. Whether this game's saved data is backed up is not confirmed, so check before you delete. Carried cash can be lost if you die: bank it before you take risks."
 byConsole:
-  ps5: "Deleting the game does not lose it: you can download it again from your Game Library. PlayStation's page does not say what happens to saved data, so upload it first with PlayStation Plus. Carried cash can be lost."
-  xbox-x: "Uninstalling loses nothing: Xbox says your licence and game progress stay in the cloud, and saved data comes back when you reinstall. Carried cash can be lost. Cloud saves for this game are reported, not confirmed."
-  xbox-s: "Uninstalling loses nothing: Xbox says your licence and game progress stay in the cloud, and saved data comes back when you reinstall. Carried cash can be lost. Cloud saves for this game are reported, not confirmed."
+  ps5: "Deleting a game keeps what you bought, but PlayStation does not say what happens to its saved data. Before you delete, upload it with PlayStation Plus (Settings, Saved Data and Game/App Settings). Carried cash can be lost: bank it first."
+  xbox-x: "Uninstalling keeps your licence. Xbox says saved games sync online while you are connected, but we have not confirmed that for this game. Go online and let it sync before you uninstall. Carried cash can be lost: bank it first."
+  xbox-s: "Uninstalling keeps your licence. Xbox says saved games sync online while you are connected, but we have not confirmed that for this game. Go online and let it sync before you uninstall. Carried cash can be lost: bank it first."
 body: |-
   What we know
   - Your console maker says deleting or uninstalling a game does not remove your right to play it. You download it again from your library.
-  - A saved game is separate from the game files. Cloud backup depends on your console: see [Are my saves backed up in the cloud?](/a/cloud-saves-and-backup/).
-  - Carried cash can be lost. The details sit behind the Mild setting.
+  - A saved game is separate from the game files. Before you delete, check your save is backed up: your console's steps are in [Are my saves backed up in the cloud?](/a/cloud-saves-and-backup/).
+  - Carried cash can be lost if you die. A report says money in the bank is safe, so bank it before you take risks. How that works sits behind the Mild setting.
 
   What we do not know
   - Whether this game backs up saves to the cloud on every console. Rockstar has not said.

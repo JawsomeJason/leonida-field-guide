@@ -4,7 +4,7 @@ short: "No. Every console targets 30 fps, with no 40 or 60 fps mode. Digital Fou
 body: |-
   - Input lag (the delay between moving the stick and the camera moving) was about 180 ms, similar to other Rockstar 30 fps games. Digital Foundry measured it on one console, with a wireless controller, plus about 10 ms of delay in the display. It did not change at 60 Hz, 120 Hz or 120 Hz VRR.
   - TechPowerUp says Rockstar confirmed the 30 fps target. We have not seen that on a Rockstar page.
-  - Turning on a 120 Hz output does not unlock more frames. See the 120 Hz and VRR card.
+  - Turning on a 120 Hz output does not unlock more frames. More in [Do 120 Hz or VRR help?](/a/hz-and-vrr/).
 topic: settings
 stage: hour-1
 tier: none
