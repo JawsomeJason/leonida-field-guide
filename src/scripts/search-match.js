@@ -29,7 +29,7 @@ const SYN = Object.fromEntries(
 const WEAK = new Set(['playstation', 'xbox', 'not']); // console words say what the player owns, not what they ask; a no only colours the question: they count for less
 
 // The things a player does. When a question names one, the answer about DOING it (the verb is in its question or keywords) leads the answers that only mention the noun.
-const ACTION = new Set('save redeem install uninstall fix change download update unlock delete backup transfer restore claim preload reset'.split(' ').map((w) => stem(w)));
+const ACTION = new Set('save redeem install uninstall fix change download update unlock delete backup transfer restore claim reset'.split(' ').map((w) => stem(w)));
 
 const BEFORE = new Set('i you we to can could do does should will would must'.split(' ')); // a verb follows these in a question ("do I save", "to download"); after a noun it is a plural ("my saves")
 const toks = (t) => String(t ?? '').toLowerCase().replace(/['’]/g, '').split(SPLIT).filter(Boolean);
