@@ -1,0 +1,16 @@
+id: xbox-system-update
+question: "Should I update my Xbox before I play?"
+short: "Yes, it is a good idea. Press the Xbox button, then Profile & system, Settings, System, Updates and install anything waiting. Microsoft says a missing update can stop a download."
+body: |-
+  - Microsoft's page: "If there are any updates, they'll appear in the left menu. If not, you'll see 'No console update available.'"
+  - No Xbox update has been reported as required for this game. This is a general check, not a launch rule.
+topic: setup
+stage: before
+tier: none
+consoles: [xbox-x, xbox-s]
+confidence: official
+sources:
+  - url: "https://support.xbox.com/help/games-apps/troubleshooting/troubleshoot-game-or-app-installation-problems-on-xbox-one"
+    title: "Troubleshoot game or app installation problems on your Xbox console (Xbox Support)"
+checked: "2026-11-19"
+todo: "Check for an Xbox console update and install it"

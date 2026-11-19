@@ -1,20 +1,22 @@
 id: day-one-patches
 question: "Is there a day-one patch, and how big is it?"
-short: "Two updates reached pre-loaded copies: 01.002.000 (about 1 GB, from 13 November) and 01.002.001 (about 602.5 MB on PS5, about 1.6 GB on Xbox). Rockstar published no patch notes for either."
+short: "Two updates reached copies downloaded early (pre-loaded): 01.002.000 (from 13 November) and 01.002.001. Rockstar published no patch notes for either."
 body: |-
-  - The sizes come from console download prompts and press reports, not from Rockstar, Sony or Microsoft.
+  - The sizes come from console download prompts and press reports, not from Rockstar or the console makers.
   - MakeTechEasier checked Rockstar's newswire and product page on 17 November and found no mention of either update.
   - gta6filesize.com estimates a bigger day-one patch of 15 to 50 GB. That is its own estimate, and Rockstar has not sized one.
 topic: setup
 stage: hour-1
 tier: none
 consoles: all
+byConsole:
+  ps5: "Two updates reached copies downloaded early (pre-loaded): 01.002.000 (about 1 GB, from 13 November) and 01.002.001 (about 602.5 MB). Rockstar published no patch notes for either."
+  xbox-x: "Two updates reached copies downloaded early (pre-loaded): 01.002.000 (about 1 GB, from 13 November) and 01.002.001 (about 1.6 GB). Rockstar published no patch notes for either."
+  xbox-s: "Two updates reached copies downloaded early (pre-loaded): 01.002.000 (about 1 GB, from 13 November) and 01.002.001 (about 1.6 GB). Rockstar published no patch notes for either."
 confidence: reported
 sources:
   - url: "https://maketecheasier.com/gta-6-patch-01-002-001-size/"
     title: "GTA 6's second day-one patch, version 01.002.001 (MakeTechEasier)"
-  - url: "https://kotaku.com/ps5-gets-last-minute-software-update-thats-required-to-play-gta-6-2000757868"
-    title: "PS5 Gets Last-Minute Software Update That's Required To Play GTA 6 (Kotaku)"
   - url: "https://gta6filesize.com/"
     title: "GTA 6 file size: will it fit on your console? (gta6filesize.com)"
 checked: "2026-11-19"
