@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { search, asksWhere } from '../../src/scripts/search-match.js';
+import { search, asksWhere, asksKnown, answersFor, forConsoles } from '../../src/scripts/search-match.js';
 import { loadRecords, hiddenStrings } from '../../scripts/check-leak.mjs';
 import { FIXTURE_QUERIES } from './queries.mjs';
 import { checkQuestions } from '../../scripts/check-search-questions.mjs';
@@ -163,4 +163,48 @@ test('a hidden record\'s keywords are hidden strings for the leak check', () => 
   assert.ok(hidden.some((h) => h.tier === 'places' && h.text.includes('zebra kiosk wallaby')));
   // A visible record's keywords are not hidden.
   assert.deepEqual(hiddenStrings([{ id: 'y', tier: 'none', question: 'q', short: 's', keywords: ['zebra kiosk wallaby'] }]), []);
+});
+
+test('known problems: the listed words, stemmed, and phrases, ask for the known-problems row; other trouble words do not', () => {
+  for (const q of ['known bugs', 'is it buggy', 'any problems', 'a glitch', 'glitches', 'any issues at launch', 'is it broken', 'it broke', 'server outage', 'errors', 'is the game down', 'are servers down', "xbox isn't working", 'not working error']) assert.ok(asksKnown(q), q);
+  for (const q of ['my game keeps crashing', 'my code does not work', 'how do i turn the volume down', 'download stuck', 'how do i save', 'working hours', '']) assert.ok(!asksKnown(q), q);
+});
+
+test('a record speaks to its list, its byConsole text and its source tags', () => {
+  assert.deepEqual(forConsoles({ consoles: ['xbox-x'] }).sort(), ['xbox-x']);
+  assert.deepEqual(forConsoles({ consoles: 'all', byConsole: { ps5: 'a' }, sources: [{ console: ['xbox-s'] }, { console: 'xbox-x' }, {}] }).sort(), ['ps5', 'xbox-s', 'xbox-x']);
+  assert.deepEqual(forConsoles({ consoles: 'all' }), []);
+});
+
+const consoleRecords = [
+  rec('save', 'How do I save?', { consoles: 'all', rank: 1 }),
+  rec('size', 'How big is the install?', { consoles: 'all', byConsole: { 'xbox-x': 'x' }, rank: 2 }),
+  rec('ps-only', 'Why is my download slow?', { consoles: ['ps5'], rank: 5 }),
+  rec('both', 'How do I free space?', { consoles: ['xbox-x', 'xbox-s'], rank: 9 }),
+  rec('s-only', 'Will it fit on the small one?', { consoles: ['xbox-s'] }),
+  rec('src', 'Who made it?', { consoles: 'all', sources: [{ console: 'xbox-s' }], rank: 3 }),
+];
+const listed = (q, owned) => answersFor(consoleRecords, q, owned).map((r) => r.id);
+
+test('a console name alone lists that console\'s answers: tagged first, then byConsole or source text, by rank', () => {
+  assert.deepEqual(listed('xbox', 'xbox-x'), ['both', 'size']); // Series X chosen: its answers, not the Series S-only one
+  assert.deepEqual(listed('xbox', 'ps5'), ['both', 's-only', 'size', 'src']); // an owner of another console gets both Xboxes
+  assert.deepEqual(listed('xbox', ''), ['both', 's-only', 'size', 'src']); // none chosen: any named console works
+  assert.deepEqual(listed('series s', 'xbox-x'), ['both', 's-only', 'src']); // another console than the chosen one: the player asked for it
+  assert.deepEqual(listed('series x', 'xbox-s'), ['both', 'size']);
+  assert.deepEqual(listed('ps5', 'xbox-x'), ['ps-only']);
+});
+
+test('every spelling of a console name asks for the same list', () => {
+  for (const q of ['ps5', 'PS5', 'playstation', 'PlayStation 5', 'play station', 'ps', 'ps 5', 'playstaton', 'my ps5', 'ps5 games']) assert.deepEqual(listed(q, 'ps5'), ['ps-only'], q);
+  for (const q of ['xbox', 'x box', 'xbox series', 'series', 'my xbox', 'xbxo']) assert.deepEqual(listed(q, 'xbox-x'), ['both', 'size'], q);
+  for (const q of ['series x', 'xbox series x', 'sx', 'xsx']) assert.deepEqual(listed(q, 'ps5'), ['both', 'size'], q);
+  for (const q of ['series s', 'xbox series s', 'ss', 'xss']) assert.deepEqual(listed(q, 'ps5'), ['both', 's-only', 'src'], q);
+});
+
+test('a console name with other words is an ordinary search: the console word stays a synonym', () => {
+  const records = [rec('u', 'Why is my Xbox update stuck?', { consoles: ['xbox-x'] }), rec('s', 'How do I save?', { consoles: 'all' })];
+  assert.deepEqual(answersFor(records, 'xbox update stuck', 'xbox-x').map((r) => r.id), ['u']);
+  assert.deepEqual(answersFor(records, 'xbox save', 'xbox-x').map((r) => r.id), ['s']);
+  assert.deepEqual(answersFor(records, 'ps5 save', 'ps5').map((r) => r.id), ['s']);
 });
