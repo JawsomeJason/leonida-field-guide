@@ -26,7 +26,7 @@ sources:
   - url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
     title: "How to manage storage space on your PS5 console (PlayStation Support)"
     console: ps5
-  - url: "https://www.playstation.com/support/games/troubleshoot-downloaded-playstation-game/"
+  - url: "https://www.playstation.com/en-us/support/games/troubleshoot-downloaded-playstation-game/"
     title: "How to troubleshoot game downloads from PlayStation Store (PlayStation Support)"
     console: ps5
   - url: "https://support.rockstargames.com/request"
@@ -35,7 +35,7 @@ checked: "2026-11-19"
 keywords: ["crash", "crashing", "keeps crashing", "freezing", "game crashes"]
 support:
   - claim: "check the PlayStation status page first"
-    url: "https://www.playstation.com/support/games/troubleshoot-downloaded-playstation-game/"
+    url: "https://www.playstation.com/en-us/support/games/troubleshoot-downloaded-playstation-game/"
     quote: "Check the PlayStation status page. If you see any alerts, wait until the service is up and running and then try again."
     checked: "2026-11-19"
   - claim: "check the game fully downloaded"
@@ -47,7 +47,7 @@ support:
     quote: "Check the game is updated to the latest version."
     checked: "2026-11-19"
   - claim: "update the system software and where to find it"
-    url: "https://www.playstation.com/support/games/troubleshoot-downloaded-playstation-game/"
+    url: "https://www.playstation.com/en-us/support/games/troubleshoot-downloaded-playstation-game/"
     quote: "Go to Settings > System > System Software > System Software Update and Settings."
     checked: "2026-11-19"
   - claim: "delete the game and download it again"

@@ -16,7 +16,7 @@ confidence: official
 sources:
   - url: "https://support.rockstargames.com/articles/7nPqOA2uCbpEQHXx7KVrYd/grand-theft-auto-vi-pre-load-faq"
     title: "Grand Theft Auto VI Pre-Load FAQ (Rockstar Support)"
-  - url: "https://www.playstation.com/support/games/pre-order-games-automatic-download-ps-store"
+  - url: "https://www.playstation.com/en-us/support/games/pre-order-games-automatic-download-ps-store"
     title: "How to pre-order and auto-download games from PlayStation Store (PlayStation Support)"
     console: ps5
   - url: "https://support.xbox.com/help/hardware-network/settings-updates/system-update-overview"
@@ -33,7 +33,7 @@ support:
     checked: "2026-11-19"
     console: ps5
   - claim: "PS5 countdown timer on the game in the Game Library"
-    url: "https://www.playstation.com/support/games/pre-order-games-automatic-download-ps-store"
+    url: "https://www.playstation.com/en-us/support/games/pre-order-games-automatic-download-ps-store"
     quote: "select Game Library and then select your pre-ordered game. A timer counting down to the game's release appears."
     checked: "2026-11-19"
     console: ps5

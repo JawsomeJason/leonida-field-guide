@@ -9,7 +9,7 @@ export async function GET() {
   return Response.json(
     answers.map(({ data }) => {
       const loss = lossReveal(data);
-      return { id: data.id, question: data.question, short: data.short, topic: data.topic, keywords: data.keywords, consoles: data.consoles, rank: data.rank, forConsoles: forConsoles(data), loss: loss && { tier: loss.tier, label: loss.label } };
+      return { id: data.id, question: data.question, short: data.short, topic: data.topic, keywords: data.keywords, consoles: data.consoles, byConsole: data.byConsole, rank: data.rank, forConsoles: forConsoles(data), loss: loss && { tier: loss.tier, label: loss.label } };
     }),
   );
 }

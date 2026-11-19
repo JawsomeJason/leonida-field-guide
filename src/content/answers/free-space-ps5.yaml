@@ -16,18 +16,18 @@ sources:
   - url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
     title: "How to manage storage space on your PS5 console (PlayStation Support)"
     console: ps5
-  - url: "https://www.playstation.com/support/games/troubleshoot-downloaded-playstation-game/"
+  - url: "https://www.playstation.com/en-us/support/games/troubleshoot-downloaded-playstation-game/"
     title: "How to troubleshoot game downloads from PlayStation Store (PlayStation Support)"
     console: ps5
 checked: "2026-11-19"
 keywords: ["storage full", "delete games", "free up space"]
 support:
   - claim: "where to see free space"
-    url: "https://www.playstation.com/support/games/troubleshoot-downloaded-playstation-game/"
+    url: "https://www.playstation.com/en-us/support/games/troubleshoot-downloaded-playstation-game/"
     quote: "To see the available storage on your PS5 console, go to Settings > Storage."
     checked: "2026-11-19"
   - claim: "one game's size"
-    url: "https://www.playstation.com/support/games/troubleshoot-downloaded-playstation-game/"
+    url: "https://www.playstation.com/en-us/support/games/troubleshoot-downloaded-playstation-game/"
     quote: "go to your Game Library, select the game > … (more) > View Product."
     checked: "2026-11-19"
   - claim: "you can delete data or move it to other storage"

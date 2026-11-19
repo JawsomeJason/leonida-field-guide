@@ -1,6 +1,7 @@
 import { read } from './settings.js';
 import { answersFor, asksWhere, asksStory, asksKnown, pagePath } from './search-match.js';
 import { textHtml } from '../lib/console.js';
+import { consoles } from '../data/consoles.js';
 import './reveal.js'; // the loss rows' button opens in place, as on an answer page
 
 // Each tier's records live under that tier's own paths; hidden tiers load only when the dial allows them.
@@ -35,7 +36,7 @@ function load(tier) {
   return cache.get(tier);
 }
 
-function row(r) {
+function row(r, owned) {
   const li = document.createElement('li');
   li.className = r.loss ? 'ask-loss' : '';
   const a = document.createElement('a');
@@ -45,8 +46,9 @@ function row(r) {
   q.className = 'q';
   q.textContent = r.question;
   s.className = 's';
-  s.innerHTML = textHtml((tiers[r.tier].label ? `${tiers[r.tier].label}. ` : '') + r.short); // button tokens become button names (both consoles' until one is chosen)
+  s.innerHTML = textHtml((tiers[r.tier].label ? `${tiers[r.tier].label}. ` : '') + ((owned && r.byConsole?.[owned]) || r.short)); // the line follows the console chosen, as the answer page does; button tokens become button names (both consoles' until one is chosen)
   a.append(q, s);
+  if (owned && Array.isArray(r.consoles) && !r.consoles.includes(owned)) a.append(Object.assign(document.createElement('span'), { className: 'only', textContent: `Only for ${r.consoles.map((c) => consoles[c]?.name ?? c).join(' and ')}` })); // named when a console's own name brings it in
   li.append(a);
   if (r.loss) li.append(lossBox(r)); // a result that warns of a loss never ends on the warning alone: the button is right under it
   return li;
@@ -114,7 +116,7 @@ async function update() {
   const none = typed && !found.length && !known && !failed.length; // answers that could not load are not "no answer"
   const cut = typed && !all && found.length > FIRST;
   lead = known ? 1 : 0;
-  list.replaceChildren(...(known ? [link('/new/', 'Known problems and what changed', 'ask-known')] : []), ...(cut ? found.slice(0, FIRST) : found).map(row), ...(none ? [link('/topics/', 'Browse all topics')] : []));
+  list.replaceChildren(...(known ? [link('/new/', 'Known problems and what changed', 'ask-known')] : []), ...(cut ? found.slice(0, FIRST) : found).map((r) => row(r, owned)), ...(none ? [link('/topics/', 'Browse all topics')] : []));
   list.hidden = !typed;
   more.hidden = !cut;
   status.toggleAttribute('data-floor', none && !offNote);
