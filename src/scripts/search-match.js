@@ -83,6 +83,13 @@ const near = (a, b) => Math.abs(a.length - b.length) <= 1 && osa(a, b) <= 1;
 /** Two neighbouring letters swapped and nothing else. */
 const swapped = (a, b) => a.length === b.length && a !== b && near(a, b) && [...a].filter((c, i) => c !== b[i]).length === 2;
 
+const swapMemo = new Map();
+/** The stems of every word one neighbour swap from raw (empty under 4 letters: no typo there). */
+const swaps = (raw) => {
+  if (!swapMemo.has(raw)) swapMemo.set(raw, new Set(raw.length < 4 ? [] : [...raw.slice(1)].map((_, i) => stem(raw.slice(0, i) + raw[i + 1] + raw[i] + raw.slice(i + 2)))));
+  return swapMemo.get(raw);
+};
+
 function canon(w, forgiving = false) {
   const hit = SYN[w] ?? SYN[stem(w)];
   if (hit || !forgiving || w.length < 5) return hit ?? stem(w);
@@ -105,13 +112,16 @@ const fieldsOf = (r) => ({
  * fewer or different counts when both stems have 5 letters or more (cash is not crash); two swapped neighbours are one typo, from 4 typed
  * letters. `verb` says the word met an action verb (ACTION) in the record's question or keywords. `typing` lets the word be an unfinished start.
  */
-function weigh(fields, q, typing, len, acts) {
+function weigh(fields, q, typing, raw, acts) {
+  const len = raw.length;
   let best = 0;
   let sum = 0;
   let verb = false;
   const tol = q.length > 7 ? 2 : len > 3 ? 1 : 0; // by the stem, so controls (control) is no typo of console
   const typo = (w) => {
-    if (!tol || Math.abs(q.length - w.length) > tol) return false;
+    if (!tol) return false;
+    if (swaps(raw).has(w)) return true; // a swap is judged on the letters as typed: crahs would fold to crah (its s looks like a plural) and setitngs to setitng, though both are one swap from a word
+    if (Math.abs(q.length - w.length) > tol) return false;
     if (Math.min(q.length, w.length) < 5) return swapped(q, w);
     const d = osa(q, w);
     return d <= 1 || (d <= tol && !w.startsWith(q) && !q.startsWith(w)); // two edits never make a longer word of a shorter one (stream, streamer)
@@ -136,16 +146,16 @@ function weigh(fields, q, typing, len, acts) {
 export function search(records, query) {
   const raw = split(query);
   const typed = new Map(); // folded word -> longest spelling typed
-  for (const t of raw) typed.set(canon(t, true), Math.max(typed.get(canon(t, true)) ?? 0, t.length));
+  for (const t of raw) if (t.length > (typed.get(canon(t, true))?.length ?? 0)) typed.set(canon(t, true), t);
   const docs = records.map((r, i) => ({ r, i, f: fieldsOf(r), acts: actions(r), phrases: (r.keywords ?? []).map(words).filter((p) => p.length > 1) }));
   const subject = subjectVerbs(query);
   const last = raw.length ? canon(raw.at(-1), true) : '';
   const known = [...typed]
-    .map(([q, len]) => ({ q, len, hits: docs.filter((d) => weigh(d.f, q, q === last, len, d.acts).best).length }))
+    .map(([q, spelt]) => ({ q, len: spelt.length, spelt, hits: docs.filter((d) => weigh(d.f, q, q === last, spelt, d.acts).best).length }))
     .filter((k) => k.hits)
     .map((k) => ({ ...k, rare: Math.log(1 + docs.length / k.hits), info: !GENERIC.has(k.q) && !WEAK.has(k.q) })); // a word in few answers says more than one in most
   // A word no answer holds that is a typo of a filler word (wher, shoud, hwo) is filler too, not a word the guide has never seen.
-  const filler = (q, len = typed.get(q)) => !known.some((k) => k.q === q) && len < 7 && FILLER.some((s) => (len > 3 || s.length === 4 ? near(q, s) : swapped(q, s))); // a three-letter word only by a swap or a lost letter of a four-letter filler (wat is what): car is not can
+  const filler = (q, len = typed.get(q).length) => !known.some((k) => k.q === q) && len < 7 && FILLER.some((s) => (len > 3 || s.length === 4 ? near(q, s) : swapped(q, s))); // a three-letter word only by a swap or a lost letter of a four-letter filler (wat is what): car is not can
   const asked = [...typed.keys()].filter((q) => !GENERIC.has(q) && !WEAK.has(q) && !filler(q)).length;
   const need = Math.ceil(asked / 2); // coverage is judged on every word that says what is asked (one the guide has never seen counts against), not on a console, a no or a mode
   const scored = docs
@@ -158,7 +168,7 @@ export function search(records, query) {
       let verb = 0; // action verbs the query names that the record's question or keywords hold
       let any = false;
       for (const k of known) {
-        const { best, sum, verb: act } = weigh(d.f, k.q, k.q === last, k.len, d.acts);
+        const { best, sum, verb: act } = weigh(d.f, k.q, k.q === last, k.spelt, d.acts);
         if (!best) continue;
         const c = WEAK.has(k.q) ? 0.3 : 1;
         any = true;
@@ -232,7 +242,7 @@ export const asksKnown = (query) => {
 
 /** A question about where something is: the guide keeps places behind the dial. */
 export const asksWhere = (query) =>
-  /\bwhere(s| is| are| can i (find|get|buy)| do i (find|get|buy))\b|\blocations?\b|\bnearest\b|\bwhereabouts\b|\bmaps?\b|\b(collectibles?|secrets?|easter eggs?|hidden packages?)\b/.test(query.toLowerCase().replace(/['’]/g, ''));
+  /\bwhere(s| is| are| can i (find|get|buy)| do i (find|get|buy))\b|\blocations?\b|\bnearest\b|\bwhereabouts\b|\bmaps?\b|\b(collectibles?|secrets?|easter eggs?|hidden packages?)\b/.test(query.toLowerCase().replace(/['’]/g, '').replace(/\b\p{L}{5}\b/gu, (w) => (swapped(w, 'where') ? 'where' : w))); // wehre is where
 
 /** A question about the story: the guide carries none, by design, so with no real answer the page says so instead of "no answer yet". */
 export const asksStory = (query) =>
