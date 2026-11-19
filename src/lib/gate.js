@@ -141,6 +141,7 @@ h1 { margin: 0 0 var(--space-3); font-size: clamp(1.5rem, 1.1rem + 2vw, 2.25rem)
 h1::after { content: ''; display: block; height: 0.25rem; margin-top: var(--space-3); border-radius: 0.25rem; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
 p { margin: 0; }
 .lede { margin-block-end: var(--space-5); color: var(--muted); }
+.lede:has(+ .lede) { margin-block-end: var(--space-2); }
 label { display: block; margin-block-end: var(--space-2); font-weight: 600; }
 input {
   display: block; width: 100%; min-height: var(--tap); padding: 0 var(--space-4);
@@ -168,11 +169,12 @@ button:active { opacity: 0.85; }
 <main>
   <h1>Leonida Field Guide</h1>
   <p class="lede">This guide is private for now. Enter the password to open it.</p>
+  <p class="lede">An unofficial, spoiler-safe companion guide for the game.</p>
   <form method="post">
     <label for="password">Password</label>
     <input id="password" name="password" type="password" required autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="go"${
       error ? ' autofocus aria-invalid="true" aria-describedby="error"' : ''
-    }>${error ? '\n    <p class="error" id="error">That password is not right. Try again.</p>' : ''}
+    }>${error ? '\n    <p class="error" id="error" role="alert">That password is not right. Try again.</p>' : ''}
     <button type="submit">Open the guide</button>
   </form>
   <p class="note">Unofficial fan guide. Not made or endorsed by any game publisher.</p>

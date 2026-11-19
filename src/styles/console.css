@@ -5,6 +5,11 @@ html:not([data-console]) [data-only],
 html[data-console='ps5'] [data-only]:not([data-only~='ps5']),
 html[data-console='xbox-x'] [data-only]:not([data-only~='xbox-x']),
 html[data-console='xbox-s'] [data-only]:not([data-only~='xbox-s']) { display: none !important; }
+/* A bullet made only of console-only lines goes when none of them is for the console, so no console sees an empty bullet. shortcut: it would also hide a bullet with plain text beside such lines; none does, and the empty-bullet test reads every answer page. */
+html:not([data-console]) li:has(> [data-only]):not(:has(> :not([data-only]))),
+html[data-console='ps5'] li:has(> [data-only]):not(:has(> :not([data-only]), > [data-only~='ps5'])),
+html[data-console='xbox-x'] li:has(> [data-only]):not(:has(> :not([data-only]), > [data-only~='xbox-x'])),
+html[data-console='xbox-s'] li:has(> [data-only]):not(:has(> :not([data-only]), > [data-only~='xbox-s'])) { display: none; }
 
 html[data-console='ps5'] [data-other~='ps5'],
 html[data-console='xbox-x'] [data-other~='xbox-x'],

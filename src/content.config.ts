@@ -3,14 +3,9 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { topicIds } from './data/topics';
 import { stageIds } from './data/stages';
+import { onOfficialHost, basisProblems } from './data/confidence.js';
 
 declare const process: { env: Record<string, string | undefined> }; // no @types/node here, and this is all we read
-
-const OFFICIAL_HOSTS = ['rockstargames.com', 'take2games.com', 'playstation.com', 'xbox.com'];
-const onOfficialHost = (url: string) => {
-  const host = new URL(url).hostname;
-  return OFFICIAL_HOSTS.some((h) => host === h || host.endsWith(`.${h}`));
-};
 
 const consoleId = z.enum(['ps5', 'xbox-x', 'xbox-s']);
 
@@ -29,6 +24,8 @@ const answers = defineCollection({
       consoles: z.union([z.literal('all'), z.array(consoleId).min(1)]),
       byConsole: z.partialRecord(consoleId, z.string().min(1)).optional(),
       confidence: z.enum(['official', 'reported', 'community']),
+      // A record that mixes sources of different standing says per claim which is which; `confidence` above stays the weakest, for filters.
+      basis: z.array(z.strictObject({ claim: z.string().min(1).max(80), confidence: z.enum(['official', 'reported', 'community']) })).min(2).optional(),
       // `console`: set on a source that is specific to one console family (a PlayStation support page: ps5; an Xbox support page: xbox-x and xbox-s). Absent means it applies to every console.
       sources: z
         .array(z.strictObject({ url: z.url(), title: z.string().min(1), console: z.union([consoleId, z.array(consoleId).min(1)]).optional() }))
@@ -52,6 +49,8 @@ const answers = defineCollection({
       message: "'official' needs a source on an official host",
       path: ['confidence'],
     })
+    // Each claim's label must rest on a source of its own standing, and the record's own label is the weakest claim's.
+    .superRefine((a, ctx) => basisProblems(a).forEach((message) => ctx.addIssue({ code: 'custom', message, path: ['basis'] })))
     .refine((a) => !a.reveal || a.tier === 'none', {
       message: "'reveal' is only for records with tier 'none'",
       path: ['reveal'],

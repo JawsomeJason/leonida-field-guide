@@ -22,15 +22,22 @@ async function start() {
 
   // The dial lives in settings.js; its data-dial attribute is the one signal every change goes through.
   const root = document.documentElement;
+  let on = 0; // how many tiers were on before this message: a lower number is the dial being lowered, which clears every tier that is off now
   const sendTiers = async () => {
-    (await sw.ready).active?.postMessage({ type: 'tiers', tiers: TIERS[root.dataset.dial || 'off'] ?? [] });
+    const tiers = TIERS[root.dataset.dial || 'off'] ?? [];
+    const lowered = tiers.length < on;
+    on = tiers.length;
+    (await sw.ready).active?.postMessage({ type: 'tiers', tiers, lowered });
   };
   new MutationObserver(sendTiers).observe(root, { attributes: true, attributeFilter: ['data-dial'] });
   sendTiers();
 }
 
 if ('serviceWorker' in navigator && 'caches' in window && import.meta.env.PROD) {
-  const go = () => start().catch(() => {});
+  // Not at load: the worker's first install fetches the whole guide, and on a slow phone that would sit in front of the player's first taps and page loads.
+  // Wait for the load event, a few seconds, and an idle moment.
+  const run = () => start().catch(() => {});
+  const go = () => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(run, { timeout: 3000 }) : run()), 3000);
   if (document.readyState === 'complete') go();
   else addEventListener('load', go, { once: true });
 }

@@ -47,7 +47,10 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-    <!-- Applies saved settings before first paint, so the theme does not flash. -->
+    {/* The inline script below does two jobs before first paint. 1: applies saved settings, so the theme does not flash. 2: hears a tap on a setting control or a tick box
+        before the bundled scripts have arrived (a slow phone waits seconds): it saves and shows a setting at once, and holds the ticks. settings.js removes these
+        listeners when it loads, re-applies the saved state and writes the held ticks. shortcut: a pre-v2 saved shape is left for settings.js to convert (that early tap
+        shows but is not stored); drop once no device holds one. */}
     <script is:inline>
       document.documentElement.classList.add('js');
       try {
@@ -58,6 +61,42 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
           if (v && v !== 'system') h.dataset[k] = v;
         }
       } catch (e) {}
+      (function () {
+        var r = document.documentElement, t = (window.lfgTicks = {});
+        function put(k, v) {
+          try {
+            var s = JSON.parse(localStorage.getItem('lfg:v1')) || { v: 2, settings: {}, items: {} }, w = s.settings && s.settings[k];
+            if (s.v === 2) {
+              s.settings[k] = { value: v, at: Math.max(Date.now(), (w ? w.at : -1) + 1) };
+              localStorage.setItem('lfg:v1', JSON.stringify(s));
+            }
+          } catch (e) {}
+          if (k === 'theme' && v === 'system') delete r.dataset.theme;
+          else if (k !== 'stage') r.dataset[k] = v;
+        }
+        function click(e) {
+          var b = e.target.closest && e.target.closest('[data-set]');
+          if (!b || e.button || e.metaKey || e.ctrlKey || e.shiftKey) return;
+          e.preventDefault();
+          put(b.dataset.set, b.dataset.value);
+          var to = document.querySelector(b.dataset.focus);
+          if (to) to.focus();
+        }
+        function change(e) {
+          var i = e.target;
+          if (i.matches('input[data-setting]')) {
+            put(i.name, i.value);
+            var m = i.closest('#settings');
+            if (m && m.hidePopover) m.hidePopover();
+          } else if (i.matches('input[data-todo]')) t[i.dataset.todo] = i.checked;
+        }
+        addEventListener('click', click);
+        addEventListener('change', change);
+        window.lfgEarly = function () {
+          removeEventListener('click', click);
+          removeEventListener('change', change);
+        };
+      })();
     </script>
   </head>
   <body>
@@ -87,12 +126,14 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
     <div id="settings" class="sheet" popover role="dialog" aria-labelledby="settings-title">
       <div class="sheet__in">
         <h2 id="settings-title">Settings</h2>
-        <fieldset class="levels">
-          <legend>Spoilers</legend>
-          {dial.map(([value, label, meaning]) => (
-            <label><input type="radio" name="dial" value={value} data-setting checked={value === 'off'} /><span><strong>{label}</strong> {meaning}</span></label>
-          ))}
-          <p class="levels__why">Off names a game system only to say it exists; where you could lose something, Off says so and one tap shows how to avoid it.</p>
+        {/* Least used at the top, most used lowest (nearest the thumb): theme, console, then the spoiler level. */}
+        <fieldset class="setting needs-js">
+          <legend>Theme</legend>
+          <div class="seg">
+            {themes.map(([value, label]) => (
+              <label><input type="radio" name="theme" value={value} data-setting checked={value === 'system'} />{label}</label>
+            ))}
+          </div>
         </fieldset>
         <fieldset class="setting needs-js">
           <legend>Console</legend>
@@ -102,13 +143,12 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
             ))}
           </div>
         </fieldset>
-        <fieldset class="setting needs-js">
-          <legend>Theme</legend>
-          <div class="seg">
-            {themes.map(([value, label]) => (
-              <label><input type="radio" name="theme" value={value} data-setting checked={value === 'system'} />{label}</label>
-            ))}
-          </div>
+        <fieldset class="levels">
+          <legend>Spoilers</legend>
+          {dial.map(([value, label, meaning]) => (
+            <label><input type="radio" name="dial" value={value} data-setting checked={value === 'off'} /><span><strong>{label}</strong> {meaning}</span></label>
+          ))}
+          <p class="levels__why">Off names a game system only to say it exists; where you could lose something, Off says so and one tap shows how to avoid it.</p>
         </fieldset>
         <div class="sheet__done"><button type="button" class="btn" popovertarget="settings" popovertargetaction="hide">Done</button></div>
       </div>

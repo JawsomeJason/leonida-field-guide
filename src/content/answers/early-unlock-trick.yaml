@@ -10,6 +10,11 @@ stage: before
 tier: none
 consoles: all
 confidence: reported
+basis:
+  - claim: "that the game opens at midnight local time"
+    confidence: official
+  - claim: "that a console maker warned against region switching"
+    confidence: reported
 sources:
   - url: "https://www.notebookcheck.net/Xbox-reportedly-warns-against-GTA-6-New-Zealand-trick-for-early-release-date-unlock.1452831.0.html"
     title: "Report on the console maker warning against region switching to play early (Notebookcheck)"

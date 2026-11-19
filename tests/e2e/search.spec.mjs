@@ -149,6 +149,24 @@ test('where is something at Off: places are hidden by design, outside maps exist
   await expect(note).toBeHidden();
 });
 
+// Places and Mild already show places: the where-is note offers no way to turn them on, and the outside map links are in the page only while the question asks where something is.
+for (const dial of ['places', 'mild']) {
+  test(`at ${dial} a question that does not ask where holds no gate link and no map link, and one that does says places are shown`, async ({ page }) => {
+    await saved(page, { dial });
+    await ask(page, 'deposit');
+    await expect(page.locator('#q-where')).toBeHidden();
+    await expect(page.locator('#q-where a')).toHaveCount(0); // not merely hidden: not in the page
+    await expect(page.getByRole('link', { name: 'Places: turn them on' })).toHaveCount(0);
+    await page.getByRole('searchbox').fill('where is the gun shop');
+    const note = page.locator('#q-where');
+    await expect(note).toContainText('Places are shown at your level.');
+    await expect(note.getByRole('link', { name: /gtamap\.io/ })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Places: turn them on' })).toHaveCount(0);
+    await page.getByRole('searchbox').fill('deposit');
+    await expect(page.locator('#q-where a')).toHaveCount(0); // the links go with the note
+  });
+}
+
 test('hidden keywords are not searched at Off, and are at Places', async ({ page }) => {
   await ask(page, 'zebra kiosk');
   await expect(page.getByRole('status')).toHaveText('This guide has no answer for that yet.'); // no match, so nothing from the hidden tier

@@ -95,3 +95,17 @@ test('login page: one labelled password field, no script, error only after a mis
   assert.match(miss, /class="error"/);
   assert.match(miss, /aria-invalid="true"/);
 });
+
+test('login page: says what the site is in one plain line under the private line, and nothing else was added', () => {
+  const page = loginPage(false);
+  const lines = [...page.matchAll(/<p class="lede">([^<]*)<\/p>/g)].map((m) => m[1]);
+  assert.deepEqual(lines, ['This guide is private for now. Enter the password to open it.', 'An unofficial, spoiler-safe companion guide for the game.']);
+  assert.deepEqual([...page.matchAll(/<(h1|p|label|input|button|form)\b/g)].map((m) => m[1]), ['h1', 'p', 'p', 'form', 'label', 'input', 'button', 'p']); // title, two lines, the form, the unofficial note
+});
+
+test('login page: a wrong password is announced (role=alert) and the field takes focus with the message as its description', () => {
+  const miss = loginPage(true);
+  assert.match(miss, /<p class="error" id="error" role="alert">That password is not right\. Try again\.<\/p>/);
+  assert.match(miss, /<input [^>]*\bautofocus\b[^>]*aria-invalid="true"[^>]*aria-describedby="error"/);
+  assert.ok(!loginPage(false).includes('role="alert"'), 'nothing is announced before a miss');
+});

@@ -190,3 +190,35 @@ export async function measure(page) {
 export const shown = (chip) => chip.evaluate((el) => [...el.querySelectorAll('.chip__k, .chip__v > :not(.sr-only)')]
   .filter((e) => getComputedStyle(e).display !== 'none')
   .map((e) => [...e.childNodes].filter((n) => !n.classList?.contains('sr-only')).map((n) => n.textContent).join('')).join(' '));
+
+/** A slow phone: simulated slow 4G (1.6 Mbps down, 150 ms) and a CPU 4x slower, through the DevTools protocol (Chromium). */
+export async function throttle(page, cpu = 4) {
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send('Network.enable');
+  await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 150, downloadThroughput: (1.6 * 1024 * 1024) / 8, uploadThroughput: (750 * 1024) / 8 });
+  await cdp.send('Emulation.setCPUThrottlingRate', { rate: cpu });
+}
+
+/**
+ * A fresh slow load, stopped at first paint: the page is on screen, the scripts are not. Holds every /_astro script back for
+ * `hold` ms on top of the slow network, so the window is the same on any machine (a real slow phone has it too).
+ * Returns once the first contentful paint has happened; the caller then taps.
+ */
+export async function slowFirstPaint(page, path = '/', hold = 2500) {
+  await page.route('**/_astro/*.js', async (route) => {
+    await new Promise((r) => setTimeout(r, hold));
+    await route.continue().catch(() => {});
+  });
+  await page.route('**/api/progress', (route) => route.fulfill({ json: { v: 3, items: {} } })); // never the owner's record
+  await page.addInitScript(() => {
+    new PerformanceObserver((list) => {
+      if (list.getEntries().some((e) => e.name === 'first-contentful-paint')) window.__painted = true;
+    }).observe({ type: 'paint', buffered: true });
+  });
+  await throttle(page);
+  await page.goto(path, { waitUntil: 'commit' });
+  await page.waitForFunction(() => window.__painted === true, null, { timeout: 20_000 });
+}
+
+/** True once any bundled script of the page has finished loading: a tap before this is a tap the scripts could not hear. */
+export const scriptsLoaded = (page) => page.evaluate(() => performance.getEntriesByType('resource').some((r) => r.name.includes('/_astro/') && r.name.endsWith('.js')));

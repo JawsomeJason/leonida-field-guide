@@ -24,8 +24,6 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
     </div>
   )}
 
-  <p class="sync" role="status" data-sync>Syncing is not available here. Your ticks are saved on this device only.</p>
-
   <div class="stages"><div class="stages__grid">
   {groups.map((g) => (
     <section class="stage" data-stage aria-labelledby={g.id}>
@@ -57,6 +55,9 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
   ))}
   </div></div>
 
+  {/* Below the lists, off the first screen on purpose: it fills in when the first sync ends, and a line that appears late and wide is what the browser then reports as the page's largest paint. */}
+  <p class="sync" role="status" data-sync>Syncing is not available here. Your ticks are saved on this device only.</p>
+
   <details class="backup needs-js" id="backup">
     <summary>Back up or move your progress</summary>
     <div class="backup__body">
@@ -82,7 +83,7 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
 <style>
   .quiet { color: var(--muted); margin-block: 0 var(--space-2); }
   /* One quiet line. Same height whichever text it holds, so the page below never moves. */
-  .sync { min-block-size: 3.9em; margin-block: var(--space-2) 0; color: var(--muted); font: var(--font-label); } /* room for the sentence: it appears when the first sync ends, and the page must not jump */
+  .sync { min-block-size: 3.9em; margin-block: var(--space-5) 0; color: var(--muted); font: var(--font-label); } /* room for the sentence: it appears when the first sync ends, and the page must not jump */
   @media (min-width: 36rem) { .sync { min-block-size: 2.6em; } }
   :global(html.js) .sync:not([data-state]) { visibility: hidden; } /* script is running and has not heard from the store yet: claim nothing */
   /* Rows stay about 70 characters wide, whole-row targets. With room, the four stages sit in two columns instead of one long stretched list. */
@@ -91,7 +92,7 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
     .stages__grid { columns: 2; column-gap: var(--space-6); }
     .stage { break-inside: avoid; }
   }
-  .overall, .stage, .backup { max-inline-size: 70ch; }
+  .overall, .stage, .backup, .sync { max-inline-size: 70ch; }
   /* Padding, not margin: a margin at the top of the second column is cut off, so the two columns would start at different heights. */
   .stage { padding-block-start: var(--space-5); }
   .stage h2 { margin-block: 0 var(--space-1); }

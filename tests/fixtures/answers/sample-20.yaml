@@ -5,8 +5,15 @@ topic: settings
 stage: week-1
 tier: none
 consoles: all
-confidence: community
+confidence: reported
+basis:
+  - claim: "the part the publisher states"
+    confidence: official
+  - claim: "the part a news site adds"
+    confidence: reported
 sources:
+  - url: https://support.rockstargames.com/fixture
+    title: Fixture publisher page
   - url: https://example.com/fixture
     title: Fixture source
 checked: "2026-01-01"

@@ -16,6 +16,11 @@ byConsole:
   xbox-x: "It fits on a Series X, which has 1 TB or more of storage. Rockstar says to plan for up to 212 GB free. To see your free space: Profile & system, Settings, System, Storage devices. If you have less free than 212 GB, clear the difference."
   xbox-s: "A 512 GB Series S should fit it, but not by much: IGN reports about 364 GB is usable and Rockstar says to plan for up to 212 GB free. Check free space: Profile & system, Settings, System, Storage devices."
 confidence: reported
+basis:
+  - claim: "the space the game needs"
+    confidence: official
+  - claim: "a 512 GB Series S's usable space"
+    confidence: reported
 sources:
   - url: "https://support.rockstargames.com/articles/M6h7B5fJZMwG1dnzQkt4Z/grand-theft-auto-vi-installation-requirements"
     title: "Grand Theft Auto VI installation requirements (Rockstar Support)"
