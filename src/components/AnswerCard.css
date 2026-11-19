@@ -12,11 +12,13 @@
 .card:target { border-color: var(--accent); }
 .card__in { display: grid; gap: var(--space-1) var(--space-4); }
 .card__q { margin: 0; font-size: var(--text-body); line-height: 1.3; font-weight: 650; }
-/* The whole card is the tap target: the question link stretches over it. The reveal control sits above. */
+/* The card's text is the tap target: the question link stretches over it. The reveal control sits below with a gap, so the two never touch. */
+.card__in { position: relative; min-block-size: var(--tap); }
 .card__q a { color: var(--text); text-decoration: none; }
-.card__q a::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
+.card__q a::after { content: ''; position: absolute; inset: 0; }
 .card__q a:focus-visible { outline: none; }
 .card:has(.card__q a:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
+.card .reveal { margin-block-start: var(--gap-tap); }
 .card:has(.card__q a:active) { background-color: var(--press); }
 .card__a { margin: 0; }
 .card__meta { margin: 0; color: var(--muted); font: var(--text-small) / 1.3 var(--font-mono); }
