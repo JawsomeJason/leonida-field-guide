@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { ranked, records, press, setDial, setTheme, saved, SCREENS, NIGHT, DAY } from './helpers.mjs';
+import { ranked, records, press, setDial, setTheme, saved, shown, SCREENS, NIGHT, DAY } from './helpers.mjs';
 
 test.describe('two taps from the home screen', () => {
   for (const a of ranked) {
@@ -83,11 +83,11 @@ test('tap to show opens a hidden detail in place and leaves the dial alone', asy
   await press(page.getByRole('link', { name: '1 mild detail hidden. Show' }));
   await expect(note).toBeVisible();
   await expect(page).toHaveURL(/\/a\/sample-02\/$/);
-  await expect(chip(page, 'dial')).toHaveText('Spoilers: Off', { useInnerText: true });
+  await expect(chip(page, 'dial')).toHaveAccessibleName('Spoilers: Off, change');
   await expect(page.getByText('Quokka note one')).toHaveCount(0);
   await press(page.getByRole('link', { name: '1 places detail hidden. Show' }));
   await expect(page.getByText('Quokka note one')).toBeVisible();
-  await expect(chip(page, 'dial')).toHaveText('Spoilers: Off', { useInnerText: true });
+  await expect(chip(page, 'dial')).toHaveAccessibleName('Spoilers: Off, change');
 });
 
 test('the theme switch works and is remembered', async ({ page }) => {
@@ -256,19 +256,21 @@ const chip = (page, which = 'console') => page.locator(`.chip--${which}`);
 const sheet = (page) => page.locator('#settings');
 const rowsOf = (page, ...locators) => Promise.all(locators.map((l) => box(l)));
 
-test('the header is one row: a mark, the console chip and a spoiler chip that says the level in words', async ({ page }) => {
+test('the header is one row: a sun mark, the console chip and a spoiler chip that says the level in words, each with its full name for a screen reader', async ({ page }) => {
   await saved(page, { console: 'xbox-s', dial: 'places' });
   await page.goto('/');
-  await expect(chip(page, 'dial')).toHaveText('Spoilers: Places', { useInnerText: true });
-  await expect(chip(page)).toHaveText(/Xbox\s+Series S/, { useInnerText: true });
+  await expect(chip(page, 'dial')).toHaveAccessibleName('Spoilers: Places, change');
+  expect(await shown(chip(page, 'dial')), 'the level word only: short enough for 320px').toBe('Spoilers: Places');
+  expect(await shown(chip(page)), 'the short console name').toBe('Series S');
+  await expect(chip(page)).toHaveAccessibleName('Console: Xbox Series S, change');
   const [mark, c, d] = await rowsOf(page, page.locator('.site-name'), chip(page), chip(page, 'dial'));
   expect(new Set([mark, c, d].map((r) => Math.round(r.y))).size, 'one row').toBe(1);
   expect(c.h).toBeGreaterThanOrEqual(48);
   expect(d.h).toBeGreaterThanOrEqual(48);
   await expect(page.getByRole('link', { name: 'Leonida Field Guide' })).toBeVisible(); // the mark is named, whether or not its text shows
   for (const level of ['mild', 'off']) {
-    await page.evaluate((l) => (document.documentElement.dataset.dial = l), level);
-    await expect(chip(page, 'dial')).toHaveText(`Spoilers: ${level === 'mild' ? 'Mild' : 'Off'}`, { useInnerText: true });
+    await setDial(page, level === 'mild' ? 'Mild' : 'Off');
+    await expect(chip(page, 'dial')).toHaveAccessibleName(`Spoilers: ${level === 'mild' ? 'Mild' : 'Off'}, change`);
   }
 });
 
@@ -289,9 +291,9 @@ test('the header stays on screen while you scroll, with the console and the leve
   await page.evaluate(() => scrollTo(0, 600));
   expect(await page.evaluate(() => scrollY)).toBeGreaterThan(0);
   expect((await box(page.locator('.site-header'))).y).toBe(0);
-  await expect(chip(page)).toHaveText(/Xbox\s+Series S/, { useInnerText: true });
+  await expect(chip(page)).toHaveAccessibleName('Console: Xbox Series S, change');
   await setDial(page, 'Places');
-  await expect(chip(page, 'dial')).toHaveText('Spoilers: Places', { useInnerText: true });
+  await expect(chip(page, 'dial')).toHaveAccessibleName('Spoilers: Places, change');
 });
 
 test('every screen names the console in use and the spoiler level in the header', async ({ page }) => {
@@ -299,13 +301,14 @@ test('every screen names the console in use and the spoiler level in the header'
     await saved(page, { console: c });
     for (const path of SCREENS) {
       await page.goto(path);
-      await expect(chip(page), path).toContainText(name);
-      await expect(chip(page, 'dial'), path).toHaveText('Spoilers: Off', { useInnerText: true });
+      await expect(chip(page), path).toHaveAccessibleName(`Console: ${name}, change`);
+      await expect(chip(page, 'dial'), path).toHaveAccessibleName('Spoilers: Off, change');
     }
   }
   await page.addInitScript(() => localStorage.clear());
   await page.goto('/');
-  await expect(chip(page)).toContainText('Choose console', { useInnerText: true }); // never chosen: it asks
+  expect(await shown(chip(page)), 'never chosen: it asks').toBe('Choose');
+  await expect(chip(page)).toHaveAccessibleName('Console: choose one, change');
 });
 
 test('either chip opens the sheet, with a scrim behind it, and it closes on Escape, the scrim, a choice and Done', async ({ page }) => {
@@ -337,7 +340,7 @@ test('either chip opens the sheet, with a scrim behind it, and it closes on Esca
 
   await setDial(page, 'Mild'); // a spoiler choice closes it too, and the chip follows
   await expect(sheet(page)).toBeHidden();
-  await expect(chip(page, 'dial')).toHaveText('Spoilers: Mild', { useInnerText: true });
+  await expect(chip(page, 'dial')).toHaveAccessibleName('Spoilers: Mild, change');
 });
 
 test('the sheet holds the three spoiler levels as radios with their meanings, the console and the theme', async ({ page }) => {

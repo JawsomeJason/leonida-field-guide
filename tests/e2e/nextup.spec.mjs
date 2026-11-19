@@ -104,3 +104,16 @@ test.describe('without script', () => {
     await expect(count(page)).toHaveAttribute('href', '/checklist/');
   });
 });
+
+test('at 130% text on a phone the first Next up row is still fully above the bottom bar, even when a step title wraps', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await saved(page, { console: 'xbox-s' });
+  await page.goto('/');
+  await page.addStyleTag({ content: 'html { font-size: 130%; }' });
+  // Real step titles are longer than the fixtures': this one takes two lines at this size.
+  await page.evaluate(() => { for (const a of document.querySelectorAll('.next-up__list a')) a.textContent = 'Redeem the code from your boxed copy, then update the console'; });
+  const first = await strip(page).locator('.next-up__list a').first().boundingBox();
+  const bar = await page.locator('.nav').boundingBox();
+  expect(bar.y, 'the bottom bar is at the bottom').toBeGreaterThan(600);
+  expect(first.y + first.height, 'the first row ends above the bottom bar').toBeLessThanOrEqual(bar.y);
+});

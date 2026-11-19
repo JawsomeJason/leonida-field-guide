@@ -1,6 +1,6 @@
 id: xbox-says-you-dont-own-it
 question: "Xbox says I don't own the game. What now?"
-short: "Per Microsoft: the pre-order was either canceled or the payment failed in time. Check your order history first. If the Store shows a price instead of Install, do not buy again."
+short: "Per Microsoft: the pre-order was canceled or could not be billed in time. Check your order history first. If it shows a completed purchase but the Store asks for a price, do not buy again: contact Xbox Support."
 body: |-
   - Microsoft charges card pre-orders about 10 days before release and tries once more a few days later. If both fail, the pre-order is canceled and you need to buy again.
   - Check your order history: sign in to your Microsoft account, then Payment & billing, then Order history. A finished purchase shows as "Completed".

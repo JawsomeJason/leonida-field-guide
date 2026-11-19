@@ -1,0 +1,12 @@
+id: crashes-and-launch-problems
+question: "Fixture: the game crashes or will not start"
+short: "Fixture: restart the game, install updates, then restart the console."
+topic: fixes
+stage: hour-1
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-03-04"

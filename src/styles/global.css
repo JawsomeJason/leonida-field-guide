@@ -125,7 +125,9 @@ a, button, summary, label, input { touch-action: manipulation; }
   .todo input { transition: background-color 140ms var(--ease-out), border-color 140ms var(--ease-out); }
 }
 
-/* Header: one row at every width. The app icon (the name beside it from 600px), the console chip and the spoiler chip,
+:root { --sun-bands: linear-gradient(to bottom, #000 0 48%, transparent 48% 53%, #000 53% 66%, transparent 66% 73%, #000 73% 84%, transparent 84% 93%, #000 93%); } /* the sun's horizontal bands, thicker gaps towards the horizon */
+
+/* Header: one row at every width. The sun mark (the name beside it from 600px), the console chip and the spoiler chip,
    which always says the level in words. Both chips open the settings sheet. */
 .site-header { position: sticky; inset-block-start: 0; z-index: 6; background: var(--bg); padding-block-start: var(--safe-top); }
 .site-header::after {
@@ -153,7 +155,28 @@ a, button, summary, label, input { touch-action: manipulation; }
   letter-spacing: -0.01em;
   text-decoration: none;
 }
-.site-name img { flex: none; border-radius: var(--space-2); }
+/* The sun mark: the Ask screen's half sun in small (Sunset.astro uses the same bands), CSS only, on a short horizon in the header rule's colours. */
+.sun-mark {
+  --sun: 0.875rem; /* the sun's height: half of its width */
+  flex: none;
+  position: relative;
+  inline-size: 2.25rem;
+  block-size: var(--sun);
+  border-block-end: 2px solid transparent;
+  border-image: linear-gradient(to right, transparent, var(--accent) 30%, var(--accent-2) 70%, transparent) 1;
+}
+.sun-mark::before {
+  content: '';
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  margin-inline: auto;
+  inline-size: calc(var(--sun) * 2);
+  block-size: var(--sun);
+  border-radius: var(--sun) var(--sun) 0 0;
+  background: linear-gradient(to bottom, var(--accent) 0%, var(--accent-2) 100%);
+  mask: var(--sun-bands);
+}
 @media (max-width: 37.49em) {
   .site-name__text { position: absolute; inline-size: 1px; block-size: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } /* the icon is the mark on a phone; the name is still read */
 }
@@ -192,24 +215,26 @@ html:not(.js) .needs-js { display: none; }
 
 /* The chips are the settings openers: one names the console in use, one names the spoiler level. */
 .chip {
-  flex: 0 1 auto; /* at 320px "Choose console" and "Spoilers: Places" cannot share a row on one line each: the words wrap inside the chip */
+  flex: 0 0 auto; /* a small label over a short value: one line each at 320px, and at 130% text */
   display: inline-flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0 var(--space-1);
   text-align: center;
+  white-space: nowrap;
   min-block-size: var(--tap);
   min-inline-size: var(--tap);
-  padding-inline: var(--space-3);
+  padding-inline: var(--space-2);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
   color: var(--text);
-  font: 600 var(--text-small) / 1.15 var(--font-text);
+  line-height: 1.15;
   cursor: pointer;
   box-shadow: var(--shadow);
 }
+.chip__k { font: 600 0.75rem / 1.1 var(--font-text); color: var(--muted); }
+.chip__v { font: 650 var(--text-small) / 1.2 var(--font-text); }
 .chip [data-c], .chip [data-d] { display: none; }
 html:not([data-console]) .chip [data-c=''],
 html[data-console='ps5'] .chip [data-c='ps5'],

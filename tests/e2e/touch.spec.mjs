@@ -67,7 +67,7 @@ test('the device has no hover, and hovering changes nothing a player sees', asyn
 test('every control is a plain tap away: dial, theme, search, tick', async ({ page }) => {
   await page.goto('/');
   await setDial(page, 'Mild');
-  await expect(page.locator('.chip--dial')).toHaveText('Spoilers: Mild', { useInnerText: true });
+  await expect(page.locator('.chip--dial')).toHaveAccessibleName('Spoilers: Mild, change');
   await press(page.getByRole('checkbox', { name: 'Do sample thing 01' }));
   await expect(page.getByRole('checkbox', { name: 'Do sample thing 01' })).toBeChecked();
   await press(page.getByRole('searchbox'));

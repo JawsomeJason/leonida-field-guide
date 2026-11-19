@@ -2,10 +2,11 @@ id: boxed-copy-redeem
 question: "Does a boxed copy still need the full download?"
 short: "Yes. A boxed copy holds a download code and no disc, so you still download the whole game. Redeem the code in your console's store, then download."
 body: |-
-  - Rockstar: "A disc will not be included in the box." The code works for pre-loading (downloading before launch) as soon as you have it.
+  - Rockstar: "A disc will not be included in the box." The code works for downloading before launch (pre-loading) as soon as you have it.
   - A code redeems to one account and cannot be moved. Use the account you will play on.
-  - Need room first? See the Make room card for your console in Setup.
-  - If the code fails: start with Rockstar's [game activation help](https://support.rockstargames.com/articles/5gwDh0peG05GQhMej2ukbY/game-activation-for-grand-theft-auto-vi), which links to your console maker's redeem page. Still stuck? Send Rockstar a [support request](https://support.rockstargames.com/request), or read the missing or rejected code card.
+  - If the code fails: start with Rockstar's [game activation help](https://support.rockstargames.com/articles/5gwDh0peG05GQhMej2ukbY/game-activation-for-grand-theft-auto-vi), which links to your console maker's redeem page. Still stuck? Send Rockstar a [support request](https://support.rockstargames.com/request), or read [My code or pre-order bonus is missing or rejected](/a/missing-or-rejected-code/).
+
+  <span data-only="ps5">Need room first? [Check free space and clear space](/a/free-space-ps5/).</span><span data-only="xbox-x xbox-s">Need room first? [Check free space and clear space](/a/free-space-xbox/).</span>
 topic: setup
 stage: before
 tier: none

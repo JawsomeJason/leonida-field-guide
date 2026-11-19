@@ -1,15 +1,15 @@
 id: crash-steps-xbox
 question: "My Xbox game crashes or freezes. What do I try, in order?"
-short: "Check Xbox's status and known-issues pages, quit and restart the game, then power cycle the console. Then update the console, test your network and try another profile. Still crashing: contact Xbox Support."
+short: "Check Xbox's status page, restart the game, then switch the console off and on again (a power cycle). Then update it, test your network, try another profile. Still crashing: contact Xbox Support."
 body: |-
   In this order, from Xbox's own support pages
   1. Check [Xbox status](https://support.xbox.com/xbox-live-status) and [known issues for game releases](https://support.xbox.com/en-US/help/games-apps/game-issues/known-issues-browse). When we looked on 19 November, the known-issues list had no entry for this game.
   2. Quit the game: press the Xbox button, highlight the game, press {options}, choose Quit, then start it again. If a freeze stops you leaving the game, go to step 3.
-  3. Power cycle (a full restart): hold the Xbox button on the front of the console for at least 10 seconds until it turns off, then turn it on again. This erases no games or data. If you do not see the green start-up screen, do it again.
+  3. Switch the console fully off and on again (a power cycle): hold the Xbox button on the front of the console for at least 10 seconds until it turns off, then turn it on again. This erases no games or data. If you do not see the green start-up screen, do it again.
   4. Update the console: Profile & system, Settings, System, Updates. Install anything you find.
   5. Test the network: Profile & system, Settings, General, Network settings, Test network connection.
   6. Try another profile (Profile & system, Add or switch). If the game works there, your own profile data may be damaged: Microsoft's steps are to remove the profile and add it again.
-  7. Uninstall the game and download it again. Your saved data syncs online and comes back with it.
+  7. Uninstall the game and download it again. Xbox says saved games sync online while you are connected and come back with the game. We have not confirmed that for this game, so connect and let it sync first.
   8. Still crashing? [Contact Xbox Support](https://support.xbox.com/contact-us). For a problem in this game, also use Rockstar's [support request form](https://support.rockstargames.com/request).
 topic: fixes
 stage: hour-1

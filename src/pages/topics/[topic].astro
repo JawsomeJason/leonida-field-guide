@@ -4,10 +4,12 @@ import Base from '../../layouts/Base.astro';
 import AnswerCard from '../../components/AnswerCard.astro';
 import Gate from '../../components/Gate.astro';
 import RevealList from '../../components/RevealList.astro';
+import OutsideMaps from '../../components/OutsideMaps.astro';
 import OtherConsoles from '../../components/OtherConsoles.astro';
 import { onlyOf } from '../../lib/console.js';
 import { topics } from '../../data/topics';
 import { byTier } from '../../lib/answers';
+import { hiddenUntil } from '../../lib/topics.js';
 
 export const getStaticPaths = () => topics.map((t) => ({ params: { topic: t.id }, props: { label: t.label } }));
 
@@ -15,7 +17,10 @@ const { topic } = Astro.params;
 const { label } = Astro.props;
 // Places is all hidden, so its default page is the gate and nothing else.
 const isPlaces = topic === 'places';
-const answers = isPlaces ? [] : byTier((await getCollection('answers')).map((e) => e.data), 'none').filter((a) => a.topic === topic);
+const all = (await getCollection('answers')).map((e) => e.data);
+const answers = isPlaces ? [] : byTier(all, 'none').filter((a) => a.topic === topic);
+// A topic whose answers all sit behind a higher level says which one (a number of tiers, no text), instead of "none yet".
+const until = answers.length || isPlaces ? '' : hiddenUntil(Object.fromEntries((['none', 'places', 'mild'] as const).map((t) => [t, byTier(all, t).filter((a) => a.topic === topic).length])));
 ---
 
 <Base title={label} description={`Answers about ${label.toLowerCase()}.`}>
@@ -28,13 +33,19 @@ const answers = isPlaces ? [] : byTier((await getCollection('answers')).map((e) 
     <>
       <Gate />
       <RevealList tiers="places" empty="No places here yet." />
+      <OutsideMaps />
     </>
   ) : (
     <>
-      {answers.length === 0 && <p>No answers here yet.</p>}
+      {answers.length === 0 && (until ? <p class="topic-hidden" data-until={until.toLowerCase()}>The answers on this topic are hidden until the spoiler setting is {until}.</p> : <p>No answers here yet.</p>)}
       <ul class="cards">{answers.map((a) => <li data-only={onlyOf(a.consoles)}><AnswerCard answer={a} /></li>)}</ul>
       <OtherConsoles items={answers.map((a) => ({ ...a, label: a.question }))} />
       <RevealList tiers="places mild" topic={topic} />
     </>
   )}
 </Base>
+
+<style is:global>
+  /* Gone once the dial reaches the level that holds them; the list below then fills. */
+  html:is([data-dial='places'], [data-dial='mild']) .topic-hidden[data-until='places'], html[data-dial='mild'] .topic-hidden[data-until='mild'] { display: none; }
+</style>

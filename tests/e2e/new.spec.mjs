@@ -11,6 +11,14 @@ for (const width of [320, 390]) {
 
     await expect(page.getByRole('heading', { name: 'Known problems' })).toBeVisible();
     await expect(page.getByText('No game-wide problems are confirmed yet')).toBeVisible();
+    // The line is a claim: it says when it was checked (the date of the answer that carries its sources) and links that answer.
+    await page.goto('/a/crashes-and-launch-problems/');
+    const checked = await page.locator('.facts time').innerText();
+    await page.goBack();
+    await expect(page.getByText(`We checked on ${checked}`)).toBeVisible();
+    // Known problems is the first section; what changed follows it.
+    expect(await page.locator('main h2').first().innerText()).toBe('Known problems');
+    await expect(page.locator('main h2').nth(1)).toHaveText(/\d{4}/);
     await expect(page.locator('main')).not.toContainText(/nothing has changed/i);
 
     const link = page.getByRole('link', { name: 'What to do if the game crashes' });

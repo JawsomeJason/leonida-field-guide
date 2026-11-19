@@ -118,3 +118,27 @@ test('an Off record that cites a play-guide source says in the rubric why that i
 test('Most asked holds Off records only: ranks 1 to 20, none on a hidden record', () => {
   assert.deepEqual(records.filter((a) => a.rank && a.tier !== 'none').map((a) => a.id), []);
 });
+
+// Fix round 4: where a player could lose something, Off says so AND what to do about it, in the same sentence or the next short one.
+// (The detail of how a system works stays Mild; the remedy is not a system explainer.) A line like "Carried cash can be lost" alone fails.
+export const LOSS = /\b(lose|loses|losing|lost|loss|erases?|erased|wipes?|wiped|overwrit\w*)\b/i;
+const REASSURANCE = /\b(not|no|never|nothing|without|n't)\b/i; // "does not lose it", "erases no games": not a warning
+export const REMEDY = /\b(check|keep|save (it|them|first)|back(ed)? up|backup|bank|put (it )?away|avoid|before you|first|upload)\b/i;
+const linkTextOut = (t) => t.replace(/\[[^\]]*\]\([^)]*\)/g, ''); // a pointer such as "see [Will I lose anything?](...)" is not a warning
+export const lossWithoutRemedy = (text) => {
+  const s = linkTextOut(text).split(/(?<=[.!?:])\s+|\n/).filter(Boolean);
+  return s.filter((t, i) => LOSS.test(t) && !REASSURANCE.test(t) && !REMEDY.test(`${t} ${s[i + 1] ?? ''}`));
+};
+
+test('a loss warning at Off carries what to do about it (the check catches a bare warning and passes a warning with its remedy)', () => {
+  for (const bare of ['Carried cash can be lost if you die.', 'Some Safe Mode options erase data.', 'You can lose your save.'])
+    assert.equal(lossWithoutRemedy(bare).length, 1, bare);
+  for (const ok of ['Carried cash can be lost if you die. Bank it first.', 'Carried cash can be lost: bank it before you take risks.', 'Some options erase data, so back up first.',
+    'Deleting a game does not lose what you bought.', 'This erases no games or data.', 'More is in [Will I lose anything?](/a/will-i-lose-anything/).'])
+    assert.deepEqual(lossWithoutRemedy(ok), [], ok);
+});
+
+test('every Off record that warns of a loss also says what to do about it', () => {
+  const bad = records.filter((a) => a.tier === 'none').flatMap((a) => [a.short, ...Object.values(a.byConsole ?? {}), a.body, a.todo].filter(Boolean).flatMap(lossWithoutRemedy).map((s) => `${a.id}: "${s}"`));
+  assert.deepEqual(bad, []);
+});

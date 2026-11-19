@@ -1,18 +1,18 @@
 id: resolution-by-console
 question: "What resolution does it run at on my console?"
-short: "PS5, PS5 Pro and Series X draw at 1440p, Series S at about 720p, then each is stretched to fill your screen. PS5 Pro uses its own sharpening boost (PSSR) and adds extra lighting effects (ray tracing)."
+short: "Digital Foundry reports PS5, PS5 Pro and Series X draw at 1440p and Series S at about 720p, then stretch it to fill your screen. PS5 Pro uses a sharpening boost (PSSR) and adds shadow effects (ray tracing)."
 body: |-
   - Source: Digital Foundry's comparison, repeated by TechPowerUp.
   - A bigger number is a sharper picture: 720p is soft, 1080p is full HD, 4K is the most detail most TVs show.
-  - All consoles target 30 fps. See the frame rate card.
+  - All consoles target 30 fps. More in [Is there a 60 fps or performance mode?](/a/frame-rate-modes/).
 topic: settings
 stage: hour-1
 tier: none
 consoles: all
 byConsole:
-  ps5: "The PS5 draws at 1440p and stretches the picture up to 4K without a frame-blending sharpening step (temporal upscaling), so it looks a little soft. PS5 Pro uses its own sharpening boost (PSSR) and adds extra lighting and reflection effects (ray tracing)."
-  xbox-x: "The Series X draws at 1440p and stretches the picture up to 4K without a frame-blending sharpening step (temporal upscaling), so it looks a little soft."
-  xbox-s: "The Series S draws at about 720p and stretches it to about 1080p with a sharpening technique called FSR 4. Digital Foundry says it keeps the main graphics features, at lower quality."
+  ps5: "Digital Foundry reports the PS5 draws at 1440p and stretches the picture up to 4K without a frame-blending sharpening step (temporal upscaling), so it looks a little soft. PS5 Pro uses its own sharpening boost (PSSR) and adds extra shadow effects (ray tracing)."
+  xbox-x: "Digital Foundry reports the Series X draws at 1440p and stretches the picture up to 4K without a frame-blending sharpening step (temporal upscaling), so it looks a little soft."
+  xbox-s: "Digital Foundry reports the Series S draws at about 720p and stretches it to about 1080p with a sharpening technique called FSR 4. It says it keeps the main graphics features, at lower quality."
 confidence: reported
 sources:
   - url: "https://www.digitalfoundry.net/features/gta-6-ps5-vs-ps5-pro-xbox-series-x-and-series-s-which-console-plays-best"

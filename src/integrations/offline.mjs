@@ -39,9 +39,13 @@ export default function offline() {
       'astro:build:done': async ({ dir }) => {
         const out = fileURLToPath(dir);
         const files = await Promise.all(
-          (await walk(out)).map(async (f) => ({ ...f, hash: createHash('sha1').update(await readFile(f.path)).digest('hex') })),
+          (await walk(out)).map(async (f) => {
+            const body = await readFile(f.path);
+            return { ...f, hash: createHash('sha1').update(body).digest('hex'), redirect: f.rel.endsWith('.html') && body.includes('http-equiv="refresh"') };
+          }),
         );
-        const { version, urls, tiers } = buildLists(files);
+        // A redirect page (the old address of a hidden record) is never cached: the default list names no hidden record.
+        const { version, urls, tiers } = buildLists(files.filter((f) => !f.redirect));
         await writeFile(join(out, 'offline-urls.json'), JSON.stringify({ version, urls }));
         for (const t of TIERS) {
           await mkdir(join(out, 'h', t), { recursive: true });

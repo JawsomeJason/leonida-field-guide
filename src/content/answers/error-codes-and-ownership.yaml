@@ -3,7 +3,8 @@ question: "What do I do about sign-in, storage or ownership error codes?"
 short: "Rockstar sends you to your console maker's error-code lookup. For purchases and downloads, it points to the console makers' support pages."
 body: |-
   - Rockstar's error page (updated 18 November) lists no codes of its own.
-  - For a stuck download, see the download card for your console in Fixes.
+
+  <span data-only="ps5">For a stuck download, [follow the steps for your console](/a/ps5-download-stuck/).</span><span data-only="xbox-x xbox-s">For a stuck download, [follow the steps for your console](/a/xbox-download-stuck/).</span>
 topic: fixes
 stage: hour-1
 tier: none

@@ -2,14 +2,14 @@ id: auto-preload-settings
 question: "How do I make the game download by itself?"
 short: "Turn on automatic downloads or updates, and leave the console on or in its rest or sleep mode."
 body: |-
-  - Rockstar's pre-load (download before launch) FAQ gives the requirements for each console and links to the console maker's own steps.
+  - Rockstar's FAQ for downloading before launch (pre-load) gives the requirements for each console and links to the console maker's own steps.
   - If the automatic download did not happen, start it by hand from your game library.
 topic: setup
 stage: before
 tier: none
 consoles: all
 byConsole:
-  ps5: "Turn on auto-downloads and leave the PS5 on or in Rest Mode. Also turn on Stay Connected to the Internet, then select the countdown timer on the game in your Game Library and tick what to download."
+  ps5: "Turn on auto-downloads and leave the PS5 on or in Rest Mode. Then select the countdown timer on the game in your Game Library and follow the on-screen steps."
   xbox-x: "Turn on automatic updates and leave the console on or in Sleep mode."
   xbox-s: "Turn on automatic updates and leave the console on or in Sleep mode."
 confidence: official

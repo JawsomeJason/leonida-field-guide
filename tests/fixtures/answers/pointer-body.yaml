@@ -1,0 +1,16 @@
+id: pointer-body
+question: "Fixture: a body that points at the page for the player's console"
+short: "Fixture: the link below goes to the page for your console."
+body: |-
+  - Check your free space, then clear the difference.
+
+  <span data-only="ps5">Short of room? [How to clear space](/a/console-ps5/).</span><span data-only="xbox-x xbox-s">Short of room? [How to clear space](/a/console-xbox/).</span>
+topic: setup
+stage: before
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"

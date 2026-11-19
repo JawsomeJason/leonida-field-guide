@@ -18,7 +18,23 @@
 }
 .reveal__out { padding-block-start: var(--space-2); outline: none; }
 .reveal__out > :first-child { margin-block-start: 0; }
-.reveal__out:not([hidden]) { border-inline-start: 3px solid var(--accent-2); padding-inline-start: var(--space-3); }
+.reveal__out:not([hidden]) { border-inline-start: 4px solid var(--action); padding-inline-start: var(--space-3); } /* the calm gold rule the answer block uses; coral is for errors */
+.reveal__hide {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--tap);
+  margin-block-start: var(--space-2);
+  padding-inline: var(--space-4);
+  border: 1px dashed var(--muted);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: var(--font-label);
+  cursor: pointer;
+}
+@media (hover: hover) {
+  .reveal__hide:hover { border-color: var(--accent); }
+}
 @media (prefers-reduced-motion: no-preference) {
   .reveal__out:not([hidden]) { animation: reveal-in 200ms var(--ease-out); }
   @keyframes reveal-in { from { opacity: 0; translate: 0 -0.25rem; } }

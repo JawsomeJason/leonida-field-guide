@@ -147,7 +147,7 @@ export function search(records, query) {
 
 /** A question about where something is: the guide keeps places behind the dial. */
 export const asksWhere = (query) =>
-  /\bwhere(s| is| are| can i (find|get|buy)| do i (find|get|buy))\b|\blocations? (of|for)\b|\bnearest\b|\bwhereabouts\b/.test(query.toLowerCase().replace(/['’]/g, ''));
+  /\bwhere(s| is| are| can i (find|get|buy)| do i (find|get|buy))\b|\blocations? (of|for)\b|\bnearest\b|\bwhereabouts\b|\bmaps?\b/.test(query.toLowerCase().replace(/['’]/g, ''));
 
 /** Where a record's own page lives: /a/<id>/ for none, /<tier>/<id>/ for a hidden tier. */
 export const pagePath = (tier, id) => (tier === 'none' ? `/a/${id}/` : `/${tier}/${id}/`);

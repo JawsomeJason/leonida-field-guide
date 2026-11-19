@@ -3,12 +3,9 @@ import Base from '../layouts/Base.astro';
 import OutsideList from '../components/OutsideList.astro';
 import { confidence } from '../data/confidence.js';
 
-// Outside tools. Each opens normally, in the same tab; the list says once that outside sites may contain spoilers.
-const outside = [
-  { href: 'https://gtamap.io', title: 'gtamap.io', about: 'A map. Spoilers are hidden by default.' },
-  { href: 'https://fullsweepmap.com', title: 'FullSweep', about: 'A map and checklists. Spoilers are hidden by default.' },
-  { href: 'https://support.rockstargames.com', title: 'Rockstar Support', about: 'For account, sign-in and code problems.' },
-];
+// Outside help. It opens normally, in the same tab; the list says once that outside sites may contain spoilers.
+// This page says nothing about what any outside site does. The map links live on the Places page, shown once Places is on.
+const outside = [{ href: 'https://support.rockstargames.com', title: 'Rockstar Support', about: "Rockstar's own support site." }];
 ---
 
 <Base title="About" description="How this guide handles spoilers and sources, and who it is not.">
@@ -44,7 +41,11 @@ const outside = [
     <p>If we could not find a source, there is no answer. We do not guess.</p>
 
     <h2>Maps and help</h2>
-    <p>We link to better tools instead of rebuilding them.</p>
+    <p>
+      Outside map sites exist, and this guide does not rebuild them. Their links appear on the Places page once
+      the spoiler setting is Places or higher. At Off no map link is shown.
+    </p>
+    <p>For help from the publisher:</p>
   </div>
   <div class="links"><OutsideList links={outside} /></div>
 
@@ -59,16 +60,22 @@ const outside = [
     <p>
       Nothing here is tracked: no analytics, no ads, no accounts. The only cookies are the sign-in cookie that
       lets you past the password page and a spoiler-level cookie that holds just the word off, places or mild.
-      It is used for nothing else and is never sent anywhere else.
+      The spoiler-level cookie is used for nothing else and is sent only to this site, so its server can keep
+      hidden pages from a device set to Off.
     </p>
     <p>
-      When you are signed in, your ticked to-dos are copied to this site's own private store, so they follow
-      you from one device to another. Nothing else is sent. Your spoiler setting, console, theme and stage
-      stay on this device, so every new device starts with spoilers off.
+      This device keeps your settings and ticks in the browser's storage. It also keeps a copy of the guide's
+      pages, so they work offline. Turning the spoiler setting down removes the hidden pages from that copy.
+    </p>
+    <p>
+      When syncing works, your ticked to-dos are copied to this site's own private store, so they follow
+      you from one device to another. Nothing else is sent. The Checklist says whether the last sync worked:
+      if the store cannot be reached, your ticks stay on this device and are sent later. Your spoiler setting,
+      console, theme and stage stay on this device, so every new device starts with spoilers off.
     </p>
     <p>
       On the Checklist screen you can also copy your ticks as a code and paste it into another device. The
-      code holds ticks only.
+      code is only text and holds ticks only. Copying it sends it nowhere by itself.
     </p>
   </div>
 </Base>

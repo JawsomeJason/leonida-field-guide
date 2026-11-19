@@ -1,0 +1,13 @@
+id: mild-02
+question: "What does the numbat dial do?"
+short: "The numbat dial turns the sample lamp."
+topic: getting-around
+stage: hour-1
+tier: mild
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+keywords: ["numbat knob"]

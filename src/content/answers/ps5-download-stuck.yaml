@@ -9,7 +9,7 @@ body: |-
   4. Choose Cancel and Delete, then download again from your Game Library.
   5. Check free space (Settings, Storage). The game's minimum is under More, then View Product in your Game Library.
   6. Stuck, not slow? Test the connection: Settings, Network, Connection Status, Test Internet Connection.
-  7. Last resort: start in Safe Mode (a start-up menu with repair tools) and choose Clear Cache and Rebuild Database. See the crash card for how to start it.
+  7. Last resort: start in Safe Mode (a start-up menu with repair tools) and choose Clear Cache and Rebuild Database. To start it, follow step 6 of [My PS5 game crashes or freezes. What do I try, in order?](/a/crash-steps-ps5/).
 
   Rockstar's install-issues page sends PS5 players to this same PlayStation page and adds no steps.
 topic: fixes

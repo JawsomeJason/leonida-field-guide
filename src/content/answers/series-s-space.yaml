@@ -1,10 +1,10 @@
 id: series-s-space
 question: "Will it fit on a 512 GB Series S?"
-short: "Yes, but not by much. Microsoft sells the Series S with 512 GB and reserves part for the system. IGN reported about 364 GB usable, so the game takes more than half of it."
+short: "It should fit, but not by much. IGN reported about 364 GB of the 512 GB is usable, so the game takes more than half of it."
 body: |-
   - 364 GB is IGN's figure. Microsoft's own page only says part of the drive is reserved, so you never see the full 512 GB free.
   - Rockstar says the game needs up to 212 GB. That leaves roughly 150 GB for updates, captures and other games.
-  - Uninstalling games you do not play is the quickest fix: see the Make room card.
+  - Uninstalling games you do not play is the quickest fix: see [Make room: how do I check free space and clear space on my Xbox?](/a/free-space-xbox/).
   - A 1 TB Series S has more room. A Storage Expansion Card or an external drive adds more, with limits on where games can run from.
 topic: setup
 stage: before

@@ -1,6 +1,6 @@
 id: unlock-time-us-zones
 question: "When does it unlock in each US time zone?"
-short: "Forbes reports an earlier start in the western US: 9 p.m. Pacific on 18 November. Rockstar says midnight local time in every region, so the two sources disagree. Your console's countdown is the final word."
+short: "Forbes reports an earlier start in the western US: 9 p.m. Pacific on 18 November. Rockstar says midnight local time in every region, so the two sources disagree. Go by your console's countdown."
 body: |-
   Forbes's table (12 November), as a news report:
   - Eastern: 12 a.m. Thursday 19 November
@@ -10,7 +10,7 @@ body: |-
   - Alaska: 8 p.m. Wednesday 18 November
   - Hawaii: 7 p.m. Wednesday 18 November
 
-  Which source says which: Forbes (above) says US stores key the unlock to Eastern time, so the west starts earlier. Rockstar's own page says "midnight local time" in all regions and gives no US time-zone breakdown, and we found none either. A console maker's pre-order help adds only that, in a country with several time zones, play can start late in some zones. Nobody official confirms the earlier times. Your console's countdown is the final word. See the unlock time card.
+  Which source says which: Forbes (above) says US stores key the unlock to Eastern time, so the west starts earlier. Rockstar's own page says "midnight local time" in all regions and gives no US time-zone breakdown, and we found none either. A console maker's pre-order help adds only that, in a country with several time zones, play can start late in some zones. Nobody official confirms the earlier times. Your console's countdown is the final word. See [When does it unlock in my region?](/a/unlock-time/).
 topic: setup
 stage: before
 tier: none

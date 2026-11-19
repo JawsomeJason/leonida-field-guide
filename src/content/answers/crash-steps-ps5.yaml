@@ -7,7 +7,7 @@ body: |-
   2. Make sure the game fully downloaded: highlight it, press {options}, choose Information, then Download Status.
   3. Check for a game update: highlight the game, press {options}, then choose Check for Update.
   4. Update the system software: Settings, System, System Software, System Software Update and Settings.
-  5. Delete the game and download it again from your Game Library. You keep what you bought. To delete: Settings, Storage, Console Storage, Games and Apps.
+  5. Delete the game and download it again from your Game Library. You keep what you bought. PlayStation does not say what happens to saved data, so upload it first if you have PlayStation Plus (Settings, Saved Data and Game/App Settings). To delete: Settings, Storage, Console Storage, Games and Apps.
   6. Safe Mode (a start-up menu with repair tools): choose Clear Cache and Rebuild Database. It scans the drive and builds a fresh list of what is installed. Sony warns that some Safe Mode options erase data, so back up first, and do not pick a Reset option.
      - To start it: hold the power button for three seconds to turn the PS5 off. Hold it again and let go after the second beep (about seven seconds). Plug in a controller with a USB cable and press the PS button.
   7. Still crashing? Contact PlayStation Support from the link at the bottom of [PlayStation's crash page](https://www.playstation.com/en-us/support/games/game-freeze-crash/). Tell them what happens and how to repeat it, and add a screenshot or video. For a problem in this game, PlayStation says to ask the publisher too: [Rockstar Support](https://support.rockstargames.com/request).

@@ -4,6 +4,7 @@
 // read() and write() keep their flat shape: { console, dial, theme, stage, done: string[] }.
 // Settings live on this device only. Only ticks are ever synced or exported, and absorb() takes only ticks.
 import { ENUMS, load, merge, parse, ticksOf, validId } from '../lib/merge.js';
+import { consoles } from '../data/consoles.js';
 
 const KEY = 'lfg:v1';
 const defaults = { console: '', dial: 'off', theme: 'system', stage: 'before' }; // console '' = never chosen
@@ -29,6 +30,9 @@ function apply(s) {
   if (s.console) html.dataset.console = s.console;
   else delete html.dataset.console; // never chosen: the page shows only every-console records and asks
   html.dataset.dial = s.dial;
+  // The header chips show short words; their full names are read out. CSS cannot change an aria-label, so it is set here.
+  document.querySelector('.chip--console')?.setAttribute('aria-label', `Console: ${consoles[s.console]?.name ?? 'choose one'}, change`);
+  document.querySelector('.chip--dial')?.setAttribute('aria-label', `Spoilers: ${s.dial[0].toUpperCase()}${s.dial.slice(1)}, change`);
   // The level word, mirrored for the server (src/lib/gate.js dialRule) on load and on every change; used for nothing else.
   try {
     document.cookie = `lfg_dial=${s.dial}; Path=/; Max-Age=31536000; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;

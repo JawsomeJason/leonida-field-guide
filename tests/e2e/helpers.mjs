@@ -19,6 +19,9 @@ export const PAGES = [
   }),
 ];
 
+/** The old /a/<id>/ addresses of hidden-tier records: redirect pages in the build, not screens (the page list leaves them out). */
+export const OLD_ADDRESSES = records.filter((a) => a.tier !== 'none').map((a) => `/a/${a.id}/`);
+
 export const NIGHT = 'rgb(24, 19, 32)';
 export const DAY = 'rgb(246, 239, 226)';
 
@@ -153,3 +156,8 @@ export async function measure(page) {
   await page.setViewportSize({ width, height: was });
   return result;
 }
+
+/** The words a chip really shows: its label and the one visible value, without the screen-reader-only pieces ("Xbox ", ", change"). */
+export const shown = (chip) => chip.evaluate((el) => [...el.querySelectorAll('.chip__k, .chip__v > :not(.sr-only)')]
+  .filter((e) => getComputedStyle(e).display !== 'none')
+  .map((e) => [...e.childNodes].filter((n) => !n.classList?.contains('sr-only')).map((n) => n.textContent).join('')).join(' '));

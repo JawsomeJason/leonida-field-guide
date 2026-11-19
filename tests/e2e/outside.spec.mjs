@@ -41,7 +41,7 @@ test('the sources block says it once, and the About page and Places gate too', a
   await expect(sources.getByText(NOTE)).toHaveCount(1);
   await page.goto('/about/');
   await expect(page.locator('main [data-outside]').getByText(NOTE)).toHaveCount(1);
-  await expect(page.locator('main a[href^="http"]')).toHaveCount(3);
+  await expect(page.locator('main a[href^="http"]')).toHaveCount(1); // Rockstar Support only: no map link on About
   await page.goto('/places/');
   await expect(page.locator('main [data-outside]').getByText(NOTE)).toHaveCount(1);
 });

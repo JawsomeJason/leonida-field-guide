@@ -1,9 +1,9 @@
 id: social-club-rockstar-account
 question: "What happened to Social Club?"
-short: "Social Club is gone as a separate site. Its account settings, linked platforms and progress now live in your Rockstar Games account. Old Social Club links redirect there."
+short: "GTABoom reports Social Club is gone as a separate site: its account settings, linked platforms and progress now live in your Rockstar Games account."
 body: |-
   - GTABoom says linked accounts stay connected and progress carries over.
-  - If sign-in fails, see the error codes card.
+  - If sign-in fails, see [What do I do about sign-in, storage or ownership error codes?](/a/error-codes-and-ownership/).
 topic: setup
 stage: before
 tier: none
