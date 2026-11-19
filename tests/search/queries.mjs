@@ -24,4 +24,6 @@ export const REAL_QUERIES = [
   ['my game crashes', ['crash-steps-xbox', 'crashes-and-launch-problems'], 'xbox-x'],
   ['game keeps crashing', ['crash-steps-xbox', 'crashes-and-launch-problems'], 'xbox-s'],
   ['how do i free up space on my ps5', 'free-space-ps5'],
+  ['do I need to download a patch before I play', 'day-one-patches'],
+  ['do I need to update the game before I play', 'day-one-patches'],
 ];

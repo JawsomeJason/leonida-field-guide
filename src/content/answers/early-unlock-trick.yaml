@@ -1,11 +1,9 @@
 id: early-unlock-trick
 question: "Is it safe to change my console's region to play early?"
-short: "Not recommended. Region switching breaks the platform's terms, the console maker reportedly warned against it, and Rockstar is said to be watching. Bans are reported to be rare, but streamers risk more."
+short: "Not recommended. Changing your console's region to play early breaks the platform's terms, and Rockstar says the game opens at midnight local time everywhere."
 body: |-
-  - Notebookcheck says you can change region in your console's settings, or use an account from another country and a local gift card.
-  - The platform's terms warn against circumventing restrictions. Windows Central is cited saying Rockstar is watching for early play.
-  - A Twitch partner manager reportedly advised a streamer against showing early-unlock play.
-  - This is not Rockstar's position. Rockstar's page says midnight local time everywhere.
+  - The console maker reportedly warned against it, according to Notebookcheck.
+  - Rockstar's own page says midnight local time in every region. See the unlock time card for when that is.
 topic: good-to-know
 stage: before
 tier: none
@@ -13,7 +11,10 @@ consoles: all
 confidence: reported
 sources:
   - url: "https://www.notebookcheck.net/Xbox-reportedly-warns-against-GTA-6-New-Zealand-trick-for-early-release-date-unlock.1452831.0.html"
-    title: "Xbox reportedly warns against GTA 6 New Zealand trick for early release date unlock (Notebookcheck)"
+    title: "Report on the console maker warning against region switching to play early (Notebookcheck)"
   - url: "https://support.rockstargames.com/articles/29jV3Cv2cCgvwM1XgtMO5o/grand-theft-auto-vi-regional-pre-load-and-release-times-on-playstation-5-and-xbox-series-x-or-s"
     title: "Grand Theft Auto VI regional pre-load and release times (Rockstar Support)"
 checked: "2026-11-19"
+reveal:
+  - tier: mild
+    text: "How the early-play workaround is reportedly done: change the region in your console's settings, or use an account from another country and a local gift card. Windows Central is cited saying Rockstar is watching for early play, bans are reported to be rare, and a Twitch partner manager reportedly advised a streamer against showing it."

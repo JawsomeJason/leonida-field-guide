@@ -11,7 +11,7 @@ body: |-
 
   Good to know
   - Boxed copies hold a download code and no disc.
-  - Notebookcheck reported on 14 November that some sealed boxes had no code inside. It said the problem did not look widespread, and that some buyers said their refund requests were refused.
+  - A sealed box with no code inside? A news report says some buyers did. It has its own card: [Some sealed boxes had no code inside](/a/boxed-copy-no-code/).
 topic: bonuses
 stage: hour-1
 tier: none
@@ -30,8 +30,6 @@ sources:
     title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
   - url: "https://support.rockstargames.com/request"
     title: "Submit a Request (Rockstar Support)"
-  - url: "https://www.notebookcheck.net/Some-physical-GTA-6-boxes-are-missing-codes-with-Rockstar-refusing-to-help.1449998.0.html"
-    title: "Some physical GTA 6 boxes are missing codes, with Rockstar refusing to help (Notebookcheck)"
 checked: "2026-11-19"
 rank: 6
 reveal:
