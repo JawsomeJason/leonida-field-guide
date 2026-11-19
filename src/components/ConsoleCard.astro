@@ -1,0 +1,14 @@
+---
+// First run on the Ask screen: which console? Shown until one is chosen (console.css hides it after). Needs script to save the choice.
+import { consoleLabels } from '../lib/answers';
+---
+
+<section class="console-card needs-js" aria-labelledby="console-title">
+  <h2 id="console-title">Which console do you play on?</h2>
+  <p>Pick yours and the steps and button names match it. Until then you see only what fits every console.</p>
+  <div class="console-card__btns">
+    {Object.entries(consoleLabels).map(([value, label]) => (
+      <button type="button" class="console-btn" data-set="console" data-value={value} data-focus="#ask-title">{label}</button>
+    ))}
+  </div>
+</section>

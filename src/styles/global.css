@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import './console.css';
 
 /* Cross-document view transitions, as an enhancement. The chrome stays put. */
 @media (prefers-reduced-motion: no-preference) {
@@ -13,6 +14,7 @@
 *, ::before, ::after { box-sizing: border-box; }
 
 html {
+  scroll-padding-block-start: var(--header-h, 9rem); /* a jump to an anchor lands below the sticky header */
   -webkit-tap-highlight-color: transparent; /* our :active state is the feedback, not the browser's grey flash */
   overscroll-behavior-y: contain; /* no pull-to-refresh fights */
   scroll-padding-block-end: calc(var(--tap) + var(--safe-bottom)); /* focus stays clear of the bottom bar */
@@ -31,6 +33,7 @@ body {
 h1 { font-size: var(--text-h1); font-weight: 750; letter-spacing: -0.02em; line-height: 1.15; margin-block: var(--space-2) var(--space-4); text-wrap: balance; }
 h2 { font-size: var(--text-h2); font-weight: 650; letter-spacing: -0.01em; line-height: 1.3; }
 a { color: var(--accent); }
+.lede { max-inline-size: 60ch; margin-block: 0 var(--space-4); color: var(--muted); }
 kbd, code { font-family: var(--font-mono); }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 input, select, textarea { font-size: var(--text-input); }
@@ -52,22 +55,22 @@ a, button, summary, label, input { touch-action: manipulation; }
   text-decoration: none;
 }
 /* Raised surfaces: one shadow token. Day lifts off the page; night gets a faint top edge instead. */
-.tap-list a, .seg label, .menu summary, .ctabs button, .todo-list .todo label, .todo__tick, .backup summary, .reveal__btn, .card, .tile { box-shadow: var(--shadow); }
+.tap-list a, .seg label, .ctabs button, .todo-list .todo label, .todo__tick, .backup summary, .reveal__btn, .card, .tile, .console-btn, .other-consoles summary { box-shadow: var(--shadow); }
 
 /* Pressed feedback, one recipe: the surface darkens on press-in with no delay, shrinks slightly, and eases back on release. */
-.tap-list a, .nav a, .seg label, .menu summary, .ctabs button, .todo-list .todo label, .todo__tick, .todo__open, .backup summary, .reveal__btn, .btn, .gate__on, .tile, .card {
+.tap-list a, .nav a, .seg label, .ctabs button, .todo-list .todo label, .todo__tick, .todo__open, .backup summary, .reveal__btn, .btn, .gate__on, .tile, .card, .console-btn, .other-consoles summary {
   transition: scale 160ms var(--ease-out), background-color 160ms var(--ease-out), color 140ms var(--ease-out), border-color 140ms var(--ease-out);
 }
 /* A selected control flips colour at once: a half-faded fill under its label would fail contrast mid-change. */
 .seg label, .ctabs button { transition-property: scale; }
 :is(.tap-list a, .nav a, .todo-list .todo label, .todo__tick, .todo__open, .backup summary, .reveal__btn, .tile):active,
 .card:has(.card__q a:active) { scale: var(--press-scale); transition-duration: 70ms, 0s, 140ms, 140ms; }
-:is(.seg label, .menu summary, .ctabs button, .btn, .gate__on):active { scale: var(--press-scale-small); transition-duration: 70ms, 0s, 140ms, 140ms; }
+:is(.seg label, .ctabs button, .btn, .gate__on, .console-btn, .other-consoles summary):active { scale: var(--press-scale-small); transition-duration: 70ms, 0s, 140ms, 140ms; }
 @media (prefers-reduced-motion: reduce) {
   :is(a, button, summary, label, .card):active { scale: none !important; }
 }
 @media (hover: hover) {
-  .tap-list a:hover, .nav a:hover, .menu summary:hover, .seg label:hover, .tile:hover, .todo-list .todo label:hover, .todo__tick:hover, .card:has(.card__q a:hover) { background-color: var(--wash); }
+  .tap-list a:hover, .nav a:hover, .chip:hover, .seg label:hover, .tile:hover, .todo-list .todo label:hover, .todo__tick:hover, .console-btn:hover, .other-consoles summary:hover, .card:has(.card__q a:hover) { background-color: var(--wash); }
 }
 
 /* Tick box, shared by the Ask screen and the Checklist. */
@@ -105,12 +108,12 @@ a, button, summary, label, input { touch-action: manipulation; }
 }
 
 /* Header */
-.site-header { position: relative; background: var(--bg); padding-block-start: var(--safe-top); }
+.site-header { position: sticky; inset-block-start: 0; z-index: 6; background: var(--bg); padding-block-start: var(--safe-top); }
 .site-header::after {
   content: '';
   display: block;
   block-size: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  background: linear-gradient(90deg, var(--action), var(--accent-2));
 }
 .site-header__row {
   display: flex;
@@ -120,10 +123,11 @@ a, button, summary, label, input { touch-action: manipulation; }
   padding: var(--space-2) max(var(--space-4), var(--safe-right)) var(--space-2) max(var(--space-4), var(--safe-left));
 }
 .site-name {
-  flex: 1 1 auto;
+  flex: 1 1 8rem; /* the name gives way (wraps) before the chip drops to its own row */
   display: inline-flex;
   align-items: center;
   min-block-size: var(--tap);
+  line-height: 1.2;
   color: var(--text);
   font-weight: 750;
   letter-spacing: -0.01em;
@@ -137,9 +141,10 @@ a, button, summary, label, input { touch-action: manipulation; }
 }
 
 fieldset { min-inline-size: 0; margin: 0; padding: 0; border: 0; }
-.dial, .setting { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-tap) var(--space-3); }
+.dial, .setting { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-tap) var(--space-2); }
+.dial .seg label { padding-inline: var(--space-2); font-size: var(--text-small); }
 .dial legend, .setting legend {
-  font: var(--text-small) / 1 var(--font-mono);
+  font: 600 0.8125rem / 1 var(--font-text); /* 13px: the dial's name must fit beside its buttons, even at 130% text */
   color: var(--muted);
   float: inline-start; /* un-floated, a legend cannot sit beside the controls */
   padding: 0;
@@ -164,42 +169,72 @@ fieldset { min-inline-size: 0; margin: 0; padding: 0; border: 0; }
 .seg label:has(:checked) { background: var(--accent); border-color: var(--accent); color: var(--bg); }
 .seg label:has(:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; z-index: 1; }
 
-/* The settings menu needs JS to do anything, so it is hidden without it. */
+/* Without JS the console and theme controls cannot save anything, so they are hidden. The dial stays. */
 html:not(.js) .needs-js { display: none; }
-.menu { position: static; }
-.menu summary {
-  display: grid;
-  place-items: center;
+.sr-only { position: absolute; inline-size: 1px; block-size: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* The chip is the settings opener and always names the console in use. */
+.chip {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   min-block-size: var(--tap);
   min-inline-size: var(--tap);
-  padding-inline: var(--space-4);
+  padding-inline: var(--space-3);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
+  color: var(--text);
+  font: 600 var(--text-small) / 1 var(--font-text);
   cursor: pointer;
+  box-shadow: var(--shadow);
 }
-.menu-panel {
-  position: absolute;
-  z-index: 10;
-  inset-inline-end: max(var(--space-4), var(--safe-right));
-  inline-size: min(22rem, calc(100% - 2 * var(--space-4)));
-  display: grid;
-  gap: var(--space-4);
-  margin-block-start: var(--gap-tap);
-  padding: var(--space-4);
-  background: var(--surface);
+.chip [data-c] { display: none; }
+html:not([data-console]) .chip [data-c=''],
+html[data-console='ps5'] .chip [data-c='ps5'],
+html[data-console='xbox-x'] .chip [data-c='xbox-x'],
+html[data-console='xbox-s'] .chip [data-c='xbox-s'] { display: inline; }
+.chip:has(:popover-open) svg, .chip[aria-expanded='true'] svg { rotate: 180deg; }
+.chip:active { scale: var(--press-scale-small); background-color: var(--press); transition: scale 70ms var(--ease-out); }
+
+/* Settings sheet: a native popover, so Esc, a tap outside and the Done button close it. A bottom sheet within thumb reach on a phone,
+   the same strip centred on wider screens. It sits below the sticky header, so the dial is never under it. */
+.sheet {
+  inset: auto 0 0 0;
+  margin: 0 auto;
+  inline-size: min(100%, 30rem);
+  max-block-size: calc(100dvh - var(--header-h, 9rem) - var(--space-2));
+  padding: 0;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: 0 8px 24px rgb(0 0 0 / 0.16);
+  border-block-end: 0;
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 -8px 24px rgb(0 0 0 / 0.16);
+  overscroll-behavior: contain;
 }
+.sheet::backdrop { background: none; pointer-events: none; } /* the page stays tappable, dial included */
+.sheet__in { display: grid; gap: var(--space-4); padding: var(--space-4) max(var(--space-4), var(--safe-right)) max(var(--space-4), var(--safe-bottom)) max(var(--space-4), var(--safe-left)); }
+.sheet h2 { margin: 0; }
+.sheet .setting { display: grid; gap: var(--space-2); }
+.sheet .setting legend { float: none; margin-block-end: var(--space-2); }
+.sheet .setting .seg label { flex: 1 1 0; }
+.dial-help h3 { margin: 0 0 var(--space-1); color: var(--muted); font: 600 var(--text-small) / 1.3 var(--font-text); }
+.dial-help dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: var(--space-1) var(--space-3); font-size: var(--text-small); }
+.dial-help dt { font-weight: 650; }
+.dial-help dd { margin: 0; color: var(--muted); }
+@supports not selector(:popover-open) { .sheet { display: none; } }
 @media (prefers-reduced-motion: no-preference) {
-  .menu[open] .menu-panel { animation: menu-in 160ms var(--ease-out); }
-  @keyframes menu-in { from { opacity: 0; translate: 0 -0.375rem; } } /* moves, never resizes: targets stay 48px while it settles */
+  /* It slides up and fades in; moving only, so its targets stay 48px while it settles. */
+  .sheet { transition: translate 200ms var(--ease-out), opacity 160ms var(--ease-out), display 200ms allow-discrete, overlay 200ms allow-discrete; }
+  .sheet:not(:popover-open) { translate: 0 1.5rem; opacity: 0; }
+  @starting-style { .sheet:popover-open { translate: 0 1.5rem; opacity: 0; } }
 }
 
 /* Page frame: phone is one column with a bottom bar. */
 .frame { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); }
-.main { min-inline-size: 0; max-inline-size: 64rem; padding: var(--space-4) max(var(--space-4), var(--safe-right)) var(--space-5) max(var(--space-4), var(--safe-left)); }
+.main { min-inline-size: 0; max-inline-size: 80rem; padding: var(--space-4) max(var(--space-4), var(--safe-right)) var(--space-5) max(var(--space-4), var(--safe-left)); }
 .list { display: none; }
 
 .nav {
@@ -242,7 +277,7 @@ html:not(.js) .needs-js { display: none; }
   .nav {
     grid-area: nav;
     position: sticky;
-    inset: 0 auto auto 0;
+    inset: var(--header-h, 4.5rem) auto auto 0; /* below the sticky header */
     align-self: start;
     flex-direction: column;
     padding: var(--space-2) 0 0 var(--safe-left);
@@ -263,3 +298,25 @@ html:not(.js) .needs-js { display: none; }
 
 /* Pressed feedback. Last, so it wins over the resting backgrounds above. */
 :is(a, button, summary, label):active { background-color: var(--press); }
+
+.site-footer .footer-link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--tap);
+  padding-inline: var(--space-4);
+  margin-inline: calc(var(--space-4) * -1); /* the text still lines up with the paragraph */
+}
+
+/* The one filled button: Done, Copy code, Restore progress. */
+.btn {
+  min-block-size: var(--tap);
+  padding-inline: var(--space-5);
+  border: 1px solid var(--action);
+  border-radius: var(--radius);
+  background: var(--action);
+  color: var(--bg);
+  font: 600 var(--text-body) / 1 var(--font-text);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.btn:active { background-color: color-mix(in srgb, var(--action) 75%, var(--text)); }

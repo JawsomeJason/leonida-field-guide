@@ -1,0 +1,13 @@
+id: find-code
+question: "My code or pre-order bonus is missing or rejected. What do I do?"
+short: "Fixture: check the account the code was sent to."
+topic: bonuses
+stage: before
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+keywords: ["doesnt work", "not working"]

@@ -1,10 +1,9 @@
 id: subtitles-and-accessibility
 question: "What accessibility and subtitle options are there?"
-short: "Subtitles can be resized and given a background. Tap Assist, Hold Assist and hold-to-toggle for actions like aiming are in the Gameplay tab. PS5 haptics can be adjusted."
+short: "Subtitles can be resized and given a background. Tap Assist, Hold Assist and hold-to-toggle for actions like aiming are in the Gameplay tab."
 body: |-
   - Subtitles start on a limited default. Switch them to On to catch lines during gunfire, calls and loud radio.
   - Tap Assist makes one press count as two, three or four. Hold Assist swaps repeated presses for a hold.
-  - PS5: adjust haptic feedback in accessibility settings, and Trigger Effect Intensity under Settings, Accessories.
   - Dialogue is English only, per KeenGamer.
 topic: settings
 stage: hour-1

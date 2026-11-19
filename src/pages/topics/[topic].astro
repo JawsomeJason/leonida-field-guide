@@ -4,6 +4,8 @@ import Base from '../../layouts/Base.astro';
 import AnswerCard from '../../components/AnswerCard.astro';
 import Gate from '../../components/Gate.astro';
 import RevealList from '../../components/RevealList.astro';
+import OtherConsoles from '../../components/OtherConsoles.astro';
+import { onlyOf } from '../../lib/console.js';
 import { topics } from '../../data/topics';
 import { byTier } from '../../lib/answers';
 
@@ -17,6 +19,10 @@ const answers = isPlaces ? [] : byTier((await getCollection('answers')).map((e) 
 ---
 
 <Base title={label} description={`Answers about ${label.toLowerCase()}.`}>
+  <Fragment slot="list">
+    <p class="list__title">Topics</p>
+    <ul class="tap-list">{topics.map((t) => <li><a href={`/topics/${t.id}/`} aria-current={t.id === topic ? 'page' : undefined}>{t.label}</a></li>)}</ul>
+  </Fragment>
   <h1>{label}</h1>
   {isPlaces ? (
     <>
@@ -26,7 +32,8 @@ const answers = isPlaces ? [] : byTier((await getCollection('answers')).map((e) 
   ) : (
     <>
       {answers.length === 0 && <p>No answers here yet.</p>}
-      <ul class="cards">{answers.map((a) => <li><AnswerCard answer={a} /></li>)}</ul>
+      <ul class="cards">{answers.map((a) => <li data-only={onlyOf(a.consoles)}><AnswerCard answer={a} /></li>)}</ul>
+      <OtherConsoles items={answers.map((a) => ({ ...a, label: a.question }))} />
       <RevealList tiers="places mild" topic={topic} />
     </>
   )}

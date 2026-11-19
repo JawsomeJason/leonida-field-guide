@@ -1,6 +1,8 @@
 ---
+import { onlyOf } from '../lib/console.js';
+
 interface Props {
-  answers: { id: string; question: string; rank?: number }[];
+  answers: { id: string; question: string; rank?: number; consoles: 'all' | string[] }[];
 }
 const top = [...Astro.props.answers]
   .filter((a) => a.rank !== undefined)
@@ -14,7 +16,7 @@ const top = [...Astro.props.answers]
       <h2 id="most-title">Most asked</h2>
       <ul class="tap-list most-asked__list">
         {top.map((a) => (
-          <li>
+          <li data-only={onlyOf(a.consoles)}>
             <a href={`/a/${a.id}/`}>{a.question}</a>
           </li>
         ))}
@@ -25,8 +27,13 @@ const top = [...Astro.props.answers]
 
 <style>
   .most-asked { margin-block-end: var(--space-6); container-type: inline-size; }
-  /* Two columns once the container has room; the rows stay whole-row targets either way. */
+  /* A grid of cells once the container has room. Every cell in a row is as tall as the tallest, and each is still one whole-row target. */
+  .most-asked__list li { display: flex; }
+  .most-asked__list a { flex: 1; }
   @container (min-width: 32rem) {
     .most-asked__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @container (min-width: 60rem) {
+    .most-asked__list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
 </style>

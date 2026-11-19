@@ -1,0 +1,14 @@
+id: ps5-trigger-and-haptics
+question: "Can I soften the PS5 trigger and vibration effects?"
+short: "Yes. Lower Trigger Effect Intensity under Settings, Accessories, Controllers (General) on the console, and adjust haptic feedback in the game's accessibility settings."
+body: |-
+  - KeenGamer says the controller's haptics run throughout the game, and that lowering the trigger effect helps if long fights tire your fingers.
+topic: settings
+stage: hour-1
+tier: none
+consoles: [ps5]
+confidence: reported
+sources:
+  - url: "https://www.keengamer.com/articles/guides/best-gta-6-settings-to-change-first-motion-blur-aim-and-ps5-pro/"
+    title: "Best GTA 6 Settings to Change First: Motion Blur, Aim, and PS5 Pro (KeenGamer)"
+checked: "2026-11-19"

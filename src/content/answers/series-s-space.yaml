@@ -1,0 +1,24 @@
+id: series-s-space
+question: "Will it fit on a 512 GB Series S?"
+short: "Yes, but not by much. Microsoft sells the Series S with 512 GB and reserves part for the system. IGN reported about 364 GB usable, so the game takes more than half of it."
+body: |-
+  - 364 GB is IGN's figure. Microsoft's own page only says part of the drive is reserved, so you never see the full 512 GB free.
+  - Rockstar says the game needs up to 212 GB. That leaves roughly 150 GB for updates, captures and other games.
+  - Uninstalling games you do not play is the quickest fix: see the Make room card.
+  - A 1 TB Series S has more room. A Storage Expansion Card or an external drive adds more, with limits on where games can run from.
+topic: setup
+stage: before
+tier: none
+consoles: [xbox-s]
+confidence: reported
+sources:
+  - url: "https://www.ign.com/articles/xbox-series-s-has-364gb-of-usable-storage-space"
+    title: "Xbox Series S Has 364GB of Usable Storage Space (IGN)"
+  - url: "https://www.xbox.com/en-US/consoles/xbox-series-s"
+    title: "Xbox Series S, 512 GB and 1 TB models (Xbox)"
+  - url: "https://support.xbox.com/en-US/help/hardware-network/storage/manage-storage"
+    title: "Manage storage on your Xbox console (Xbox Support)"
+  - url: "https://support.rockstargames.com/articles/M6h7B5fJZMwG1dnzQkt4Z/grand-theft-auto-vi-installation-requirements"
+    title: "Grand Theft Auto VI installation requirements (Rockstar Support)"
+checked: "2026-11-19"
+keywords: ["fit", "512gb", "series s", "xbox storage", "not enough space"]

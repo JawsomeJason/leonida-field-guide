@@ -1,0 +1,25 @@
+.guard__intro { max-inline-size: 40rem; }
+.guard__intro h1 { margin-block-start: 0; }
+.guard__back, .guard__page > summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--tap);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+.guard__page > summary { border: 1px dashed var(--muted); margin-block-start: var(--gap-tap); }
+.guard__back { max-inline-size: 40rem; }
+.guard__page { max-inline-size: 48rem; }
+.guard__page[open] > summary { display: none; } /* open, there is nothing left to show */
+.guard:has(.guard__page[open]) .guard__intro { display: none; }
+.guard__page > :nth-child(2) { margin-block-start: 0; }
+/* The topic's other hidden answers stay out of sight as long as the page does. */
+html:not([data-dial='places']):not([data-dial='mild']) .guard-list[data-tier='places'],
+html:not([data-dial='mild']) .guard-list[data-tier='mild'] { display: none; }

@@ -2,8 +2,8 @@ id: resolution-by-console
 question: "What resolution does it run at on my console?"
 short: "PS5, PS5 Pro and Series X render at 1440p; Series S renders at about 720p and upscales to about 1080p. PS5 Pro adds PSSR upscaling and extra ray tracing."
 body: |-
-  - Source: Digital Foundry's comparison, repeated by TechPowerUp. Digital Foundry says Series S is the first Series console game to ship with FSR 4.
-  - All platforms target 30 fps. See the frame rate card.
+  - Source: Digital Foundry's comparison, repeated by TechPowerUp.
+  - All consoles target 30 fps. See the frame rate card.
 topic: settings
 stage: hour-1
 tier: none

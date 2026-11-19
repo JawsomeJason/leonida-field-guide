@@ -1,5 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
+// LFG_PORT lets two worktrees run the suite at once.
+const port = process.env.LFG_PORT ?? 4399;
 const touch = { hasTouch: true, isMobile: true };
 const only = (...files) => ({ testMatch: files.map((f) => `**/${f}.spec.mjs`) });
 
@@ -8,13 +10,15 @@ export default defineConfig({
   forbidOnly: true,
   fullyParallel: true,
   reporter: [['list'], ['./tests/e2e/touch-report.mjs']],
-  use: { baseURL: 'http://127.0.0.1:4399' },
-  webServer: { command: 'node tests/e2e/serve.mjs', url: 'http://127.0.0.1:4399/', timeout: 180_000, reuseExistingServer: !process.env.CI },
+  use: { baseURL: `http://127.0.0.1:${port}` },
+  webServer: { command: 'node tests/e2e/serve.mjs', url: `http://127.0.0.1:${port}/`, timeout: 180_000, reuseExistingServer: !process.env.CI },
   // No test is skipped at run time: each project simply owns the files that apply to it.
   projects: [
-    { name: 'phone-390', use: { viewport: { width: 390, height: 844 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'a11y') },
-    { name: 'tablet-820', use: { viewport: { width: 820, height: 1180 }, ...touch }, ...only('behaviour', 'nojs', 'touch') },
+    { name: 'phone-320', use: { viewport: { width: 320, height: 640 }, ...touch }, ...only('touch') },
+    { name: 'phone-390', use: { viewport: { width: 390, height: 844 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'a11y', 'search', 'notfound', 'design') },
+    { name: 'tablet-820', use: { viewport: { width: 820, height: 1180 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'search', 'design') },
     { name: 'sync', ...only('sync') },
-    { name: 'desktop-1440', use: { viewport: { width: 1440, height: 900 } }, ...only('behaviour', 'nojs', 'a11y', 'overflow', 'leak') },
+    { name: 'new-screen', use: { viewport: { width: 390, height: 844 }, ...touch }, ...only('new') },
+    { name: 'desktop-1440', use: { viewport: { width: 1440, height: 900 } }, ...only('behaviour', 'nojs', 'a11y', 'overflow', 'leak', 'search', 'notfound', 'design') },
   ],
 });

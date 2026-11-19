@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import { newEntries } from '../data/new';
 
 const entries = [...newEntries].sort((a, b) => b.date.localeCompare(a.date));
+const problems = entries.flatMap((e) => e.problems);
 ---
 
 <Base title="New" description="What changed in recent refreshes, and known problems with fixes.">
@@ -10,31 +11,29 @@ const entries = [...newEntries].sort((a, b) => b.date.localeCompare(a.date));
   <!-- Shown by src/scripts/offline.js once the cache is complete. Hidden without JS. -->
   <p class="offline" data-offline hidden>Works offline. The guide is saved on this device.</p>
 
-  {entries.length === 0 ? (
-    <p>Nothing has changed since launch. Updates and known problems will be listed here.</p>
-  ) : (
-    entries.map((e) => (
-      <section class="entry">
-        <h2><time datetime={e.date}>{e.date}</time></h2>
-        {e.changed.length > 0 && (
-          <>
-            <h3>Changed</h3>
-            <ul>{e.changed.map((c) => <li>{c}</li>)}</ul>
-          </>
-        )}
-        {e.problems.length > 0 && (
-          <>
-            <h3>Known problems</h3>
-            <ul class="problems">
-              {e.problems.map((p) => (
-                <li>{p.text} <span class="fix"><strong>Fix:</strong> {p.fix}</span></li>
-              ))}
-            </ul>
-          </>
-        )}
-      </section>
-    ))
-  )}
+  <section class="entry">
+    <h2>Known problems</h2>
+    {problems.length === 0 ? (
+      <>
+        <p>No game-wide problems are confirmed yet. If the game crashes, there are steps to try.</p>
+        <ul class="tap-list"><li><a href="/a/crashes-and-launch-problems/">What to do if the game crashes</a></li></ul>
+      </>
+    ) : (
+      <ul class="problems">
+        {problems.map((p) => (
+          <li>{p.text} <span class="fix"><strong>Fix:</strong> {p.fix}</span></li>
+        ))}
+      </ul>
+    )}
+  </section>
+
+  {entries.filter((e) => e.changed.length > 0).map((e) => (
+    <section class="entry">
+      <h2><time datetime={e.date}>{e.date}</time></h2>
+      <h3>Changed</h3>
+      <ul>{e.changed.map((c) => <li>{c}</li>)}</ul>
+    </section>
+  ))}
 </Base>
 
 <style>
@@ -43,12 +42,11 @@ const entries = [...newEntries].sort((a, b) => b.date.localeCompare(a.date));
     padding: var(--space-2) var(--space-4);
     border: 1px solid var(--accent);
     border-radius: var(--radius);
-    font-family: var(--font-mono);
-    font-size: var(--text-small);
+    font: var(--font-label);
   }
   .entry { margin-block-start: var(--space-5); max-inline-size: 40rem; }
-  .entry h2 { margin-block: 0 var(--space-2); font-family: var(--font-mono); }
+  .entry h2 { margin-block: 0 var(--space-2); }
   .entry h3 { margin-block: var(--space-3) var(--space-1); font-size: var(--text-body); color: var(--muted); }
-  .entry ul { margin-block: 0; padding-inline-start: var(--space-5); display: grid; gap: var(--space-2); }
+  .entry ul:not(.tap-list) { margin-block: 0; padding-inline-start: var(--space-5); display: grid; gap: var(--space-2); }
   .fix { display: block; }
 </style>

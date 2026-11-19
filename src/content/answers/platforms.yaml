@@ -1,19 +1,23 @@
 id: platforms
 question: "Is it on PC, PS4 or Switch?"
-short: "Only on PS5 and Xbox Series X|S. Rockstar's pages list no PC, PS4 or Switch version. Xbox One can stream it through Xbox Cloud Gaming."
+short: "No. Rockstar lists no PC, PS4 or Switch version. It is made for the current-generation consoles only."
 body: |-
-  - Rockstar's platforms page: "You can pre-order Grand Theft Auto VI for PlayStation 5 and XBOX Series X|S."
-  - Rockstar's cloud gaming line covers Xbox Series X|S and Xbox One consoles. See the streaming card.
   - Any site offering a PC download is a scam. See the scams card.
 topic: setup
 stage: before
 tier: none
 consoles: all
+byConsole:
+  ps5: "Yes, it is on your PS5. Rockstar lists no PC, PS4 or Switch version."
+  xbox-x: "Yes, it is on your Xbox Series X|S. Rockstar lists no PC, PS4 or Switch version. Xbox One can only stream it through Xbox Cloud Gaming."
+  xbox-s: "Yes, it is on your Xbox Series X|S. Rockstar lists no PC, PS4 or Switch version. Xbox One can only stream it through Xbox Cloud Gaming."
 confidence: official
 sources:
   - url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
     title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
-  - url: "https://www.rockstargames.com/VI"
-    title: "Grand Theft Auto VI (Rockstar Games)"
+  - url: "https://www.rockstargames.com/newswire/article/k4ak9okk485712/grand-theft-auto-vi-pre-load-begins-on-november-10"
+    title: "Grand Theft Auto VI Pre-Load Begins on November 10 (Rockstar Newswire)"
+  - url: "https://www.xbox.com/en-us/games/grand-theft-auto-vi"
+    title: "Grand Theft Auto VI (Xbox)"
 checked: "2026-11-19"
 rank: 15

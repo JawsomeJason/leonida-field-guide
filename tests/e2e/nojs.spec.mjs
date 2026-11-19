@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
-import { ranked, press, NIGHT, DAY } from './helpers.mjs';
+import { records, press, NIGHT, DAY } from './helpers.mjs';
 
 test.use({ javaScriptEnabled: false });
 
 test('the search floor lists every answer and the links work', async ({ page }) => {
   await page.goto('/');
   const all = page.getByRole('region', { name: 'All answers' });
-  await expect(all.getByRole('link')).toHaveCount(ranked.length);
+  await expect(all.getByRole('link')).toHaveCount(records.filter((a) => a.tier === 'none').length);
   await press(all.getByRole('link', { name: /Sample question 07/ }));
   await expect(page.getByRole('heading', { level: 1, name: /Sample question 07/ })).toBeVisible();
 });
@@ -22,6 +22,8 @@ test('hidden details open as their own pages', async ({ page }) => {
   await expect(page.getByText('Wombat note one')).toHaveCount(0);
   await press(page.getByRole('link', { name: '1 mild detail hidden. Show' }));
   await expect(page).toHaveURL(/\/mild\/sample-02\/$/);
+  await expect(page.getByText('Wombat note one')).toBeHidden(); // the page starts closed, even by link
+  await press(page.getByText('Show this page', { exact: true }));
   await expect(page.getByText('Wombat note one')).toBeVisible();
 });
 
@@ -29,6 +31,8 @@ test('the places gate is a plain link to the places pages', async ({ page }) => 
   await page.goto('/places/');
   await expect(page.getByText('quokka marker', { exact: false })).toHaveCount(0);
   await press(page.getByRole('link', { name: 'Show places' }));
+  await expect(page.getByRole('heading', { name: 'Where is the quokka marker?' })).toBeHidden();
+  await press(page.getByText('Show this page', { exact: true }));
   await expect(page.getByRole('heading', { name: 'Where is the quokka marker?' })).toBeVisible();
 });
 

@@ -1,0 +1,13 @@
+id: console-ps5
+question: "Console sample: what is the PS5 only step?"
+short: "Do the PS5 only sample step. PlayStation owners see this one."
+topic: setup
+stage: before
+tier: none
+consoles: [ps5]
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+todo: "Do the PS5 only sample step"

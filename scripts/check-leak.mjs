@@ -31,7 +31,7 @@ export function hiddenStrings(records) {
     const strings =
       a.tier === 'none'
         ? (a.reveal ?? []).map((r) => [r.tier, r.text])
-        : [a.question, a.short, a.body, a.todo, ...Object.values(a.byConsole ?? {}), ...(a.reveal ?? []).map((r) => r.text)].map((t) => [a.tier, t]);
+        : [a.question, a.short, a.body, a.todo, ...Object.values(a.byConsole ?? {}), ...(a.reveal ?? []).map((r) => r.text), ...(a.keywords ?? []), (a.keywords ?? []).join(' ')].map((t) => [a.tier, t]);
     for (const [tier, text] of strings) {
       // {cross}-style button names become markup in the build, so search each piece between them.
       for (const part of String(text ?? '').split(/\{\w+\}/)) {

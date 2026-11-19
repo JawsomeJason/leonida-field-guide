@@ -1,0 +1,12 @@
+id: find-ps5
+question: "My PS5 download will not start. What do I try?"
+short: "Fixture: rebuild the database and retry."
+topic: fixes
+stage: before
+tier: none
+consoles: [ps5]
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"

@@ -1,0 +1,20 @@
+---
+// The fold under a list: console-only records that are not for the chosen console, as plain links. CSS (console.css) decides
+// which copies show; nothing here is a tick box or an anchor, so no id is repeated.
+import { onlyOf } from '../lib/console.js';
+import { pathOf } from '../lib/answers';
+
+interface Props {
+  items: { id: string; tier: 'none' | 'places' | 'mild'; consoles: 'all' | string[]; label: string }[];
+}
+const rows = Astro.props.items.filter((i) => i.consoles !== 'all');
+---
+
+{rows.length > 0 && (
+  <details class="other-consoles">
+    <summary>Other consoles</summary>
+    <ul class="tap-list">
+      {rows.map((r) => <li data-other={onlyOf(r.consoles)}><a href={pathOf(r)}>{r.label}</a></li>)}
+    </ul>
+  </details>
+)}

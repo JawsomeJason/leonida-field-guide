@@ -32,6 +32,12 @@ export function pageIds(all: AnswerData[], tier: Tier) {
   return [...own, ...all.filter((a) => a.tier === 'none' && revealTiers(a).includes(tier)).map((a) => ({ id: a.id, detail: true }))];
 }
 
+/** The to-dos of the default tier, in the one order the Ask screen and the Checklist both use: most asked first, then by id. */
+export const todosOf = (all: AnswerData[]) =>
+  byTier(all, 'none')
+    .filter((a) => a.todo)
+    .sort((a, b) => (a.rank ?? 1e9) - (b.rank ?? 1e9) || a.id.localeCompare(b.id));
+
 /** Same topic first, then same stage; never above the page's own tier. */
 export function related(a: AnswerData, all: AnswerData[], limit = 4) {
   const pool = all.filter((b) => b.id !== a.id && rank[b.tier] <= rank[a.tier]);
@@ -56,11 +62,15 @@ export const escapeHtml = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.char
 /** Plain text to safe HTML with button names. */
 export const textHtml = (s: string) => withButtons(escapeHtml(s));
 
+/** A link to another site says so, inside the link: the other site may show spoilers (same words as <OutsideLink>). */
+export const markOutside = (html: string) =>
+  html.replace(/(<a href="https?:[^"]*"[^>]*>)(.*?)(<\/a>)/g, '$1$2 <span class="outside__note">(outside site, may contain spoilers)</span>$3');
+
 /** Markdown body to HTML with Astro's own renderer (a dependency of astro, so nothing new ships). */
 export async function renderBody(md: string) {
   const { satteri } = await import('@astrojs/markdown-satteri');
   const r = await satteri().createRenderer({ gfm: true, smartypants: true, syntaxHighlight: false });
-  return (await r.render(withButtons(md), { frontmatter: {} })).code;
+  return markOutside((await r.render(withButtons(md), { frontmatter: {} })).code);
 }
 
 export const consoleLabels = { ps5: 'PS5', 'xbox-x': 'Xbox Series X', 'xbox-s': 'Xbox Series S' } as const;

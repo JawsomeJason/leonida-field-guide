@@ -1,23 +1,22 @@
 id: auto-preload-settings
-question: "How do I make the game download by itself?"
-short: "PS5: turn on auto-downloads and leave the console on or in Rest Mode. Xbox: turn on automatic updates and leave it on or in Sleep mode."
+question: "How do I make the game download by itself before launch?"
+short: "Turn on automatic downloads or updates, and leave the console on or in its rest or sleep mode."
 body: |-
-  - Rockstar's pre-load FAQ gives the PS5 and Xbox requirements above and links to each console maker's own steps.
-  - Output Lag adds, from Sony's page: on PS5, also turn on Stay Connected to the Internet, then select the countdown timer on the game in your Game Library and tick the content you want downloaded.
-  - If the automatic download did not happen, start it by hand from your library.
+  - Rockstar's pre-load (download before launch) FAQ gives the requirements for each console and links to the console maker's own steps.
+  - If the automatic download did not happen, start it by hand from your game library.
 topic: setup
 stage: before
 tier: none
 consoles: all
 byConsole:
-  ps5: "Turn on auto-downloads and leave the PS5 on or in Rest Mode."
+  ps5: "Turn on auto-downloads and leave the PS5 on or in Rest Mode. Also turn on Stay Connected to the Internet, then select the countdown timer on the game in your Game Library and tick what to download."
   xbox-x: "Turn on automatic updates and leave the console on or in Sleep mode."
   xbox-s: "Turn on automatic updates and leave the console on or in Sleep mode."
 confidence: official
 sources:
   - url: "https://support.rockstargames.com/articles/7nPqOA2uCbpEQHXx7KVrYd/grand-theft-auto-vi-pre-load-faq"
     title: "Grand Theft Auto VI Pre-Load FAQ (Rockstar Support)"
-  - url: "https://outputlag.com/guides/gta-6-not-working-day-one-problems-fixes/"
-    title: "GTA 6 Not Working? Day One Problems and Official Fixes on PS5 and Xbox (Output Lag)"
+  - url: "https://www.playstation.com/support/games/pre-order-games-automatic-download-ps-store"
+    title: "How to pre-order and auto-download games from PlayStation Store (PlayStation Support)"
 checked: "2026-11-19"
-todo: "Turn on auto-downloads or automatic updates"
+todo: "Turn on automatic downloads and updates"

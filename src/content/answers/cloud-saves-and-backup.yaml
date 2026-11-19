@@ -1,21 +1,22 @@
 id: cloud-saves-and-backup
 question: "Are my saves backed up in the cloud?"
-short: "Xbox: cloud saves are reported as supported. PS5: not confirmed. PS5 owners may be able to use PlayStation Plus cloud storage. No cross-progression between PS5 and Xbox has been announced."
+short: "Cloud backup depends on your console. No cross-progression between consoles has been announced, so assume saves stay within your console family."
 body: |-
-  - Cultured Vultures also says there is no Xbox Play Anywhere, and no PC version has been announced.
-  - Rockstar has not announced a Social Club save move or shared progress.
+  - Rockstar has not announced shared progress between consoles.
   - Assume saves stay within your console family.
 topic: saving
 stage: week-1
 tier: none
 consoles: all
 byConsole:
-  ps5: "Not confirmed for this game. Cultured Vultures says PS5 owners may be able to back up through PlayStation Plus cloud storage. Treat your save as local until Sony or Rockstar says more."
+  ps5: "Not confirmed for this game. With PlayStation Plus you can upload saved data yourself: Settings, Saved Data and Game/App Settings, Saved Data (PS5), then Upload or Delete from Console Storage. Treat your save as local until Rockstar says more."
   xbox-x: "Reported as supported: the Xbox listing shows cloud saves, and they should sync between your Xbox consoles on one account."
   xbox-s: "Reported as supported: the Xbox listing shows cloud saves, and they should sync between your Xbox consoles on one account."
 confidence: reported
 sources:
   - url: "https://culturedvultures.com/does-gta-6-have-cloud-saves-and-cross-progression/"
     title: "Does GTA 6 Have Cloud Saves and Cross-Progression? (Cultured Vultures)"
+  - url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
+    title: "How to manage storage space on your PS5 console (PlayStation Support)"
 checked: "2026-11-19"
 todo: "Check your save is backed up"

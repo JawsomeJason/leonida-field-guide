@@ -3,6 +3,7 @@ interface Props {
   answers: { id: string; question: string }[];
 }
 const { answers } = Astro.props;
+import OutsideLink from './OutsideLink.astro';
 ---
 
 <search class="ask-search">
@@ -21,6 +22,14 @@ const { answers } = Astro.props;
     />
   </form>
   <p id="q-status" role="status" class="ask-status"></p>
+  <div id="q-where" hidden>
+    <p>Places are hidden by design, so this guide does not say where things are. Turn them on, or use a map.</p>
+    <ul class="tap-list">
+      <li><a href="/places/">Places: turn them on</a></li>
+      <li><OutsideLink href="https://gtamap.io" title="gtamap.io" /></li>
+      <li><OutsideLink href="https://fullsweepmap.com" title="FullSweep" /></li>
+    </ul>
+  </div>
   <ul id="q-results" class="tap-list ask-rows" hidden></ul>
 </search>
 
@@ -42,7 +51,7 @@ const { answers } = Astro.props;
     inline-size: 100%;
     min-block-size: 3.5rem;
     padding: var(--space-2) var(--space-4);
-    border: 2px solid var(--accent);
+    border: 2px solid var(--muted);
     border-radius: var(--radius);
     background: var(--surface);
     color: var(--text);
@@ -52,11 +61,12 @@ const { answers } = Astro.props;
     appearance: none;
     box-shadow: var(--shadow);
   }
-  .ask-search input:focus-visible { outline-offset: 3px; }
+  .ask-search input:focus-visible { outline-offset: 3px; border-color: var(--accent); }
   .ask-search input::placeholder { color: var(--muted); opacity: 1; }
   .ask-status { min-block-size: 1.5rem; margin: var(--space-2) 0 var(--space-1); color: var(--muted); font-size: var(--text-small); }
   .ask-search ul { margin-block-end: var(--space-5); }
-  .ask-search ul[hidden] { display: none; } /* .tap-list's display would otherwise beat the hidden attribute */
+  .ask-search [hidden] { display: none; } /* .tap-list's display would otherwise beat the hidden attribute */
+  #q-where p { margin: 0 0 var(--space-2); }
 
   .tap-list.ask-rows a { flex-direction: column; align-items: flex-start; justify-content: center; }
   .ask-rows .q { color: var(--text); }

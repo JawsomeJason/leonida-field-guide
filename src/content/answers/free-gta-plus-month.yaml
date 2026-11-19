@@ -1,15 +1,18 @@
 id: free-gta-plus-month
 question: "How do I claim the free GTA+ month, and will it renew?"
-short: "Redeem it in your console's store. PlayStation: by 31 March 2027. Xbox: within 180 days of buying. It auto-renews monthly at the regular price until you cancel."
+short: "Redeem it in your console's store. It auto-renews monthly at the regular price until you cancel."
 body: |-
   - Only digital purchases before 20 November 2026 get it.
   - One redemption per platform account. A refund and re-order does not earn a second month.
   - Existing GTA+ members get the month added to their subscription.
-  - PlayStation: use the GTA+ product page on the PlayStation Store. Xbox: Offers and Credits in the Microsoft Store.
 topic: bonuses
 stage: week-1
 tier: none
 consoles: all
+byConsole:
+  ps5: "Redeem it on the GTA+ product page in the PlayStation Store by 31 March 2027. It auto-renews monthly at the regular price until you cancel."
+  xbox-x: "Redeem it in Offers & Credits in the Microsoft Store within 180 days of buying. It auto-renews monthly at the regular price until you cancel."
+  xbox-s: "Redeem it in Offers & Credits in the Microsoft Store within 180 days of buying. It auto-renews monthly at the regular price until you cancel."
 confidence: official
 sources:
   - url: "https://support.rockstargames.com/articles/3SZF8cy8dG7lHsLf38uWK1"

@@ -1,0 +1,17 @@
+---
+// A link to another site. Any of them can show spoilers, so the note is part of the link: read before the tap, and read out by a screen reader.
+import './OutsideLink.css';
+
+interface Props {
+  href: string;
+  title: string;
+}
+const { href, title } = Astro.props;
+const host = new URL(href).hostname.replace(/^www\./, '');
+---
+
+<a class="outside" href={href} rel="noopener">
+  <span class="outside__title">{title}</span>
+  {Astro.slots.has('default') && <span class="outside__about"><slot /></span>}
+  <span class="outside__note">{host === title ? '' : `${host} · `}outside site, may contain spoilers</span>
+</a>
