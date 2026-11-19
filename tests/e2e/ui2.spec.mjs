@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { SCREENS, saved, press } from './helpers.mjs';
+import { SCREENS, saved, press, openFold } from './helpers.mjs';
 
 const box = (locator) => locator.evaluate((el) => { const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height, r: r.right, b: r.bottom }; });
 
@@ -67,6 +67,7 @@ for (const path of ['/checklist/', '/']) {
   test(`${path}: the tick row and the arrow are two targets with 16px between, and the arrow has no word`, async ({ page }) => {
     await saved(page, { console: 'ps5' });
     await page.goto(path);
+    if (path === '/') await openFold(page); // the Ask list is folded behind one row once a console is chosen
     // The rows are drawn by script after load: wait until they exist and the page is quiet, then take both boxes in one go, so a
     // slow machine cannot give a box from before the redraw and one from after it.
     const row = page.locator('.todo-list .todo:visible, .todos .todo:visible').first();
@@ -95,7 +96,7 @@ for (const path of ['/checklist/', '/']) {
     await press(row.locator('label span'));
     await expect(row.getByRole('checkbox')).toBeChecked();
     // Rows sit 8px apart.
-    // The label is the tick target: the rows are plain (hairline) rows, so the 8px sits inside each row as the label's margin.
+    // The label is the tick target: the rows are plain (hairline) rows, 8px apart by the list's own gap (round6.spec.mjs reads the gap and the margins).
     const rows = await page.locator('.todo-list .todo:visible label, .todos .todo:visible label').evaluateAll((els) => els.map((e) => e.getBoundingClientRect()).slice(0, 3));
     for (let i = 1; i < rows.length; i++) expect(rows[i].top - rows[i - 1].bottom).toBeGreaterThanOrEqual(7.5);
   });

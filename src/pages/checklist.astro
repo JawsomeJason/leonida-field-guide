@@ -24,7 +24,7 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
     </div>
   )}
 
-  <p class="sync" role="status" data-sync>Syncing is not available here. Your ticks are saved on this device only.</p>
+  <p class="sync" role="status" data-sync>Copying ticks online (syncing) is not available here. Your ticks are saved on this device only.</p>
 
   <div class="stages"><div class="stages__grid">
   {groups.map((g) => (
@@ -106,7 +106,6 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
     align-items: center;
     gap: var(--space-3);
     min-block-size: var(--tap);
-    margin-block: calc(var(--gap-tap) / 2);
     margin-inline: calc(var(--space-2) * -1) 0;
     padding: var(--space-2);
     cursor: pointer;

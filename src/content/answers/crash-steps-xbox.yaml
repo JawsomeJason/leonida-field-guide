@@ -2,7 +2,7 @@ id: crash-steps-xbox
 question: "My Xbox game crashes or freezes. What do I try, in order?"
 short: "Check Xbox's status page, restart the game, then switch the console off and on again (a power cycle). Then update it, test your network, try another profile. Still crashing: contact Xbox Support."
 body: |-
-  In this order, from Xbox's own support pages
+  In this order, from Xbox's own support pages. Also check [Known problems and what changed](/new/).
   1. Check [Xbox status](https://support.xbox.com/xbox-live-status) and [known issues for game releases](https://support.xbox.com/en-US/help/games-apps/game-issues/known-issues-browse). When we looked on 19 November, the known-issues list had no entry for this game.
   2. Quit the game: press the Xbox button, highlight the game, press {options}, choose Quit, then start it again. If a freeze stops you leaving the game, go to step 3.
   3. Switch the console fully off and on again (a power cycle): hold the Xbox button on the front of the console for at least 10 seconds until it turns off, then turn it on again. This erases no games or data. If you do not see the green start-up screen, do it again.

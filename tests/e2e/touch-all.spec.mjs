@@ -38,6 +38,19 @@ for (const state of states) {
   });
 }
 
+// Fix round 6: neighbouring targets in one list need real dead space between them. A planted pair of 48px rows at 0px must be flagged both
+// ways (the hit areas are 0px apart, and a tap at the middle of the gap activates one); the same pair with an 8px list gap must pass.
+test('the measure catches two rows with no gap and passes the same rows 8px apart', async ({ page }) => {
+  const rows = (gap) => `<style>ul{list-style:none;margin:0;padding:0;display:grid;gap:${gap}px}a{display:block;min-height:48px;line-height:48px;color:#000}</style>
+    <ul><li><a href="#a">first row</a></li><li><a href="#b">second row</a></li></ul>`;
+  await page.setContent(rows(0));
+  const touching = (await measure(page)).problems;
+  expect(touching.some((p) => /0px apart/.test(p)), touching.join('\n')).toBe(true);
+  expect(touching.some((p) => /no dead space/.test(p)), touching.join('\n')).toBe(true);
+  await page.setContent(rows(8));
+  expect((await measure(page)).problems).toEqual([]);
+});
+
 // The measure must catch the link the first version let through: a 20px link stretched over a card by a pseudo-element.
 test('the measure catches a bare 20px link inside a stretched card', async ({ page }) => {
   await page.setContent(`<style>.c{position:relative;height:60px;margin:20px 0}.c a{color:#000;text-decoration:none;line-height:20px}.c a::after{content:'';position:absolute;inset:0}</style>

@@ -144,6 +144,55 @@ export function search(records, query) {
   return { found };
 }
 
+/** The consoles a record speaks to: its own list, the consoles it has byConsole text for, and the consoles its sources are tagged for. The index carries this as forConsoles. */
+export const forConsoles = (r) => [...new Set([...(Array.isArray(r.consoles) ? r.consoles : []), ...Object.keys(r.byConsole ?? {}), ...(r.sources ?? []).flatMap((s) => s.console ?? [])])];
+
+/**
+ * The consoles a query names, when it names nothing else (console words plus filler): 'ps5', 'ps 5', 'playstation', 'xbox', 'x box', 'series x', 'sx', 'series s', 'ss'. Otherwise null.
+ * A bare 'xbox' means the chosen console when that is an Xbox, else both Xboxes. shortcut: a typo is forgiven in 'playstation' and 'xbox' only, upgrade if players miss.
+ */
+function consoleIds(query, owned) {
+  const text = String(query ?? '')
+    .toLowerCase()
+    .replace(/['’]/g, '')
+    .replace(/\bx ?box\b/g, 'xbox')
+    .replace(/\bplay ?station( ?5)?\b|\bps ?5\b|\bps\b/g, ' ps5 ')
+    .replace(/\b(xbox )?series x\b|\bxbox x\b|\bxsx\b|\bsx\b/g, ' xboxx ')
+    .replace(/\b(xbox )?series s\b|\bxbox s\b|\bxss\b|\bss\b/g, ' xboxs ')
+    .replace(/\bseries\b/g, ' xbox ');
+  const ids = new Set();
+  for (const t of text.split(SPLIT).filter((w) => w && !STOP.has(w))) {
+    if (t === 'xboxx' || t === 'xboxs') ids.add(`xbox-${t.at(-1)}`);
+    else if (t === 'xbox' || (t[0] === 'x' && near(t, 'xbox'))) (owned?.startsWith('xbox') ? [owned] : ['xbox-x', 'xbox-s']).forEach((c) => ids.add(c));
+    else if (t === 'ps5' || canon(t, true) === 'playstation') ids.add('ps5');
+    else return null;
+  }
+  return ids.size ? [...ids] : null;
+}
+
+/**
+ * What the page lists for a query: records is every record the dial allows. A query that only names a console lists that console's answers (the one the player
+ * asked for, even when it is not theirs), console-tagged answers first, then the rest by rank. Any other query is a search over the answers for the chosen console.
+ */
+export function answersFor(records, query, owned) {
+  const ids = consoleIds(query, owned);
+  if (!ids) return search(records.filter((r) => !Array.isArray(r.consoles) || r.consoles.includes(owned)), query).found;
+  const tagged = (r) => Array.isArray(r.consoles) && ids.some((c) => r.consoles.includes(c));
+  return records
+    .map((r, i) => ({ r, i }))
+    .filter(({ r }) => ids.some((c) => (r.forConsoles ?? forConsoles(r)).includes(c)))
+    .sort((a, b) => tagged(b.r) - tagged(a.r) || (a.r.rank ?? 1e9) - (b.r.rank ?? 1e9) || a.i - b.i)
+    .map(({ r }) => r);
+}
+
+// Words that say a player is asking about something being wrong, stemmed like the query. 'not working' is a phrase (a bare 'work' would catch "does not work", which has its own answer).
+const KNOWN = new Set('bug buggy problem issue glitch glitchy broken broke outage error'.split(' ').map(stem));
+/** A question about known problems: the page puts one row to /new/ ahead of any answers. */
+export const asksKnown = (query) => {
+  const text = String(query ?? '').toLowerCase().replace(/['’]/g, '');
+  return text.split(SPLIT).some((w) => KNOWN.has(stem(w))) || /\b(not|isnt|arent|stopped) working\b/.test(text) || /\b(is|are)\b.*\bdown\b/.test(text);
+};
+
 /** A question about where something is: the guide keeps places behind the dial. */
 export const asksWhere = (query) =>
   /\bwhere(s| is| are| can i (find|get|buy)| do i (find|get|buy))\b|\blocations? (of|for)\b|\bnearest\b|\bwhereabouts\b|\bmaps?\b/.test(query.toLowerCase().replace(/['’]/g, ''));

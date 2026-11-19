@@ -62,9 +62,9 @@ const outside = [{ href: 'https://support.rockstargames.com', title: 'Rockstar S
     <h2>Your progress and privacy</h2>
     <p>
       Nothing here is tracked: no analytics, no ads, no accounts. The only cookies are the sign-in cookie that
-      lets you past the password page and a spoiler-level cookie that holds just the word off, places or mild.
-      The spoiler-level cookie is used for nothing else and is sent only to this site, so its server can keep
-      hidden pages from a device set to Off.
+      lets you past the password page and a spoiler-level cookie (<code>lfg_dial</code>) that holds just the word off, places or mild.
+      Your spoiler setting stays on this device, and its level is also sent to this site in that cookie so the server can
+      refuse hidden pages; the server reads it on each request and keeps nothing, so it is not stored there or tied to a person.
     </p>
     <p>
       This device keeps your settings and ticks in the browser's storage. It also keeps a copy of the guide's
@@ -74,7 +74,7 @@ const outside = [{ href: 'https://support.rockstargames.com', title: 'Rockstar S
       When syncing works, your ticked to-dos are copied to this site's own private store, so they follow
       you from one device to another. Nothing else is sent. The <a href="/checklist/">Checklist</a> says whether the last sync worked:
       if the store cannot be reached, your ticks stay on this device and are sent later. Your spoiler setting,
-      console, theme and stage stay on this device, so every new device starts with spoilers off.
+      console, theme and stage are never copied to the store, so every new device starts with spoilers off.
     </p>
     <p>
       On the <a href="/checklist/">Checklist</a> screen you can also copy your ticks as a code and paste it into another device. The

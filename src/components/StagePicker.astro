@@ -28,6 +28,10 @@ const short: Record<string, string> = { before: 'Before', 'hour-1': 'Hour 1', 'd
     </div>
   </fieldset>
 
+  {/* With a console chosen the full list folds behind one row (home-todos.js writes the count); without script, or before a console is chosen, it stays open and the row is hidden. The inline line sets the first state before paint. */}
+  <details class="stage-fold" open>
+    <summary>See all steps</summary>
+    <script is:inline>document.currentScript.parentElement.open = !document.documentElement.dataset.console;</script>
   {
     stages.map((s) => {
       const items = todos.filter((t) => t.stage === s.id);
@@ -64,6 +68,7 @@ const short: Record<string, string> = { before: 'Before', 'hour-1': 'Hour 1', 'd
       );
     })
   }
+  </details>
 </section>
 
 <script>
@@ -91,6 +96,36 @@ const short: Record<string, string> = { before: 'Before', 'hour-1': 'Hour 1', 'd
   html:not(.js) .stage { margin-block-end: var(--space-5); }
   html.js .todo-links { display: none; }
 
+  /* The fold's row: a raised row ending on the chevron the other rows end on, turned down while open. Shown only with script and a console. */
+  .stage-fold > summary { display: none; }
+  html.js[data-console] .stage-fold > summary:not([hidden]) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-block-size: var(--tap);
+    padding-inline: var(--space-4);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    font: 650 var(--text-body) / 1.2 var(--font-text);
+    cursor: pointer;
+    list-style: none;
+  }
+  .stage-fold > summary::-webkit-details-marker { display: none; }
+  .stage-fold > summary::after {
+    content: '';
+    flex: none;
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    background: var(--muted);
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='m9 6 6 6-6 6'/></svg>") no-repeat center / contain;
+  }
+  .stage-fold[open] > summary::after { rotate: 90deg; }
+  html.js[data-console] .stage-fold[open] > summary { margin-block-end: var(--space-4); }
+  html.js[data-console] .stage-fold > summary:hover { background-color: var(--wash); }
+
   /* With script, the picker's checked radio decides which stage shows. */
   html.js .stage { display: none; }
   .stages:has([name='stage'][value='before']:checked) .stage[data-stage='before'],
@@ -105,7 +140,6 @@ const short: Record<string, string> = { before: 'Before', 'hour-1': 'Hour 1', 'd
     align-items: center;
     gap: var(--space-3);
     min-block-size: var(--tap);
-    margin-block: calc(var(--gap-tap) / 2);
     margin-inline-start: calc(var(--space-2) * -1);
     padding: var(--space-2);
     cursor: pointer;

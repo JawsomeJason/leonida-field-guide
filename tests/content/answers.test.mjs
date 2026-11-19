@@ -19,7 +19,7 @@ test('sizes are in GB, never bytes or GiB', () => {
 
 test('install size: one plain answer per console, with the 512 GB Series S and how to check space', () => {
   const size = get('install-size-and-preload');
-  assert.ok(size.rank <= 2 && size.confidence === 'official');
+  assert.ok(size.rank <= 2 && size.confidence === 'reported');
   for (const c of ['ps5', 'xbox-x', 'xbox-s']) assert.match(size.byConsole[c], /212 GB/, c);
   assert.match(size.byConsole['xbox-s'], /512 GB/);
   assert.match(get('series-s-space').short, /512 GB/);

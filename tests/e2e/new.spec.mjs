@@ -9,7 +9,7 @@ for (const width of [320, 390]) {
     await page.setViewportSize({ width, height: 800 });
     await page.goto('/new/');
 
-    await expect(page.getByRole('heading', { name: 'Known problems' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Known problems', exact: true })).toBeVisible();
     await expect(page.getByText('No game-wide problems are confirmed yet')).toBeVisible();
     // The line is a claim: it says when it was checked (the date of the answer that carries its sources) and links that answer.
     await page.goto('/a/crashes-and-launch-problems/');
@@ -35,7 +35,7 @@ test('the New screen leads with known problems, shows at most three lines per da
   await page.route('**/api/progress', (route) => route.fulfill({ json: empty() }));
   await page.goto('/new/');
   expect(await page.locator('main h2').first().innerText()).toBe('Known problems');
-  const dates = page.locator('section.entry').filter({ has: page.locator('time') }).filter({ hasNot: page.getByRole('heading', { name: 'Known problems' }) });
+  const dates = page.locator('section.entry').filter({ has: page.locator('time') }).filter({ hasNot: page.getByRole('heading', { name: 'Known problems', exact: true }) });
   expect(await dates.count()).toBeLessThanOrEqual(3);
   for (const d of await dates.all()) {
     const lines = await d.locator('li').allInnerTexts();
