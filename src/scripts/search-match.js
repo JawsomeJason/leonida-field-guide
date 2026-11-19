@@ -6,8 +6,7 @@
 
 const STOP = new Set(
   `a an the is are was were be am i me my we you your it its do does did how what whats when who which will would can could should
-   to of on in at for with and or not no if get there this that any have has about from so just much many where dont doesnt cant
-   wont isnt didnt cannot thats im ive`.split(/\s+/),
+   to of on in at for with and or no if get there this that any have has about from so just much many where thats im ive`.split(/\s+/),
 );
 
 // Words players use for the same thing share one name. A group's own name is a member too.
@@ -16,9 +15,10 @@ const SYN = Object.fromEntries(
     playstation: 'ps5 ps playstation',
     xbox: 'xbox series xsx xss',
     storage: 'storage space drive disk ssd hdd gb tb gigabyte',
+    not: 'not doesnt dont cant wont isnt didnt cannot never',
   }).flatMap(([name, words]) => words.split(' ').flatMap((w) => [[w, name], [stem(w), name]])), // stem(w) so drives and spaces fold too
 );
-const CONSOLE_WORD = new Set(['playstation', 'xbox']); // says what the player owns, not what they ask: counts for less
+const WEAK = new Set(['playstation', 'xbox', 'not']); // console words say what the player owns, not what they ask; a no only colours the question: they count for less
 
 const WEIGHT = { question: 4, keywords: 3, short: 2, topic: 1 };
 
@@ -96,7 +96,7 @@ export function search(records, query) {
       for (const k of known) {
         const w = weigh(d.f, k.q, k.q === last);
         if (!w) continue;
-        const c = CONSOLE_WORD.has(k.q) ? 0.3 : 1;
+        const c = WEAK.has(k.q) ? 0.3 : 1;
         matched++;
         count += c;
         score += w * c * k.rare;
