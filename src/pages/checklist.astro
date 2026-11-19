@@ -24,7 +24,7 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
     </div>
   )}
 
-  <p class="sync needs-js" role="status" data-sync>Ticks saved on this device only</p>
+  <p class="sync" role="status" data-sync>Syncing is not available here. Your ticks are saved on this device only.</p>
 
   <div class="stages"><div class="stages__grid">
   {groups.map((g) => (
@@ -60,7 +60,7 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
   <details class="backup needs-js" id="backup">
     <summary>Back up or move your progress</summary>
     <div class="backup__body">
-      <p class="quiet">The code holds your ticks only. Console, theme and spoiler level stay on each device. The code stays on this device until you copy it somewhere.</p>
+      <p class="quiet">The code is text that holds your ticks only: console, theme and spoiler level stay on each device. Copying it sends it nowhere by itself. Paste it on the other device to add those ticks there.</p>
 
       <label for="export-code">Your code</label>
       <textarea id="export-code" rows="4" readonly spellcheck="false" autocomplete="off"></textarea>
@@ -82,7 +82,9 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
 <style>
   .quiet { color: var(--muted); margin-block: 0 var(--space-2); }
   /* One quiet line. Same height whichever text it holds, so the page below never moves. */
-  .sync { min-block-size: 1.5em; margin-block: var(--space-2) 0; color: var(--muted); font: var(--font-label); }
+  .sync { min-block-size: 3.9em; margin-block: var(--space-2) 0; color: var(--muted); font: var(--font-label); } /* room for the sentence: it appears when the first sync ends, and the page must not jump */
+  @media (min-width: 36rem) { .sync { min-block-size: 2.6em; } }
+  :global(html.js) .sync:not([data-state]) { visibility: hidden; } /* script is running and has not heard from the store yet: claim nothing */
   /* Rows stay about 70 characters wide, whole-row targets. With room, the four stages sit in two columns instead of one long stretched list. */
   .stages { container-type: inline-size; }
   @container (min-width: 56rem) {
