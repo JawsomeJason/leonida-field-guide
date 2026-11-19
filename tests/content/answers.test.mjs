@@ -97,3 +97,8 @@ test('every record was checked on a real date and the old per-console storage ca
   for (const a of records) assert.match(a.checked, /^\d{4}-\d{2}-\d{2}$/);
   assert.equal(get('storage-options'), undefined);
 });
+
+test('ranks 1 to 20 are each used once', () => {
+  const ranks = records.map((a) => a.rank).filter(Boolean).sort((a, b) => a - b);
+  assert.deepEqual(ranks, Array.from({ length: 20 }, (_, i) => i + 1));
+});
