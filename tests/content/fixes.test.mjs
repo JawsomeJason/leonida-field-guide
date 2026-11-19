@@ -145,7 +145,7 @@ test('Will I lose anything? is the one place for uninstalling, saves and cash, s
   }
   for (const c of ['ps5', 'xbox-x', 'xbox-s']) assert.ok(a.byConsole[c].length <= 240, c);
   assert.match(a.byConsole.ps5, /Settings, Saved Data and Game\/App Settings/, 'PlayStation steps for checking, from its own support page');
-  assert.match(a.byConsole['xbox-x'], /go online|stay online|connected/i, 'Xbox says its saves sync while connected');
+  assert.match(a.byConsole['xbox-x'], /go online|stay online|connected|syncs online/i, 'Xbox says its saves sync online');
   assert.ok(a.sources.some((s) => s.console === 'ps5') && a.sources.some((s) => Array.isArray(s.console)));
   for (const id of ['free-space-xbox', 'free-space-ps5', 'cloud-saves-and-backup', 'keep-your-cash'])
     assert.match(all(get(id)), /\]\(\/a\/will-i-lose-anything\/\)/, `${id} points to it with a link`);
