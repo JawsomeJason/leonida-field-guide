@@ -105,7 +105,7 @@ test('the Places gate and a closed hidden page tell the player what to open', as
   expect(gate).toContain('Places are off.');
   expect(gate).toContain('choose Places');
   await page.goto('/places/list/');
-  const closed = await page.locator('.guard__intro').innerText();
+  const closed = await page.locator('.guard').innerText();
   expect(closed).toContain('choose Places');
   expect(closed).not.toContain('dial, at the top');
 });
