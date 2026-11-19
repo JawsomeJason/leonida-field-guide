@@ -1,0 +1,36 @@
+---
+// A half sun with horizontal bands on a horizon line, in CSS only: the Ask screen's one larger decoration. Static (never animated), no text, no image.
+---
+
+<div class="sunset" aria-hidden="true"></div>
+
+<style>
+  /* The block's height is fixed in rem (no image, no font, no script), so nothing moves when the page finishes loading. */
+  .sunset {
+    --sun: 3.25rem; /* the sun's height: half of its width */
+    position: relative;
+    block-size: var(--sun);
+    margin-block-start: var(--space-2);
+    border-block-end: 2px solid transparent;
+    border-image: linear-gradient(to right, transparent, var(--accent) 35%, var(--accent-2) 75%, transparent) 1; /* the horizon: the header rule's two colours */
+  }
+  .sunset::before {
+    content: '';
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-end: 12%;
+    inline-size: calc(var(--sun) * 2);
+    block-size: var(--sun);
+    border-radius: var(--sun) var(--sun) 0 0;
+    background: linear-gradient(to bottom, var(--accent) 0%, var(--accent-2) 100%);
+    /* The bands: gaps that get thicker towards the horizon. */
+    mask: linear-gradient(to bottom, #000 0 48%, transparent 48% 53%, #000 53% 66%, transparent 66% 73%, #000 73% 84%, transparent 84% 93%, #000 93%);
+    opacity: 0.9;
+  }
+  @container (min-width: 36rem) {
+    .sunset { --sun: 4.5rem; }
+  }
+  @container (min-width: 60rem) {
+    .sunset { --sun: 5.5rem; }
+  }
+</style>
