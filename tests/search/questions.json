@@ -179,5 +179,8 @@
   {"q": "ps", "first": ["code-regions-ps5", "crash-steps-ps5", "free-space-ps5", "ps5-download-stuck", "ps5-system-update", "ps5-trigger-and-haptics"], "console": "ps5"},
   {"q": "PS5 games", "first": ["code-regions-ps5", "crash-steps-ps5", "free-space-ps5", "ps5-download-stuck", "ps5-system-update", "ps5-trigger-and-haptics"], "console": "ps5"},
   {"q": "ps5", "first": ["code-regions-ps5", "crash-steps-ps5", "free-space-ps5", "ps5-download-stuck", "ps5-system-update", "ps5-trigger-and-haptics"], "console": "xbox-x"},
-  {"q": "playstaton", "first": ["code-regions-ps5", "crash-steps-ps5", "free-space-ps5", "ps5-download-stuck", "ps5-system-update", "ps5-trigger-and-haptics"], "console": "ps5"}
+  {"q": "playstaton", "first": ["code-regions-ps5", "crash-steps-ps5", "free-space-ps5", "ps5-download-stuck", "ps5-system-update", "ps5-trigger-and-haptics"], "console": "ps5"},
+  {"q": "code card, where do I put it", "first": "boxed-copy-redeem"},
+  {"q": "where do i enter my code", "first": "boxed-copy-redeem"},
+  {"q": "i got a code with my copy what do i do", "first": "boxed-copy-redeem"}
 ]
