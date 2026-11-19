@@ -136,5 +136,11 @@
   {"q": "how do i raise my stats", "first": "NONE"},
   {"q": "how do i raise my stats", "first": "core-stats", "dial": "mild"},
   {"q": "is there an official printable map", "first": "NONE"},
-  {"q": "is there an official printable map", "first": "printable-map-and-poster", "dial": "places"}
+  {"q": "is there an official printable map", "first": "printable-map-and-poster", "dial": "places"},
+  {"q": "co-op", "first": "online-or-co-op"},
+  {"q": "is there co-op", "first": "online-or-co-op"},
+  {"q": "coop", "first": "online-or-co-op"},
+  {"q": "multiplayer", "first": "online-or-co-op"},
+  {"q": "can I play with friends", "first": "online-or-co-op"},
+  {"q": "xbox co-op", "first": "online-or-co-op", "console": "xbox-x"}
 ]

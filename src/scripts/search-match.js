@@ -35,6 +35,7 @@ const split = (text) =>
   String(text ?? '')
     .toLowerCase()
     .replace(/['’]/g, '')
+    .replace(/\bco[- ]op\b/g, 'coop') // co-op and co op are one word; its two halves are too short to count alone
     .replace(/(\d)(\p{L})/gu, '$1 $2') // 512gb is 512 and gb
     .split(SPLIT)
     .filter((t) => t && (t.length > 2 || SHORT_OK.has(t) || (t.length > 1 && /\d/.test(t))) && !STOP.has(t));

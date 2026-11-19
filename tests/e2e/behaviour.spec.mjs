@@ -349,9 +349,9 @@ test('the sheet holds the three spoiler levels as radios with their meanings, th
   const levels = sheet(page).locator('.levels');
   await expect(levels.getByRole('radio')).toHaveCount(3);
   await expect(levels.getByRole('radio', { name: /Off/ })).toBeChecked();
-  await expect(levels).toContainText('what the game itself teaches every player');
+  await expect(levels).toContainText('the basics: setup, settings, controls, saving, fixes');
   await expect(levels).toContainText('adds where things are');
-  await expect(levels).toContainText('adds things you would rather find out by playing');
+  await expect(levels).toContainText("adds how the game's systems work in play");
   await expect(sheet(page)).not.toContainText('light gameplay hints');
   await expect(sheet(page).getByRole('radio', { name: 'PS5', exact: true })).toBeVisible();
   await expect(sheet(page).getByRole('radio', { name: 'Night', exact: true })).toBeVisible();
