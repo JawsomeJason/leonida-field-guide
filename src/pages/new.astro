@@ -1,6 +1,11 @@
 ---
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { newEntries } from '../data/new';
+
+// The no-problems line is a claim, so it names the answer that carries its sources and the day that answer was checked.
+const crash = (await getCollection('answers')).find((e) => e.id === 'crashes-and-launch-problems')!.data;
+const checked = new Date(`${crash.checked}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
 const entries = [...newEntries].sort((a, b) => b.date.localeCompare(a.date));
 const problems = entries.flatMap((e) => e.problems);
@@ -15,8 +20,8 @@ const problems = entries.flatMap((e) => e.problems);
     <h2>Known problems</h2>
     {problems.length === 0 ? (
       <>
-        <p>No game-wide problems are confirmed yet. If the game crashes, there are steps to try.</p>
-        <ul class="tap-list"><li><a href="/a/crashes-and-launch-problems/">What to do if the game crashes</a></li></ul>
+        <p>No game-wide problems are confirmed yet. We checked on <time datetime={crash.checked}>{checked}</time>; where we looked is listed in the answer below. If the game crashes, there are steps to try.</p>
+        <ul class="tap-list"><li><a href="/a/crashes-and-launch-problems/">What to do if the game crashes, and where we checked</a></li></ul>
       </>
     ) : (
       <ul class="problems">
@@ -29,7 +34,7 @@ const problems = entries.flatMap((e) => e.problems);
 
   {entries.filter((e) => e.changed.length > 0).map((e) => (
     <section class="entry">
-      <h2><time datetime={e.date}>{e.date}</time></h2>
+      <h2><time datetime={e.date}>{new Date(`${e.date}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })}</time></h2>
       <h3>Changed</h3>
       <ul>{e.changed.map((c) => <li>{c}</li>)}</ul>
     </section>

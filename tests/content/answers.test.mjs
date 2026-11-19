@@ -70,10 +70,11 @@ test('labels: community only for forums; official needs an allowed host; reporte
   }
 });
 
-test('keep-your-cash: Off holds one warning line; the details and which source says what are in the Mild detail', () => {
+test('keep-your-cash: Off holds one warning line with its remedy (bank it); the where and how, and which source says what, are in the Mild detail', () => {
   const a = get('keep-your-cash');
   assert.match(a.short, /can be lost if you die/);
-  assert.doesNotMatch([a.short, a.body].join(' '), /ATM|bank|deposit/i);
+  assert.match(a.short, /Bank it before you take risks/);
+  assert.doesNotMatch([a.short, a.body].join(' '), /ATM|deposit/i);
   const hidden = a.reveal.map((r) => r.text).join(' ');
   assert.match(hidden, /Vice Atlas.*ATM/);
   assert.match(hidden, /GameSpot.*cash on hand/);

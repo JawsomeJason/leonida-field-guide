@@ -2,7 +2,7 @@ id: auto-preload-settings
 question: "How do I make the game download by itself?"
 short: "Turn on automatic downloads or updates, and leave the console on or in its rest or sleep mode."
 body: |-
-  - Rockstar's pre-load (download before launch) FAQ gives the requirements for each console and links to the console maker's own steps.
+  - Rockstar's FAQ for downloading before launch (pre-load) gives the requirements for each console and links to the console maker's own steps.
   - If the automatic download did not happen, start it by hand from your game library.
 topic: setup
 stage: before

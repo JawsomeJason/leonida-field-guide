@@ -10,7 +10,7 @@ body: |-
   Camera and gameplay
   - Camera Shake: switch it off (Camera tab).
   - Subtitles start on a limited default. Switch them to On if you miss lines during action.
-  - Targeting starts on Partial. The aiming card covers the other modes.
+  - Targeting starts on Partial. The other modes are covered in [auto-aim and manual aim](/a/aiming-options/).
   - This guide suggests Minimap and Compass (Dynamic) for a first run.
 topic: settings
 stage: hour-1

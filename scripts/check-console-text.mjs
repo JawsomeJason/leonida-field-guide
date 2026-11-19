@@ -16,7 +16,9 @@ const BANNED = {
 const FAMILY = /Series X(?:\|S| or S| and (?:Series )?S)/gi; // Rockstar's name for both Xbox consoles; both Xbox players own it
 
 /** The strings a player on this console reads: the answer text (their override replaces `short`), body, to-do and details. */
-const seen = (a, c) => [a.question, a.byConsole?.[c] ?? a.short, a.body, a.todo, ...(a.reveal ?? []).map((r) => r.text)].filter(Boolean);
+// A body line for one console sits in <span data-only="ps5">: the other consoles never see it (console.css), so it is cut out of what they read.
+const forConsole = (t, c) => t.replace(/<span data-only="([^"]*)">([\s\S]*?)<\/span>/g, (_, only, inner) => (only.split(' ').includes(c) ? inner : ''));
+const seen = (a, c) => [a.question, a.byConsole?.[c] ?? a.short, a.body, a.todo, ...(a.reveal ?? []).map((r) => r.text)].filter(Boolean).map((t) => forConsole(t, c));
 
 /** [{ id, console, word }] for every banned word in what each console shows. Records limited to other consoles are folded away. */
 export function consoleHits(records) {

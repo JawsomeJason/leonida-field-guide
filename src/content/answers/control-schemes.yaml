@@ -12,8 +12,8 @@ tier: none
 consoles: all
 byConsole:
   ps5: "One guide lists three layouts: Default, Classic and Left-Handed. In Default: run on {l3}, aim {l2}, shoot {r2}, cover {r1}, jump {cross}, melee {square}. Hold {l1} for holster and loadout, hold D-pad Up for the phone."
-  xbox-x: "One guide lists three layouts: Default, Classic and Left-Handed. In Default: run on {l3} (click the left stick), aim {l2}, shoot {r2}, cover {r1}. Hold {l1} for holster and loadout, hold D-pad Up for the phone."
-  xbox-s: "One guide lists three layouts: Default, Classic and Left-Handed. In Default: run on {l3} (click the left stick), aim {l2}, shoot {r2}, cover {r1}. Hold {l1} for holster and loadout, hold D-pad Up for the phone."
+  xbox-x: "One guide lists three layouts: Default, Classic and Left-Handed. In Default: run on {l3} (click the left stick), aim {l2}, shoot {r2}, cover {r1}. Hold {l1} for holster and loadout, hold D-pad Up for the phone. The face buttons (A, B, X, Y) are unconfirmed: our one source names them with another console's button names only, so we do not guess."
+  xbox-s: "One guide lists three layouts: Default, Classic and Left-Handed. In Default: run on {l3} (click the left stick), aim {l2}, shoot {r2}, cover {r1}. Hold {l1} for holster and loadout, hold D-pad Up for the phone. The face buttons (A, B, X, Y) are unconfirmed: our one source names them with another console's button names only, so we do not guess."
 confidence: reported
 sources:
   - url: "https://insider-gaming.com/gta-6-control-settings/"
