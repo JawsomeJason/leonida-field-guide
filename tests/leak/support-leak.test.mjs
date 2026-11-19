@@ -12,8 +12,8 @@ const ws = (s) => s.replace(/\s+/g, ' ');
 
 test('no support quote, and no support field, is in any built file', { skip }, () => {
   const records = loadRecords('src/content/answers');
-  // A quote that is also a sentence some record shows (a short phrase two answers both say) is allowed to be on a page.
-  const shown = ws(records.flatMap((a) => [a.question, a.short, a.body, ...Object.values(a.byConsole ?? {}), ...(a.reveal ?? []).map((r) => r.text)]).filter(Boolean).join(' '));
+  // A quote that is also a sentence or a source title some record shows (a short phrase two answers both say) is allowed to be on a page.
+  const shown = ws(records.flatMap((a) => [a.question, a.short, a.body, ...Object.values(a.byConsole ?? {}), ...(a.reveal ?? []).map((r) => r.text), ...a.sources.map((s) => s.title)]).filter(Boolean).join(' '));
   const quotes = records.flatMap((a) => (a.support ?? []).filter((e) => !shown.includes(ws(e.quote))).map((e) => ({ id: a.id, quote: ws(e.quote) })));
   assert.ok(quotes.length > 100, 'most quotes are not shown text');
   const files = walk('dist').filter((f) => /\.(html|json|js|txt|xml)$/.test(f));
