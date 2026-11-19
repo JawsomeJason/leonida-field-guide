@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { press } from './helpers.mjs';
+import { press, openFold } from './helpers.mjs';
 
 // "Next up" (spec "Screens"): under the search, before "Most asked", the next two unticked steps of the stored stage for the console.
 // Fixture order for the first stage: 01, 05, 13, 17, then the step for one console only.
@@ -43,6 +43,7 @@ test('skips what is ticked: the next steps move on, and the count follows', asyn
 test('ticking a step in the stage list below updates it at once', async ({ page }) => {
   await saved(page, { console: 'ps5' });
   await page.goto('/');
+  await openFold(page);
   await press(page.getByRole('checkbox', { name: 'Do sample thing 01' }));
   expect(await rows(page)).toEqual(['Do sample thing 05', 'Do sample thing 13']);
   await expect(count(page)).toContainText('1 of 5 done');

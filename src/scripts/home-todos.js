@@ -4,6 +4,8 @@ import { applies } from '../lib/console.js';
 // Ticks live in the `done` array of lfg:v1, the same list the checklist page uses.
 const boxes = [...document.querySelectorAll('input[data-todo]')];
 const next = document.querySelector('.next-up');
+const fold = document.querySelector('.stage-fold');
+let chosen; // whether a console was chosen at the last sync; the fold opens or closes only when that changes, so a player's own open or close stays
 
 const doneSet = () => new Set(Array.isArray(read().done) ? read().done : []); // storage is user-editable
 
@@ -13,12 +15,25 @@ const h = (tag, props, ...kids) => {
   return n;
 };
 
+// The steps of the stored stage that fit the console.
+const stepsOf = ({ console, stage }) => [...document.querySelectorAll(`.stage[data-stage="${stage}"] .todo-list .todo`)]
+  .filter((li) => applies(li.dataset.only, console))
+  .map((li) => ({ id: li.querySelector('input').dataset.todo, label: li.querySelector('span').textContent, href: li.querySelector('.todo__open').getAttribute('href') }));
+
+// "See all N steps": the fold's row counts the same steps; with a console chosen the fold starts closed.
+function drawFold(steps, console) {
+  if (!fold) return;
+  const summary = fold.querySelector('summary');
+  summary.hidden = !steps.length;
+  if (!steps.length) fold.open = true; // nothing to fold: the empty-stage line must show
+  summary.textContent = `See all ${steps.length} step${steps.length === 1 ? '' : 's'}`;
+  if (chosen !== undefined && chosen !== !!console) fold.open = !console;
+  chosen = !!console;
+}
+
 // "Next up": the next two unticked steps of the stored stage that fit the console, and how far along the stage is.
-function drawNext(done, { console, stage }) {
+function drawNext(done, steps) {
   if (!next) return;
-  const steps = [...document.querySelectorAll(`.stage[data-stage="${stage}"] .todo-list .todo`)]
-    .filter((li) => applies(li.dataset.only, console))
-    .map((li) => ({ id: li.querySelector('input').dataset.todo, label: li.querySelector('span').textContent, href: li.querySelector('.todo__open').getAttribute('href') }));
   next.hidden = !steps.length;
   const left = steps.filter((s) => !done.has(s.id));
   const rows = left.length ? left.slice(0, 2) : [{ label: 'All done in this stage. See the checklist', href: '/checklist/' }];
@@ -36,7 +51,9 @@ function sync() {
     const mine = boxes.filter((b) => b.closest('[data-stage]') === el.closest('[data-stage]') && applies(b.closest('[data-only]')?.dataset.only, console));
     el.textContent = `${mine.filter((b) => b.checked).length} of ${mine.length} done`;
   }
-  drawNext(done, settings);
+  const steps = stepsOf(settings);
+  drawFold(steps, console);
+  drawNext(done, steps);
 }
 
 addEventListener('change', (e) => {
