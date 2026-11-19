@@ -9,5 +9,11 @@ confidence: community
 sources:
   - url: https://example.com/fixture
     title: Fixture source
+  - url: https://example.com/playstation-page
+    title: Fixture PlayStation page
+    console: ps5
+  - url: https://example.com/xbox-page
+    title: Fixture Xbox page
+    console: [xbox-x, xbox-s]
 checked: "2026-01-01"
 rank: 6

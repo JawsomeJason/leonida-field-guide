@@ -110,12 +110,12 @@ test('the console switch changes the button names', async ({ page }) => {
   // What is on screen, not the text of hidden spans: both consoles' names are in the page.
   const shows = (text) => expect.poll(() => answer.innerText()).toContain(text);
   await shows('Press ✕ / A to open the sample menu.'); // nothing chosen yet: both names, with a spaced slash
-  await press(page.getByRole('button', { name: 'Xbox X', exact: true }));
+  await press(page.getByRole('button', { name: 'Xbox Series X', exact: true }));
   await shows('Press A to open the sample menu on this console.');
   await press(page.getByRole('button', { name: 'PS5', exact: true }));
   await shows('Press ✕ to open the sample menu.');
   await setTheme(page, 'Auto'); // opens the menu
-  await press(page.getByRole('radio', { name: 'Xbox S', exact: true }));
+  await press(page.getByRole('radio', { name: 'Xbox Series S', exact: true }));
   await shows('Press A to open the sample menu.');
 });
 
@@ -207,7 +207,7 @@ test('until a console is chosen only every-console steps show, the rest wait in 
   expect(text).toContain('A');
 });
 
-for (const [c, label, gone, shown] of [['xbox-x', 'Xbox X', /PS5|PlayStation/, 'Xbox only sample step'], ['xbox-s', 'Xbox S', /PS5|PlayStation/, 'Xbox only sample step'], ['ps5', 'PS5', /Xbox/, 'PS5 only sample step']]) {
+for (const [c, label, gone, shown] of [['xbox-x', 'Xbox Series X', /PS5|PlayStation/, 'Xbox only sample step'], ['xbox-s', 'Xbox Series S', /PS5|PlayStation/, 'Xbox only sample step'], ['ps5', 'PS5', /Xbox/, 'PS5 only sample step']]) {
   test(`after choosing ${label}, no screen mentions another console outside the fold`, async ({ page }) => {
     await saved(page, { console: c });
     for (const path of consoleScreens) {
@@ -260,7 +260,7 @@ test('the header is one row: a mark, the console chip and a spoiler chip that sa
   await saved(page, { console: 'xbox-s', dial: 'places' });
   await page.goto('/');
   await expect(chip(page, 'dial')).toHaveText('Spoilers: Places', { useInnerText: true });
-  await expect(chip(page)).toHaveText(/Xbox S/);
+  await expect(chip(page)).toHaveText(/Xbox\s+Series S/, { useInnerText: true });
   const [mark, c, d] = await rowsOf(page, page.locator('.site-name'), chip(page), chip(page, 'dial'));
   expect(new Set([mark, c, d].map((r) => Math.round(r.y))).size, 'one row').toBe(1);
   expect(c.h).toBeGreaterThanOrEqual(48);
@@ -289,13 +289,13 @@ test('the header stays on screen while you scroll, with the console and the leve
   await page.evaluate(() => scrollTo(0, 600));
   expect(await page.evaluate(() => scrollY)).toBeGreaterThan(0);
   expect((await box(page.locator('.site-header'))).y).toBe(0);
-  await expect(chip(page)).toHaveText(/Xbox S/);
+  await expect(chip(page)).toHaveText(/Xbox\s+Series S/, { useInnerText: true });
   await setDial(page, 'Places');
   await expect(chip(page, 'dial')).toHaveText('Spoilers: Places', { useInnerText: true });
 });
 
 test('every screen names the console in use and the spoiler level in the header', async ({ page }) => {
-  for (const [c, name] of [['ps5', 'PS5'], ['xbox-x', 'Xbox X'], ['xbox-s', 'Xbox S']]) {
+  for (const [c, name] of [['ps5', 'PS5'], ['xbox-x', 'Xbox Series X'], ['xbox-s', 'Xbox Series S']]) {
     await saved(page, { console: c });
     for (const path of SCREENS) {
       await page.goto(path);
@@ -305,7 +305,7 @@ test('every screen names the console in use and the spoiler level in the header'
   }
   await page.addInitScript(() => localStorage.clear());
   await page.goto('/');
-  await expect(chip(page)).toContainText('Console'); // never chosen: it asks
+  await expect(chip(page)).toContainText('Choose console', { useInnerText: true }); // never chosen: it asks
 });
 
 test('either chip opens the sheet, with a scrim behind it, and it closes on Escape, the scrim, a choice and Done', async ({ page }) => {
@@ -356,24 +356,7 @@ test('the sheet holds the three spoiler levels as radios with their meanings, th
 });
 
 // ---- Outside links, footer ---- (hidden pages: hidden-gate.spec.mjs)
-test('every link out says it is an outside site that may contain spoilers, before you tap', async ({ page }) => {
-  // Every screen, every answer that has a body, the hidden pages: no link to another site is bare, wherever it sits (the footer too).
-  for (const path of [...SCREENS, '/a/sample-04/', '/a/sample-05/', '/places/list/', '/topics/places/']) {
-    await page.goto(path);
-    const links = page.locator('a[href^="http"]');
-    const n = await links.count();
-    for (let i = 0; i < n; i++) expect(await links.nth(i).innerText(), `${path} link ${i}`).toContain('outside site, may contain spoilers');
-  }
-  await page.goto('/a/sample-02/');
-  expect(await page.locator('main a[href^="http"]').count()).toBeGreaterThan(0);
-  await page.goto('/places/');
-  expect(await page.locator('main a[href^="http"]').count()).toBe(2);
-  await page.goto('/about/');
-  expect(await page.locator('main a[href^="http"]').count(), 'the About page links out to three tools').toBe(3);
-  await page.goto('/a/sample-05/');
-  await expect(page.locator('.prose a[href^="http"]')).toContainText('outside site, may contain spoilers'); // a link inside the body too
-});
-
+// Every list of outside links carries one note: outside.spec.mjs.
 test('the footer About link is a 48px target', async ({ page }) => {
   await page.goto('/');
   const b = await box(page.locator('.footer-link'));

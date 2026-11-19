@@ -45,8 +45,8 @@ test('where is something: places are hidden by design, with the gate and two out
   await expect(note).toBeVisible();
   await expect(note).toContainText('hidden by design');
   await expect(note.getByRole('link', { name: /Places/ })).toHaveAttribute('href', '/places/');
-  await expect(note.getByRole('link', { name: /gtamap\.io.*outside site/ })).toHaveAttribute('href', 'https://gtamap.io');
-  await expect(note.getByRole('link', { name: /FullSweep.*outside site/ })).toHaveAttribute('href', 'https://fullsweepmap.com');
+  await expect(note.getByRole('link', { name: /gtamap\.io/ })).toHaveAttribute('href', 'https://gtamap.io');
+  await expect(note.getByRole('link', { name: /FullSweep/ })).toHaveAttribute('href', 'https://fullsweepmap.com');
   if (test.info().project.use.hasTouch) {
     const { problems } = await measure(page);
     expect(problems).toEqual([]);
