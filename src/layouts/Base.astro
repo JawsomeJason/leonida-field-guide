@@ -39,6 +39,8 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
     <meta name="theme-color" content="#f6efe2" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0b1020" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <!-- Applies saved settings before first paint, so the theme does not flash. -->
     <script is:inline>
       document.documentElement.classList.add('js');
@@ -103,6 +105,7 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
 
     <script>
       import '../scripts/settings.js';
+      import '../scripts/offline.js';
     </script>
   </body>
 </html>

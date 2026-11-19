@@ -1,8 +1,80 @@
 ---
 import Base from '../layouts/Base.astro';
+
+// Outside tools. Each opens normally, in the same tab, and is marked as an outside site.
+const outside = [
+  { href: 'https://gtamap.io', name: 'gtamap.io', note: 'A map. Spoilers are hidden by default.' },
+  { href: 'https://fullsweepmap.com', name: 'FullSweep', note: 'A map and checklists. Spoilers are hidden by default.' },
+  { href: 'https://support.rockstargames.com', name: 'Rockstar Support', note: 'For account, sign-in and code problems.' },
+];
 ---
 
 <Base title="About" description="How this guide handles spoilers and sources, and who it is not.">
   <h1>About this guide</h1>
-  <p>This is an unofficial fan project. It is not affiliated with or endorsed by Rockstar Games or Take-Two Interactive.</p>
+
+  <div class="prose">
+    <h2>Spoilers</h2>
+    <p>
+      The guide has one spoiler dial at the top of every screen. It starts on Off. Off shows answers that
+      carry no spoilers. Places adds spots on the map. Mild adds small details.
+    </p>
+    <p>
+      Hidden text is not in the pages you load at the default setting. It sits in separate files that the
+      app fetches only when you ask. An answer with a hidden detail says so, for example "1 mild detail
+      hidden", and you tap to show it. Showing one detail does not change the dial.
+    </p>
+
+    <h2>Where facts come from</h2>
+    <p>
+      Every answer links to its sources and shows the date we last checked them. We restate facts in our
+      own words. Each answer also carries a confidence level:
+    </p>
+    <ul>
+      <li><strong>Official.</strong> A Rockstar, Take-Two, PlayStation or Xbox page says it, and we read that page.</li>
+      <li><strong>Reported.</strong> A news outlet or creator says it and cites a source, but no official page confirms it.</li>
+      <li><strong>Community.</strong> Players report it. Treat it as likely, not certain.</li>
+    </ul>
+    <p>If we could not find a source, there is no answer. We do not guess.</p>
+
+    <h2>Maps and help</h2>
+    <p>We link to better tools instead of rebuilding them.</p>
+  </div>
+  <ul class="tap-list outside">
+    {outside.map((o) => (
+      <li>
+        <a href={o.href} rel="noopener noreferrer">
+          <span class="name">{o.name}</span>
+          <span class="note">{o.note}</span>
+          <span class="tag">outside site</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <div class="prose">
+    <h2>Unofficial</h2>
+    <p>
+      This is an unofficial fan project. It is not affiliated with or endorsed by Rockstar Games or
+      Take-Two Interactive. It uses no Rockstar logos, art or fonts.
+    </p>
+
+    <h2>Your progress and privacy</h2>
+    <p>
+      Nothing here is tracked. There are no accounts, ads or cookies. Your ticked to-dos and settings are
+      saved on this device only. On the Checklist screen you can copy them as a code and paste it into
+      another device.
+    </p>
+  </div>
 </Base>
+
+<style>
+  .prose { max-inline-size: 40rem; }
+  .prose h2 { margin-block: var(--space-5) var(--space-2); }
+  .prose p, .prose ul { margin-block: 0 var(--space-3); }
+  .prose ul { padding-inline-start: var(--space-5); display: grid; gap: var(--space-2); }
+  .outside { max-inline-size: 40rem; margin-block-end: var(--space-3); }
+  .outside a { display: grid; grid-template-columns: 1fr auto; column-gap: var(--space-3); align-items: center; }
+  .outside .name { font-weight: 600; }
+  .outside .note { grid-column: 1; color: var(--muted); font-size: var(--text-small); }
+  .outside .tag { grid-column: 2; grid-row: 1; font: var(--text-small) / 1 var(--font-mono); color: var(--muted); }
+</style>
