@@ -5,7 +5,7 @@
 import { ENUMS, load, merge, parse, validId } from '../lib/merge.js';
 
 const KEY = 'lfg:v1';
-const defaults = { console: 'ps5', dial: 'off', theme: 'system', stage: 'before' };
+const defaults = { console: '', dial: 'off', theme: 'system', stage: 'before' }; // console '' = never chosen
 
 // The saved v2 state (timestamps included). sync.js sends this.
 export function state() {
@@ -25,7 +25,8 @@ export const read = () => flat(state());
 
 function apply(s) {
   const html = document.documentElement;
-  html.dataset.console = s.console;
+  if (s.console) html.dataset.console = s.console;
+  else delete html.dataset.console; // never chosen: the page shows only every-console records and asks
   html.dataset.dial = s.dial;
   if (s.theme === 'day' || s.theme === 'night') html.dataset.theme = s.theme;
   else delete html.dataset.theme;

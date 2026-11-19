@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import './console.css';
 
 /* Cross-document view transitions, as an enhancement. The chrome stays put. */
 @media (prefers-reduced-motion: no-preference) {
@@ -52,22 +53,22 @@ a, button, summary, label, input { touch-action: manipulation; }
   text-decoration: none;
 }
 /* Raised surfaces: one shadow token. Day lifts off the page; night gets a faint top edge instead. */
-.tap-list a, .seg label, .menu summary, .ctabs button, .todo-list .todo label, .todo__tick, .backup summary, .reveal__btn, .card, .tile { box-shadow: var(--shadow); }
+.tap-list a, .seg label, .menu summary, .ctabs button, .todo-list .todo label, .todo__tick, .backup summary, .reveal__btn, .card, .tile, .console-btn, .other-consoles summary { box-shadow: var(--shadow); }
 
 /* Pressed feedback, one recipe: the surface darkens on press-in with no delay, shrinks slightly, and eases back on release. */
-.tap-list a, .nav a, .seg label, .menu summary, .ctabs button, .todo-list .todo label, .todo__tick, .todo__open, .backup summary, .reveal__btn, .btn, .gate__on, .tile, .card {
+.tap-list a, .nav a, .seg label, .menu summary, .ctabs button, .todo-list .todo label, .todo__tick, .todo__open, .backup summary, .reveal__btn, .btn, .gate__on, .tile, .card, .console-btn, .other-consoles summary {
   transition: scale 160ms var(--ease-out), background-color 160ms var(--ease-out), color 140ms var(--ease-out), border-color 140ms var(--ease-out);
 }
 /* A selected control flips colour at once: a half-faded fill under its label would fail contrast mid-change. */
 .seg label, .ctabs button { transition-property: scale; }
 :is(.tap-list a, .nav a, .todo-list .todo label, .todo__tick, .todo__open, .backup summary, .reveal__btn, .tile):active,
 .card:has(.card__q a:active) { scale: var(--press-scale); transition-duration: 70ms, 0s, 140ms, 140ms; }
-:is(.seg label, .menu summary, .ctabs button, .btn, .gate__on):active { scale: var(--press-scale-small); transition-duration: 70ms, 0s, 140ms, 140ms; }
+:is(.seg label, .menu summary, .ctabs button, .btn, .gate__on, .console-btn, .other-consoles summary):active { scale: var(--press-scale-small); transition-duration: 70ms, 0s, 140ms, 140ms; }
 @media (prefers-reduced-motion: reduce) {
   :is(a, button, summary, label, .card):active { scale: none !important; }
 }
 @media (hover: hover) {
-  .tap-list a:hover, .nav a:hover, .menu summary:hover, .seg label:hover, .tile:hover, .todo-list .todo label:hover, .todo__tick:hover, .card:has(.card__q a:hover) { background-color: var(--wash); }
+  .tap-list a:hover, .nav a:hover, .menu summary:hover, .seg label:hover, .tile:hover, .todo-list .todo label:hover, .todo__tick:hover, .console-btn:hover, .other-consoles summary:hover, .card:has(.card__q a:hover) { background-color: var(--wash); }
 }
 
 /* Tick box, shared by the Ask screen and the Checklist. */

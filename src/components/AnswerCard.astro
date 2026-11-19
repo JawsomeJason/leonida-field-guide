@@ -2,6 +2,8 @@
 // Compact card for cheat sheets and lists; `full` is the answer page. Same data, two sizes.
 import ConsoleText from './ConsoleText.astro';
 import Reveal from './Reveal.astro';
+import OtherConsoles from './OtherConsoles.astro';
+import { onlyOf } from '../lib/console.js';
 import { consoleLabels, pathOf, renderBody, type AnswerData } from '../lib/answers';
 import './AnswerCard.css';
 
@@ -53,7 +55,8 @@ const consoles = [['ps5', 'PS5'], ['xbox-x', 'Xbox X'], ['xbox-s', 'Xbox S']];
     {related.length > 0 && (
       <section aria-labelledby="related">
         <h2 id="related">Related</h2>
-        <ul class="tap-list">{related.map((b) => <li><a href={pathOf(b)}>{b.question}</a></li>)}</ul>
+        <ul class="tap-list">{related.map((b) => <li data-only={onlyOf(b.consoles)}><a href={pathOf(b)}>{b.question}</a></li>)}</ul>
+        <OtherConsoles items={related.map((b) => ({ ...b, label: b.question }))} />
       </section>
     )}
   </article>

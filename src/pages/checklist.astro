@@ -2,12 +2,13 @@
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import { stages } from '../data/stages';
+import OtherConsoles from '../components/OtherConsoles.astro';
+import { onlyOf } from '../lib/console.js';
+import { todosOf } from '../lib/answers';
 
 // Default page: `none` tier only, so a hidden to-do never reaches this HTML.
-const todos = (await getCollection('answers'))
-  .filter((a) => a.data.todo && a.data.tier === 'none')
-  .sort((a, b) => (a.data.rank ?? 999) - (b.data.rank ?? 999) || a.data.id.localeCompare(b.data.id));
-const groups = stages.map((s) => ({ ...s, items: todos.filter((a) => a.data.stage === s.id) }));
+const todos = todosOf((await getCollection('answers')).map((e) => e.data)); // the same order as the Ask screen
+const groups = stages.map((s) => ({ ...s, items: todos.filter((a) => a.stage === s.id) }));
 const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
 ---
 
@@ -36,16 +37,17 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
           <progress class="needs-js" max={g.items.length} value="0" aria-label={`${g.label} progress`}></progress>
           <ul class="tap-list todos">
             {g.items.map((a) => (
-              <li class="todo">
-                <a class="todo__go" href={`/a/${a.data.id}/`}>{a.data.todo}</a>
+              <li class="todo" data-only={onlyOf(a.consoles)}>
+                <a class="todo__go" href={`/a/${a.id}/`}>{a.todo}</a>
                 <label class="todo__tick needs-js">
-                  <input type="checkbox" value={a.data.id} data-todo />
-                  <span>{a.data.todo}</span>
+                  <input type="checkbox" value={a.id} data-todo />
+                  <span>{a.todo}</span>
                 </label>
-                <a class="todo__open needs-js" href={`/a/${a.data.id}/`} aria-label={`Open answer: ${a.data.todo}`}>Answer</a>
+                <a class="todo__open needs-js" href={`/a/${a.id}/`} aria-label={`Open answer: ${a.todo}`}>Answer</a>
               </li>
             ))}
           </ul>
+          <OtherConsoles items={g.items.map((a) => ({ ...a, label: a.todo! }))} />
         </>
       )}
     </section>
@@ -113,6 +115,7 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
     overflow: clip;
     background: var(--line);
   }
+  progress[hidden] { display: none; }
   progress::-webkit-progress-bar { background: transparent; }
   progress::-webkit-progress-value { background: var(--accent); }
   progress::-moz-progress-bar { background: var(--accent); }

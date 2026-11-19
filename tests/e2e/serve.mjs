@@ -20,4 +20,4 @@ createServer(async (req, res) => {
   } catch {
     res.writeHead(404).end('Not found');
   }
-}).listen(4399, '127.0.0.1', () => console.log('serving', DIST, 'on 4399'));
+}).listen(Number(process.env.LFG_PORT ?? 4399), '127.0.0.1', () => console.log('serving', DIST, 'on', process.env.LFG_PORT ?? 4399));

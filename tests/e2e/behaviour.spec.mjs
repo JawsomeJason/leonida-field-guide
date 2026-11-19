@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { ranked, press, setDial, setTheme, saved, SCREENS, NIGHT, DAY } from './helpers.mjs';
+import { ranked, records, press, setDial, setTheme, saved, SCREENS, NIGHT, DAY } from './helpers.mjs';
 
 test.describe('two taps from the home screen', () => {
   for (const a of ranked) {
@@ -109,7 +109,7 @@ test('the console switch changes the button names', async ({ page }) => {
   const answer = page.locator('.answer__a');
   // What is on screen, not the text of hidden spans: both consoles' names are in the page.
   const shows = (text) => expect.poll(() => answer.innerText()).toContain(text);
-  await shows('Press ✕ to open the sample menu.');
+  await shows('Press ✕A to open the sample menu.'); // nothing chosen yet: both names
   await press(page.getByRole('button', { name: 'Xbox X', exact: true }));
   await shows('Press A to open the sample menu on this console.');
   await press(page.getByRole('button', { name: 'PS5', exact: true }));
@@ -138,4 +138,87 @@ test('no screen logs an error to the console, with everything shown', async ({ p
     await page.waitForLoadState('networkidle');
   }
   expect(errors).toEqual([]);
+});
+
+// ---- Console choice ----
+const forConsole = (c) => records.filter((a) => a.tier === 'none' && a.todo && (a.consoles === 'all' || a.consoles.includes(c)));
+const consoleScreens = ['/', '/topics/', '/topics/setup/', '/a/sample-04/', '/checklist/'];
+// What a player reads: steps, answers and cards. The controls that name every console (header, console buttons) are left out; so is a closed fold.
+const seen = async (page) => {
+  await page.addStyleTag({ content: '.site-header, .setting, .console-card { display: none !important; }' });
+  return page.evaluate(() => document.body.innerText);
+};
+
+test('first open asks which console, with three big buttons, and the choice sticks', async ({ page }) => {
+  await page.goto('/');
+  const card = page.getByRole('region', { name: 'Which console do you play on?' });
+  await expect(card).toBeVisible();
+  const first = await page.evaluate(() => document.querySelector('main').firstElementChild.className);
+  expect(first).toContain('console-card');
+  for (const name of ['PS5', 'Xbox Series X', 'Xbox Series S']) expect((await card.getByRole('button', { name, exact: true }).boundingBox()).height).toBeGreaterThanOrEqual(60);
+  await press(card.getByRole('button', { name: 'Xbox Series S', exact: true }));
+  await expect(card).toBeHidden();
+  await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
+  await page.reload();
+  await expect(card).toBeHidden();
+  expect(await page.evaluate(() => document.documentElement.dataset.console)).toBe('xbox-s');
+});
+
+test('until a console is chosen only every-console steps show, the rest wait in the Other consoles fold', async ({ page }) => {
+  for (const path of ['/', '/topics/setup/', '/checklist/']) {
+    await page.goto(path);
+    const text = await seen(page);
+    expect(text, path).not.toContain('PS5 only sample step');
+    expect(text, path).not.toContain('Xbox only sample step');
+    expect(text, path).toContain('Other consoles');
+    await press(page.getByText('Other consoles', { exact: true }).first());
+    const fold = page.locator('.other-consoles').first();
+    await expect(fold.getByRole('link')).toHaveCount(2);
+  }
+  await page.goto('/a/sample-04/');
+  const text = await page.locator('.answer__a').innerText();
+  expect(text).toContain('✕');
+  expect(text).toContain('A');
+});
+
+for (const [c, label, gone, shown] of [['xbox-x', 'Xbox X', /PS5|PlayStation/, 'Xbox only sample step'], ['xbox-s', 'Xbox S', /PS5|PlayStation/, 'Xbox only sample step'], ['ps5', 'PS5', /Xbox/, 'PS5 only sample step']]) {
+  test(`after choosing ${label}, no screen mentions another console outside the fold`, async ({ page }) => {
+    await saved(page, { console: c });
+    for (const path of consoleScreens) {
+      await page.goto(path);
+      const text = await seen(page);
+      expect(text, `${path} names another console`).not.toMatch(gone);
+    }
+    await page.goto('/');
+    await expect(page.getByRole('checkbox', { name: shown })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Which console do you play on?' })).toBeHidden();
+    // The other console's step is a link in the fold, not a tick box.
+    await press(page.getByText('Other consoles', { exact: true }));
+    await expect(page.locator('.other-consoles a:visible')).toHaveCount(1);
+    await page.goto('/a/sample-04/');
+    const answer = await page.locator('.answer__a').innerText();
+    if (c === 'ps5') expect(answer).toMatch(/Press ✕ to open the sample menu\.$/);
+    else expect(answer).toMatch(/Press A to open the sample menu/);
+  });
+}
+
+test('progress counts only the steps for the chosen console', async ({ page }) => {
+  for (const c of ['ps5', 'xbox-s']) {
+    await saved(page, { console: c });
+    await page.goto('/checklist/');
+    await expect(page.locator('[data-overall] [data-count]')).toHaveText(`0 of ${forConsole(c).length} done`);
+  }
+});
+
+test('the checklist lists steps in the order the Ask screen does', async ({ page }) => {
+  await saved(page, { console: 'ps5' });
+  for (const [stage, label] of [['before', 'Before'], ['day-1', 'Day 1']]) {
+    await page.goto('/');
+    await press(page.getByRole('radio', { name: label, exact: true }));
+    const home = await page.locator(`.stage[data-stage="${stage}"] .todo-list .todo:visible label`).allInnerTexts();
+    await page.goto('/checklist/');
+    const checklist = await page.locator(`section[aria-labelledby="${stage}"] .todo:visible .todo__tick`).allInnerTexts();
+    expect(home.length).toBeGreaterThan(1);
+    expect(checklist.map((t) => t.trim())).toEqual(home.map((t) => t.trim()));
+  }
 });

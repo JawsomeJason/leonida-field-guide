@@ -1,6 +1,6 @@
 .ct > [data-c] { display: none; }
-/* PS5 is the console until a player picks another, so it also covers "nothing saved yet". */
-html:is(:not([data-console]), [data-console='ps5']) .ct {
+/* Nothing chosen yet shows the base text, which is written for every console. */
+html[data-console='ps5'] .ct {
   &:has(> [data-c='ps5']) > .ct-base { display: none; }
   & > [data-c='ps5'] { display: inline; }
 }
@@ -29,6 +29,9 @@ kbd {
   white-space: nowrap;
 }
 kbd .xb { display: none; }
+/* Nothing chosen yet: both names, PlayStation first. */
+html:not([data-console]) kbd .xb { display: inline; }
+html:not([data-console]) kbd .ps::after { content: '/'; padding-inline: 0.15em; color: var(--muted); }
 html:is([data-console='xbox-x'], [data-console='xbox-s']) kbd {
   & .ps { display: none; }
   & .xb { display: inline; }
