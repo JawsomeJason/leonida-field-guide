@@ -7,3 +7,7 @@ research_notes/
 reports/
 .notes/
 .astro/
+
+# third-party skills installed for local agents; not ours to publish
+.claude/skills/
+skills-lock.json
