@@ -1,0 +1,9 @@
+---
+import Base from '../layouts/Base.astro';
+import { stages } from '../data/stages';
+---
+
+<Base title="Checklist" description="Your to-dos, by stage of play.">
+  <h1>Your checklist</h1>
+  {stages.map((s) => <h2 id={s.id}>{s.label}</h2>)}
+</Base>

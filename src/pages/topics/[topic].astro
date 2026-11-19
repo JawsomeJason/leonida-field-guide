@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { topics } from '../../data/topics';
+
+export const getStaticPaths = () => topics.map((t) => ({ params: { topic: t.id }, props: { label: t.label } }));
+
+const { topic } = Astro.params;
+const { label } = Astro.props;
+const answers = (await getCollection('answers')).filter((a) => a.data.topic === topic && a.data.tier === 'none');
+---
+
+<Base title={label} description={`Answers about ${label.toLowerCase()}.`}>
+  <h1>{label}</h1>
+  {answers.length === 0 && <p>No answers here yet.</p>}
+  <ul class="tap-list">
+    {answers.map((a) => <li><a href={`/a/${a.data.id}/`}>{a.data.question}</a></li>)}
+  </ul>
+</Base>

@@ -1,0 +1,201 @@
+@import './tokens.css';
+
+/* Cross-document view transitions, as an enhancement. The chrome stays put. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+.site-header { view-transition-name: header; }
+.nav { view-transition-name: nav; }
+
+*, ::before, ::after { box-sizing: border-box; }
+
+html {
+  overscroll-behavior-y: contain; /* no pull-to-refresh fights */
+  scroll-padding-block-end: calc(var(--tap) + var(--safe-bottom)); /* focus stays clear of the bottom bar */
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: var(--text-body) / 1.5 var(--font-text);
+  overflow-wrap: break-word;
+  min-block-size: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1 { font-size: var(--text-h1); line-height: 1.2; margin-block: 0 var(--space-4); text-wrap: balance; }
+h2 { font-size: var(--text-h2); line-height: 1.3; }
+a { color: var(--accent); }
+kbd, code { font-family: var(--font-mono); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+input, select, textarea { font-size: var(--text-input); }
+
+/* Touch rules shared by every screen: no double-tap delay, a pressed state, hover only where hover exists. */
+a, button, summary, label, input { touch-action: manipulation; }
+
+/* A list of whole-row targets. Use it for any list of links. */
+.tap-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--gap-tap); }
+.tap-list a {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--tap);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+@media (hover: hover) {
+  .tap-list a:hover, .nav a:hover, .menu summary:hover, .seg label:hover { background-color: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+}
+
+/* Header */
+.site-header { position: relative; background: var(--bg); padding-block-start: var(--safe-top); }
+.site-header::after {
+  content: '';
+  display: block;
+  block-size: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+.site-header__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-tap) var(--space-4);
+  padding: var(--space-2) max(var(--space-4), var(--safe-right)) var(--space-2) max(var(--space-4), var(--safe-left));
+}
+.site-name {
+  flex: 1 1 auto;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--tap);
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+}
+.dial { order: 3; flex: 1 1 100%; }
+@media (min-width: 37.5em) {
+  .dial { order: 0; flex: 0 0 auto; }
+}
+
+fieldset { min-inline-size: 0; margin: 0; padding: 0; border: 0; }
+.dial, .setting { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-tap) var(--space-3); }
+.dial legend, .setting legend {
+  font: var(--text-small) / 1 var(--font-mono);
+  color: var(--muted);
+  float: inline-start; /* un-floated, a legend cannot sit beside the controls */
+  padding: 0;
+}
+.seg { display: flex; flex: 1 1 12rem; gap: var(--gap-tap); }
+.seg label {
+  position: relative;
+  flex: 1 1 auto;
+  display: grid;
+  place-items: center;
+  min-block-size: var(--tap);
+  min-inline-size: var(--tap);
+  padding-inline: var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer;
+}
+.seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+/* Selected: fill, not weight, so nothing changes size when the state changes. */
+.seg label:has(:checked) { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.seg label:has(:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; z-index: 1; }
+
+/* The settings menu needs JS to do anything, so it is hidden without it. */
+html:not(.js) .needs-js { display: none; }
+.menu { position: static; }
+.menu summary {
+  display: grid;
+  place-items: center;
+  min-block-size: var(--tap);
+  min-inline-size: var(--tap);
+  padding-inline: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer;
+}
+.menu-panel {
+  position: absolute;
+  z-index: 10;
+  inset-inline-end: max(var(--space-4), var(--safe-right));
+  inline-size: min(22rem, calc(100% - 2 * var(--space-4)));
+  display: grid;
+  gap: var(--space-4);
+  margin-block-start: var(--gap-tap);
+  padding: var(--space-4);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+/* Page frame: phone is one column with a bottom bar. */
+.frame { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); }
+.main { min-inline-size: 0; padding: var(--space-4) max(var(--space-4), var(--safe-right)) var(--space-4) max(var(--space-4), var(--safe-left)); }
+.list { display: none; }
+
+.nav {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 5;
+  display: flex;
+  gap: var(--gap-tap);
+  padding: 0 var(--safe-right) var(--safe-bottom) var(--safe-left);
+  background: var(--surface);
+  border-block-start: 1px solid var(--line);
+}
+.nav a {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  min-block-size: var(--tap);
+  padding: var(--space-2);
+  color: var(--muted);
+  text-decoration: none;
+  border-block-start: 3px solid transparent;
+}
+/* Current page: accent colour plus an edge bar, never colour alone. */
+.nav a[aria-current='page'] { color: var(--accent); border-color: var(--accent); }
+
+.site-footer {
+  padding: var(--space-4) max(var(--space-4), var(--safe-right)) calc(var(--tap) + var(--space-4) + var(--safe-bottom)) max(var(--space-4), var(--safe-left));
+  border-block-start: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--text-small);
+}
+
+/* Tablet: the bar becomes a left rail. */
+@media (min-width: 37.5em) {
+  .frame { grid-template-columns: calc(var(--rail) + var(--safe-left)) minmax(0, 1fr); grid-template-areas: 'nav main'; }
+  .main { grid-area: main; padding-inline-start: var(--space-4); }
+  .nav {
+    grid-area: nav;
+    position: sticky;
+    inset: 0 auto auto 0;
+    align-self: start;
+    flex-direction: column;
+    padding: 0 0 0 var(--safe-left);
+    border-block-start: 0;
+    border-inline-end: 1px solid var(--line);
+  }
+  .nav a { justify-items: start; border-block-start: 0; border-inline-start: 3px solid transparent; padding-inline: var(--space-4); }
+  .site-footer { padding-block-end: var(--space-4); }
+}
+
+/* Desktop: rail, list column, detail column. */
+@media (min-width: 64em) {
+  .frame--list { grid-template-columns: calc(var(--rail) + var(--safe-left)) minmax(16rem, 22rem) minmax(0, 1fr); grid-template-areas: 'nav list main'; }
+  .frame--list .list { display: block; grid-area: list; padding: var(--space-4); border-inline-end: 1px solid var(--line); }
+}
+
+/* Pressed feedback. Last, so it wins over the resting backgrounds above. */
+:is(a, button, summary, label):active { background-color: color-mix(in srgb, var(--accent) 22%, var(--surface)); }

@@ -1,0 +1,21 @@
+{
+  "name": "leonida-field-guide",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check && npm run build"
+  },
+  "//": "Later steps add check:leak, check:behaviour and check:a11y here and chain them into `check`. Not stubbed on purpose: a stub that always passes proves nothing.",
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "astro": "^7.4.13",
+    "typescript": "^6.0.3"
+  }
+}

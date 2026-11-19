@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import { newEntries } from '../data/new';
+---
+
+<Base title="New" description="What changed in recent refreshes, and known problems with fixes.">
+  <h1>What's new</h1>
+  {newEntries.length === 0 && <p>Nothing has changed since launch.</p>}
+  {newEntries.map((e) => (
+    <section>
+      <h2><time datetime={e.date}>{e.date}</time></h2>
+      <ul>{e.changed.map((c) => <li>{c}</li>)}</ul>
+      <ul>{e.problems.map((p) => <li>{p.text} {p.fix}</li>)}</ul>
+    </section>
+  ))}
+</Base>

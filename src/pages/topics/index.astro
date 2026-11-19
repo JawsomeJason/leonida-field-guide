@@ -1,0 +1,11 @@
+---
+import Base from '../../layouts/Base.astro';
+import { topics } from '../../data/topics';
+---
+
+<Base title="Topics" description="Browse the guide by topic.">
+  <h1>Topics</h1>
+  <ul class="tap-list">
+    {topics.map((t) => <li><a href={`/topics/${t.id}/`}>{t.label}</a></li>)}
+  </ul>
+</Base>

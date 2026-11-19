@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+// Hidden-tier records get their own pages under /places/ and /mild/ in a later step.
+export async function getStaticPaths() {
+  const answers = await getCollection('answers', (a) => a.data.tier === 'none');
+  return answers.map((a) => ({ params: { id: a.data.id }, props: { answer: a.data } }));
+}
+
+const { answer } = Astro.props;
+---
+
+<Base title={answer.question} description={answer.short}>
+  <h1>{answer.question}</h1>
+  <p>{answer.short}</p>
+</Base>
