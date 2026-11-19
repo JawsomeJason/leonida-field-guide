@@ -306,3 +306,57 @@ test('the sheet explains the three dial levels', async ({ page }) => {
   await expect(help).toContainText('adds where things are');
   await expect(help).toContainText('adds light gameplay hints');
 });
+
+// ---- Hidden pages, outside links, footer ----
+const hiddenPages = [
+  ['/places/list/', 'places', /quokka marker/i],
+  ['/places/place-01/', 'places', /quokka marker/i],
+  ['/places/sample-02/', 'places', /Quokka note one/],
+  ['/mild/mild-01/', 'mild', /wombat switch/i],
+  ['/mild/sample-02/', 'mild', /Wombat note one/],
+];
+const on = (page) => page.evaluate(() => document.body.innerText);
+
+for (const [path, tier, secret] of hiddenPages) {
+  test(`${path} opens closed at Off, and one tap shows it`, async ({ page }) => {
+    await page.goto(path);
+    const closed = await on(page);
+    expect(closed, 'hidden text is on screen at Off').not.toMatch(secret);
+    expect(closed).toContain('Show this page');
+    expect(closed).toContain('Go back');
+    expect(closed).toMatch(tier === 'places' ? /places and collectibles/ : /mild gameplay hints/);
+    expect(closed).toContain('below');
+    await press(page.getByText('Show this page', { exact: true }));
+    expect(await on(page)).toMatch(secret);
+  });
+
+  test(`${path} opens by itself only when the dial reaches ${tier}`, async ({ page }) => {
+    for (const dial of ['places', 'mild']) {
+      await saved(page, { dial });
+      await page.goto(path);
+      const opens = tier === 'places' || dial === 'mild';
+      if (opens) await expect.poll(() => on(page)).toMatch(secret);
+      else expect(await on(page)).not.toMatch(secret);
+    }
+  });
+}
+
+test('every link out says it is an outside site that may contain spoilers, before you tap', async ({ page }) => {
+  for (const path of ['/', '/a/sample-02/', '/a/sample-04/', '/places/', '/topics/places/']) {
+    await page.goto(path);
+    const links = page.locator('main a[href^="http"]');
+    const n = await links.count();
+    for (let i = 0; i < n; i++) expect(await links.nth(i).innerText(), `${path} link ${i}`).toContain('outside site, may contain spoilers');
+  }
+  await page.goto('/a/sample-02/');
+  expect(await page.locator('main a[href^="http"]').count()).toBeGreaterThan(0);
+  await page.goto('/places/');
+  expect(await page.locator('main a[href^="http"]').count()).toBe(2);
+});
+
+test('the footer About link is a 48px target', async ({ page }) => {
+  await page.goto('/');
+  const b = await box(page.locator('.footer-link'));
+  expect(b.h).toBeGreaterThanOrEqual(48);
+  expect(b.w).toBeGreaterThanOrEqual(48);
+});
