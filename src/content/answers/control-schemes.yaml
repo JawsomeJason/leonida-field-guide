@@ -4,7 +4,7 @@ short: "Insider Gaming's guide lists three layouts: Default, Classic and Left-Ha
 body: |-
   - In a car with Default: the right trigger accelerates and the left trigger brakes and reverses.
   - Classic and Left-Handed move buttons around. We do not list them because the research behind this site found guides disagreeing on Classic.
-  - Where the guide reuses another console's face-button names, we leave them out and give only trigger, bumper and stick mappings.
+  - <span data-only="xbox-x xbox-s">The guide names the face buttons with another console's button names only, so we leave them out and give only trigger, bumper and stick mappings.</span>
   - Rockstar has not published a control chart that we found. The in-game menu is the final word.
 topic: controls
 stage: hour-1

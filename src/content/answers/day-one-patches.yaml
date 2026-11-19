@@ -4,6 +4,7 @@ short: "MakeTechEasier reports two updates reached early (pre-loaded) copies: 01
 body: |-
   - The sizes come from console download prompts and press reports, not from Rockstar or the console makers.
   - MakeTechEasier checked Rockstar's newswire and product page on 17 November and found no mention of either update.
+  - <span data-only="ps5">To get an update by hand: highlight the game, press Options, then choose Check for Update. PlayStation's own steps are in [My PS5 game crashes or freezes](/a/crash-steps-ps5/).</span><span data-only="xbox-x xbox-s">Turn on automatic updates and leave the console on or in Sleep mode, so the game updates by itself: [How do I make the game download by itself?](/a/auto-preload-settings/).</span>
   - gta6filesize.com estimates a bigger day-one patch of 15 to 50 GB. That is its own estimate, and Rockstar has not sized one.
 topic: setup
 stage: hour-1

@@ -2,7 +2,7 @@ id: will-i-lose-anything
 question: "Will I lose my progress, saves or cash?"
 short: "Console makers say deleting a game keeps what you bought. Saves for this game are not confirmed as backed up, so check first. GameSpot reports carried cash can be lost: bank it before you take risks."
 byConsole:
-  ps5: "PlayStation says a deleted game can be downloaded again. Saves for this game are not confirmed as backed up: upload them first (Settings, Saved Data and Game/App Settings). GameSpot reports carried cash can be lost: bank it."
+  ps5: "PlayStation says a deleted game can be downloaded again. Saves are not confirmed as backed up: with PlayStation Plus, upload them first (Settings, Saved Data and Game/App Settings). GameSpot reports carried cash can be lost: bank it."
   xbox-x: "Xbox says uninstalling keeps your licence, and saved data syncs online. Cloud saves for this game are reported, not confirmed: stay signed in and online until it syncs. GameSpot reports carried cash can be lost: bank it first."
   xbox-s: "Xbox says uninstalling keeps your licence, and saved data syncs online. Cloud saves for this game are reported, not confirmed: stay signed in and online until it syncs. GameSpot reports carried cash can be lost: bank it first."
 body: |-

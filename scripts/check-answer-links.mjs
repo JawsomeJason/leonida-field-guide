@@ -1,5 +1,6 @@
 // Answer-link check (docs/spec.md "First content", Pointers). Two rules, both about a player who is told to go somewhere and has no link:
 //  (a) text that points at another answer ("see the Make room card", "the X answer", another record's whole question) links it;
+//  (c) `short` and `byConsole` never say "below" or "above" (nothing there is a link), and a screen named in words ("the What's new screen", "the Checklist page") is a link to it.
 //  (b) a record with a `todo` either holds numbered or bulleted steps, or links the record that does (tests/content/todo-howto.json names
 //      the how-to records for a step whose own bullets are facts, not steps).
 // `short` and `byConsole` are plain text and cannot hold a link, so a pointer there always fails: move it into the body.
@@ -39,6 +40,26 @@ export function unlinkedMentions(records, allow = ALLOW.phrases) {
   return hits;
 }
 
+// A screen named in words is a link to it. Markdown links are cut out first, so a linked name passes.
+const SCREEN = /\b(?:what['’]s new|checklist|topics|about|places)\s+(?:screen|page)\b/i;
+const MD_LINK = /\[[^\]]*\]\([^)]*\)/g;
+
+/** [{ id, phrase }]: a "below"/"above" in text that holds no link, or a screen named in words with no link. */
+export function pointerGaps(records) {
+  const hits = [];
+  for (const a of records) {
+    for (const t of [a.short, ...Object.values(a.byConsole ?? {})].filter(Boolean)) {
+      const m = t.match(/\b(?:below|above(?!\s+\d))\b/i) // "above 48 fps" is a figure, not a place;
+      if (m) hits.push({ id: a.id, phrase: m[0] });
+    }
+    for (const t of [a.body, ...(a.reveal ?? []).map((r) => r.text)].filter(Boolean)) {
+      const m = t.replace(MD_LINK, '').match(SCREEN);
+      if (m) hits.push({ id: a.id, phrase: m[0] });
+    }
+  }
+  return hits;
+}
+
 /** [{ id, why }]: a to-do whose answer neither holds steps nor links a record that does. */
 export function todoGaps(records, howto = HOWTO.howto) {
   const by = new Map(records.map((a) => [a.id, a]));
@@ -59,7 +80,7 @@ export function todoGaps(records, howto = HOWTO.howto) {
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const records = loadRecords(process.argv[2] ?? 'src/content/answers');
-  const bad = [...unlinkedMentions(records).map((h) => `${h.id}: points at "${h.phrase}" without a link`), ...todoGaps(records).map((g) => `${g.id}: ${g.why}`)];
+  const bad = [...unlinkedMentions(records).map((h) => `${h.id}: points at "${h.phrase}" without a link`), ...pointerGaps(records).map((h) => `${h.id}: "${h.phrase}" points at nothing a tap can reach`), ...todoGaps(records).map((g) => `${g.id}: ${g.why}`)];
   for (const b of bad) console.error(b);
   if (bad.length) process.exit(1);
   console.log('answer links: clean');
