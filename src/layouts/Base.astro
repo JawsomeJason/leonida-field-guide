@@ -58,7 +58,7 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
     <header class="site-header">
       <div class="site-header__row">
         <a class="site-name" href="/">{site}</a>
-        <fieldset class="dial">
+        <fieldset class="dial" aria-describedby="dial-help">
           <legend>Spoilers</legend>
           <div class="seg">
             {dial.map(([value, label]) => (
@@ -66,29 +66,46 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
             ))}
           </div>
         </fieldset>
-        <details class="menu needs-js">
-          <summary>Settings</summary>
-          <div class="menu-panel">
-            <fieldset class="setting">
-              <legend>Console</legend>
-              <div class="seg">
-                {consoles.map(([value, label]) => (
-                  <label><input type="radio" name="console" value={value} data-setting checked={value === 'ps5'} />{label}</label>
-                ))}
-              </div>
-            </fieldset>
-            <fieldset class="setting">
-              <legend>Theme</legend>
-              <div class="seg">
-                {themes.map(([value, label]) => (
-                  <label><input type="radio" name="theme" value={value} data-setting checked={value === 'system'} />{label}</label>
-                ))}
-              </div>
-            </fieldset>
-          </div>
-        </details>
+        {/* Always shows the console in use. Opens the settings sheet (a native popover: Esc, a tap outside and Done close it). */}
+        <button class="chip needs-js" type="button" popovertarget="settings">
+          <span class="sr-only">Settings: </span>
+          {consoles.map(([value, label]) => <span data-c={value}>{label}</span>)}
+          <span data-c="">Console</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="m6 15 6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
       </div>
     </header>
+
+    <div id="settings" class="sheet needs-js" popover aria-labelledby="settings-title">
+      <div class="sheet__in">
+        <h2 id="settings-title">Settings</h2>
+        <fieldset class="setting">
+          <legend>Console</legend>
+          <div class="seg">
+            {consoles.map(([value, label]) => (
+              <label><input type="radio" name="console" value={value} data-setting />{label}</label>
+            ))}
+          </div>
+        </fieldset>
+        <fieldset class="setting">
+          <legend>Theme</legend>
+          <div class="seg">
+            {themes.map(([value, label]) => (
+              <label><input type="radio" name="theme" value={value} data-setting checked={value === 'system'} />{label}</label>
+            ))}
+          </div>
+        </fieldset>
+        <section id="dial-help" class="dial-help" aria-labelledby="dial-help-title">
+          <h3 id="dial-help-title">What the spoiler dial shows</h3>
+          <dl>
+            <dt>Off</dt><dd>how-to answers only</dd>
+            <dt>Places</dt><dd>adds where things are</dd>
+            <dt>Mild</dt><dd>adds light gameplay hints</dd>
+          </dl>
+        </section>
+        <button type="button" class="btn" popovertarget="settings" popovertargetaction="hide">Done</button>
+      </div>
+    </div>
 
     <div class:list={['frame', { 'frame--list': hasList }]}>
       <nav class="nav" aria-label="Main">
@@ -103,14 +120,16 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
     <footer class="site-footer">
       <p>
         Leonida Field Guide is an unofficial fan project. It is not affiliated with or endorsed by
-        Rockstar Games or Take-Two Interactive. <a href="/about/">About</a>
+        Rockstar Games or Take-Two Interactive.
       </p>
+      <a class="footer-link" href="/about/">About</a>
     </footer>
 
     <script>
       import '../scripts/settings.js';
       import '../scripts/sync.js';
       import '../scripts/offline.js';
+      import '../scripts/panel.js';
     </script>
   </body>
 </html>

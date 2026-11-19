@@ -148,18 +148,6 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
     word-break: break-all;
     resize: vertical;
   }
-  .btn {
-    min-block-size: var(--tap);
-    padding-inline: var(--space-5);
-    border: 1px solid var(--accent);
-    border-radius: var(--radius);
-    background: var(--accent);
-    color: var(--bg);
-    font: 600 var(--text-body) / 1 var(--font-text);
-    cursor: pointer;
-    touch-action: manipulation;
-  }
-  .btn:active { background-color: color-mix(in srgb, var(--accent) 75%, var(--text)); }
   .note { min-block-size: 1.5em; margin: 0; }
   .note[data-error] { color: var(--accent-2); }
 </style>

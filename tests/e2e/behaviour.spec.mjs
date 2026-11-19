@@ -222,3 +222,87 @@ test('the checklist lists steps in the order the Ask screen does', async ({ page
     expect(checklist.map((t) => t.trim())).toEqual(home.map((t) => t.trim()));
   }
 });
+
+// ---- Header and settings sheet ----
+const tapAt = (page, x, y) => (test.info().project.use.hasTouch ? page.touchscreen.tap(x, y) : page.mouse.click(x, y));
+const box = (locator) => locator.evaluate((el) => { const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height, b: r.bottom, r: r.right }; });
+const chip = (page) => page.locator('.chip');
+const sheet = (page) => page.locator('#settings');
+
+test('the header takes at most a fifth of the screen, also at 130% text', async ({ page }) => {
+  await page.goto('/');
+  const vh = page.viewportSize().height;
+  expect((await box(page.locator('.site-header'))).h).toBeLessThanOrEqual(vh * 0.2);
+  await page.addStyleTag({ content: 'html { font-size: 130%; }' });
+  const big = (await box(page.locator('.site-header'))).h;
+  expect(big, `header is ${big}px at 130% text`).toBeLessThanOrEqual(Math.max(170, vh * 0.2));
+});
+
+test('the header stays on screen while you scroll, with the dial and the console in reach', async ({ page }) => {
+  await saved(page, { console: 'xbox-s' });
+  await page.goto('/checklist/');
+  await page.evaluate(() => scrollTo(0, 600));
+  expect(await page.evaluate(() => scrollY)).toBeGreaterThan(0);
+  expect((await box(page.locator('.site-header'))).y).toBe(0);
+  await expect(chip(page)).toHaveText(/Xbox S/);
+  await setDial(page, 'Places');
+  await expect(page.getByRole('radio', { name: 'Places', exact: true })).toBeChecked();
+});
+
+test('every screen names the console in use in the header', async ({ page }) => {
+  for (const [c, name] of [['ps5', 'PS5'], ['xbox-x', 'Xbox X'], ['xbox-s', 'Xbox S']]) {
+    await saved(page, { console: c });
+    for (const path of SCREENS) {
+      await page.goto(path);
+      await expect(chip(page), path).toContainText(name);
+    }
+  }
+  await page.addInitScript(() => localStorage.clear());
+  await page.goto('/');
+  await expect(chip(page)).toContainText('Console'); // never chosen: it asks
+});
+
+test('the settings sheet sits below the dial and closes on Escape, a tap outside, a choice and Done', async ({ page }) => {
+  await page.goto('/about/');
+  const open = async () => { await press(chip(page)); await expect(sheet(page)).toBeVisible(); };
+  await open();
+  const vh = page.viewportSize().height;
+  await expect.poll(async () => Math.round((await box(sheet(page))).b), 'it settles at the bottom of the screen, in thumb reach').toBe(vh);
+  const s = await box(sheet(page));
+  const d = await box(page.locator('.dial'));
+  const h = await box(page.locator('.site-header'));
+  expect(s.y, 'the sheet starts below the header').toBeGreaterThanOrEqual(h.b - 1);
+  expect(d.b <= s.y || d.y >= s.b, 'the sheet covers the dial').toBe(true);
+  // what is under the middle of the dial is the dial
+  expect(await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest('.dial') !== null, [d.x + d.w / 2, d.y + d.h / 2])).toBe(true);
+
+  await page.keyboard.press('Escape');
+  await expect(sheet(page)).toBeHidden();
+
+  await open();
+  await tapAt(page, 4, Math.round((h.b + s.y) / 2)); // the page margin between the header and the sheet
+  await expect(sheet(page)).toBeHidden();
+
+  await open();
+  await press(sheet(page).getByRole('radio', { name: 'Night', exact: true }));
+  await expect(sheet(page)).toBeHidden();
+  await expect(page.locator('body')).toHaveCSS('background-color', NIGHT);
+
+  await open();
+  await press(sheet(page).getByRole('button', { name: 'Done' }));
+  await expect(sheet(page)).toBeHidden();
+
+  await open(); // the dial works while it is open, in the same tap that closes the sheet
+  await setDial(page, 'Places');
+  await expect(page.getByRole('radio', { name: 'Places', exact: true })).toBeChecked();
+});
+
+test('the sheet explains the three dial levels', async ({ page }) => {
+  await page.goto('/');
+  await press(chip(page));
+  const help = sheet(page).locator('#dial-help');
+  await expect(help).toContainText('Off');
+  await expect(help).toContainText('how-to answers only');
+  await expect(help).toContainText('adds where things are');
+  await expect(help).toContainText('adds light gameplay hints');
+});
