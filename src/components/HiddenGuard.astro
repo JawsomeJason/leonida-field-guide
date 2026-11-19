@@ -1,0 +1,31 @@
+---
+// Every page of a hidden tier starts closed, even when opened by its address: it says what it holds and why it is closed,
+// with one control to show it and one to go back. The dial at or above the tier opens it (reveal.js). Works without script:
+// the control is a native <details>. The hidden text may sit in this page's HTML (it is under the tier's own path); closed, nobody sees it.
+import './HiddenGuard.css';
+
+interface Props {
+  tier: 'places' | 'mild';
+}
+const { tier } = Astro.props;
+const copy = {
+  places: { title: 'Places page', holds: 'places and collectibles', level: 'Places' },
+  mild: { title: 'Mild page', holds: 'mild gameplay hints', level: 'Mild' },
+}[tier];
+---
+
+<div class="guard">
+  <div class="guard__intro">
+    <h1>{copy.title}</h1>
+    <p>This page holds {copy.holds}. It starts closed because the spoiler dial, at the top, is below {copy.level}.</p>
+    <a class="guard__back" href="/topics/">Go back</a>
+  </div>
+  <details class="guard__page" data-guard={tier}>
+    <summary>Show this page</summary>
+    <slot />
+  </details>
+</div>
+
+<script>
+  import '../scripts/reveal.js';
+</script>

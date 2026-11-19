@@ -2,27 +2,33 @@
 // the code format lives in state-code.js.
 import { absorb, read, state, write } from './settings.js';
 import { encode, decode } from './state-code.js';
+import { applies } from '../lib/console.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 
 function paint() {
-  const done = new Set(read().done);
+  const { done: doneIds, console } = read();
+  const done = new Set(doneIds);
   let ticked = 0;
   let total = 0;
   for (const section of document.querySelectorAll('[data-stage]')) {
     const boxes = section.querySelectorAll('input[data-todo]');
     for (const box of boxes) box.checked = done.has(box.value);
-    const n = [...boxes].filter((b) => b.checked).length;
+    // Only the to-dos for this console count; a console-only one for another console sits in the fold.
+    const mine = [...boxes].filter((b) => applies(b.closest('[data-only]')?.dataset.only, console));
+    const n = mine.filter((b) => b.checked).length;
     ticked += n;
-    total += boxes.length;
-    if (boxes.length) show(section, n, boxes.length);
+    total += mine.length;
+    if (boxes.length) show(section, n, mine.length);
   }
   const overall = $('[data-overall]');
   if (overall) show(overall, ticked, total);
 }
 
 function show(root, n, of) {
-  $('[data-count]', root).textContent = `${n} of ${of} done`;
+  $('[data-count]', root).textContent = of ? `${n} of ${of} done` : 'Nothing here for your console';
+  $('progress', root).hidden = !of;
+  $('progress', root).max = of || 1;
   $('progress', root).value = n;
 }
 

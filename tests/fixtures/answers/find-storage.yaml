@@ -1,0 +1,13 @@
+id: find-storage
+question: "Where can I put the game if my drive is full?"
+short: "Fixture: an external drive can hold it."
+topic: setup
+stage: before
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+keywords: ["external drive"]

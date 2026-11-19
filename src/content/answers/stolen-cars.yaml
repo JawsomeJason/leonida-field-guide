@@ -1,6 +1,6 @@
 id: stolen-cars
 question: "How do vehicles and stealing cars work?"
-short: "Some cars are harder to steal than others, and damage lowers what a buyer pays. A phone app lists what buyers want and each car's security. This is from pre-launch reporting."
+short: "Some cars are harder to steal than others. A phone app lists what buyers want and each car's security. This is from pre-launch reporting."
 body: |-
   - Crime Net Gazette wrote this before launch. It says it is not an established money-making strategy yet.
   - Details are hidden below because they are gameplay hints.
@@ -8,7 +8,7 @@ topic: good-to-know
 stage: week-1
 tier: none
 consoles: all
-confidence: community
+confidence: reported
 sources:
   - url: "https://www.crimenetgazette.com/post/gta-vi-car-theft-your-stolen-car-could-snitch-on-you"
     title: "GTA VI Car Theft: Your Stolen Car Could Snitch on You (Crime Net Gazette)"

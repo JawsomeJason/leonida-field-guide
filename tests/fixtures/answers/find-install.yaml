@@ -1,0 +1,13 @@
+id: find-install
+question: "How big is it, and do I have space?"
+short: "Fixture: the install needs free room on the drive."
+topic: setup
+stage: before
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+keywords: ["fit", "series s", "512gb"]

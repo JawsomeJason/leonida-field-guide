@@ -1,19 +1,18 @@
 id: code-regions
-question: "Will my code work on my PlayStation or Xbox account?"
-short: "Xbox codes are not region-locked. PlayStation codes only work on accounts from the country group where the code was sold, for example Canada and the United States together, and the UK on its own."
+question: "Will my code work on my account's country?"
+short: "Rockstar advises buying from a retailer in the country of your platform account. Some consoles lock a code to a country group; see the answer for your console."
 body: |-
-  Rockstar's PlayStation groups
-  - North America: Canada, United States.
-  - United Kingdom: United Kingdom only.
-  - Oceania: Australia, New Zealand.
-  - Brazil, Japan, South Korea and Saudi Arabia with the UAE each have their own group. Japanese codes expire 170 days after 19 November.
-  - Latin America, the rest of Asia, and the rest of Europe, the Middle East and Africa are separate groups. See Rockstar's page for the country lists.
-
-  Rockstar advises buying from a retailer in the country of your platform account.
+  - Region limits are based on the region tied to your platform account.
+  - If you buy in a different region from your account, the version you buy has to match the account's region.
+  - Rockstar's advice is to buy and play from a retailer in the country of your platform account, to avoid activation problems.
 topic: bonuses
 stage: before
 tier: none
 consoles: all
+byConsole:
+  ps5: "PlayStation codes only work on accounts from the country group where the code was sold, for example Canada and the United States together, and the UK on its own. Buy from a store in your account's country."
+  xbox-x: "Xbox codes are not region-locked. Rockstar still advises buying from a retailer in the country of your account, to avoid activation problems."
+  xbox-s: "Xbox codes are not region-locked. Rockstar still advises buying from a retailer in the country of your account, to avoid activation problems."
 confidence: official
 sources:
   - url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"

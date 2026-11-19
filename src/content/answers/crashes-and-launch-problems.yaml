@@ -1,19 +1,28 @@
 id: crashes-and-launch-problems
-question: "Crashes, errors, lost progress: is it just me?"
-short: "Rockstar's status page showed all services operational on 19 November (5:14 UTC) and has no separate row for this game. Check it, then PlayStation or Xbox network status, before troubleshooting."
+question: "The game crashes or will not start. What do I do?"
+short: "Check the status pages, restart the game, install updates, then restart the console. Still crashing? Reinstall the game, then contact support."
 body: |-
-  - Output Lag's pre-launch check (17 November) found no known-issue articles for the game on Rockstar's support site, and no confirmed launch bugs. It lists the console status pages: status.playstation.com and support.xbox.com/xbox-live-status.
-  - We have no verified in-game bug list. Claims on pages that look auto-generated were left out.
-  - For error codes, see the error codes card.
+  - Rockstar's service status page lists its online services and has no separate row for this game. On 19 November it showed all services operational.
+  - We found no confirmed game-wide crash or launch fault on 19 November. If one is confirmed, it will be on the What's new screen.
+  - Report a crash to Rockstar with its [support request form](https://support.rockstargames.com/request), open 24 hours a day. Say what happened, how to repeat it, any error code and the time, and add a screenshot or video if you can.
+  - Full steps for your console are in the "crashes or freezes" card in Fixes.
 topic: fixes
 stage: hour-1
 tier: none
 consoles: all
+byConsole:
+  ps5: "Check status.playstation.com. Restart the game, then update the game and the PS5 system software. Still crashing: delete and reinstall it, or use Safe Mode (a start-up menu with repair tools) to rebuild the database. Then contact PlayStation Support."
+  xbox-x: "Check Xbox's status page. Quit and restart the game, then power cycle the console (hold its Xbox button for 10 seconds). Then update the console and test your network. Still crashing: contact Xbox Support."
+  xbox-s: "Check Xbox's status page. Quit and restart the game, then power cycle the console (hold its Xbox button for 10 seconds). Then update the console and test your network. Still crashing: contact Xbox Support."
 confidence: official
 sources:
   - url: "https://support.rockstargames.com/servicestatus"
     title: "Service Status (Rockstar Support)"
-  - url: "https://outputlag.com/guides/gta-6-not-working-day-one-problems-fixes/"
-    title: "GTA 6 Not Working? Day One Problems and Official Fixes on PS5 and Xbox (Output Lag)"
+  - url: "https://support.rockstargames.com/request"
+    title: "Submit a Request (Rockstar Support)"
+  - url: "https://www.playstation.com/en-us/support/games/game-freeze-crash/"
+    title: "PlayStation game freezes or crashes (PlayStation Support)"
+  - url: "https://support.xbox.com/en-US/help/games-apps/troubleshooting/game-issues-solution"
+    title: "Troubleshoot game issues on Xbox (Xbox Support)"
 checked: "2026-11-19"
-rank: 11
+rank: 2

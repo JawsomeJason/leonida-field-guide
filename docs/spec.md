@@ -44,6 +44,7 @@ type Answer = {
   checked: string;               // ISO date the sources were last checked
   rank?: number;                 // 1 = most asked; drives "Most asked"
   todo?: string;                 // if set, the record is a checklist item with this label
+  keywords?: string[];           // up to 20 short strings (40 characters each): words players use that the text does not
   reveal?: { tier: Exclude<Tier, 'none'>; text: string }[];  // hidden details inside a 'none' answer
 };
 ```
@@ -51,8 +52,11 @@ type Answer = {
 Rules the schema or the checks enforce:
 
 - `confidence: 'official'` requires a source on rockstargames.com, support.rockstargames.com, take2games.com, playstation.com or xbox.com that a person or agent opened and read. Otherwise use `reported`.
-- A `places` or `mild` record's `question`, `short`, `body` and `todo` are all hidden text. So is every `reveal[].text`.
+- A `places` or `mild` record's `question`, `short`, `body`, `todo` and `keywords` are all hidden text. So is every `reveal[].text`. The `keywords` of a `none` record are not hidden. They sit only in the search index and are never shown on a page.
 - `topic: 'places'` implies `tier: 'places'`.
+- **Confidence labels.** `official`: the claim was read on rockstargames.com, support.rockstargames.com, take2games.com, playstation.com or xbox.com. `reported`: news, guides and creators, and any claim we could not read on an official page. `community`: forums and player posts only; a news site or a console maker is never `community`. A page that returned no text is never a source for a claim.
+- **Console text.** `consoles: all` text (question, `short` where there is no `byConsole`, `body`, `todo`, `reveal`) names no console and uses no console's button names, except as the tokens `{cross}` `{circle}` `{square}` `{triangle}` `{l1}` `{r1}` `{l2}` `{r2}` `{l3}` `{r3}` `{options}` `{create}`. A fact that differs by console goes in `byConsole`, or in records limited with `consoles: [...]`. `scripts/check-console-text.mjs` (`npm run check:console`) reads what each console would show and fails on another console's name or buttons.
+- **Units.** Sizes are in GB, never bytes or GiB. Jargon is put in plain words where it first appears, for example pre-load (the download before launch) and Safe Mode (a start-up menu with repair tools).
 
 ## The spoiler dial
 
@@ -64,18 +68,35 @@ One setting for the whole app: **Off** (the default), **Places**, **Mild**.
 - The Places section opens on a gate that says places are off, with the switch to turn them on. With JavaScript off, the gate is a plain link to the places pages.
 - The dial is on the first screen at every width, in the header.
 
+## Console
+
+One stored setting, `console`: `ps5`, `xbox-x` or `xbox-s`. It is saved on the device like the dial (see "Saved on the device"). **Never chosen is a state of its own**: the key is absent, `settings.js` hands the page `console: ''`, and `<html data-console>` is not set.
+
+- **First run.** The Ask screen opens with one card, "Which console do you play on?", above everything else: three buttons (PS5, Xbox Series X, Xbox Series S), each at least 4rem tall, stacked on a phone. Choosing saves the console, hides the card (CSS: `html[data-console] .console-card`) and moves focus to the screen heading. The card needs script; without it the card is not shown and only every-console records are.
+- **Always visible.** The header chip names the console in use on every screen ("PS5", "Xbox X", "Xbox S", or "Console" when never chosen) and opens the settings sheet, where it can be changed. Answer pages that have `byConsole` text also keep their own switch.
+- **Which records show.** A record with `consoles: 'all'` is console-neutral: its text names no console, and where consoles differ it uses `byConsole` text or button tokens (`{cross}`, `{circle}`, ...). A record with `consoles: ['ps5']` (or `['xbox-x', 'xbox-s']`) is only for those consoles. It shows in its list for them (`data-only="ps5"` on the row, CSS from `styles/console.css`). For any other state, a never-chosen console included, it is hidden there and its title is one plain link in that list's **Other consoles** fold, a native closed `<details>` (`OtherConsoles.astro`, copies marked `data-other`). Nothing in the fold is a tick box or repeats an id.
+- **Never chosen.** Treated as "no console matches": only `consoles: 'all'` records show, the console-only ones wait in the fold, `byConsole` is not used (the base text shows) and a button name shows both consoles' labels (`✕/A`). The card above is the calm prompt; there is nothing else to dismiss.
+- **Where it applies.** Everywhere answers are listed: Ask (Most asked rows, stage to-dos), Checklist, topic cheat sheets, the answer page's related list and the desktop list column. Most asked and the lists inside hidden tiers are only filtered, with no fold.
+- **Counts.** Progress counts only the to-dos that show for the console (`src/lib/console.js` `applies()`, used by `home-todos.js` and `checklist.js`). A tick on a to-do for another console stays saved and is not counted.
+- **One order.** The Ask screen and the Checklist list to-dos in the same order, from one function, `todosOf()` in `src/lib/answers.ts`: most asked (`rank`) first, then by id. A real "do this first" order needs a sequence field in the data; until then `rank` stands in for it.
+- **Test fixtures.** `tests/fixtures/answers` has a PS5-only and an Xbox-only record with a to-do each. After choosing a console the visible text of Ask, Topics, a cheat sheet, an answer and the Checklist names no other console outside the fold, and button names are that console's (`behaviour.spec.mjs`).
+
 ## Screens
 
 | Route | Screen | Content |
 | --- | --- | --- |
-| `/` | Ask | Search box, "Most asked" (top 8 by `rank`), then "Your stage": the stage picker and that stage's to-dos |
+| `/` | Ask | The console card until a console is chosen (see "Console"), search box, "Most asked" (top 8 by `rank`), then "Your stage": the stage picker and that stage's to-dos |
 | `/topics/` | Topics | Ten tiles, one per topic. Places shows as locked while the dial is Off |
 | `/topics/<topic>/` | Cheat sheet | Every answer of the topic on one page as compact cards with anchors |
 | `/a/<id>/` | Answer | Question, short answer, console switch, optional body, hidden-detail controls, confidence, sources, date checked, related answers |
 | `/checklist/` | Checklist | All to-dos by stage with progress, plus export and import of the saved state as a code |
-| `/new/` | New | What the last refreshes changed, and known problems with fixes |
+| `/new/` | New | Known problems with fixes, then what the last refreshes changed. With no confirmed problem it says so plainly and links the crash answer (`/a/crashes-and-launch-problems/`); it never says only that nothing has changed |
 | `/places/` | Places gate | See "The spoiler dial" |
 | `/about/` | About | How spoilers are handled, how facts are sourced, links out, the unofficial notice |
+
+**Hidden-tier pages.** Every page of a hidden tier (`/places/list/`, `/places/<id>/`, `/mild/<id>/`) opens closed, even when opened by its address (`HiddenGuard.astro`). Above the fold it shows a generic title (the tab title is generic too), what kind of content it holds, that it is closed because the spoiler dial is below that tier, and one link to go back. One native `<details>` control, "Show this page", opens it with no script. With script the stored dial opens it when the dial reaches the tier (`reveal.js`, and closes it again if the dial drops). The topic's other hidden answers in the desktop list column are hidden until then.
+
+**Outside links.** Every link out (answer sources, the Places gate, About) is made by `OutsideLink.astro`: the link text, then a note inside the same 48px target, "<host> · outside site, may contain spoilers", so it is read before the tap and by a screen reader. `rel="noopener"`.
 
 Two-tap rule: from `/`, every answer with `rank` 1 to 20 is reachable in at most two taps (a "Most asked" chip is one tap; Topics then a tile is two, because the cheat sheet shows the answers inline).
 
@@ -84,7 +105,9 @@ Two-tap rule: from `/`, every answer with `rank` 1 to 20 is reachable in at most
 - Phone (under 600px): a bottom tab bar with Ask, Topics, Checklist, New. One column. Tap targets at least 48px. Body text 17px or larger.
 - Tablet (600px to 1023px): the bar becomes a left rail. One column of content.
 - Desktop (1024px and up): rail, a list column and a detail column. On an answer page the list column shows the other answers of the same topic. This is CSS grid only, no script.
-- Header on every screen: the site name, the console switch (PS5 or Xbox) and the spoiler dial. A theme switch sits in the same menu.
+- Header on every screen, compact and sticky (`position: sticky`, so the dial and the console are always in reach). On a phone: row one is the site name and the console chip, row two is the spoiler dial with its name beside it; at 600px and up it is one row. It takes at most about a fifth of a phone screen: 123px at 390 wide, 159px with text at 130% (both measured by `behaviour.spec.mjs`, limit 170px at 844px high). Its height is published as `--header-h` (`panel.js`) so the rail and the sheet sit below it; scroll-padding keeps anchors clear of it.
+- **Settings sheet.** The chip opens a native popover (`popover`, `popovertarget`), so Esc, a tap outside and the Done button close it with no script, and so does choosing a setting (`panel.js`). It is a sheet at the bottom of the screen (centred, 30rem wide, from 600px), within thumb reach, and it ends below the header, so it never covers the dial; its backdrop does not catch taps, so the dial stays usable while it is open. It holds the console and the theme, and a short list of what each dial level adds (Off: how-to answers only; Places: adds where things are; Mild: adds light gameplay hints), which the dial's fieldset also uses as its description. Without script, or in a browser without popover, the chip still names the console; the dial stays in the header.
+- The footer About link is its own 48px target under the notice.
 - Use container queries for the cards and media queries for the page frame. No horizontal scrolling at any width from 320px up. Respect the user's text size setting.
 
 ## Touch
@@ -92,7 +115,8 @@ Two-tap rule: from `/`, every answer with `rank` 1 to 20 is reachable in at most
 The app is used mostly by touch, on a phone or tablet. Every screen holds to these rules, and later work reuses the shared tokens (`--tap`, `--gap-tap`, `--safe-*`, `--text-input`) and classes (`.tap-list`, `.seg`) in `tokens.css` and `global.css`.
 
 - Every tappable thing is at least 48 by 48 CSS px (`--tap`), with at least 8px (`--gap-tap`) between neighbours. Links inside a sentence are exempt.
-- The whole row is the target, not a small link inside it.
+- The whole row is the target, not a small link inside it. A checklist row is one label of at least 48px with an 8px gap to the next row; the tick box is only its picture. A card's stretched link covers the card's content, and the reveal control sits 8px or more below it.
+- **How it is tested** (`touch.spec.mjs`, at 320, 390 and 820 wide with touch, every screen, first-run and everything shown with every fold open, and the open settings sheet): for every interactive element the test samples the page with `elementFromPoint` (to the pixel at the edges) and keeps the points where a tap reaches that element, itself, a child, its label or a link stretched over a card. The hit area is the bounding box of those points, so a 24px box inside a bigger label is judged as the label, and a control another element covers is judged as what is left. Nothing is skipped for being part of something bigger. Under 48px either way fails; so does another control's hit area closer than 8px (judged by the tappable points). Fixed and sticky layers float over the page and are compared only within themselves, and what an open sheet covers is not judged until it closes. A self-check feeds the measure a 24px box in a 30px label, touching rows and a bare 24px link, and needs it to flag all three. `touch-report.mjs` prints the smallest hit area per screen and width.
 - The tab bar sits at the bottom on phones. Leave clear space around the spoiler dial and the reveal controls.
 - Respect the safe-area insets in both orientations: `viewport-fit=cover` and `env(safe-area-inset-*)` on the header, bars, rail, content and footer.
 - Nothing depends on hover, long-press, double-tap, drag or swipe. Hover styles live under `@media (hover: hover)`. Taps show a pressed state with `:active`, and `touch-action: manipulation` removes the double-tap delay.
@@ -120,7 +144,7 @@ Two themes from one set of named tokens. The app follows the device setting, and
   - New `--wash` (accent 12% over `--surface`, hover and current) and `--press` (accent 22%, `:active`). They replace the repeated `color-mix` values.
   - `--radius` 0.5rem to 0.75rem. `--text-h1` `clamp(1.5rem, 1.1rem + 2vw, 2.25rem)` to `clamp(1.625rem, 1.2rem + 2vw, 2.5rem)`, weight 750, letter-spacing -0.02em. `--text-h2` 1.25rem to 1.3125rem (21px, one 1.25 step above body), weight 650. New `--space-7` 3rem.
   - New motion tokens: `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`, `--press-scale` 0.98 (rows, cards) and `--press-scale-small` 0.96 (compact controls). One press recipe in `global.css`: the surface tints with no delay, shrinks slightly (70ms in), and eases back (160ms out). Under `prefers-reduced-motion: reduce` the shrink is dropped and the tint stays. Motion is `scale`, `opacity` and colour only.
-  - The Settings panel drops in 6px and fades (160ms, `--ease-out`; it moves but never resizes, so its targets stay 48px); a revealed detail fades in and settles 4px (200ms); page changes crossfade in 150ms.
+  - The settings sheet slides up 1.5rem and fades in (200ms, `--ease-out`, `@starting-style`; it moves but never resizes, so its targets stay 48px; under reduced motion it only fades); a revealed detail fades in and settles 4px (200ms); page changes crossfade in 150ms.
   - Layout: the rail is a full-height panel with a tinted current item; the spoiler dial stays on one row beside its label at 600px and up; the content column is at most 64rem; the Ask and Checklist screens share one drawn tick box.
 - Night uses colour for state only (selected tab, links, the dial); surfaces stay quiet. Day is warm and flat.
 - System font stack for text. `ui-monospace` for anything a player copies or reads as a value: sizes, button names, times, version numbers.
@@ -187,7 +211,19 @@ Search filtering, the dial and console switches, checklist ticks, in-place revea
 
 ## Search
 
-A build step writes `/search/none.json` (id, question, short, topic) and one index per hidden tier under `/h/<tier>/`. The client loads only the indexes the dial allows and filters by token match in plain JS. No search library.
+Players type plain sentences, so search is forgiving. No search library: `src/scripts/search-match.js` is pure (no DOM) and a test imports it.
+
+- **Index.** A build step writes `/search/none.json` and one index per hidden tier under `/h/<tier>/search.json`. Each row has `id`, `question`, `short`, `topic`, `consoles`, `rank` and, when the record has them, `keywords`. The client loads only the indexes the dial allows. A result opens `/a/<id>/` (none) or `/<tier>/<id>/`.
+- **Words.** The query is lower-cased and split. Filler words are dropped (how, do, i, my, the, a, is, on, what, are, will, it, does, not and similar). Plurals and endings (-s, -ies, -ing, -ed, a doubled last letter, a trailing e) fold to one stem. A numbered size such as `512gb` is `512` and `gb`.
+- **Typos.** One typo (a missing, extra or wrong letter, or two letters swapped) is tolerated in words of five letters or more. The last word may be unfinished: it matches the start of a word.
+- **Synonyms.** `ps5`, `ps` and `playstation` are one word. `xbox`, `series`, `xsx` and `xss` are one word. `storage`, `space`, `drive`, `disk`, `ssd`, `hdd`, `gb`, `tb` and `gigabyte` are one word. A single letter (the S of Series S) is dropped. Console words count for less than other words, because they say what the player owns, not what they ask.
+- **Fields and ranking.** A word is found in the question (weight 4), `keywords` (3), `short` (2) or the topic name (1). A record is a result when it matches at least half of the query words the guide knows; a word that appears in no answer does not count against it. Results are ordered by how many words match (console words count 0.3), then by the weights, with rarer words worth more, then by `rank`.
+- **Keywords.** `keywords` is an optional array in the schema (at most 20, each 1 to 40 characters). It holds the words players use that the text does not: `quicksave`, `instal`, `doesnt work`. For a hidden-tier record they are hidden text: they are in that tier's index only, and `check:leak` searches for them.
+- **Console.** Answers whose `consoles` is a list without the chosen console are left out of the results, like the cards.
+- **No match.** The list shows the three closest answers (the best partial matches, else the most asked), then a row "Browse all topics" that opens `/topics/`. The status line says nothing matched exactly. It is never a dead end.
+- **Where is it.** A query that asks where something is ("where is …", "where can I find …", "location of …", "nearest …") shows, at Off, a note that places are hidden by design, with three link rows: the Places gate (`/places/`), gtamap.io and FullSweep, the last two marked as outside sites. At Places and Mild the places are searched as usual and the note is not shown.
+- **No script.** The page keeps its floor: the list of every default answer.
+- **Link check.** `npm run check:links` (`scripts/check-links.mjs`) fails when an internal `href` or `src` in a built page, or the page a result in any search index would open, is not a built file.
 
 ## Offline and install
 
@@ -207,6 +243,10 @@ Table 1 is the ranked question list and Table 3 is 30 sourced facts.
 - The report's "official" tags were never checked against a live page. Open each official source (Orca's browser renders the Rockstar pages that plain fetches cannot) and keep `official` only where the page says it. Otherwise set `reported`.
 - Where sources disagree, say so in `short` and cite both.
 - Skip a question rather than guess. A missing answer is fine; a wrong one is not.
+- **Install size** is one answer with a short per console (all three: up to 212 GB free, whether it fits, where to check free space), a Series S 512 GB answer (reported: the usable-space figure is IGN's) and one "Make room" answer per console family (PS5; Xbox). Install size ranks 1.
+- **Crashes** have an answer for all consoles (status pages, a short per console, and where to report to Rockstar) and full numbered steps per console family from PlayStation's and Xbox's own support pages. The crash answer ranks in the top 8. Known problems go to the New screen when confirmed.
+- **Source choice.** Where two sources support a fact equally, cite the one whose page carries no story material. Rockstar's own pages are cited for the facts only they hold.
+- **Code problems.** A failed code says where to go next: Rockstar's activation help, its support request form, then the shop or console maker.
 
 ## Refresh
 
@@ -217,10 +257,11 @@ Table 1 is the ranked question list and Table 3 is 30 sourced facts.
 `npm run check` runs all of these, and CI runs it on every pull request:
 
 1. **Schema.** The build fails on a record missing a source, a date, a tier or a confidence.
-2. **Spoiler leak.** A script takes every hidden string (see "Data shape") and fails if it appears in any built file outside that tier's own paths. It also fails if the default search index or the offline list names a hidden record.
-3. **Behaviour**, in Playwright at 390, 820 and 1440 wide: each of the top 20 answers is reached in two taps from `/`; a ticked to-do survives a reload; the dial at Off shows no places and at Places shows them; the theme switch works and is remembered; nothing scrolls sideways; the main flows work with JavaScript off.
-4. **Accessibility.** axe finds no violations on every screen in both themes.
-5. **Speed.** Lighthouse on the deployed address scores 100 for performance, accessibility, best practices and SEO on mobile, with largest contentful paint under 1 second. This one runs against the live site, outside `npm run check`.
+2. **Console text.** `scripts/check-console-text.mjs` fails on a record that shows a console another console's name or buttons (see "Rules the schema or the checks enforce").
+3. **Spoiler leak.** A script takes every hidden string (see "Data shape") and fails if it appears in any built file outside that tier's own paths. It also fails if the default search index or the offline list names a hidden record.
+4. **Behaviour**, in Playwright at 390, 820 and 1440 wide: each of the top 20 answers is reached in two taps from `/`; a ticked to-do survives a reload; the dial at Off shows no places and at Places shows them; the theme switch works and is remembered; nothing scrolls sideways; the main flows work with JavaScript off.
+5. **Accessibility.** axe finds no violations on every screen in both themes.
+6. **Speed.** Lighthouse on the deployed address scores 100 for performance, accessibility, best practices and SEO on mobile, with largest contentful paint under 1 second. This one runs against the live site, outside `npm run check`.
 
 Tests assert what a player sees, never internals.
 

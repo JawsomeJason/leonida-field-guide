@@ -1,25 +1,29 @@
 id: boxed-copy-redeem
 question: "Does a boxed copy still need the full download?"
-short: "Yes. A boxed copy holds a download code and no disc, so you still download the whole game. Redeem the code on the PlayStation Store or Xbox Store, then download."
+short: "Yes. A boxed copy holds a download code and no disc, so you still download the whole game. Redeem the code in your console's store, then download."
 body: |-
-  - Rockstar: "A disc will not be included in the box." The code works for pre-loading as soon as you have it.
-  - Redeeming, as Output Lag summarises Sony's and Microsoft's pages:
-    - PS5 console: PlayStation Store, press the triangle button, More, Redeem Code. Online: your profile, Redeem Code.
-    - Xbox console: Xbox button, Store, View button, Redeem. Online: xbox.com/redeem.
+  - Rockstar: "A disc will not be included in the box." The code works for pre-loading (downloading before launch) as soon as you have it.
   - A code redeems to one account and cannot be moved. Use the account you will play on.
-  - For Series S drive space, see the storage card.
+  - Need room first? See the Make room card for your console in Setup.
+  - If the code fails: start with Rockstar's [game activation help](https://support.rockstargames.com/articles/5gwDh0peG05GQhMej2ukbY/game-activation-for-grand-theft-auto-vi), which links to your console maker's redeem page. Still stuck? Send Rockstar a [support request](https://support.rockstargames.com/request), or read the missing or rejected code card.
 topic: setup
 stage: before
 tier: none
 consoles: all
+byConsole:
+  ps5: "Yes: a boxed copy has a code, not a disc, so you still download the game. Redeem it in the PlayStation Store: press {triangle}, choose More, then Redeem Code. Online, use your profile menu, then Redeem Code."
+  xbox-x: "Yes: a boxed copy has a code, not a disc, so you still download the game. Redeem it on your Xbox: press the Xbox button, choose Store, press {create}, then Redeem. Online, go to xbox.com/redeem."
+  xbox-s: "Yes: a boxed copy has a code, not a disc, so you still download the game. Redeem it on your Xbox: press the Xbox button, choose Store, press {create}, then Redeem. Online, go to xbox.com/redeem."
 confidence: official
 sources:
   - url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
     title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
   - url: "https://support.rockstargames.com/articles/5gwDh0peG05GQhMej2ukbY/game-activation-for-grand-theft-auto-vi"
     title: "Game Activation for Grand Theft Auto VI (Rockstar Support)"
-  - url: "https://outputlag.com/guides/gta-6-not-working-day-one-problems-fixes/"
-    title: "GTA 6 Not Working? Day One Problems and Official Fixes on PS5 and Xbox (Output Lag)"
+  - url: "https://www.playstation.com/support/store/redeem-ps-store-voucher-code"
+    title: "How to redeem a PlayStation Store voucher code (PlayStation Support)"
+  - url: "https://support.xbox.com/help/subscriptions-billing/redeem-codes-gifting/redeem-prepaid-codes"
+    title: "How to redeem gift cards, codes, and offers (Xbox Support)"
 checked: "2026-11-19"
 rank: 18
 todo: "Redeem your boxed-copy code"

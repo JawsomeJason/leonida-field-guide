@@ -1,30 +1,39 @@
 id: missing-or-rejected-code
 question: "My code or pre-order bonus is missing or rejected. What do I do?"
-short: "Check you redeemed it on the right store account. If a box had no code or a code fails, go back to where you bought it: Rockstar points store purchases to PlayStation or Xbox Support, and retail purchases to the retailer."
+short: "Check you redeemed the code on the account you play on. If a box had no code or the code fails, go back to where you bought it, or start with Rockstar's activation help."
 body: |-
-  Who to contact, per Rockstar
-  - Bought on the PlayStation Store or Microsoft Store: PlayStation Support or Xbox Support.
+  Where to go next
+  - [Rockstar's game activation help](https://support.rockstargames.com/articles/5gwDh0peG05GQhMej2ukbY/game-activation-for-grand-theft-auto-vi) covers a boxed copy or a gifted code, and links to your console maker's redeem page.
+  - Still stuck? [Send Rockstar Support a request](https://support.rockstargames.com/request). They say they are available 24 hours a day.
+  - Bought in your console's own store: contact that console maker's support.
   - Bought a physical copy from the Rockstar Store: Xsolla support (help.xsolla.com).
   - Bought anywhere else: the retailer.
 
   Good to know
   - Boxed copies hold a download code and no disc.
-  - PS5 codes only work on accounts from the country group they were sold in. Xbox codes are not region-locked.
   - Notebookcheck reported on 14 November that some sealed boxes had no code inside. It said the problem did not look widespread, and that some buyers said their refund requests were refused.
 topic: bonuses
 stage: hour-1
 tier: none
 consoles: all
+byConsole:
+  ps5: "Check you redeemed it on the PlayStation account you play on, and that it matches the code's country group. Bought in the PlayStation Store: contact PlayStation Support. Otherwise follow the links below."
+  xbox-x: "Check you redeemed it on the Microsoft account you play on. Xbox codes are not region-locked. Bought in the Microsoft Store: contact Xbox Support. Otherwise follow the links below."
+  xbox-s: "Check you redeemed it on the Microsoft account you play on. Xbox codes are not region-locked. Bought in the Microsoft Store: contact Xbox Support. Otherwise follow the links below."
 confidence: official
 sources:
+  - url: "https://support.rockstargames.com/articles/5gwDh0peG05GQhMej2ukbY/game-activation-for-grand-theft-auto-vi"
+    title: "Game Activation for Grand Theft Auto VI (Rockstar Support)"
   - url: "https://support.rockstargames.com/articles/40DHWEDBnq5jUuWJqKcH02/grand-theft-auto-vi-pre-order-purchase-support-faq"
     title: "Grand Theft Auto VI Pre-Order Purchase Support FAQ (Rockstar Support)"
   - url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
     title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
+  - url: "https://support.rockstargames.com/request"
+    title: "Submit a Request (Rockstar Support)"
   - url: "https://www.notebookcheck.net/Some-physical-GTA-6-boxes-are-missing-codes-with-Rockstar-refusing-to-help.1449998.0.html"
     title: "Some physical GTA 6 boxes are missing codes, with Rockstar refusing to help (Notebookcheck)"
 checked: "2026-11-19"
-rank: 5
+rank: 6
 reveal:
   - tier: mild
     text: "Some bonus items are not there at the very start. A store listing says they become available as you progress, so a missing bonus early on may not be a fault."

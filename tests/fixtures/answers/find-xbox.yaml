@@ -1,0 +1,12 @@
+id: find-xbox
+question: "My Xbox download will not start. What do I try?"
+short: "Fixture: restart the console and queue it again."
+topic: fixes
+stage: before
+tier: none
+consoles: [xbox-x, xbox-s]
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"

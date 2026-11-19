@@ -44,6 +44,16 @@ function close(box) {
 let seq = 0;
 async function sync() {
   const n = ++seq;
+  // A hidden-tier page opens when the dial allows its tier, and closes again if the dial drops (unless the player opened it by hand).
+  for (const page of document.querySelectorAll('details[data-guard]')) {
+    if (allowed(page.dataset.guard)) {
+      page.open = true;
+      page.dataset.auto = '1';
+    } else if (page.dataset.auto) {
+      page.open = false;
+      delete page.dataset.auto;
+    }
+  }
   for (const box of document.querySelectorAll('[data-reveal]')) {
     if (allowed(box.dataset.tier)) box.dataset.open || open(box, true);
     else if (box.dataset.open === 'auto') close(box);

@@ -1,0 +1,13 @@
+id: find-save
+question: "How do I save, and how many slots are there?"
+short: "Fixture: the game saves by itself and you can save by hand."
+topic: saving
+stage: before
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+keywords: ["quicksave", "save my game"]

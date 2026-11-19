@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import AnswerCard from '../../components/AnswerCard.astro';
 import AnswerCardList from '../../components/AnswerCardList.astro';
+import HiddenGuard from '../../components/HiddenGuard.astro';
 import '../../components/ConsoleText.css';
 import { topics } from '../../data/topics';
 import { pageIds, related, revealsOf, textHtml } from '../../lib/answers';
@@ -28,8 +29,9 @@ const { answer, detail, more } = Astro.props;
 const topic = topics.find((t) => t.id === answer.topic)!.label;
 ---
 
-<Base title={answer.question} description="An answer you chose to show.">
-  <Fragment slot="list"><AnswerCardList answers={more} current={answer.id} label={topic} /></Fragment>
+<Base title="Mild page" description="An answer you chose to show.">
+  <Fragment slot="list"><div class="guard-list" data-tier="mild"><AnswerCardList answers={more} current={answer.id} label={topic} /></div></Fragment>
+  <HiddenGuard tier="mild">
   {detail ? (
     <>
       <h1>{answer.question}</h1>
@@ -39,4 +41,5 @@ const topic = topics.find((t) => t.id === answer.topic)!.label;
   ) : (
     <AnswerCard answer={answer} related={Astro.props.related} full />
   )}
+  </HiddenGuard>
 </Base>

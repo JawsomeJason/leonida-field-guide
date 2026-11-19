@@ -1,22 +1,25 @@
 id: xbox-download-stuck
 question: "My Xbox download won't start, is slow, or is stuck at Queued. What do I try?"
-short: "Check Xbox's status page, sign in with the profile that bought the game, look for low-storage warnings, and install any system update. For Queued, quit running games and choose Resume installation."
+short: "Check Xbox's status page, sign in with the profile that bought the game, look for low-storage warnings, and install any console update. A download in progress is listed under My games & apps, Manage, Queue."
 body: |-
-  From Output Lag's summary of Microsoft's steps
-  - Updates: Profile and system, Settings, System, Updates. A "Download stopped" error can mean an update is needed first.
-  - Queue: My games and apps, Manage, Queue. Background downloads slow down while a game runs, so quit the game or choose Suspend my game.
-  - After a restart, if the game shows Queued or Paused, select it, press the Menu button and choose Resume installation.
-  - A wired connection or 5 GHz Wi-Fi helps.
+  In this order, from Xbox's own support page
+  1. Check the [Xbox status page](https://support.xbox.com/xbox-live-status). If a service has an alert, wait for it to clear.
+  2. Be connected to Xbox and signed in with the profile that bought the game.
+  3. Look for a low-space warning: press the Xbox button, then open Notifications. If there is one, delete something or add an external drive. See the Make room card.
+  4. Check for a console update: Profile & system, Settings, System, Updates. A "Download stopped" error can mean an update has to install first.
+  5. Slow? Microsoft has a separate page for slow downloads.
 
-  Rockstar's install-issues page sends Xbox players to Microsoft's troubleshooter and adds no steps.
+  Rockstar's install-issues page sends Xbox players to the same Xbox page and adds no steps.
 topic: fixes
 stage: hour-1
 tier: none
 consoles: [xbox-x, xbox-s]
-confidence: community
+confidence: official
 sources:
+  - url: "https://support.xbox.com/help/games-apps/troubleshooting/troubleshoot-game-or-app-installation-problems-on-xbox-one"
+    title: "Troubleshoot game or app installation problems on your Xbox console (Xbox Support)"
+  - url: "https://support.xbox.com/help/subscriptions-billing/redeem-codes-gifting/redeem-prepaid-codes"
+    title: "How to redeem gift cards, codes, and offers (Xbox Support)"
   - url: "https://support.rockstargames.com/articles/3t8W3cKfObijZuwZuqT2eM/issues-installing-grand-theft-auto-vi"
     title: "Issues installing Grand Theft Auto VI (Rockstar Support)"
-  - url: "https://outputlag.com/guides/gta-6-not-working-day-one-problems-fixes/"
-    title: "GTA 6 Not Working? Day One Problems and Official Fixes on PS5 and Xbox (Output Lag)"
 checked: "2026-11-19"

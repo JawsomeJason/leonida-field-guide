@@ -1,6 +1,8 @@
 ---
+import { onlyOf } from '../lib/console.js';
+
 interface Props {
-  answers: { id: string; question: string; rank?: number }[];
+  answers: { id: string; question: string; rank?: number; consoles: 'all' | string[] }[];
 }
 const top = [...Astro.props.answers]
   .filter((a) => a.rank !== undefined)
@@ -14,7 +16,7 @@ const top = [...Astro.props.answers]
       <h2 id="most-title">Most asked</h2>
       <ul class="tap-list most-asked__list">
         {top.map((a) => (
-          <li>
+          <li data-only={onlyOf(a.consoles)}>
             <a href={`/a/${a.id}/`}>{a.question}</a>
           </li>
         ))}

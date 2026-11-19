@@ -33,6 +33,8 @@ const answers = defineCollection({
       checked: z.iso.date(),
       rank: z.number().int().positive().optional(),
       todo: z.string().min(1).optional(),
+      // Words players use that the answer text does not (quicksave, instal). Search only; never shown on a page.
+      keywords: z.array(z.string().min(1).max(40)).max(20).optional(),
       reveal: z
         .array(z.strictObject({ tier: z.enum(['places', 'mild']), text: z.string().min(1) }))
         .optional(),

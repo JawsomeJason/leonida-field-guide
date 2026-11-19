@@ -4,7 +4,6 @@ short: "Targeting has three modes: Lock-On snaps to targets, Partial slows the r
 body: |-
   - A guide's pairing: Partial with a high strength for steady tracking, or Free Aim with strength 0 for raw aiming.
   - Gameplay options include Tap Assist (one press counts as two to four) and Hold Assist, plus hold-to-toggle for actions such as aiming. They cut finger strain in long fights.
-  - On PS5 you can lower trigger effect intensity under Settings, Accessories.
 topic: controls
 stage: day-1
 tier: none
