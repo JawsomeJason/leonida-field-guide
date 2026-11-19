@@ -137,6 +137,7 @@ test('a loss warning at Off carries what to do about it (the check catches a bar
   for (const bare of ['Carried cash can be lost if you die.', 'Some Safe Mode options erase data.', 'You can lose your save.', 'You can lose in-game money if you die.', 'You can lose all your in-game money.'])
     assert.equal(lossWithoutRemedy(bare).length, 1, bare);
   assert.deepEqual(lossWithoutRemedy('You can lose in-game money.'), []);
+  assert.deepEqual(lossWithoutRemedy('You can lose in-game money. There is a simple way to keep it safe.'), []);
   assert.deepEqual(lossWithoutRemedy('- You can lose in-game money.'), []);
   for (const ok of ['Carried cash can be lost if you die. Bank it first.', 'Carried cash can be lost: bank it before you take risks.', 'Some options erase data, so back up first.',
     'Deleting a game does not lose what you bought.', 'This erases no games or data.', 'More is in [Will I lose anything?](/a/will-i-lose-anything/).'])

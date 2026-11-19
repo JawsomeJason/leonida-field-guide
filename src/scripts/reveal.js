@@ -27,12 +27,12 @@ async function open(box, auto) {
   const out = box.querySelector('.reveal__out');
   try {
     out.replaceChildren(parse(await load(btn.dataset.src, !auto)));
+    // A detail the player opened with a tap can be put away again, from the top of it (no scrolling past the text to find Hide); one the dial itself shows goes when the dial drops.
+    if (!auto) out.prepend(Object.assign(document.createElement('button'), { type: 'button', className: 'reveal__hide', innerHTML: 'Hide<span class="sr-only"> this detail</span>' }));
   } catch {
     if (!auto) location.href = btn.href; // no script path: the detail's own page
     return;
   }
-  // A detail the player opened with a tap can be put away again; one the dial itself shows goes when the dial drops.
-  if (!auto) out.append(Object.assign(document.createElement('button'), { type: 'button', className: 'reveal__hide', innerHTML: 'Hide<span class="sr-only"> this detail</span>' }));
   box.dataset.open = auto ? 'auto' : 'tap';
   btn.hidden = true;
   out.hidden = false;

@@ -6,6 +6,7 @@ import { loadRecords } from '../../scripts/check-leak.mjs';
 // Mechanical backstop for the re-read in docs/spec.md ("First content", Headlines): in a record that is not
 // official, a sentence with a bare certainty cue needs an attribution cue in the same sentence.
 const CERTAIN = /\b(is|are|will|does|always|never|fully|guaranteed|definitely|certainly)\b/i;
+const LOSS_POINTER = 'There is a simple way to keep it safe.';
 const ATTRIBUTED = /\b(says?|said|reports?|reported|reportedly|according to|not confirmed|unconfirmed|expected|listed|lists|advises|found|guide)\b/i;
 
 /** [{ id, where, sentence }] for each unattributed certain sentence in a record not labelled official. */
@@ -17,6 +18,7 @@ const headlineHits = (records) =>
         text
           .split(/(?<=[.!?])\s+/)
           .filter((s) => CERTAIN.test(s.replace(/"[^"]*"/g, '')) && !ATTRIBUTED.test(s)) // a quoted card title is not a claim
+          .filter((s) => s !== LOSS_POINTER) // the loss warning's second sentence only points at the button under it (docs/spec.md, the loss-warning rule)
           .map((sentence) => ({ id: a.id, where, sentence })),
       ),
     );

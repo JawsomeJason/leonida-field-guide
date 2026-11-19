@@ -1,0 +1,18 @@
+id: loss-01
+question: "Sample loss question: can I lose my zorp?"
+short: "You can lose in-game zorp. There is a simple way to keep it safe."
+topic: money
+stage: day-1
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+rank: 21
+keywords: ["lose my zorp", "keep my zorp"]
+reveal:
+  - tier: mild
+    label: Show how to keep it safe
+    text: Wombat remedy one for the loss reveal. Wombat remedy two for the loss reveal. Wombat remedy three for the loss reveal. Wombat remedy four for the loss reveal.

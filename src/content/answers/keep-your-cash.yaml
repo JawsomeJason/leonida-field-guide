@@ -1,6 +1,6 @@
 id: keep-your-cash
 question: "How do I keep my cash from being lost?"
-short: "You can lose in-game money."
+short: "You can lose in-game money. There is a simple way to keep it safe."
 body: |-
   - For uninstalling and saved data, see [Will I lose my progress, saves or cash?](/a/will-i-lose-anything/).
 topic: money
@@ -17,6 +17,6 @@ checked: "2026-11-19"
 rank: 10
 reveal:
   - tier: mild
-    label: "Show how to keep it safe (one small game rule)"
+    label: "Show how to keep it safe"
     text: "Vice Atlas (before launch) says cash on hand is lost if you die before you deposit it at an ATM, and that money in the bank is safe. GameSpot (after playing) says dying while you hold stash bags loses the bags and your cash on hand; it does not mention ATMs or the bank, so the deposit detail rests on Vice Atlas alone. Neither source covers being arrested, so we claim nothing there. Habit worth building: deposit after a big score, before you take risks."
 keywords: ["lose cash", "lose my cash", "cash when i die", "lose money when i die"]

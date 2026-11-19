@@ -72,7 +72,7 @@ test('labels: community only for forums; official needs an allowed host; reporte
 
 test('keep-your-cash: Off holds only the generic line; the rule, how to avoid the loss, and which source says what, are in the Mild detail', () => {
   const a = get('keep-your-cash');
-  assert.equal(a.short, 'You can lose in-game money.');
+  assert.equal(a.short, 'You can lose in-game money. There is a simple way to keep it safe.');
   assert.doesNotMatch([a.short, a.body].join(' '), /ATM|deposit|bank|die/i);
   const hidden = a.reveal.map((r) => r.text).join(' ');
   assert.match(hidden, /Vice Atlas.*ATM/);

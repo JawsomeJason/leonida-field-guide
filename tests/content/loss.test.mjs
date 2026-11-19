@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { loadRecords } from '../../scripts/check-leak.mjs';
-import { GENERIC, LABEL, rulesIn } from './loss-rules.mjs';
+import { GENERIC, LABEL, WARNING, rulesIn } from './loss-rules.mjs';
 
 const records = loadRecords('src/content/answers');
 const off = records.filter((a) => a.tier === 'none');
@@ -38,7 +38,7 @@ test('where an Off record says money can be lost, the sentence is exactly the ge
   const mentions = off.filter((a) => lines(a).some((l) => sentences(l).some((s) => MONEY_LOSS.test(s))));
   assert.deepEqual(mentions.map((a) => a.id).sort(), ['keep-your-cash', 'will-i-lose-anything']);
   for (const a of mentions) {
-    for (const l of lines(a)) for (const s of sentences(l).filter((x) => MONEY_LOSS.test(x))) assert.equal(s, GENERIC, `${a.id}: "${s}"`);
+    for (const l of lines(a)) for (const s of sentences(l).filter((x) => MONEY_LOSS.test(x))) assert.equal(s, WARNING, `${a.id}: "${s}"`);
     const r = a.reveal?.find((x) => x.label === LABEL);
     assert.ok(r, `${a.id} has no reveal labelled "${LABEL}"`);
     assert.equal(r.tier, 'mild');
@@ -46,6 +46,13 @@ test('where an Off record says money can be lost, the sentence is exactly the ge
     assert.match(r.text, /deposit/i, 'and how to avoid the loss');
     // what replaces `short` for a console says it too
     for (const l of [a.short, ...Object.values(a.byConsole ?? {})]) assert.ok(l.endsWith(GENERIC) || l === GENERIC, `${a.id}: a headline lacks the generic line: ${l}`);
+  }
+});
+
+test('every Off headline and body line that warns of money loss carries the whole two-sentence line, and its record has the labelled reveal that the button is made from', () => {
+  for (const a of off.filter((r) => lines(r).some((l) => MONEY_LOSS.test(l)))) {
+    for (const l of lines(a).filter((x) => sentences(x).some((t) => MONEY_LOSS.test(t)))) assert.ok(clean(l).endsWith(GENERIC), `${a.id}: "${l.slice(-80)}"`);
+    assert.ok(a.reveal?.some((r) => r.label === LABEL), a.id);
   }
 });
 
