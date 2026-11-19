@@ -39,7 +39,7 @@ export async function measure(page) {
   const height = await page.evaluate(() => Math.min(Math.max(document.documentElement.scrollHeight, 600), 7000));
   await page.setViewportSize({ width, height });
   // Settle first: a sheet still sliding in is measured off-screen.
-  await page.evaluate(() => Promise.all([document.fonts?.ready, ...document.getAnimations().map((a) => a.finished)]));
+  await page.evaluate(() => Promise.allSettled([document.fonts?.ready, ...document.getAnimations().map((a) => a.finished)])); // a cancelled animation rejects: that is settled too
   const result = await page.evaluate(() => {
     const SEL = 'a[href], button, summary, input:not([type=hidden]), select, textarea, [tabindex]:not([tabindex="-1"])';
     const C = 4; // coarse grid; the edges are then found to the pixel
