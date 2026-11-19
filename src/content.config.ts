@@ -29,7 +29,7 @@ const answers = defineCollection({
       consoles: z.union([z.literal('all'), z.array(consoleId).min(1)]),
       byConsole: z.partialRecord(consoleId, z.string().min(1)).optional(),
       confidence: z.enum(['official', 'reported', 'community']),
-      sources: z.array(z.strictObject({ url: z.url(), title: z.string().min(1) })).min(1),
+      sources: z.array(z.strictObject({ url: z.url(), title: z.string().min(1), console: z.union([consoleId, z.array(consoleId)]).optional() })).min(1),
       checked: z.iso.date(),
       rank: z.number().int().positive().optional(),
       order: z.number().int().positive().optional(), // to-dos in a stage: lower first, by what depends on what
