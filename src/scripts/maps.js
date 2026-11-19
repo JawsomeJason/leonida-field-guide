@@ -21,8 +21,9 @@ async function sync() {
     }
   }
   if (n !== seq) return; // the dial moved again while loading
-  for (const m of document.querySelectorAll('[data-maps]')) m.replaceChildren(...nodes.map((x) => x.cloneNode(true)));
+  for (const m of document.querySelectorAll('[data-maps]')) m.replaceChildren(...(m.closest('[hidden]') ? [] : nodes.map((x) => x.cloneNode(true)))); // a mount inside a hidden note (the search's where-is note) holds nothing
 }
 addEventListener('lfg:change', sync);
 addEventListener('online', sync); // a list that could not load is tried again when the connection returns
+addEventListener('lfg:note', sync); // the search showed or hid its where-is note
 sync();

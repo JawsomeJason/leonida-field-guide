@@ -26,16 +26,21 @@ import { mapsOffLine } from '../data/outside-maps.js';
     <button type="button" class="ask-clear needs-js" aria-label="Clear search"></button>
   </form>
   <p id="q-status" role="status" class="ask-status"></p>
+  {/* The where-is note (search.js): its sentence is copied in from one of these two templates while the query asks where something is, so a note that does not apply is not in the page at all. */}
   <div id="q-where" hidden>
-    {/* At Off (or with no script) the no-link sentence and the Places gate; at Places or Mild OutsideMaps shows the links and the dated line (CSS, from html[data-dial]). */}
+    <OutsideMaps />
+  </div>
+  <template id="q-where-off">
     <div class="where-off">
       <p>Places are hidden by design. {mapsOffLine}</p>
       <ul class="tap-list">
         <li><a href="/places/">Places: turn them on</a></li>
       </ul>
     </div>
-    <OutsideMaps />
-  </div>
+  </template>
+  <template id="q-where-on">
+    <div class="where-on"><p>Places are shown at your level.</p></div>
+  </template>
   <ul id="q-results" class="tap-list ask-rows" hidden></ul>
   <button id="q-more" type="button" class="ask-more" hidden>Show more</button>
 </search>
@@ -119,7 +124,6 @@ import { mapsOffLine } from '../data/outside-maps.js';
   }
   .ask-more:active { scale: var(--press-scale-small); background: var(--press); }
   #q-where p { margin: 0 0 var(--space-2); }
-  html:is([data-dial='places'], [data-dial='mild']) .where-off { display: none; }
 
   .tap-list.ask-rows a { flex-direction: column; align-items: flex-start; justify-content: center; }
   .ask-rows .q { color: var(--text); font-weight: 650; } /* a step heavier than the snippet under it */

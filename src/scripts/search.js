@@ -16,6 +16,7 @@ const input = document.querySelector('#q');
 const status = document.querySelector('#q-status');
 const list = document.querySelector('#q-results');
 const where = document.querySelector('#q-where');
+const notes = { off: document.querySelector('#q-where-off'), on: document.querySelector('#q-where-on') };
 const more = document.querySelector('#q-more');
 
 const cache = new Map();
@@ -94,9 +95,14 @@ async function update() {
   list.replaceChildren(...(known ? [link('/new/', 'Known problems and what changed', 'ask-known')] : []), ...(cut ? found.slice(0, FIRST) : found).map(row), ...(none ? [link('/topics/', 'Browse all topics')] : []));
   list.hidden = !typed;
   more.hidden = !cut;
-  // A question about where something is gets the where-is note (the Off sentence shows by CSS until the dial allows Places; maps.js then fills OutsideMaps from the Places tier). At Off the note says it all: no count above it.
-  where.hidden = !(typed && asksWhere(query));
-  const offNote = !where.hidden && dial === 'off';
+  // A question about where something is gets the where-is note: at Off the no-link sentence and the gate to Places, at Places or Mild "shown at your level" and the outside map links (maps.js fills them from the Places tier once the note is shown). Nothing else carries the gate or a map link. At Off the note says it all: no count above it.
+  const asksPlace = typed && asksWhere(query);
+  const was = where.hidden;
+  where.querySelector(':scope > .where-off, :scope > .where-on')?.remove();
+  if (asksPlace) where.prepend(notes[dial === 'off' ? 'off' : 'on'].content.cloneNode(true));
+  where.hidden = !asksPlace;
+  if (where.hidden !== was) dispatchEvent(new Event('lfg:note')); // the map links come and go with the note
+  const offNote = asksPlace && dial === 'off';
   status.toggleAttribute('data-floor', none && !offNote);
   status.textContent = !typed || offNote || (known && !found.length) ? '' : found.length ? `${found.length} ${found.length === 1 ? 'answer' : 'answers'}` : asksStory(query) ? 'This guide carries no story content, by design.' : 'This guide has no answer for that yet.';
 }
