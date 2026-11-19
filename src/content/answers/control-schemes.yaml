@@ -1,6 +1,6 @@
 id: control-schemes
 question: "Which control scheme should I use?"
-short: "Insider Gaming's guide lists three layouts: Default, Classic and Left-Handed. In Default: run on {l3}, aim {l2}, shoot {r2}. Hold D-pad Up for the phone."
+short: "Three layouts: Default, Classic and Left-Handed (Insider Gaming's guide). In Default: run on {l3}, aim {l2}, shoot {r2}. Hold D-pad Up for the phone."
 body: |-
   - In a car with Default: the right trigger accelerates and the left trigger brakes and reverses.
   - Classic and Left-Handed move buttons around. We do not list them because the research behind this site found guides disagreeing on Classic.
@@ -11,9 +11,9 @@ stage: hour-1
 tier: none
 consoles: all
 byConsole:
-  ps5: "Insider Gaming's guide lists three layouts: Default, Classic and Left-Handed. In Default: run on {l3}, aim {l2}, shoot {r2}, cover {r1}, jump {cross}, melee {square}. Hold {l1} for holster and loadout, hold D-pad Up for the phone."
-  xbox-x: "Insider Gaming's guide lists three layouts: Default, Classic and Left-Handed. In Default: run on {l3} (click the left stick), aim {l2}, shoot {r2}, cover {r1}. Hold {l1} for holster and loadout, hold D-pad Up for the phone. The face buttons (A, B, X, Y) are unconfirmed: the guide names them with another console's button names only, so we do not guess."
-  xbox-s: "Insider Gaming's guide lists three layouts: Default, Classic and Left-Handed. In Default: run on {l3} (click the left stick), aim {l2}, shoot {r2}, cover {r1}. Hold {l1} for holster and loadout, hold D-pad Up for the phone. The face buttons (A, B, X, Y) are unconfirmed: the guide names them with another console's button names only, so we do not guess."
+  ps5: "Three layouts: Default, Classic and Left-Handed (Insider Gaming's guide). In Default: run on {l3}, aim {l2}, shoot {r2}, cover {r1}, jump {cross}, melee {square}. Hold {l1} for holster and loadout, hold D-pad Up for the phone."
+  xbox-x: "Three layouts: Default, Classic and Left-Handed (Insider Gaming's guide). In Default: run on {l3} (click the left stick), aim {l2}, shoot {r2}, cover {r1}. Hold {l1} for holster and loadout, hold D-pad Up for the phone. The face buttons (A, B, X, Y) are unconfirmed: the guide names them with another console's button names only, so we do not guess."
+  xbox-s: "Three layouts: Default, Classic and Left-Handed (Insider Gaming's guide). In Default: run on {l3} (click the left stick), aim {l2}, shoot {r2}, cover {r1}. Hold {l1} for holster and loadout, hold D-pad Up for the phone. The face buttons (A, B, X, Y) are unconfirmed: the guide names them with another console's button names only, so we do not guess."
 confidence: reported
 sources:
   - url: "https://insider-gaming.com/gta-6-control-settings/"
