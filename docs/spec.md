@@ -125,6 +125,18 @@ Two themes from one set of named tokens. The app follows the device setting, and
 
 One `localStorage` key, `lfg:v1`: `{ console, dial, theme, stage, done: string[] }`. The checklist export code is that object, base64url-encoded. Import validates before it writes. Nothing leaves the device.
 
+## Access gate
+
+While the site is private, a Vercel Routing Middleware (`middleware.ts` at the repo root, a thin wrapper over the pure `decide()` in `src/lib/gate.ts`) stands in front of every page and asset. Output stays static Astro; no adapter, no runtime dependency, nothing added to the browser.
+
+- **Password.** The Vercel env var `SITE_PASSWORD` (production and preview). It never appears in the repo, a commit, a log or a test. If it is unset or empty, the gate answers 503 to everything: closed, never open.
+- **No valid cookie.** 401 and a small login page: inline styles from the tokens in both themes, one labelled password field (16px or more), one big button, 48px targets, `no-store`, `noindex`, and a CSP that allows no script. Posting the right password sets the cookie and answers 303 to the page first asked for. Only a same-origin path is followed (a path starting `//` or `/\` goes to `/`). A wrong password re-shows the page, 401, with one plain error line.
+- **Cookie.** `lfg_gate` holds SHA-256 of the password plus a fixed salt, never the password. `HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age` one year. Compared in constant time. This is the only cookie on the site. It is a gate token, not an account and not tracking, and it holds no preference: "No accounts" and the `lfg:v1` shape do not change.
+- **Open to everyone.** `/manifest.webmanifest`, `/icons/**` and `/favicon.svg`, so the app can be installed (a manifest is fetched without cookies). Nothing with content is open: `/search/**`, `/h/**`, `/places/**` and `/mild/**` stay behind the gate. `/sw.js` stays gated too: browsers send cookies when they fetch it, and only a page that got through registers it.
+- **Offline.** The gate runs only on the network. Pages a signed-in device already cached stay readable offline, and the service worker is unchanged.
+- **Rotate.** Change `SITE_PASSWORD` and redeploy; every old cookie stops working.
+- **Tests.** `npm run test:unit` runs `node:test` over `tests/**` with invented passwords and no network. Run against the live site only by the build orchestrator.
+
 ## Needs JavaScript
 
 Search filtering, the dial and console switches, checklist ticks, in-place reveal, theme override, offline. Each has a no-script floor: the page still lists every `none` answer, links work, the device theme applies, and hidden details open as their own pages.

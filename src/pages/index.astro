@@ -1,7 +1,20 @@
 ---
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import Search from '../components/Search.astro';
+import MostAsked from '../components/MostAsked.astro';
+import StagePicker from '../components/StagePicker.astro';
+
+// Only `none` records reach this page: hidden-tier text must never be in a default page.
+const answers = (await getCollection('answers', (a) => a.data.tier === 'none'))
+  .map((a) => a.data)
+  .sort((a, b) => a.question.localeCompare(b.question));
+const todos = answers.flatMap((a) => (a.todo ? [{ id: a.id, stage: a.stage, todo: a.todo }] : []));
 ---
 
 <Base>
-  <h1>Ask the field guide</h1>
+  <h1 id="ask-title">Ask the field guide</h1>
+  <Search answers={answers} />
+  <MostAsked answers={answers} />
+  <StagePicker todos={todos} />
 </Base>
