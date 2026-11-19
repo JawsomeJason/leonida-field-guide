@@ -87,6 +87,19 @@ Two-tap rule: from `/`, every answer with `rank` 1 to 20 is reachable in at most
 - Header on every screen: the site name, the console switch (PS5 or Xbox) and the spoiler dial. A theme switch sits in the same menu.
 - Use container queries for the cards and media queries for the page frame. No horizontal scrolling at any width from 320px up. Respect the user's text size setting.
 
+## Touch
+
+The app is used mostly by touch, on a phone or tablet. Every screen holds to these rules, and later work reuses the shared tokens (`--tap`, `--gap-tap`, `--safe-*`, `--text-input`) and classes (`.tap-list`, `.seg`) in `tokens.css` and `global.css`.
+
+- Every tappable thing is at least 48 by 48 CSS px (`--tap`), with at least 8px (`--gap-tap`) between neighbours. Links inside a sentence are exempt.
+- The whole row is the target, not a small link inside it.
+- The tab bar sits at the bottom on phones. Leave clear space around the spoiler dial and the reveal controls.
+- Respect the safe-area insets in both orientations: `viewport-fit=cover` and `env(safe-area-inset-*)` on the header, bars, rail, content and footer.
+- Nothing depends on hover, long-press, double-tap, drag or swipe. Hover styles live under `@media (hover: hover)`. Taps show a pressed state with `:active`, and `touch-action: manipulation` removes the double-tap delay.
+- Text inputs are 16px or larger. Body text is 17px or larger.
+- No layout shift on a state change: a selected control changes fill or colour, never size or weight.
+- `overscroll-behavior-y: contain` on the page, so pulling down does not fight a refresh.
+
 ## Look
 
 Two themes from one set of named tokens. The app follows the device setting, and the theme switch overrides it and is remembered.

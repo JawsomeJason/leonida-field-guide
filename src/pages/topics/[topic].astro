@@ -13,7 +13,7 @@ const answers = (await getCollection('answers')).filter((a) => a.data.topic === 
 <Base title={label} description={`Answers about ${label.toLowerCase()}.`}>
   <h1>{label}</h1>
   {answers.length === 0 && <p>No answers here yet.</p>}
-  <ul>
+  <ul class="tap-list">
     {answers.map((a) => <li><a href={`/a/${a.data.id}/`}>{a.data.question}</a></li>)}
   </ul>
 </Base>

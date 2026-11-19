@@ -51,7 +51,13 @@
   --text-h1: clamp(1.5rem, 1.1rem + 2vw, 2.25rem);
   --text-h2: 1.25rem;
 
-  --tap: 3rem; /* 48px minimum target */
+  --tap: 3rem; /* 48px: minimum size of anything tappable */
+  --gap-tap: 0.5rem; /* 8px: minimum space between tappable neighbours */
+  --text-input: 1rem; /* inputs stay at 16px or more so iOS does not zoom on focus */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
   --rail: 8rem;
   --radius: 0.5rem;
 }
