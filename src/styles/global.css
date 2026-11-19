@@ -5,6 +5,7 @@
   @view-transition {
     navigation: auto;
   }
+  ::view-transition-group(root) { animation-duration: 150ms; animation-timing-function: var(--ease-out); }
 }
 .site-header { view-transition-name: header; }
 .nav { view-transition-name: nav; }
@@ -12,6 +13,7 @@
 *, ::before, ::after { box-sizing: border-box; }
 
 html {
+  -webkit-tap-highlight-color: transparent; /* our :active state is the feedback, not the browser's grey flash */
   overscroll-behavior-y: contain; /* no pull-to-refresh fights */
   scroll-padding-block-end: calc(var(--tap) + var(--safe-bottom)); /* focus stays clear of the bottom bar */
 }
@@ -26,8 +28,8 @@ body {
   flex-direction: column;
 }
 
-h1 { font-size: var(--text-h1); line-height: 1.2; margin-block: 0 var(--space-4); text-wrap: balance; }
-h2 { font-size: var(--text-h2); line-height: 1.3; }
+h1 { font-size: var(--text-h1); font-weight: 750; letter-spacing: -0.02em; line-height: 1.15; margin-block: var(--space-2) var(--space-4); text-wrap: balance; }
+h2 { font-size: var(--text-h2); font-weight: 650; letter-spacing: -0.01em; line-height: 1.3; }
 a { color: var(--accent); }
 kbd, code { font-family: var(--font-mono); }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
@@ -49,8 +51,57 @@ a, button, summary, label, input { touch-action: manipulation; }
   color: var(--text);
   text-decoration: none;
 }
+/* Raised surfaces: one shadow token. Day lifts off the page; night gets a faint top edge instead. */
+.tap-list a, .seg label, .menu summary, .ctabs button, .todo-list .todo label, .todo__tick, .backup summary, .reveal__btn, .card, .tile { box-shadow: var(--shadow); }
+
+/* Pressed feedback, one recipe: the surface darkens on press-in with no delay, shrinks slightly, and eases back on release. */
+.tap-list a, .nav a, .seg label, .menu summary, .ctabs button, .todo-list .todo label, .todo__tick, .todo__open, .backup summary, .reveal__btn, .btn, .gate__on, .tile, .card {
+  transition: scale 160ms var(--ease-out), background-color 160ms var(--ease-out), color 140ms var(--ease-out), border-color 140ms var(--ease-out);
+}
+/* A selected control flips colour at once: a half-faded fill under its label would fail contrast mid-change. */
+.seg label, .ctabs button { transition-property: scale; }
+:is(.tap-list a, .nav a, .todo-list .todo label, .todo__tick, .todo__open, .backup summary, .reveal__btn, .tile):active,
+.card:has(.card__q a:active) { scale: var(--press-scale); transition-duration: 70ms, 0s, 140ms, 140ms; }
+:is(.seg label, .menu summary, .ctabs button, .btn, .gate__on):active { scale: var(--press-scale-small); transition-duration: 70ms, 0s, 140ms, 140ms; }
+@media (prefers-reduced-motion: reduce) {
+  :is(a, button, summary, label, .card):active { scale: none !important; }
+}
 @media (hover: hover) {
-  .tap-list a:hover, .nav a:hover, .menu summary:hover, .seg label:hover { background-color: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+  .tap-list a:hover, .nav a:hover, .menu summary:hover, .seg label:hover, .tile:hover, .todo-list .todo label:hover, .todo__tick:hover, .card:has(.card__q a:hover) { background-color: var(--wash); }
+}
+
+/* Tick box, shared by the Ask screen and the Checklist. */
+.todo input {
+  appearance: none;
+  flex: none;
+  display: grid;
+  place-content: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  margin: 0;
+  border: 2px solid var(--muted);
+  border-radius: 0.375rem;
+  background: transparent;
+}
+.todo input::before {
+  content: '';
+  inline-size: 0.9rem;
+  aspect-ratio: 1;
+  background: var(--bg);
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>") no-repeat center / contain;
+  scale: 0;
+}
+.todo input:checked { background: var(--accent); border-color: var(--accent); }
+.todo input:checked::before { scale: 1; }
+.todo input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.todo label:has(:checked) span { color: var(--muted); text-decoration: line-through; }
+@media (forced-colors: active) {
+  .todo input::before { background: CanvasText; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .todo input::before { transition: scale 150ms var(--ease-out); }
+  .todo input { transition: background-color 140ms var(--ease-out), border-color 140ms var(--ease-out); }
 }
 
 /* Header */
@@ -74,12 +125,15 @@ a, button, summary, label, input { touch-action: manipulation; }
   align-items: center;
   min-block-size: var(--tap);
   color: var(--text);
-  font-weight: 700;
+  font-weight: 750;
+  letter-spacing: -0.01em;
   text-decoration: none;
 }
 .dial { order: 3; flex: 1 1 100%; }
 @media (min-width: 37.5em) {
-  .dial { order: 0; flex: 0 0 auto; }
+  .dial { order: 0; flex: 0 0 auto; flex-wrap: nowrap; }
+  .dial .seg { flex: 0 0 auto; }
+  .dial .seg label { flex: 0 0 auto; padding-inline: var(--space-4); }
 }
 
 fieldset { min-inline-size: 0; margin: 0; padding: 0; border: 0; }
@@ -93,17 +147,18 @@ fieldset { min-inline-size: 0; margin: 0; padding: 0; border: 0; }
 .seg { display: flex; flex: 1 1 12rem; gap: var(--gap-tap); }
 .seg label {
   position: relative;
-  flex: 1 1 auto;
+  flex: 1 1 0;
   display: grid;
   place-items: center;
   min-block-size: var(--tap);
   min-inline-size: var(--tap);
-  padding-inline: var(--space-2);
+  padding-inline: var(--space-3);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
   cursor: pointer;
 }
+.setting .seg label { flex: 1 1 auto; padding-inline: var(--space-2); white-space: nowrap; }
 .seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
 /* Selected: fill, not weight, so nothing changes size when the state changes. */
 .seg label:has(:checked) { background: var(--accent); border-color: var(--accent); color: var(--bg); }
@@ -132,14 +187,19 @@ html:not(.js) .needs-js { display: none; }
   gap: var(--space-4);
   margin-block-start: var(--gap-tap);
   padding: var(--space-4);
-  background: var(--bg);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.16);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .menu[open] .menu-panel { animation: menu-in 160ms var(--ease-out); }
+  @keyframes menu-in { from { opacity: 0; translate: 0 -0.375rem; } } /* moves, never resizes: targets stay 48px while it settles */
 }
 
 /* Page frame: phone is one column with a bottom bar. */
 .frame { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); }
-.main { min-inline-size: 0; padding: var(--space-4) max(var(--space-4), var(--safe-right)) var(--space-4) max(var(--space-4), var(--safe-left)); }
+.main { min-inline-size: 0; max-inline-size: 64rem; padding: var(--space-4) max(var(--space-4), var(--safe-right)) var(--space-5) max(var(--space-4), var(--safe-left)); }
 .list { display: none; }
 
 .nav {
@@ -160,11 +220,13 @@ html:not(.js) .needs-js { display: none; }
   min-block-size: var(--tap);
   padding: var(--space-2);
   color: var(--muted);
+  font-size: var(--text-small);
+  font-weight: 600;
   text-decoration: none;
   border-block-start: 3px solid transparent;
 }
 /* Current page: accent colour plus an edge bar, never colour alone. */
-.nav a[aria-current='page'] { color: var(--accent); border-color: var(--accent); }
+.nav a[aria-current='page'] { color: var(--accent); border-color: var(--accent); background-color: var(--wash); }
 
 .site-footer {
   padding: var(--space-4) max(var(--space-4), var(--safe-right)) calc(var(--tap) + var(--space-4) + var(--safe-bottom)) max(var(--space-4), var(--safe-left));
@@ -183,11 +245,13 @@ html:not(.js) .needs-js { display: none; }
     inset: 0 auto auto 0;
     align-self: start;
     flex-direction: column;
-    padding: 0 0 0 var(--safe-left);
+    padding: var(--space-2) 0 0 var(--safe-left);
     border-block-start: 0;
-    border-inline-end: 1px solid var(--line);
+    background: none;
   }
-  .nav a { justify-items: start; border-block-start: 0; border-inline-start: 3px solid transparent; padding-inline: var(--space-4); }
+  /* The rail is a full-height panel even though its links are short. */
+  .frame { background: linear-gradient(90deg, var(--surface) calc(var(--rail) + var(--safe-left)), var(--line) 0 calc(var(--rail) + var(--safe-left) + 1px), transparent 0); }
+  .nav a { justify-items: start; border-block-start: 0; border-radius: 0 var(--radius) var(--radius) 0; border-inline-start: 3px solid transparent; padding-inline: var(--space-4); }
   .site-footer { padding-block-end: var(--space-4); }
 }
 
@@ -198,4 +262,4 @@ html:not(.js) .needs-js { display: none; }
 }
 
 /* Pressed feedback. Last, so it wins over the resting backgrounds above. */
-:is(a, button, summary, label):active { background-color: color-mix(in srgb, var(--accent) 22%, var(--surface)); }
+:is(a, button, summary, label):active { background-color: var(--press); }

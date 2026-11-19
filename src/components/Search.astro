@@ -50,9 +50,11 @@ const { answers } = Astro.props;
     font-size: max(var(--text-input), 1.25rem);
     -webkit-appearance: none;
     appearance: none;
+    box-shadow: var(--shadow);
   }
+  .ask-search input:focus-visible { outline-offset: 3px; }
   .ask-search input::placeholder { color: var(--muted); opacity: 1; }
-  .ask-status { min-block-size: 1.5rem; margin: var(--space-2) 0; color: var(--muted); font-size: var(--text-small); }
+  .ask-status { min-block-size: 1.5rem; margin: var(--space-2) 0 var(--space-1); color: var(--muted); font-size: var(--text-small); }
   .ask-search ul { margin-block-end: var(--space-5); }
   .ask-search ul[hidden] { display: none; } /* .tap-list's display would otherwise beat the hidden attribute */
 
@@ -62,9 +64,4 @@ const { answers } = Astro.props;
 
   html.js .ask-all { display: none; }
   .ask-all { margin-block-start: var(--space-5); }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .tap-list.ask-rows a { transition: scale 120ms cubic-bezier(0.23, 1, 0.32, 1); }
-    .tap-list.ask-rows a:active { scale: 0.98; }
-  }
 </style>
