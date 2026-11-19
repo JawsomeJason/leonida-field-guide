@@ -3,18 +3,22 @@
 .card {
   container-type: inline-size;
   position: relative;
-  padding: var(--space-3) var(--space-4);
+  --q-pad: calc((var(--tap) - 1.3 * var(--text-body)) / 2); /* what a one-line question needs above and below to be a 48px target */
+  padding: 0 var(--space-4);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
   scroll-margin-block-start: var(--space-4);
 }
+.card:has(.reveal) { padding-block-end: var(--space-3); }
 .card:target { border-color: var(--accent); }
 .card__in { display: grid; gap: var(--space-1) var(--space-4); }
 .card__q { margin: 0; font-size: var(--text-body); line-height: 1.3; font-weight: 650; }
 /* The card's text is the tap target: the question link stretches over it. The reveal control sits below with a gap, so the two never touch. */
-.card__in { position: relative; min-block-size: var(--tap); }
-.card__q a { color: var(--text); text-decoration: none; }
+.card__in { position: relative; min-block-size: var(--tap); padding-block: var(--q-pad); }
+/* The link's own box is a 48px target too, not only the stretched tap area (tools that read boxes see the bare line otherwise): its
+   padding is taken back by the margin, and .card__in has the same room, so the question sits where it always did. */
+.card__q a { display: block; padding-block: var(--q-pad); margin-block: calc(var(--q-pad) * -1); color: var(--text); text-decoration: none; }
 .card__q a::after { content: ''; position: absolute; inset: 0; }
 .card__q a:focus-visible { outline: none; }
 .card:has(.card__q a:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
