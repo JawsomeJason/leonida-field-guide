@@ -11,7 +11,7 @@ export const missing = (html) =>
   [
     ['a source link', /data-outside[\s\S]*?<a\b[^>]*\shref="https?:/],
     ['the date checked', /<time datetime="\d{4}-\d\d-\d\d"/],
-    ['the confidence label', /class="trust__now"><strong>(?:Official|Reported|Community)\b/],
+    ['the confidence label', /class="trust__now">[^<]*<strong>(?:official|reported|community)\b/i],
   ].filter(([, re]) => !re.test(html)).map(([name]) => name);
 
 /** One line per card whose facts have no source, date or label on it or on the page it links to. */

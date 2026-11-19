@@ -10,6 +10,11 @@ stage: before
 tier: none
 consoles: all
 confidence: reported
+basis:
+  - claim: "that no Windows version is announced"
+    confidence: official
+  - claim: "that fake PC downloads carry malware"
+    confidence: reported
 sources:
   - url: "https://www.notebookcheck.net/GTA-6-launch-scams-The-traps-to-avoid-before-and-after-release.1450534.0.html"
     title: "GTA 6 launch scams: The traps to avoid before and after release (Notebookcheck)"
