@@ -1,17 +1,28 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import AnswerCard from '../../components/AnswerCard.astro';
+import AnswerCardList from '../../components/AnswerCardList.astro';
+import { topics } from '../../data/topics';
+import { byTier, related } from '../../lib/answers';
 
-// Hidden-tier records get their own pages under /places/ and /mild/ in a later step.
 export async function getStaticPaths() {
-  const answers = await getCollection('answers', (a) => a.data.tier === 'none');
-  return answers.map((a) => ({ params: { id: a.data.id }, props: { answer: a.data } }));
+  const all = (await getCollection('answers')).map((e) => e.data);
+  return byTier(all, 'none').map((answer) => ({
+    params: { id: answer.id },
+    props: {
+      answer,
+      more: byTier(all, 'none').filter((b) => b.topic === answer.topic),
+      related: related(answer, all),
+    },
+  }));
 }
 
-const { answer } = Astro.props;
+const { answer, more } = Astro.props;
+const topic = topics.find((t) => t.id === answer.topic)!.label;
 ---
 
 <Base title={answer.question} description={answer.short}>
-  <h1>{answer.question}</h1>
-  <p>{answer.short}</p>
+  <Fragment slot="list"><AnswerCardList answers={more} current={answer.id} label={topic} /></Fragment>
+  <AnswerCard answer={answer} related={Astro.props.related} full />
 </Base>

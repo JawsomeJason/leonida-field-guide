@@ -1,11 +1,56 @@
 ---
+import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import { topics } from '../../data/topics';
+import { byTier } from '../../lib/answers';
+
+const none = byTier((await getCollection('answers')).map((e) => e.data), 'none');
+const count = (id: string) => none.filter((a) => a.topic === id).length;
 ---
 
 <Base title="Topics" description="Browse the guide by topic.">
   <h1>Topics</h1>
-  <ul class="tap-list">
-    {topics.map((t) => <li><a href={`/topics/${t.id}/`}>{t.label}</a></li>)}
+  <ul class="tiles">
+    {topics.map((t) => (
+      <li>
+        <a class:list={['tile', { 'tile--places': t.id === 'places' }]} href={`/topics/${t.id}/`}>
+          <span class="tile__name">{t.label}</span>
+          {t.id === 'places' ? (
+            <span class="tile__meta"><span class="locked">Locked</span><span class="open">Open</span></span>
+          ) : (
+            <span class="tile__meta">{count(t.id)} {count(t.id) === 1 ? 'answer' : 'answers'}</span>
+          )}
+        </a>
+      </li>
+    ))}
   </ul>
 </Base>
+
+<style>
+  .tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr)); gap: var(--gap-tap); }
+  /* Every tile is one tap target. */
+  .tile {
+    display: grid;
+    align-content: center;
+    gap: var(--space-1);
+    min-block-size: calc(var(--tap) * 1.5);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    touch-action: manipulation;
+  }
+  .tile__name { font-weight: 650; line-height: 1.3; }
+  .tile__meta { color: var(--muted); font: var(--text-small) / 1.3 var(--font-mono); }
+  @media (hover: hover) {
+    .tile:hover { background-color: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+  }
+  /* Dashed edge means "hidden until you ask", here and on the Show controls. */
+  .tile--places { border-style: dashed; border-color: var(--muted); }
+  .open { display: none; }
+  :global(html:is([data-dial='places'], [data-dial='mild'])) .tile--places { border-style: solid; border-color: var(--line); }
+  :global(html:is([data-dial='places'], [data-dial='mild'])) .locked { display: none; }
+  :global(html:is([data-dial='places'], [data-dial='mild'])) .open { display: inline; }
+</style>

@@ -1,19 +1,33 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import AnswerCard from '../../components/AnswerCard.astro';
+import Gate from '../../components/Gate.astro';
+import RevealList from '../../components/RevealList.astro';
 import { topics } from '../../data/topics';
+import { byTier } from '../../lib/answers';
 
 export const getStaticPaths = () => topics.map((t) => ({ params: { topic: t.id }, props: { label: t.label } }));
 
 const { topic } = Astro.params;
 const { label } = Astro.props;
-const answers = (await getCollection('answers')).filter((a) => a.data.topic === topic && a.data.tier === 'none');
+// Places is all hidden, so its default page is the gate and nothing else.
+const isPlaces = topic === 'places';
+const answers = isPlaces ? [] : byTier((await getCollection('answers')).map((e) => e.data), 'none').filter((a) => a.topic === topic);
 ---
 
 <Base title={label} description={`Answers about ${label.toLowerCase()}.`}>
   <h1>{label}</h1>
-  {answers.length === 0 && <p>No answers here yet.</p>}
-  <ul class="tap-list">
-    {answers.map((a) => <li><a href={`/a/${a.data.id}/`}>{a.data.question}</a></li>)}
-  </ul>
+  {isPlaces ? (
+    <>
+      <Gate />
+      <RevealList tiers="places" empty="No places here yet." />
+    </>
+  ) : (
+    <>
+      {answers.length === 0 && <p>No answers here yet.</p>}
+      <ul class="cards">{answers.map((a) => <li><AnswerCard answer={a} /></li>)}</ul>
+      <RevealList tiers="places mild" topic={topic} />
+    </>
+  )}
 </Base>
