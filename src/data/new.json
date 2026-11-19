@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "date": "2026-11-19",
+    "changed": [
+      "Added a plain answer on install size for each console, including a 512 GB Series S, with how to check free space and how to make room.",
+      "Added step-by-step crash help for PS5 and Xbox, from PlayStation's and Xbox's own support pages.",
+      "Boxed-copy code answers now link to Rockstar's activation help and its support request form.",
+      "Checked every Official answer against the page it cites, and re-labelled answers that only had news or console-maker sources."
+    ],
+    "problems": []
+  }
+]

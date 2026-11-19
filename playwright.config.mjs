@@ -18,6 +18,7 @@ export default defineConfig({
     { name: 'phone-390', use: { viewport: { width: 390, height: 844 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'a11y', 'search') },
     { name: 'tablet-820', use: { viewport: { width: 820, height: 1180 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'search') },
     { name: 'sync', ...only('sync') },
+    { name: 'new-screen', use: { viewport: { width: 390, height: 844 }, ...touch }, ...only('new') },
     { name: 'desktop-1440', use: { viewport: { width: 1440, height: 900 } }, ...only('behaviour', 'nojs', 'a11y', 'overflow', 'leak', 'search') },
   ],
 });

@@ -4,7 +4,7 @@ short: "No. Rockstar has announced no Windows version. Security firms report fak
 body: |-
   - Notebookcheck's roundup cites Cynet, ESET, Huntress and Malwarebytes for infostealers and ransomware hidden in fake installers.
   - One flagged file was caught by only 34 of 68 antivirus engines, so a clean single scan proves little.
-  - Only buy codes from sellers you trust. A code that will not redeem is hard to get back, and PS5 codes must match your account's region.
+  - Only buy codes from sellers you trust. A code that will not redeem is hard to get back, and some codes only work in one country group.
 topic: fixes
 stage: before
 tier: none
@@ -13,6 +13,6 @@ confidence: reported
 sources:
   - url: "https://www.notebookcheck.net/GTA-6-launch-scams-The-traps-to-avoid-before-and-after-release.1450534.0.html"
     title: "GTA 6 launch scams: The traps to avoid before and after release (Notebookcheck)"
-  - url: "https://www.rockstargames.com/VI"
-    title: "Grand Theft Auto VI (Rockstar Games)"
+  - url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
 checked: "2026-11-19"

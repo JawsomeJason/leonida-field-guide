@@ -1,17 +1,20 @@
 id: cloud-gaming-remote-play
 question: "Can I stream it or use Remote Play?"
-short: "Xbox Cloud Gaming will carry it on Xbox Series X|S and Xbox One consoles, using Series S graphics settings. Remote Play is fully supported on PlayStation and Xbox consoles."
+short: "Remote Play is fully supported on your console. Streaming the game from the cloud depends on your console."
 body: |-
   - Rockstar warns that connection speed and other technical factors may affect performance in ways local play would not.
-  - Notebookcheck's scam roundup says cloud streaming at launch is for Xbox consoles, not PCs.
 topic: setup
 stage: before
 tier: none
 consoles: all
+byConsole:
+  ps5: "Remote Play is fully supported on PS5, so you can play your PS5 game on another screen. Rockstar lists no cloud streaming for PS5."
+  xbox-x: "Xbox Cloud Gaming can stream it to Xbox Series X|S and Xbox One consoles. You must own the game and have cloud playtime. Remote Play is also fully supported."
+  xbox-s: "Xbox Cloud Gaming can stream it to Xbox Series X|S and Xbox One consoles. You must own the game and have cloud playtime. Remote Play is also fully supported."
 confidence: official
 sources:
   - url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
     title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
-  - url: "https://www.notebookcheck.net/GTA-6-launch-scams-The-traps-to-avoid-before-and-after-release.1450534.0.html"
-    title: "GTA 6 launch scams: The traps to avoid before and after release (Notebookcheck)"
+  - url: "https://www.xbox.com/en-us/games/grand-theft-auto-vi"
+    title: "Grand Theft Auto VI (Xbox)"
 checked: "2026-11-19"

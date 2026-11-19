@@ -1,0 +1,28 @@
+id: crash-steps-ps5
+question: "My PS5 game crashes or freezes. What do I try, in order?"
+short: "Restart the game, check for a game update, update the PS5 system software, then delete the game and download it again. Still crashing: contact PlayStation Support, or Rockstar Support for a game problem."
+body: |-
+  In this order, from PlayStation's own support page
+  1. Check [PlayStation status](https://status.playstation.com/). Wait if there are alerts.
+  2. Make sure the game fully downloaded: highlight it, press {options}, choose Information, then Download Status.
+  3. Check for a game update: highlight the game, press {options}, then choose Check for Update.
+  4. Update the system software: Settings, System, System Software, System Software Update and Settings.
+  5. Delete the game and download it again from your Game Library. You keep what you bought. To delete: Settings, Storage, Console Storage, Games and Apps.
+  6. Safe Mode (a start-up menu with repair tools): choose Clear Cache and Rebuild Database. It scans the drive and builds a fresh list of what is installed. Sony warns that some Safe Mode options erase data, so back up first, and do not pick a Reset option.
+     - To start it: hold the power button for three seconds to turn the PS5 off. Hold it again and let go after the second beep (about seven seconds). Plug in a controller with a USB cable and press the PS button.
+  7. Still crashing? Contact PlayStation Support from the link at the bottom of [PlayStation's crash page](https://www.playstation.com/en-us/support/games/game-freeze-crash/). Tell them what happens and how to repeat it, and add a screenshot or video. For a problem in this game, PlayStation says to ask the publisher too: [Rockstar Support](https://support.rockstargames.com/request).
+topic: fixes
+stage: hour-1
+tier: none
+consoles: [ps5]
+confidence: official
+sources:
+  - url: "https://www.playstation.com/en-us/support/games/game-freeze-crash/"
+    title: "PlayStation game freezes or crashes (PlayStation Support)"
+  - url: "https://www.playstation.com/en-us/support/hardware/safe-mode-playstation/"
+    title: "How to use Safe Mode on PS5 consoles (PlayStation Support)"
+  - url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
+    title: "How to manage storage space on your PS5 console (PlayStation Support)"
+  - url: "https://support.rockstargames.com/request"
+    title: "Submit a Request (Rockstar Support)"
+checked: "2026-11-19"
