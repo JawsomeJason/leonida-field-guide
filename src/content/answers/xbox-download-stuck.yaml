@@ -1,6 +1,6 @@
 id: xbox-download-stuck
 question: "My Xbox download won't start, is slow, or is stuck at Queued. What do I try?"
-short: "Check Xbox's status page, sign in with the profile that bought the game, look for low-storage warnings, and install any console update. A download in progress is listed under My games & apps, Manage, Queue."
+short: "Check Xbox's status page, sign in with the profile that bought the game, look for low-storage warnings, and install any console update."
 body: |-
   In this order, from Xbox's own support page
   1. Check the [Xbox status page](https://support.xbox.com/xbox-live-status). If a service has an alert, wait for it to clear.

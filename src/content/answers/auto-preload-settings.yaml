@@ -9,7 +9,7 @@ stage: before
 tier: none
 consoles: all
 byConsole:
-  ps5: "Turn on auto-downloads and leave the PS5 on or in Rest Mode. Also turn on Stay Connected to the Internet, then select the countdown timer on the game in your Game Library and tick what to download."
+  ps5: "Turn on auto-downloads and leave the PS5 on or in Rest Mode. Then select the countdown timer on the game in your Game Library and follow the on-screen steps."
   xbox-x: "Turn on automatic updates and leave the console on or in Sleep mode."
   xbox-s: "Turn on automatic updates and leave the console on or in Sleep mode."
 confidence: official
