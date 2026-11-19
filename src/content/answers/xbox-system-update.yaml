@@ -16,3 +16,16 @@ sources:
 checked: "2026-11-19"
 todo: "Check for an Xbox console update and install it"
 order: 20
+support:
+  - claim: "where to find updates"
+    url: "https://support.xbox.com/help/games-apps/troubleshooting/troubleshoot-game-or-app-installation-problems-on-xbox-one"
+    quote: "Select Profile & system > Settings > System > Updates."
+    checked: "2026-11-19"
+  - claim: "a missing update can stop a download"
+    url: "https://support.xbox.com/help/games-apps/troubleshooting/troubleshoot-game-or-app-installation-problems-on-xbox-one"
+    quote: "you may need to install an update before the download can complete."
+    checked: "2026-11-19"
+  - claim: "updates appear in the left menu"
+    url: "https://support.xbox.com/help/games-apps/troubleshooting/troubleshoot-game-or-app-installation-problems-on-xbox-one"
+    quote: "If there are any updates, they'll appear in the left menu."
+    checked: "2026-11-19"

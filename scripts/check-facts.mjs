@@ -3,6 +3,8 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { supportProblems } from '../src/data/confidence.js';
+import { loadRecords } from './check-leak.mjs';
 
 const walk = (dir) => readdirSync(dir, { recursive: true, withFileTypes: true }).filter((e) => e.isFile() && e.name.endsWith('.html')).map((e) => join(e.parentPath, e.name));
 
@@ -30,11 +32,16 @@ export function factGaps(dist) {
   return out.sort();
 }
 
+/** One line per official claim (a whole official answer, or an official `basis` claim) with no support quote and date. */
+export const supportGaps = (records) => records.flatMap(supportProblems).sort();
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const dist = process.argv[2] ?? 'dist';
   if (!existsSync(dist)) (console.error(`No build at ${dist}. Run npm run build first.`), process.exit(2));
   const gaps = factGaps(dist);
-  console.log(`check:facts ${walk(dist).length} pages checked in ${dist}`);
-  if (gaps.length) (console.error(gaps.join('\n')), console.error(`check:facts FAILED: ${gaps.length} card(s)`), process.exit(1));
-  console.log('check:facts passed: every card links to its source, date and label');
+  const records = loadRecords(process.argv[3] ?? 'src/content/answers');
+  const unsupported = supportGaps(records);
+  console.log(`check:facts ${walk(dist).length} pages checked in ${dist}; ${records.filter((a) => (a.support ?? []).length).length} answers carry support quotes`);
+  if (gaps.length || unsupported.length) (console.error([...gaps, ...unsupported].join('\n')), console.error(`check:facts FAILED: ${gaps.length} card(s), ${unsupported.length} official claim(s) with no support`), process.exit(1));
+  console.log('check:facts passed: every card links to its source, date and label, and every official claim has a dated support quote');
 }

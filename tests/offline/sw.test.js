@@ -7,7 +7,7 @@ import vm from 'node:vm';
 const ORIGIN = 'https://example.test';
 const src = readFileSync('public/sw.js', 'utf8');
 
-function boot(network) {
+function boot(network, shell = []) {
   const stores = new Map();
   const listeners = {};
   const open = (name) => {
@@ -23,7 +23,7 @@ function boot(network) {
     };
   };
   const self = { location: { origin: ORIGIN }, skipWaiting() {}, clients: { claim: async () => {}, matchAll: async () => [] }, addEventListener: (t, f) => (listeners[t] = f) };
-  vm.runInNewContext(src, { self, location: self.location, caches: { open: async (n) => open(n), keys: async () => [...stores.keys()], delete: async (n) => stores.delete(n) }, fetch: async (r) => network(new URL(typeof r === 'string' ? r : r.url, ORIGIN).pathname, r), Request, Response, URL, Promise });
+  vm.runInNewContext(src.replace("['__SHELL__']", JSON.stringify(shell)), { self, location: self.location, caches: { open: async (n) => open(n), keys: async () => [...stores.keys()], delete: async (n) => stores.delete(n) }, fetch: async (r) => network(new URL(typeof r === 'string' ? r : r.url, ORIGIN).pathname, r), Request, Response, URL, Promise });
   const cache = open('lfg-__BUILD__');
   const wait = async (type, event) => {
     const jobs = [];
@@ -89,9 +89,11 @@ test('the worker refuses to cache a response that carries x-lfg-gate (a 200 logi
   await Promise.all(jobs);
   assert.equal(await (await c2.match('/a.js')).text(), 'asset');
 
-  // Install: a login page in place of a listed URL is not stored, so the cache is not marked ready.
-  const bad = boot((path) => (path === '/offline-urls.json' ? Response.json({ urls: ['/x/'] }) : loginPage()));
+  // Install and fill: a login page in place of a listed URL is not stored, so the cache is not marked ready.
+  const bad = boot((path) => (path === '/offline-urls.json' ? Response.json({ urls: ['/x/'] }) : loginPage()), ['/s.js']);
   await bad.wait('install', {});
+  await bad.send({ type: 'fill' });
+  assert.equal(await (await bad.cache).match('/s.js'), undefined);
   assert.equal(await (await bad.cache).match('/x/'), undefined);
   assert.equal(await (await bad.cache).match('/__lfg-ready'), undefined);
 });
@@ -148,9 +150,10 @@ test('no warming: with the dial Off the worker fetches no hidden address, at ins
   const asked = [];
   const sw = boot((path) => {
     asked.push(path);
-    return path === '/offline-urls.json' ? Response.json({ urls: ['/', '/topics/'] }) : page(path);
-  });
+    return path === '/offline-urls.json' ? Response.json({ urls: ['/', '/topics/', '/_astro/a.js'] }) : page(path);
+  }, ['/_astro/a.js']);
   await sw.wait('install', {});
+  await sw.send({ type: 'fill' });
   await sw.send({ type: 'tiers', tiers: [] });
   assert.ok(asked.includes('/topics/'));
   assert.deepEqual(asked.filter((p) => hidden.test(p)), []);
@@ -236,4 +239,61 @@ test('offline, a navigation to a hidden address that is not on the device gets a
   assert.equal((await navigate(sw, '/nope/')).type, 'error');
   await (await sw.cache).put('/mild/y/show/', page('held'));
   assert.equal(await (await navigate(sw, '/mild/y/show/?reveal=1')).text(), 'held');
+});
+
+// Fix round 9: install is quick and never waits for the site; the page asks for the fill; every opened page is kept.
+const list = { urls: ['/', '/topics/', '/about/', '/_astro/a.js'] };
+const withList = (asked, extra = () => undefined) => boot((path, req) => {
+  asked.push(path);
+  return path === '/offline-urls.json' ? Response.json(list) : extra(path, req) ?? page(path);
+}, ['/_astro/a.js']);
+
+test('install fetches the shell only; the rest of the site waits for a fill, which is never a condition of install', async () => {
+  const asked = [];
+  const sw = withList(asked);
+  await sw.wait('install', {});
+  assert.deepEqual(asked, ['/_astro/a.js']);
+  assert.equal(await (await sw.cache).match('/__lfg-ready'), undefined);
+
+  // A site that never answers does not hold install up: install settles on the shell alone.
+  const slow = boot((path) => (path === '/offline-urls.json' ? Response.json(list) : path === '/_astro/a.js' ? page(path) : new Promise(() => {})), ['/_astro/a.js']);
+  await slow.wait('install', {});
+  assert.notEqual(await (await slow.cache).match('/_astro/a.js'), undefined);
+});
+
+test('a fill stores what is missing, marks the cache ready once everything is in, and a second fill fetches nothing', async () => {
+  const asked = [];
+  const sw = withList(asked);
+  await sw.wait('install', {});
+  await sw.send({ type: 'fill' });
+  const cache = await sw.cache;
+  for (const u of list.urls) assert.notEqual(await cache.match(u), undefined, u);
+  assert.notEqual(await cache.match('/__lfg-ready'), undefined);
+  asked.length = 0;
+  await sw.send({ type: 'fill' });
+  assert.deepEqual(asked, ['/offline-urls.json']);
+
+  // One page that fails leaves the cache not ready; the next fill fetches only that page.
+  let down = true;
+  const flaky = withList([], (path) => (path === '/about/' && down ? new Response('', { status: 500 }) : undefined));
+  await flaky.send({ type: 'fill' });
+  assert.equal(await (await flaky.cache).match('/__lfg-ready'), undefined);
+  assert.notEqual(await (await flaky.cache).match('/topics/'), undefined);
+  down = false;
+  await flaky.send({ type: 'fill' });
+  assert.notEqual(await (await flaky.cache).match('/__lfg-ready'), undefined);
+});
+
+test('a page the player opens is kept when it is opened; a hidden page, an error and a gate page are not', async () => {
+  const sw = boot((path) => (path === '/nope/' ? new Response('x', { status: 404 }) : path === '/login/' ? loginPage() : page(`page ${path}`)));
+  const cache = await sw.cache;
+  for (const path of ['/never-listed/', '/nope/', '/login/', '/places/x/show/', '/mild/y/']) {
+    const f = fetchEvent(path);
+    f.event.request = { method: 'GET', url: `${ORIGIN}${path}`, mode: 'navigate' };
+    sw.listeners.fetch(f.event);
+    await f.shown();
+    await Promise.all(f.jobs);
+  }
+  assert.equal(await (await cache.match('/never-listed/')).text(), 'page /never-listed/');
+  for (const u of ['/nope/', '/login/', '/places/x/show/', '/mild/y/']) assert.equal(await cache.match(u), undefined, u);
 });

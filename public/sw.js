@@ -1,11 +1,14 @@
-// Offline cache. src/integrations/offline.mjs runs after the build: it replaces __BUILD__ below and writes
-//   /offline-urls.json            { version, urls }  default-tier URLs only, cached on install
+// Offline cache. src/integrations/offline.mjs runs after the build: it replaces __BUILD__ below (and in each page's inline script) and writes
+//   SHELL below                   the shared scripts and app files: all that install fetches (written in, so install needs no list round trip)
+//   /offline-urls.json            { version, urls }  default-tier URLs only: the whole default site, filled in the background after activation, when a page
+//                                 asks (message `fill`), and never a condition of activation
 //   /h/<tier>/offline-urls.json   { urls }           one hidden tier, cached only once the player turns it on
 // Only same-origin GETs are touched. Redirects, error pages and the gate's login page (header x-lfg-gate, which
 // the gate may answer with a 200) are never stored, so a password gate in front of the network cannot
 // overwrite a good cached page. When the player lowers the dial, the page sends the tiers that stay on and the
 // worker deletes the files of every other hidden tier from the cache.
 const VERSION = '__BUILD__';
+const SHELL = ['__SHELL__'];
 const CACHE = `lfg-${VERSION}`;
 const READY = '/__lfg-ready';
 const TIERS = ['places', 'mild'];
@@ -23,7 +26,7 @@ const keepable = (res) => res.ok && !res.redirected && !res.headers.has('x-lfg-g
 
 const store = async (cache, url) => {
   try {
-    const res = await fetch(url, { cache: 'reload' });
+    const res = await fetch(url, { cache: url.startsWith('/_astro/') ? 'default' : 'reload' }); // a hashed file is immutable: the browser's copy is exact
     if (!keepable(res)) return false;
     await cache.put(url, res);
     return true;
@@ -39,19 +42,28 @@ const storeAll = async (cache, urls) => {
   return ok;
 };
 
-async function precache() {
+const list = () => fetch('/offline-urls.json', { cache: 'reload' }).then((r) => r.json());
+
+// Install: the shared scripts only, so the worker is active and in control within a second or two of the first visit.
+async function install() {
   const cache = await caches.open(CACHE);
-  let list;
-  try {
-    list = await (await fetch('/offline-urls.json', { cache: 'reload' })).json();
-  } catch {
-    return; // no list (dev server, or offline): stay a plain pass-through
-  }
-  if (await storeAll(cache, list.urls)) {
-    await cache.put(READY, new Response('1'));
-    for (const c of await self.clients.matchAll({ includeUncontrolled: true })) c.postMessage({ type: 'ready' });
-  }
+  await Promise.all(SHELL.map((u) => store(cache, u)));
 }
+
+// Background fill of the default site, after activation: what is not held yet, a few at a time. Marks the cache ready only when every page is in.
+let filling;
+const fill = () =>
+  (filling ??= (async () => {
+    try {
+      const cache = await caches.open(CACHE);
+      const todo = [];
+      for (const u of (await list()).urls) if (!(await cache.match(u))) todo.push(u);
+      if (await storeAll(cache, todo)) {
+        await cache.put(READY, new Response('1'));
+        for (const c of await self.clients.matchAll({ includeUncontrolled: true })) c.postMessage({ type: 'ready' });
+      }
+    } catch {}
+  })().finally(() => (filling = null)));
 
 async function addTier(tier) {
   if (!TIERS.includes(tier)) return;
@@ -77,7 +89,7 @@ async function dropTier(tier, lowered) {
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
-  e.waitUntil(precache());
+  e.waitUntil(install());
 });
 
 self.addEventListener('activate', (e) => {
@@ -90,14 +102,14 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('message', (e) => {
+  if (e.data?.type === 'fill') e.waitUntil(fill());
   // `tiers` is every hidden tier that is on now: those are added, all the others are dropped.
   if (e.data?.type === 'tiers' && Array.isArray(e.data.tiers)) {
     e.waitUntil(Promise.all(TIERS.map((t) => (e.data.tiers.includes(t) ? addTier(t) : dropTier(t, e.data.lowered)))));
   }
 });
 
-// Only what is already stored is served or refreshed here; nothing new is added by browsing,
-// so a hidden page is never cached before its tier is on.
+// Hidden files are never added by browsing (only by the tier being on, or one reveal tap, below); every other page the player opens is kept.
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   const { origin, pathname } = new URL(req.url);
@@ -118,7 +130,8 @@ self.addEventListener('fetch', (e) => {
         const held = await cache.match(req, { ignoreSearch: true });
         try {
           const res = await fetch(req); // network first
-          if (held && keepable(res)) await cache.put(new URL(req.url).pathname, res.clone());
+          // Every page the player opens is kept, so it opens again offline; a hidden page only when it is held already (its tier's own rules).
+          if (keepable(res) && (held || !HIDDEN.test(pathname))) e.waitUntil(cache.put(pathname, res.clone()));
           return res;
         } catch {
           return held || (HIDDEN.test(pathname) ? new Response(NOTICE, { status: 503, headers: { 'content-type': 'text/html; charset=utf-8' } }) : Response.error());

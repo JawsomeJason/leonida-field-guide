@@ -1,8 +1,12 @@
 id: online-or-co-op
 question: "Is there online or co-op at launch?"
-short: "No online or co-op mode is listed for launch. The game is described as a single-player experience."
+short: "No. The game is single-player, and no online or co-op mode is listed."
+byConsole:
+  ps5: "No. The PlayStation Store page calls the game a single-player experience and lists 1 player with offline play."
+  xbox-x: "No. The Xbox store page calls the game a single-player experience."
+  xbox-s: "No. The Xbox store page calls the game a single-player experience."
 body: |-
-  - Both console store pages we read call the game "a single-player experience", and neither lists an online or co-op mode.
+  - <span data-only="ps5">The PlayStation Store page says it in its FAQ, in the answer to a question about multiplayer modes, and its listing shows 1 player and offline play.</span><span data-only="xbox-x xbox-s">The Xbox store page says it in a note at the foot of the page.</span> That page lists no online or co-op mode.
   - Rockstar's service status page lists its online services but has no separate row for this game.
   - If an online mode is announced, this card will change.
 topic: good-to-know
@@ -22,3 +26,23 @@ sources:
 checked: "2026-11-19"
 rank: 4
 keywords: ["multiplayer", "play with friends", "play with my friends", "friends", "coop"]
+support:
+  - claim: "the PlayStation Store page calls the game a single-player experience"
+    url: "https://www.playstation.com/en-us/games/grand-theft-auto-vi/"
+    quote: "Grand Theft Auto VI is a single-player experience."
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "the PlayStation Store page lists one player and offline play"
+    url: "https://www.playstation.com/en-us/games/grand-theft-auto-vi/"
+    quote: "Offline play enabled 1 player"
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "the Xbox store page calls the game a single-player experience"
+    url: "https://www.xbox.com/en-us/games/grand-theft-auto-vi"
+    quote: "Grand Theft Auto VI is a single-player experience."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "Rockstar's service status page lists online services with no row for this game"
+    url: "https://support.rockstargames.com/servicestatus"
+    quote: "Grand Theft Auto Online PlayStation 5 All services operational"
+    checked: "2026-11-19"

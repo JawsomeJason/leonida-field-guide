@@ -1,13 +1,13 @@
 id: will-i-lose-anything
 question: "Will I lose my progress, saves or cash?"
-short: "Console makers say deleting a game keeps what you bought. Saves for this game are not confirmed as backed up, so check first. You can lose in-game money. There is a simple way to keep it safe."
+short: "Deleting a game keeps what you bought, but saves for this game are not confirmed as backed up, so check first. You can lose in-game money. There is a simple way to keep it safe."
 byConsole:
-  ps5: "PlayStation says PlayStation Plus members can upload saved data online. Backup for this game is not confirmed: upload it first (Settings, Saved Data and Game/App Settings). You can lose in-game money. There is a simple way to keep it safe."
-  xbox-x: "Xbox says saved games are copied online (synced) when you sign in. Cultured Vultures reports this game supports it; not confirmed by Xbox. Stay signed in until it syncs. You can lose in-game money. There is a simple way to keep it safe."
-  xbox-s: "Xbox says saved games are copied online (synced) when you sign in. Cultured Vultures reports this game supports it; not confirmed by Xbox. Stay signed in until it syncs. You can lose in-game money. There is a simple way to keep it safe."
+  ps5: "Deleting a game keeps what you bought. Saves for this game are not confirmed as backed up: upload them first (PlayStation Plus; Settings, Saved Data and Game/App Settings). You can lose in-game money. There is a simple way to keep it safe."
+  xbox-x: "Deleting a game keeps what you bought. Xbox says saved games are copied online (synced) when you sign in. This game's backup is not confirmed: stay signed in until it syncs. You can lose in-game money. There is a simple way to keep it safe."
+  xbox-s: "Deleting a game keeps what you bought. Xbox says saved games are copied online (synced) when you sign in. This game's backup is not confirmed: stay signed in until it syncs. You can lose in-game money. There is a simple way to keep it safe."
 body: |-
   What we know
-  - Your console maker says deleting or uninstalling a game does not remove your right to play it. You download it again from your library. Your saves are a separate matter.
+  - <span data-only="ps5">PlayStation's storage page says you do not lose access to a game you delete: you download your purchases again from your game library.</span><span data-only="xbox-x xbox-s">Xbox's storage page says removing a game does not remove your right to play (the licence), which stays in the cloud with your game progress.</span> Your saves are a separate matter.
   - <span data-only="ps5">PlayStation's own pages say PlayStation Plus members can upload saved data to online storage and have it copied automatically. That is about games in general; for this game, backup is not confirmed.</span><span data-only="xbox-x xbox-s">Xbox's own page says saved games are copied online (synced) when you sign in and come back when you reinstall a game. That is about games in general. Cultured Vultures reports that this game's Xbox listing shows saves kept online (cloud saves), but we have not seen that on an Xbox or Rockstar page, so for this game it is not confirmed.</span>
   - A saved game is separate from the game files. Before you delete, check your save is backed up: your console's steps are in [Are my saves backed up in the cloud?](/a/cloud-saves-and-backup/).
   - You can lose in-game money. There is a simple way to keep it safe.
@@ -49,3 +49,34 @@ reveal:
   - tier: mild
     label: "Show how to keep it safe"
     text: "Cash you carry is lost if you die before you deposit it at an ATM, and money in the bank is safe (Vice Atlas, before launch). Dying while you hold stash bags loses the bags and your cash on hand (GameSpot, after playing). Neither source says what happens on arrest, so we claim nothing there. To keep it safe, deposit it before you take risks."
+support:
+  - claim: "that deleting a game keeps what you bought"
+    url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
+    quote: "you won't lose access to any deleted games or applications"
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "that deleting a game keeps what you bought"
+    url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
+    quote: "you can re-download your purchases from your game library whenever you like."
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "that deleting a game keeps what you bought"
+    url: "https://support.xbox.com/en-US/help/hardware-network/storage/manage-storage"
+    quote: "removing a game from your console storage doesn't remove your license (that remains in the cloud, along with your game progress)."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "that deleting a game keeps what you bought"
+    url: "https://support.xbox.com/en-US/help/hardware-network/storage/manage-storage"
+    quote: "You won't lose games or game progress by removing"
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "PlayStation Plus members can upload saved data"
+    url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
+    quote: "When you're a PlayStation Plus member, you can upload your saved data to cloud storage."
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "Xbox saved games are copied online when you sign in"
+    url: "https://support.xbox.com/en-US/help/hardware-network/storage/manage-storage"
+    quote: "Any data for your games and apps (preferences, saved games) syncs online when you sign in, so when you reinstall a deleted game or app, your saved data comes right back with it."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]

@@ -171,6 +171,15 @@ test('swapped neighbouring letters are one typo, from four letters; other typos 
   assert.deepEqual(ids([rec('c', 'How do I use the cash?')], 'crash'), []); // cash is not crash
 });
 
+test('a swap that moves an s to the end is still a swap (crahs is crash, not the plural of crah)', () => {
+  const records = [rec('a', 'What do I do when the game crashes on startup?'), rec('b', 'Is there a map?')];
+  assert.deepEqual(ids(records, 'crahs on startup'), ['a']);
+  assert.deepEqual(ids(records, 'crahs'), ['a']);
+  assert.deepEqual(ids([rec('c', 'How do I use the cash?')], 'crahs'), []); // cash is still not crash
+  assert.deepEqual(ids([rec('d', 'What are the best settings?')], 'best setitngs'), ['d']); // a swap inside the ending too
+  assert.ok(asksWhere('wehre is the gun shop')); // the where-is note comes for a swapped where
+});
+
 test('asks where: only questions about where something is', () => {
   for (const q of ['where is the gun shop', 'Where can I find a car', 'location of the shop', "where's the nearest bank", 'nearest garage', 'map', 'is there a map']) assert.ok(asksWhere(q), q);
   for (const q of ['how do I save', 'where can I put the game', 'controls']) assert.ok(!asksWhere(q), q);

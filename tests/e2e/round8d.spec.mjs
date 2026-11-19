@@ -80,7 +80,7 @@ test('the line under the Ask title is true at every level, and no other line say
 
 // ---- Item 9: the phone settings sheet is about two thirds of the screen, the spoiler level nearest the thumb, nothing clipped ----
 for (const [w, h] of [[320, 568], [320, 640], [375, 664], [390, 844], [430, 932]]) {
-  test(`the settings sheet on ${w}x${h}: at most 70% of the screen, spoiler options lowest, nothing clipped, Done in view, it scrolls`, async ({ page }) => {
+  test(`the settings sheet on ${w}x${h}: at most 70% of the screen (90% under 700px tall), spoiler options lowest, nothing clipped, Done in view, it scrolls`, async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize({ width: w, height: h });
     await page.goto('/');
@@ -103,7 +103,7 @@ for (const [w, h] of [[320, 568], [320, 640], [375, 664], [390, 844], [430, 932]
         done, lastRowBottom: lastRow.b, scrolled: sheet.scrollTop,
       };
     });
-    expect(m.height, 'sheet height against the screen').toBeLessThanOrEqual(m.vh * 0.7);
+    expect(m.height, 'sheet height against the screen').toBeLessThanOrEqual(m.vh * (m.vh <= 700 ? 0.9 : 0.7)); // fix round 9: nine tenths on a screen under 700px tall, so all three levels show
     expect(m.theme < m.console && m.console < m.dial, 'theme, then console, then the spoiler level at the bottom').toBe(true);
     expect(m.dial, 'the spoiler options sit in the lower half of the sheet content').toBeGreaterThan(m.content / 2);
     expect(m.hscroll, 'no horizontal clipping or scroll inside the sheet').toBeLessThanOrEqual(0);

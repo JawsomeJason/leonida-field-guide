@@ -13,10 +13,33 @@ tier: none
 consoles: all
 byConsole:
   ps5: "PlayStation codes only work on accounts from the country group where the code was sold, for example Canada and the United States together, and the UK on its own. Buy from a store in your account's country."
-  xbox-x: "Xbox codes are not limited to one country (region-locked). Rockstar still advises buying from a retailer in the country of your account, to avoid activation problems."
-  xbox-s: "Xbox codes are not limited to one country (region-locked). Rockstar still advises buying from a retailer in the country of your account, to avoid activation problems."
+  xbox-x: "An Xbox code is not tied to one country. Rockstar still advises buying from a retailer in the country of your account, to avoid activation problems."
+  xbox-s: "An Xbox code is not tied to one country. Rockstar still advises buying from a retailer in the country of your account, to avoid activation problems."
 confidence: official
 sources:
   - url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
     title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
 checked: "2026-11-19"
+support:
+  - claim: "region limits follow the platform account's region"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "Region restrictions for code redemptions of Grand Theft Auto VI are based on the region associated with your platform account."
+    checked: "2026-11-19"
+  - claim: "a code bought in another region must match the account's region"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "that version must match the region of your platform account."
+    checked: "2026-11-19"
+  - claim: "Rockstar advises buying from a retailer in your account's country"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "It is recommended that you buy and play from a retailer that is in the country of your platform account to avoid potential activation problems."
+    checked: "2026-11-19"
+  - claim: "PlayStation codes are limited to a country group"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "Codes purchased in the following regions are to only be used by users holding an account for PlayStation registered to a specific set of countries as follows:"
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "Xbox codes are not tied to one country"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "XBOX: Codes purchased are not region-locked."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]

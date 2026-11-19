@@ -23,3 +23,36 @@ sources:
     title: "Grand Theft Auto VI Pre-Order Purchase Support FAQ (Rockstar Support)"
 checked: "2026-11-19"
 rank: 17
+support:
+  - claim: "Rockstar's page sends you to the console maker's error help"
+    url: "https://support.rockstargames.com/articles/28kSeQ3zMV0PtXdGOoD8Jo/grand-theft-auto-vi-error-troubleshooting"
+    quote: "You can use the support links below to troubleshoot errors on your preferred console:"
+    checked: "2026-11-19"
+  - claim: "the PS5 error-code address"
+    url: "https://support.rockstargames.com/articles/28kSeQ3zMV0PtXdGOoD8Jo/grand-theft-auto-vi-error-troubleshooting"
+    quote: "PlayStation 5: https://www.playstation.com/support/error-codes/ps5/"
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "the Xbox error-code search address"
+    url: "https://support.rockstargames.com/articles/28kSeQ3zMV0PtXdGOoD8Jo/grand-theft-auto-vi-error-troubleshooting"
+    quote: "XBOX Series X|S: https://support.xbox.com/help/errors/error-code-search-guide"
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "Rockstar's error page was last updated on 18 November"
+    url: "https://support.rockstargames.com/articles/28kSeQ3zMV0PtXdGOoD8Jo/grand-theft-auto-vi-error-troubleshooting"
+    quote: "Last Updated: November 18, 2026"
+    checked: "2026-11-19"
+  - claim: "Rockstar points PlayStation purchase questions to PlayStation Support"
+    url: "https://support.rockstargames.com/articles/40DHWEDBnq5jUuWJqKcH02/grand-theft-auto-vi-pre-order-purchase-support-faq"
+    quote: "PlayStation Support: https://www.playstation.com/en-us/support/"
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "Rockstar points Xbox purchase questions to Xbox Support"
+    url: "https://support.rockstargames.com/articles/40DHWEDBnq5jUuWJqKcH02/grand-theft-auto-vi-pre-order-purchase-support-faq"
+    quote: "Xbox Support: https://support.xbox.com/en-US/contact-us"
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "Rockstar sends download problems to the console makers' pages"
+    url: "https://support.rockstargames.com/articles/3t8W3cKfObijZuwZuqT2eM/issues-installing-grand-theft-auto-vi"
+    quote: "If you are having issues pre-loading Grand Theft Auto VI, see the support articles below for your relevant console:"
+    checked: "2026-11-19"

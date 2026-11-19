@@ -20,14 +20,16 @@ const notes = { off: document.querySelector('#q-where-off'), on: document.queryS
 const more = document.querySelector('#q-more');
 
 const cache = new Map();
+const ready = new Set(); // the tiers whose file has arrived
+/** A tier's rows, or null when its file could not load (a refusal or a redirect to the gate is a failure too). */
 function load(tier) {
   if (!cache.has(tier)) {
     cache.set(
       tier,
       fetch(tiers[tier].index)
-        .then((r) => (r.ok ? r.json() : Promise.reject()))
-        .then((rows) => rows.map((r) => ({ ...r, tier })))
-        .catch(() => (cache.delete(tier), [])), // a failed load is retried on the next keystroke
+        .then((r) => (r.ok && !r.redirected ? r.json() : Promise.reject()))
+        .then((rows) => (ready.add(tier), rows.map((r) => ({ ...r, tier }))))
+        .catch(() => (cache.delete(tier), null)), // a failed load is retried on the next keystroke
     );
   }
   return cache.get(tier);
@@ -72,6 +74,7 @@ function link(href, text, className = '') {
   return li;
 }
 
+const name = (ts) => tiers[ts.at(-1)].label.toLowerCase() || 'guide'; // "places", "mild"; the default file is "guide"
 const FIRST = 5; // the list is cut here until the player asks for more
 let run = 0;
 let asked = ''; // the query the list was last built for, so a new question starts cut again
@@ -81,21 +84,9 @@ async function update() {
   const n = ++run;
   const query = input.value;
   const { dial, console: owned } = read();
-  const records = (await Promise.all((allowed[dial] ?? allowed.off).map(load))).flat();
-  if (n !== run) return; // a newer keystroke is already running
-  // An answer for other consoles stays out of the way, like the cards do; a console's own name asks for its answers.
-  const found = answersFor(records, query, owned);
-  if (query !== asked) all = false;
-  asked = query;
-  const typed = !!query.trim();
-  const known = typed && asksKnown(query); // the row to the known-problems list is an answer by itself
-  const none = typed && !found.length && !known;
-  const cut = typed && !all && found.length > FIRST;
-  lead = known ? 1 : 0;
-  list.replaceChildren(...(known ? [link('/new/', 'Known problems and what changed', 'ask-known')] : []), ...(cut ? found.slice(0, FIRST) : found).map(row), ...(none ? [link('/topics/', 'Browse all topics')] : []));
-  list.hidden = !typed;
-  more.hidden = !cut;
+  // The note needs no records, so it follows the dial and the query at once, before any file is awaited.
   // A question about where something is gets the where-is note: at Off the no-link sentence and the gate to Places, at Places or Mild "shown at your level" and the outside map links (maps.js fills them from the Places tier once the note is shown). Nothing else carries the gate or a map link. At Off the note says it all: no count above it.
+  const typed = !!query.trim();
   const asksPlace = typed && asksWhere(query);
   const was = where.hidden;
   where.querySelector(':scope > .where-off, :scope > .where-on')?.remove();
@@ -103,11 +94,35 @@ async function update() {
   where.hidden = !asksPlace;
   if (where.hidden !== was) dispatchEvent(new Event('lfg:note')); // the map links come and go with the note
   const offNote = asksPlace && dial === 'off';
+  const on = allowed[dial] ?? allowed.off;
+  const waiting = on.filter((t) => !ready.has(t));
+  // A file that has not arrived is not "no answer": say what is happening, and run the query again when it is here.
+  if (typed && waiting.length) {
+    status.removeAttribute('data-floor');
+    status.textContent = `Loading the ${name(waiting)} answers...`;
+    list.hidden = more.hidden = true;
+  }
+  const loaded = await Promise.all(on.map(load));
+  if (n !== run) return; // a newer keystroke is already running
+  const records = loaded.flat().filter(Boolean);
+  const failed = on.filter((_, i) => !loaded[i]);
+  // An answer for other consoles stays out of the way, like the cards do; a console's own name asks for its answers.
+  const found = answersFor(records, query, owned);
+  if (query !== asked) all = false;
+  asked = query;
+  const known = typed && asksKnown(query); // the row to the known-problems list is an answer by itself
+  const none = typed && !found.length && !known && !failed.length; // answers that could not load are not "no answer"
+  const cut = typed && !all && found.length > FIRST;
+  lead = known ? 1 : 0;
+  list.replaceChildren(...(known ? [link('/new/', 'Known problems and what changed', 'ask-known')] : []), ...(cut ? found.slice(0, FIRST) : found).map(row), ...(none ? [link('/topics/', 'Browse all topics')] : []));
+  list.hidden = !typed;
+  more.hidden = !cut;
   status.toggleAttribute('data-floor', none && !offNote);
-  status.textContent = !typed || offNote || (known && !found.length) ? '' : found.length ? `${found.length} ${found.length === 1 ? 'answer' : 'answers'}` : asksStory(query) ? 'This guide carries no story content, by design.' : 'This guide has no answer for that yet.';
+  status.textContent = typed && failed.length ? `The ${name(failed)} answers cannot load right now. Check your connection and type again.` : !typed || offNote || (known && !found.length) ? '' : found.length ? `${found.length} ${found.length === 1 ? 'answer' : 'answers'}` : asksStory(query) ? 'This guide carries no story content, by design.' : 'This guide has no answer for that yet.';
 }
 
 input.addEventListener('input', update);
+addEventListener('online', update); // a file that could not load is tried again when the connection returns
 more.addEventListener('click', async () => {
   all = true;
   await update();

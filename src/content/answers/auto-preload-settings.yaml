@@ -3,7 +3,7 @@ question: "How do I make the game download by itself?"
 short: "Turn on automatic downloads or updates, and leave the console on or in its rest or sleep mode."
 body: |-
   - Rockstar's FAQ for downloading before launch (pre-load) gives the requirements for each console and links to the console maker's own steps.
-  - If the automatic download did not happen, start it by hand from your game library.
+  - <span data-only="ps5">If it did not start, see [My PS5 download won't start or is stuck](/a/ps5-download-stuck/).</span><span data-only="xbox-x xbox-s">If it did not start, see [My Xbox download won't start, is slow, or is stuck at Queued](/a/xbox-download-stuck/).</span>
 topic: setup
 stage: before
 tier: none
@@ -26,3 +26,24 @@ checked: "2026-11-19"
 todo: "Turn on automatic downloads and updates"
 order: 40
 keywords: ["preload", "pre load", "download before launch day", "download early"]
+support:
+  - claim: "PS5 needs auto-downloads on and the console on or in Rest Mode"
+    url: "https://support.rockstargames.com/articles/7nPqOA2uCbpEQHXx7KVrYd/grand-theft-auto-vi-pre-load-faq"
+    quote: "Players must have auto-downloads enabled, and their console must be powered on or powered off to Rest Mode."
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "PS5 countdown timer on the game in the Game Library"
+    url: "https://www.playstation.com/support/games/pre-order-games-automatic-download-ps-store"
+    quote: "select Game Library and then select your pre-ordered game. A timer counting down to the game's release appears."
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "Xbox needs automatic updates on and the console on or in Sleep mode"
+    url: "https://support.rockstargames.com/articles/7nPqOA2uCbpEQHXx7KVrYd/grand-theft-auto-vi-pre-load-faq"
+    quote: "Players must have automatic updates enabled, and their console must be powered on or in Sleep mode."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "where Xbox turns on automatic game updates"
+    url: "https://support.xbox.com/help/hardware-network/settings-updates/system-update-overview"
+    quote: "Keep my games & apps up to date to update games and apps automatically."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]

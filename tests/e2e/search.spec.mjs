@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { saved, measure, press, records } from './helpers.mjs';
+import { saved, measure, press, records, setDial } from './helpers.mjs';
 import { FIXTURE_QUERIES } from '../search/queries.mjs';
 
 // A service worker would answer from its cache and skip the stubbed routes below, depending on how fast the machine is: block it here.
@@ -70,7 +70,7 @@ for (const { q, note } of noted) {
     await ask(page, q);
     const where = page.locator('#q-where');
     if (note === 'places') {
-      await expect(where.locator('.where-off p')).toHaveText('Places are hidden by design. Outside maps exist; they appear here once Places is on.');
+      await expect(where.locator('.where-off p')).toHaveText('Places are hidden by design: they can give away where things are before you find them. Outside maps exist; they appear here once Places is on.');
       await expect(where.getByRole('link', { name: 'Places: turn them on' })).toHaveAttribute('href', '/places/');
       await expect(page.getByRole('status')).toHaveText('');
     } else {
@@ -138,7 +138,7 @@ test('where is something at Off: places are hidden by design, outside maps exist
   await ask(page, 'where is the gun shop');
   const note = page.locator('#q-where');
   await expect(note).toBeVisible();
-  await expect(note.locator('.where-off p')).toHaveText('Places are hidden by design. Outside maps exist; they appear here once Places is on.');
+  await expect(note.locator('.where-off p')).toHaveText('Places are hidden by design: they can give away where things are before you find them. Outside maps exist; they appear here once Places is on.');
   await expect(note.getByRole('link')).toHaveCount(1);
   await expect(note.getByRole('link', { name: /Places/ })).toHaveAttribute('href', '/places/');
   if (test.info().project.use.hasTouch) {
@@ -305,4 +305,74 @@ test('the built index says which consoles each answer speaks to, and "xbox" find
   await ask(page, 'xbox');
   await expect(results(page).locator('a[href="/a/find-xbox/"]')).toHaveCount(1);
   await expect(results(page).locator('a[href="/a/find-ps5/"]')).toHaveCount(0);
+});
+
+// Fix round 9, item 12: at Places and Mild the outside map links in the where-is note carry the outside mark and the one spoiler caution, as on the Places screen; no result row leaves the guide.
+for (const dial of ['places', 'mild']) {
+  test(`at ${dial} the outside map links in the search carry the outside mark and the spoiler caution, the same as the Places screen`, async ({ page }) => {
+    const mark = (locator) => locator.first().evaluate((a) => getComputedStyle(a, '::after').maskImage);
+    await saved(page, { dial });
+    await page.goto('/places/');
+    const onScreen = await mark(page.locator('.outside'));
+    expect(onScreen).toContain('M10 5H5'); // an arrow out of a box, not the row's chevron
+    await ask(page, 'where is the gun shop');
+    const list = page.locator('#q-where [data-outside]');
+    await expect(list.locator('a.outside').first()).toBeVisible();
+    expect(await mark(list.locator('a.outside'))).toBe(onScreen);
+    await expect(list.locator('.outside-note')).toHaveText('Links go to other sites, which may contain spoilers.');
+    await expect(list.locator('.outside-note')).toBeVisible();
+    for (const href of await results(page).locator('a').evaluateAll((as) => as.map((a) => a.getAttribute('href')))) expect(href).toMatch(/^\//); // a result is always a page of this guide
+  });
+}
+
+// Fix round 9, item 13: typing straight after raising the level, while that level's search file is still loading, says so and then shows the right result.
+test('raise the level and type at once while the hidden search file is held back: a loading line, then the result, never the no-answer line', async ({ page }) => {
+  let release;
+  const held = new Promise((r) => (release = r));
+  await page.route('**/h/places/search.json', async (route) => {
+    await held;
+    await route.continue();
+  });
+  await page.goto('/');
+  await setDial(page, 'Places');
+  await page.getByRole('searchbox').fill('zebra kiosk');
+  const status = page.locator('#q-status');
+  await expect(status).toHaveText('Loading the places answers...');
+  await expect(status).toHaveAttribute('role', 'status');
+  await expect(results(page)).toBeHidden();
+  await expect(page.getByText('This guide has no answer for that yet.')).toHaveCount(0);
+  await page.getByRole('searchbox').fill('where is the gun shop'); // the where-is note follows the raised level at once, not after the file
+  await expect(page.locator('#q-where')).toContainText('Places are shown at your level.');
+  await expect(page.getByRole('link', { name: 'Places: turn them on' })).toHaveCount(0);
+  await page.getByRole('searchbox').fill('zebra kiosk');
+  release();
+  await expect(results(page).getByRole('link').first()).toHaveAttribute('href', '/places/place-01/');
+  await expect(status).not.toHaveText(/Loading/);
+});
+
+test('a hidden search file that cannot load says so, never "no answer", and the next keystroke tries again', async ({ page }) => {
+  let broken = true;
+  await page.route('**/h/places/search.json', (route) => (broken ? route.fulfill({ status: 500, body: '' }) : route.continue()));
+  await saved(page, { dial: 'places' });
+  await ask(page, 'zebra kiosk');
+  await expect(page.locator('#q-status')).toHaveText('The places answers cannot load right now. Check your connection and type again.');
+  await expect(page.getByText('This guide has no answer for that yet.')).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Browse all topics' })).toHaveCount(0);
+  broken = false;
+  await page.getByRole('searchbox').fill('zebra kiosks');
+  await expect(results(page).getByRole('link').first()).toHaveAttribute('href', '/places/place-01/');
+});
+
+// Fix round 9, item 11: About says exactly what raising the level fetches (the offline copy of the pages is checked in sync.spec.mjs).
+test('About: at Off no hidden file is fetched; raising the level fetches that level\'s search file and the outside map list', async ({ page }) => {
+  const asked = [];
+  page.on('request', (r) => asked.push(new URL(r.url()).pathname));
+  await page.goto('/about/');
+  await expect(page.getByText('At Off the app fetches none of them, except a single detail when you tap to show it.')).toBeVisible();
+  await expect(page.getByText("When you raise the level, the app downloads that level's files in the background: its search file, the list of outside map sites and its answer pages")).toBeVisible();
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+  expect(asked.filter((p) => p.startsWith('/h/'))).toEqual([]); // nothing hidden at Off
+  await setDial(page, 'Places');
+  await expect.poll(() => asked.filter((p) => p.startsWith('/h/'))).toEqual(expect.arrayContaining(['/h/places/search.json', '/h/places/maps/']));
 });

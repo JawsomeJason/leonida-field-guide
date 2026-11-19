@@ -24,3 +24,8 @@ checked: "2026-11-19"
 reveal:
   - tier: mild
     text: "How the early-play workaround is reportedly done: change the region in your console's settings, or use an account from another country and a local gift card. Windows Central is cited saying Rockstar is watching for early play, bans are reported to be rare, and a Twitch partner manager reportedly advised a streamer against showing it."
+support:
+  - claim: "that the game opens at midnight local time"
+    url: "https://support.rockstargames.com/articles/29jV3Cv2cCgvwM1XgtMO5o/grand-theft-auto-vi-regional-pre-load-and-release-times-on-playstation-5-and-xbox-series-x-or-s"
+    quote: "Grand Theft Auto VI will release midnight local time on November 19, 2026, in all regions for both PlayStation 5 and XBOX Series X|S."
+    checked: "2026-11-19"

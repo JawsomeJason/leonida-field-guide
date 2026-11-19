@@ -36,4 +36,8 @@
   @container (min-width: 60rem) {
     .sunset { --sun: 5.5rem; }
   }
+  /* Tablet and desktop (fix round 9): the header's own sun mark carries the identity; this one floated mid-column and read as stray. Phone only. */
+  @media (min-width: 48em) {
+    .sunset { display: none; }
+  }
 </style>

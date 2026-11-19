@@ -29,3 +29,12 @@ sources:
     title: "Grand Theft Auto VI installation requirements (Rockstar Support)"
 checked: "2026-11-19"
 keywords: ["fit", "512gb", "series s", "xbox storage", "not enough space", "will it fit on my console", "enough space on my console"]
+support:
+  - claim: "the space the game needs"
+    url: "https://support.rockstargames.com/articles/M6h7B5fJZMwG1dnzQkt4Z/grand-theft-auto-vi-installation-requirements"
+    quote: "Grand Theft Auto VI will require up to 212 GB of available space depending on your device."
+    checked: "2026-11-19"
+  - claim: "Microsoft says part of the drive is reserved"
+    url: "https://support.xbox.com/en-US/help/hardware-network/storage/manage-storage"
+    quote: "though some is reserved for saved games, console software, and other system functions."
+    checked: "2026-11-19"

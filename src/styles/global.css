@@ -112,19 +112,19 @@ a, button, summary, label, input { touch-action: manipulation; }
   flex: none;
   display: grid;
   place-content: center;
-  inline-size: 1.5rem;
-  block-size: 1.5rem;
+  inline-size: 1.75rem; /* 28px drawn (fix round 9); the row's label is still the 48px target */
+  block-size: 1.75rem;
   margin: 0;
   border: 2px solid var(--muted);
-  border-radius: 0.375rem;
+  border-radius: 0.4375rem;
   background: transparent;
 }
 .todo input::before {
   content: '';
-  inline-size: 0.9rem;
+  inline-size: 1.125rem;
   aspect-ratio: 1;
   background: var(--bg);
-  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>") no-repeat center / contain;
+  mask: var(--check) no-repeat center / contain;
   scale: 0;
 }
 .todo input:checked { background: var(--accent); border-color: var(--accent); }
@@ -140,6 +140,7 @@ a, button, summary, label, input { touch-action: manipulation; }
   .todo input { transition: background-color 140ms var(--ease-out), border-color 140ms var(--ease-out); }
 }
 
+:root { --check: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>"); } /* the check mark: a tick box, a selected choice */
 :root { --sun-bands: linear-gradient(to bottom, #000 0 48%, transparent 48% 53%, #000 53% 66%, transparent 66% 73%, #000 73% 84%, transparent 84% 93%, #000 93%); } /* the sun's horizontal bands, thicker gaps towards the horizon */
 
 /* Header: one row at every width. The sun mark (the name beside it from 600px), the console chip and the spoiler chip,
@@ -220,8 +221,19 @@ fieldset { min-inline-size: 0; margin: 0; padding: 0; border: 0; }
 }
 .setting .seg label { flex: 1 1 auto; padding-inline: var(--space-2); white-space: nowrap; }
 .seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
-/* Selected: fill, not weight, so nothing changes size when the state changes. */
-.seg label:has(:checked) { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+/* Selected (fix round 9): a filled control (the stage picker too) with a check mark in its corner on the sheet's choices and the console prompt, so it is plain without colour and at 3 to 1 against its neighbours
+   (the accent on --surface is 5 to 1 by day, 8 to 1 by night). Fill and mark, not weight, so nothing changes size when the state changes. */
+.seg label:has(:checked), .console-btn[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+:is(.sheet .seg label:has(:checked), .console-btn[aria-pressed='true'])::after {
+  content: '';
+  position: absolute;
+  inset: 4px 4px auto auto;
+  inline-size: 0.875rem;
+  aspect-ratio: 1;
+  background: currentColor;
+  mask: var(--check) no-repeat center / contain;
+}
+@media (forced-colors: active) { :is(.sheet .seg label:has(:checked), .console-btn[aria-pressed='true'])::after { background: CanvasText; } }
 .seg label:has(:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; z-index: 1; }
 
 /* Without JS the console and theme controls cannot save anything, so they are hidden. */
@@ -230,9 +242,8 @@ html:not(.js) .needs-js { display: none; }
 
 /* The chips are the settings openers: one names the console in use, one names the spoiler level. */
 .chip {
-  flex: 0 0 auto; /* a small label over a short value: one line each at 320px, and at 130% text */
+  flex: 0 0 auto; /* "Spoilers: Off" and "Pick console" each on one line at 320px and up, and at 130% text from 360px */
   display: inline-flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -249,14 +260,24 @@ html:not(.js) .needs-js { display: none; }
   box-shadow: var(--shadow);
 }
 @media (max-width: 400px) { .chip { padding-inline: var(--space-1); } } /* "Pick console" must stay on one row beside "Spoilers: Places" at 320px and 130% text */
-.chip__k { font: 600 0.875rem / 1.1 var(--font-text); color: var(--muted); }
+/* The label is the text colour (AA on the chip), never dim (fix round 9), on the same line as the level word. */
+.chip--dial { column-gap: var(--space-1); }
+.chip__k { font: 600 0.875rem / 1.2 var(--font-text); color: var(--text); }
 .chip__v { font: 650 var(--text-small) / 1.2 var(--font-text); }
+/* A console in use shows: the accent ring and a check mark in the corner (not colour alone), 3 to 1 or better against the header in both themes. */
+html[data-console] .chip--console { position: relative; border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent), var(--shadow); }
+html[data-console] .chip--console::after { content: ''; position: absolute; inset: 3px 3px auto auto; inline-size: 0.75rem; aspect-ratio: 1; background: var(--accent); mask: var(--check) no-repeat center / contain; }
+html[data-console] .chip--console .chip__v { padding-inline-end: 0.5rem; }
+@media (forced-colors: active) { html[data-console] .chip--console::after { background: CanvasText; } }
 /* A wider font than ours (a phone's own, a user's) must not push the page sideways: from 360px down the header's own side padding shrinks first. */
+@media (max-width: 400px) { .site-header__row { padding-inline: max(var(--space-2), var(--safe-left)) max(var(--space-2), var(--safe-right)); } .sun-mark { inline-size: 1.75rem; } .site-name { gap: 0; min-inline-size: 48px; } } /* a wide font at 130% text: the header gives up side room before the chips do */
 @media (max-width: 360px) {
   .site-header__row { padding-inline: max(var(--space-2), var(--safe-left)) max(var(--space-2), var(--safe-right)); }
   /* Last resort for a very wide font at 130% text: "Pick console" may take two short lines inside the same 48px chip rather than push the page sideways. */
-  .chip { flex: 0 1 auto; white-space: normal; text-wrap: balance; }
+  .chip { flex: 0 1 auto; white-space: normal; text-wrap: balance; justify-content: center; }
 }
+/* ...and, below 340px, "Spoilers:" may sit over the level word (full colour either way); from 340px up, label and level always share one line. */
+@media (max-width: 340px) { .chip--dial { flex-wrap: wrap; } }
 .chip [data-c], :is(.chip, .by-dial) [data-d] { display: none; }
 html:not([data-console]) .chip [data-c=''],
 html[data-console='ps5'] .chip [data-c='ps5'],
@@ -290,13 +311,20 @@ html:is([data-dial='places'], [data-dial='mild']) .chip--dial .chip__v { color: 
 /* A popover does not lock scroll by itself: while the sheet is open the page behind stays put (the gutter keeps the width, so nothing shifts). */
 html:has(.sheet:popover-open) { overflow: hidden; scrollbar-gutter: stable; }
 /* Done stays in reach: the content scrolls under it on a short screen (a 664px-tall phone), so it is never clipped. */
-.sheet__done { position: sticky; inset-block-end: 0; padding-block: var(--space-2); background: var(--surface); box-shadow: 0 -0.5rem 0.5rem -0.25rem var(--surface); }
+.sheet__done { position: sticky; inset-block-end: 0; padding-block: var(--space-1) var(--space-2); background: var(--surface); box-shadow: 0 -0.5rem 0.5rem -0.25rem var(--surface); }
 .sheet__done .btn { inline-size: 100%; }
-.sheet__in { display: grid; gap: var(--space-3); padding: var(--space-3) max(var(--space-4), var(--safe-right)) max(var(--space-2), var(--safe-bottom)) max(var(--space-4), var(--safe-left)); }
-.sheet h2 { margin: 0; }
-.sheet .setting { display: grid; gap: var(--space-2); }
-.sheet legend { float: none; margin-block-end: var(--space-2); }
-.sheet .setting .seg label { flex: 1 1 0; }
+.sheet__in { display: grid; gap: var(--space-2); padding: var(--space-2) max(var(--space-4), var(--safe-right)) var(--safe-bottom) max(var(--space-4), var(--safe-left)); }
+.sheet h2 { margin: 0; font-size: 1.125rem; }
+/* Fix round 9: theme and console are one row each (the legend beside its three choices; the row wraps under the legend only when a large text size leaves no room). */
+.sheet .setting { gap: var(--space-1) var(--space-2); }
+.sheet .setting legend { margin: 0; min-inline-size: 4.25rem; } /* the same width for Theme and Console, so both rows of choices line up */
+.sheet .levels legend { float: none; margin-block-end: var(--space-1); }
+.sheet .seg { flex-basis: 12rem; }
+.sheet .setting .seg label { flex: 1 1 0; padding-inline: var(--space-1); font-size: var(--text-small); }
+/* A short phone: the sheet may take nine tenths of the screen so all three spoiler levels show without scrolling, and on the very shortest
+   (568px) the sentence under them steps aside (it is on About too). The tall phones keep two thirds. */
+@media (max-height: 43.75rem) { .sheet { max-block-size: min(90dvh, 40rem); } .sheet__in { gap: var(--space-1); } } /* a wider font than ours still fits all three levels */
+@media (max-height: 37.5rem) { .levels__why { display: none; } }
 /* The three spoiler levels: radios, each with its one-line meaning. The whole row is the target. */
 .levels { display: grid; gap: var(--gap-tap); }
 .levels label {
@@ -311,11 +339,12 @@ html:has(.sheet:popover-open) { overflow: hidden; scrollbar-gutter: stable; }
   box-shadow: var(--shadow);
   cursor: pointer;
 }
-.levels label:has(:checked) { border-color: var(--accent); background: var(--wash); }
+/* Selected (fix round 9): the filled radio, a thick accent ring around the row and the wash behind it; not colour alone (the dot, the ring). */
+.levels label:has(:checked) { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); background: var(--wash); }
 .levels label:has(:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
-.levels__why { margin: 0; color: var(--muted); font-size: var(--text-small); line-height: 1.35; }
+.levels__why { margin: 0; color: var(--muted); font-size: var(--text-small); line-height: 1.3; }
 .levels span { color: var(--muted); font-size: var(--text-small); line-height: 1.35; }
-.levels strong { display: block; color: var(--text); font-size: var(--text-body); }
+.levels strong { color: var(--text); font-size: var(--text-body); }
 .levels input {
   appearance: none;
   flex: none;

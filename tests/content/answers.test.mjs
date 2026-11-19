@@ -50,9 +50,9 @@ test('a failed boxed-copy code says where to go next, with a Rockstar link', () 
 });
 
 test('online tonight leads with one short plain sentence', () => {
-  const first = get('online-or-co-op').short.split('. ')[0];
-  assert.match(first, /^No online or co-op mode/);
-  assert.ok(first.split(' ').length <= 15);
+  const { short } = get('online-or-co-op');
+  assert.match(short, /^No\. /);
+  assert.ok(short.split(' ').length <= 15);
 });
 
 test('jargon is put in plain words where it appears', () => {

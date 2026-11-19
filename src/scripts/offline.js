@@ -1,6 +1,7 @@
-// Progressive enhancement: registers the service worker (public/sw.js), tells it which hidden tiers are on (it
-// drops the files of the others, so lowering the dial clears that tier from the device), and reveals any
-// [data-offline] element once the default cache is complete. Fails silently.
+// Progressive enhancement. The service worker (public/sw.js) is registered early by the inline script in Base.astro; this one tells it
+// to fill the rest of the default site once the player rests on a page, tells it which hidden tiers are on (it drops the files of the
+// others, so lowering the dial clears that tier from the device), and reveals any [data-offline] element once the default cache is
+// complete. Fails silently.
 const READY = '/__lfg-ready';
 const TIERS = { off: [], places: ['places'], mild: ['places', 'mild'] };
 
@@ -17,7 +18,6 @@ const reveal = () => document.querySelectorAll('[data-offline]').forEach((el) =>
 async function start() {
   const sw = navigator.serviceWorker;
   sw.addEventListener('message', (e) => e.data?.type === 'ready' && reveal());
-  await sw.register('/sw.js');
   if (await ready()) reveal();
 
   // The dial lives in settings.js; its data-dial attribute is the one signal every change goes through.
@@ -34,10 +34,11 @@ async function start() {
 }
 
 if ('serviceWorker' in navigator && 'caches' in window && import.meta.env.PROD) {
-  // Not at load: the worker's first install fetches the whole guide, and on a slow phone that would sit in front of the player's first taps and page loads.
-  // Wait for the load event, a few seconds, and an idle moment.
-  const run = () => start().catch(() => {});
-  const go = () => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(run, { timeout: 3000 }) : run()), 3000);
+  // The fill fetches the whole guide a few files at a time, so it waits for the load event, a second and an idle moment: leaving for another page cancels it,
+  // so it runs when the player rests, not between their taps.
+  const fill = async () => (await navigator.serviceWorker.ready).active?.postMessage({ type: 'fill' });
+  const run = () => start().then(fill).catch(() => {});
+  const go = () => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(run, { timeout: 2000 }) : run()), 1000);
   if (document.readyState === 'complete') go();
   else addEventListener('load', go, { once: true });
 }

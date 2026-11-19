@@ -188,7 +188,7 @@ test('About: "Turning the spoiler setting down removes the hidden pages from tha
   const hidden = (paths, tier) => paths.filter((p) => p.startsWith(`/${tier}/`) || p.startsWith(`/h/${tier}/`));
   await page.goto('/');
   await page.evaluate(() => navigator.serviceWorker.ready);
-  await expect.poll(async () => (await cached()).includes('/__lfg-ready')).toBe(true);
+  await expect.poll(async () => (await cached()).includes('/__lfg-ready'), { timeout: 20_000 }).toBe(true); // the fill starts when the page has rested a second (fix round 9)
   expect(hidden(await cached(), 'places')).toEqual([]); // the default cache holds no hidden tier
 
   await setDial(page, 'Mild');
@@ -420,7 +420,7 @@ test('Checklist: "The code is text that holds your ticks only ... Copying it sen
   await expect(note).not.toContainText('stays on this device');
   await page.waitForTimeout(600);
   let sent = 0;
-  ctx.on('request', () => sent++);
+  ctx.on('request', (r) => { if (r.method() !== 'GET' || /\/api\/progress/.test(r.url())) sent++; }); // the worker may be filling its cache (GETs) at this moment; copying must send nothing and never touch the store
   await page.locator('#copy-code').click();
   await expect(page.locator('#export-note')).not.toBeEmpty();
   await page.waitForTimeout(800);
