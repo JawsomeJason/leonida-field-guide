@@ -29,3 +29,19 @@ for (const width of [320, 390]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   });
 }
+
+// Round 5: the screen leads with known problems, then at most three plain lines per date, with nothing about the site's own fixes.
+test('the New screen leads with known problems, shows at most three lines per date and no word about the site\'s own fixes', async ({ page }) => {
+  await page.route('**/api/progress', (route) => route.fulfill({ json: empty() }));
+  await page.goto('/new/');
+  expect(await page.locator('main h2').first().innerText()).toBe('Known problems');
+  const dates = page.locator('section.entry').filter({ has: page.locator('time') }).filter({ hasNot: page.getByRole('heading', { name: 'Known problems' }) });
+  expect(await dates.count()).toBeLessThanOrEqual(3);
+  for (const d of await dates.all()) {
+    const lines = await d.locator('li').allInnerTexts();
+    expect(lines.length).toBeGreaterThan(0);
+    expect(lines.length).toBeLessThanOrEqual(3);
+    for (const l of lines) expect(l).toMatch(/^(New answer|Corrected|Checked on)/);
+  }
+  await expect(page.locator('main')).not.toContainText(/\b(fixed|bug|button|wording|layout|colou?r|design|the site)\b/i);
+});

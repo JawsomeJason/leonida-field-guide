@@ -125,14 +125,19 @@ export const LOSS = /\b(lose|loses|losing|lost|loss|erases?|erased|wipes?|wiped|
 const REASSURANCE = /\b(not|no|never|nothing|without|n't)\b/i; // "does not lose it", "erases no games": not a warning
 export const REMEDY = /\b(check|keep|save (it|them|first)|back(ed)? up|backup|bank|put (it )?away|avoid|before you|first|upload)\b/i;
 const linkTextOut = (t) => t.replace(/\[[^\]]*\]\([^)]*\)/g, ''); // a pointer such as "see [Will I lose anything?](...)" is not a warning
+// Round 5: the one generic line is exempt. It says a loss is possible and states no rule; its remedy is the Mild detail one tap away
+// (tests/content/loss.test.mjs holds that every record with the line has that control).
+export const GENERIC_LOSS = /^You can lose in-game [a-z-]+\.$/;
 export const lossWithoutRemedy = (text) => {
-  const s = linkTextOut(text).split(/(?<=[.!?:])\s+|\n/).filter(Boolean);
-  return s.filter((t, i) => LOSS.test(t) && !REASSURANCE.test(t) && !REMEDY.test(`${t} ${s[i + 1] ?? ''}`));
+  const s = linkTextOut(text).split(/(?<=[.!?:])\s+|\n/).map((t) => t.replace(/^[-\s]+/, '')).filter(Boolean);
+  return s.filter((t, i) => LOSS.test(t) && !GENERIC_LOSS.test(t) && !REASSURANCE.test(t) && !REMEDY.test(`${t} ${s[i + 1] ?? ''}`));
 };
 
 test('a loss warning at Off carries what to do about it (the check catches a bare warning and passes a warning with its remedy)', () => {
-  for (const bare of ['Carried cash can be lost if you die.', 'Some Safe Mode options erase data.', 'You can lose your save.'])
+  for (const bare of ['Carried cash can be lost if you die.', 'Some Safe Mode options erase data.', 'You can lose your save.', 'You can lose in-game money if you die.', 'You can lose all your in-game money.'])
     assert.equal(lossWithoutRemedy(bare).length, 1, bare);
+  assert.deepEqual(lossWithoutRemedy('You can lose in-game money.'), []);
+  assert.deepEqual(lossWithoutRemedy('- You can lose in-game money.'), []);
   for (const ok of ['Carried cash can be lost if you die. Bank it first.', 'Carried cash can be lost: bank it before you take risks.', 'Some options erase data, so back up first.',
     'Deleting a game does not lose what you bought.', 'This erases no games or data.', 'More is in [Will I lose anything?](/a/will-i-lose-anything/).'])
     assert.deepEqual(lossWithoutRemedy(ok), [], ok);

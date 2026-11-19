@@ -1,6 +1,6 @@
 id: crashes-and-launch-problems
 question: "The game crashes or will not start. What do I do?"
-short: "Check the status pages, restart the game, install updates, then restart the console. Still crashing? Reinstall the game, then contact support."
+short: "Check the status pages, restart the game, install updates, then restart the console. Still crashing? Check your saves are backed up, reinstall the game, then contact support."
 body: |-
   - Rockstar's service status page lists its online services and has no separate row for this game. On 19 November it showed all services operational.
   - We found no confirmed game-wide crash or launch fault on 19 November. If one is confirmed, it will be on the [What's new screen](/new/).
@@ -12,7 +12,7 @@ stage: hour-1
 tier: none
 consoles: all
 byConsole:
-  ps5: "Check status.playstation.com. Restart the game, then update the game and the PS5 system software. Still crashing: delete and reinstall it, or use Safe Mode (a start-up menu with repair tools) to rebuild the database. Then contact PlayStation Support."
+  ps5: "Check status.playstation.com. Restart the game, then update the game and the PS5 system software. Still crashing: upload your saves first (PlayStation Plus), then delete and reinstall it, or use Safe Mode (a start-up menu with repair tools). Then contact PlayStation Support."
   xbox-x: "Check Xbox's status page. Quit and restart the game, then switch the console fully off and on again (a power cycle: hold its Xbox button for 10 seconds). Then update the console and test your network. Still crashing: contact Xbox Support."
   xbox-s: "Check Xbox's status page. Quit and restart the game, then switch the console fully off and on again (a power cycle: hold its Xbox button for 10 seconds). Then update the console and test your network. Still crashing: contact Xbox Support."
 confidence: official
