@@ -1,0 +1,14 @@
+id: sample-01
+question: "Sample question 01: how do I do thing 01?"
+short: "Sample answer 01: do thing 01 like this."
+topic: setup
+stage: before
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+rank: 1
+todo: "Do sample thing 01"

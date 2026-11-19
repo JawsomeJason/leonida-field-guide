@@ -1,0 +1,13 @@
+id: sample-03
+question: "Sample question 03: how do I do thing 03?"
+short: "Sample answer 03: do thing 03 like this."
+topic: controls
+stage: day-1
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+rank: 3

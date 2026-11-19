@@ -1,0 +1,15 @@
+id: sample-05
+question: "Sample question 05: how do I do thing 05?"
+short: "Sample answer 05: do thing 05 like this."
+body: "Sample body for answer five, with **bold** text."
+topic: money
+stage: before
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+rank: 5
+todo: "Do sample thing 05"

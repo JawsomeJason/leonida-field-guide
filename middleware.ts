@@ -184,3 +184,6 @@ export default async function middleware(request: Request) {
       return page(d.action === 'login-error');
   }
 }
+
+// /api/progress is not matched here: the function checks the cookie itself with decide() (see api/progress.ts).
+export const config = { matcher: ['/((?!api/progress$).*)'] };

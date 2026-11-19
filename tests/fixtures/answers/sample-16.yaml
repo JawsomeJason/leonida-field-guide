@@ -1,0 +1,14 @@
+id: sample-16
+question: "Sample question 16: how do I do thing 16?"
+short: "Sample answer 16: do thing 16 like this."
+topic: bonuses
+stage: week-1
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+rank: 16
+todo: "Do sample thing 16"

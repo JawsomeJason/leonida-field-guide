@@ -4,6 +4,8 @@ import { z } from 'astro/zod';
 import { topicIds } from './data/topics';
 import { stageIds } from './data/stages';
 
+declare const process: { env: Record<string, string | undefined> }; // no @types/node here, and this is all we read
+
 const OFFICIAL_HOSTS = ['rockstargames.com', 'take2games.com', 'playstation.com', 'xbox.com'];
 const onOfficialHost = (url: string) => {
   const host = new URL(url).hostname;
@@ -13,7 +15,8 @@ const onOfficialHost = (url: string) => {
 const consoleId = z.enum(['ps5', 'xbox-x', 'xbox-s']);
 
 const answers = defineCollection({
-  loader: glob({ pattern: '**/*.yaml', base: './src/content/answers' }),
+  // LFG_CONTENT_DIR lets the e2e build read tests/fixtures instead of the real records.
+  loader: glob({ pattern: '**/*.yaml', base: process.env.LFG_CONTENT_DIR ?? './src/content/answers' }),
   schema: z
     .strictObject({
       id: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/),
