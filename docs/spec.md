@@ -44,6 +44,7 @@ type Answer = {
   checked: string;               // ISO date the sources were last checked
   rank?: number;                 // 1 = most asked; drives "Most asked"
   todo?: string;                 // if set, the record is a checklist item with this label
+  keywords?: string[];           // up to 20 short strings (40 characters each): words players use that the text does not
   reveal?: { tier: Exclude<Tier, 'none'>; text: string }[];  // hidden details inside a 'none' answer
 };
 ```
@@ -51,7 +52,7 @@ type Answer = {
 Rules the schema or the checks enforce:
 
 - `confidence: 'official'` requires a source on rockstargames.com, support.rockstargames.com, take2games.com, playstation.com or xbox.com that a person or agent opened and read. Otherwise use `reported`.
-- A `places` or `mild` record's `question`, `short`, `body` and `todo` are all hidden text. So is every `reveal[].text`.
+- A `places` or `mild` record's `question`, `short`, `body`, `todo` and `keywords` are all hidden text. So is every `reveal[].text`. The `keywords` of a `none` record are not hidden. They sit only in the search index and are never shown on a page.
 - `topic: 'places'` implies `tier: 'places'`.
 
 ## The spoiler dial
@@ -187,7 +188,19 @@ Search filtering, the dial and console switches, checklist ticks, in-place revea
 
 ## Search
 
-A build step writes `/search/none.json` (id, question, short, topic) and one index per hidden tier under `/h/<tier>/`. The client loads only the indexes the dial allows and filters by token match in plain JS. No search library.
+Players type plain sentences, so search is forgiving. No search library: `src/scripts/search-match.js` is pure (no DOM) and a test imports it.
+
+- **Index.** A build step writes `/search/none.json` and one index per hidden tier under `/h/<tier>/search.json`. Each row has `id`, `question`, `short`, `topic`, `consoles`, `rank` and, when the record has them, `keywords`. The client loads only the indexes the dial allows. A result opens `/a/<id>/` (none) or `/<tier>/<id>/`.
+- **Words.** The query is lower-cased and split. Filler words are dropped (how, do, i, my, the, a, is, on, what, are, will, it, does, not and similar). Plurals and endings (-s, -ies, -ing, -ed, a doubled last letter, a trailing e) fold to one stem. A numbered size such as `512gb` is `512` and `gb`.
+- **Typos.** One typo (a missing, extra or wrong letter, or two letters swapped) is tolerated in words of five letters or more. The last word may be unfinished: it matches the start of a word.
+- **Synonyms.** `ps5`, `ps` and `playstation` are one word. `xbox`, `series`, `xsx` and `xss` are one word. `storage`, `space`, `drive`, `disk`, `ssd`, `hdd`, `gb`, `tb` and `gigabyte` are one word. A single letter (the S of Series S) is dropped. Console words count for less than other words, because they say what the player owns, not what they ask.
+- **Fields and ranking.** A word is found in the question (weight 4), `keywords` (3), `short` (2) or the topic name (1). A record is a result when it matches at least half of the query words the guide knows; a word that appears in no answer does not count against it. Results are ordered by how many words match (console words count 0.3), then by the weights, with rarer words worth more, then by `rank`.
+- **Keywords.** `keywords` is an optional array in the schema (at most 20, each 1 to 40 characters). It holds the words players use that the text does not: `quicksave`, `instal`, `doesnt work`. For a hidden-tier record they are hidden text: they are in that tier's index only, and `check:leak` searches for them.
+- **Console.** Answers whose `consoles` is a list without the chosen console are left out of the results, like the cards.
+- **No match.** The list shows the three closest answers (the best partial matches, else the most asked), then a row "Browse all topics" that opens `/topics/`. The status line says nothing matched exactly. It is never a dead end.
+- **Where is it.** A query that asks where something is ("where is …", "where can I find …", "location of …", "nearest …") shows, at Off, a note that places are hidden by design, with three link rows: the Places gate (`/places/`), gtamap.io and FullSweep, the last two marked as outside sites. At Places and Mild the places are searched as usual and the note is not shown.
+- **No script.** The page keeps its floor: the list of every default answer.
+- **Link check.** `npm run check:links` (`scripts/check-links.mjs`) fails when an internal `href` or `src` in a built page, or the page a result in any search index would open, is not a built file.
 
 ## Offline and install
 

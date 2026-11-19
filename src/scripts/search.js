@@ -1,11 +1,11 @@
 import { read } from './settings.js';
-import { match } from './search-match.js';
+import { search, asksWhere, pagePath } from './search-match.js';
 
 // Each tier's records live under that tier's own paths; hidden tiers load only when the dial allows them.
 const tiers = {
-  none: { index: '/search/none.json', page: (id) => `/a/${id}/`, label: '' },
-  places: { index: '/h/places/search.json', page: (id) => `/places/a/${id}/`, label: 'Places' },
-  mild: { index: '/h/mild/search.json', page: (id) => `/mild/a/${id}/`, label: 'Mild' },
+  none: { index: '/search/none.json', label: '' },
+  places: { index: '/h/places/search.json', label: 'Places' },
+  mild: { index: '/h/mild/search.json', label: 'Mild' },
 };
 const allowed = { off: ['none'], places: ['none', 'places'], mild: ['none', 'places', 'mild'] };
 
@@ -13,6 +13,7 @@ const form = document.querySelector('#ask');
 const input = document.querySelector('#q');
 const status = document.querySelector('#q-status');
 const list = document.querySelector('#q-results');
+const where = document.querySelector('#q-where');
 
 const cache = new Map();
 function load(tier) {
@@ -33,7 +34,7 @@ function row(r) {
   const a = document.createElement('a');
   const q = document.createElement('span');
   const s = document.createElement('span');
-  a.href = tiers[r.tier].page(r.id);
+  a.href = pagePath(r.tier, r.id);
   q.className = 'q';
   q.textContent = r.question;
   s.className = 's';
@@ -43,16 +44,31 @@ function row(r) {
   return li;
 }
 
+// A link row in the results list, for the way out when nothing matches.
+function link(href, text) {
+  const li = document.createElement('li');
+  const a = document.createElement('a');
+  a.href = href;
+  a.textContent = text;
+  li.append(a);
+  return li;
+}
+
 let run = 0;
 async function update() {
   const n = ++run;
   const query = input.value;
-  const records = (await Promise.all((allowed[read().dial] ?? allowed.off).map(load))).flat();
+  const { dial, console: owned } = read();
+  const records = (await Promise.all((allowed[dial] ?? allowed.off).map(load))).flat();
   if (n !== run) return; // a newer keystroke is already running
-  const found = match(records, query);
-  list.replaceChildren(...found.map(row));
-  list.hidden = !query.trim();
-  status.textContent = !query.trim() ? '' : found.length ? `${found.length} ${found.length === 1 ? 'answer' : 'answers'}` : 'No answers match. Try fewer words.';
+  // An answer for other consoles stays out of the way, like the cards do.
+  const { found, closest } = search(records.filter((r) => !Array.isArray(r.consoles) || r.consoles.includes(owned)), query);
+  const asked = !!query.trim();
+  const none = asked && !found.length;
+  list.replaceChildren(...(none ? closest.map(row) : found.map(row)), ...(none ? [link('/topics/', 'Browse all topics')] : []));
+  list.hidden = !asked;
+  where.hidden = !(asked && asksWhere(query) && (dial ?? 'off') === 'off'); // places are only hidden at Off
+  status.textContent = !asked ? '' : found.length ? `${found.length} ${found.length === 1 ? 'answer' : 'answers'}` : 'Nothing matches those words. These are the closest answers.';
 }
 
 input.addEventListener('input', update);

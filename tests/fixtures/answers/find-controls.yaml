@@ -1,0 +1,12 @@
+id: find-controls
+question: "Which control scheme should I use?"
+short: "Fixture: pick the scheme that suits your hands."
+topic: controls
+stage: before
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
