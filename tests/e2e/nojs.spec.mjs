@@ -22,6 +22,8 @@ test('hidden details open as their own pages', async ({ page }) => {
   await expect(page.getByText('Wombat note one')).toHaveCount(0);
   await press(page.getByRole('link', { name: '1 mild detail hidden. Show' }));
   await expect(page).toHaveURL(/\/mild\/sample-02\/$/);
+  await expect(page.getByText('Wombat note one')).toBeHidden(); // the page starts closed, even by link
+  await press(page.getByText('Show this page', { exact: true }));
   await expect(page.getByText('Wombat note one')).toBeVisible();
 });
 
@@ -29,6 +31,8 @@ test('the places gate is a plain link to the places pages', async ({ page }) => 
   await page.goto('/places/');
   await expect(page.getByText('quokka marker', { exact: false })).toHaveCount(0);
   await press(page.getByRole('link', { name: 'Show places' }));
+  await expect(page.getByRole('heading', { name: 'Where is the quokka marker?' })).toBeHidden();
+  await press(page.getByText('Show this page', { exact: true }));
   await expect(page.getByRole('heading', { name: 'Where is the quokka marker?' })).toBeVisible();
 });
 

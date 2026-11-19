@@ -1,5 +1,7 @@
 ---
 // The desktop list column: other answers of the same topic, the current one marked.
+import OtherConsoles from './OtherConsoles.astro';
+import { onlyOf } from '../lib/console.js';
 import { pathOf, type AnswerData } from '../lib/answers';
 import './AnswerCard.css';
 
@@ -13,5 +15,6 @@ const { answers, label, current } = Astro.props;
 
 <p class="list__title">{label}</p>
 <ul class="tap-list">
-  {answers.map((b) => <li><a href={pathOf(b)} aria-current={b.id === current ? 'page' : undefined}>{b.question}</a></li>)}
+  {answers.map((b) => <li data-only={b.id === current ? undefined : onlyOf(b.consoles)}><a href={pathOf(b)} aria-current={b.id === current ? 'page' : undefined}>{b.question}</a></li>)}
 </ul>
+<OtherConsoles items={answers.filter((b) => b.id !== current).map((b) => ({ ...b, label: b.question }))} />

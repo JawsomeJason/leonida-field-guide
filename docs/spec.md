@@ -65,11 +65,24 @@ One setting for the whole app: **Off** (the default), **Places**, **Mild**.
 - The Places section opens on a gate that says places are off, with the switch to turn them on. With JavaScript off, the gate is a plain link to the places pages.
 - The dial is on the first screen at every width, in the header.
 
+## Console
+
+One stored setting, `console`: `ps5`, `xbox-x` or `xbox-s`. It is saved on the device like the dial (see "Saved on the device"). **Never chosen is a state of its own**: the key is absent, `settings.js` hands the page `console: ''`, and `<html data-console>` is not set.
+
+- **First run.** The Ask screen opens with one card, "Which console do you play on?", above everything else: three buttons (PS5, Xbox Series X, Xbox Series S), each at least 4rem tall, stacked on a phone. Choosing saves the console, hides the card (CSS: `html[data-console] .console-card`) and moves focus to the screen heading. The card needs script; without it the card is not shown and only every-console records are.
+- **Always visible.** The header chip names the console in use on every screen ("PS5", "Xbox X", "Xbox S", or "Console" when never chosen) and opens the settings sheet, where it can be changed. Answer pages that have `byConsole` text also keep their own switch.
+- **Which records show.** A record with `consoles: 'all'` is console-neutral: its text names no console, and where consoles differ it uses `byConsole` text or button tokens (`{cross}`, `{circle}`, ...). A record with `consoles: ['ps5']` (or `['xbox-x', 'xbox-s']`) is only for those consoles. It shows in its list for them (`data-only="ps5"` on the row, CSS from `styles/console.css`). For any other state, a never-chosen console included, it is hidden there and its title is one plain link in that list's **Other consoles** fold, a native closed `<details>` (`OtherConsoles.astro`, copies marked `data-other`). Nothing in the fold is a tick box or repeats an id.
+- **Never chosen.** Treated as "no console matches": only `consoles: 'all'` records show, the console-only ones wait in the fold, `byConsole` is not used (the base text shows) and a button name shows both consoles' labels (`✕/A`). The card above is the calm prompt; there is nothing else to dismiss.
+- **Where it applies.** Everywhere answers are listed: Ask (Most asked rows, stage to-dos), Checklist, topic cheat sheets, the answer page's related list and the desktop list column. Most asked and the lists inside hidden tiers are only filtered, with no fold.
+- **Counts.** Progress counts only the to-dos that show for the console (`src/lib/console.js` `applies()`, used by `home-todos.js` and `checklist.js`). A tick on a to-do for another console stays saved and is not counted.
+- **One order.** The Ask screen and the Checklist list to-dos in the same order, from one function, `todosOf()` in `src/lib/answers.ts`: most asked (`rank`) first, then by id. A real "do this first" order needs a sequence field in the data; until then `rank` stands in for it.
+- **Test fixtures.** `tests/fixtures/answers` has a PS5-only and an Xbox-only record with a to-do each. After choosing a console the visible text of Ask, Topics, a cheat sheet, an answer and the Checklist names no other console outside the fold, and button names are that console's (`behaviour.spec.mjs`).
+
 ## Screens
 
 | Route | Screen | Content |
 | --- | --- | --- |
-| `/` | Ask | Search box, "Most asked" (top 8 by `rank`), then "Your stage": the stage picker and that stage's to-dos |
+| `/` | Ask | The console card until a console is chosen (see "Console"), search box, "Most asked" (top 8 by `rank`), then "Your stage": the stage picker and that stage's to-dos |
 | `/topics/` | Topics | Ten tiles, one per topic. Places shows as locked while the dial is Off |
 | `/topics/<topic>/` | Cheat sheet | Every answer of the topic on one page as compact cards with anchors |
 | `/a/<id>/` | Answer | Question, short answer, console switch, optional body, hidden-detail controls, confidence, sources, date checked, related answers |
@@ -78,6 +91,10 @@ One setting for the whole app: **Off** (the default), **Places**, **Mild**.
 | `/places/` | Places gate | See "The spoiler dial" |
 | `/about/` | About | How spoilers are handled, how facts are sourced, links out, the unofficial notice |
 
+**Hidden-tier pages.** Every page of a hidden tier (`/places/list/`, `/places/<id>/`, `/mild/<id>/`) opens closed, even when opened by its address (`HiddenGuard.astro`). Above the fold it shows a generic title (the tab title is generic too), what kind of content it holds, that it is closed because the spoiler dial is below that tier, and one link to go back. One native `<details>` control, "Show this page", opens it with no script. With script the stored dial opens it when the dial reaches the tier (`reveal.js`, and closes it again if the dial drops). The topic's other hidden answers in the desktop list column are hidden until then.
+
+**Outside links.** Every link out (answer sources, the Places gate, About) is made by `OutsideLink.astro`: the link text, then a note inside the same 48px target, "<host> · outside site, may contain spoilers", so it is read before the tap and by a screen reader. `rel="noopener"`.
+
 Two-tap rule: from `/`, every answer with `rank` 1 to 20 is reachable in at most two taps (a "Most asked" chip is one tap; Topics then a tile is two, because the cheat sheet shows the answers inline).
 
 ## Layout
@@ -85,7 +102,9 @@ Two-tap rule: from `/`, every answer with `rank` 1 to 20 is reachable in at most
 - Phone (under 600px): a bottom tab bar with Ask, Topics, Checklist, New. One column. Tap targets at least 48px. Body text 17px or larger.
 - Tablet (600px to 1023px): the bar becomes a left rail. One column of content.
 - Desktop (1024px and up): rail, a list column and a detail column. On an answer page the list column shows the other answers of the same topic. This is CSS grid only, no script.
-- Header on every screen: the site name, the console switch (PS5 or Xbox) and the spoiler dial. A theme switch sits in the same menu.
+- Header on every screen, compact and sticky (`position: sticky`, so the dial and the console are always in reach). On a phone: row one is the site name and the console chip, row two is the spoiler dial with its name beside it; at 600px and up it is one row. It takes at most about a fifth of a phone screen: 123px at 390 wide, 159px with text at 130% (both measured by `behaviour.spec.mjs`, limit 170px at 844px high). Its height is published as `--header-h` (`panel.js`) so the rail and the sheet sit below it; scroll-padding keeps anchors clear of it.
+- **Settings sheet.** The chip opens a native popover (`popover`, `popovertarget`), so Esc, a tap outside and the Done button close it with no script, and so does choosing a setting (`panel.js`). It is a sheet at the bottom of the screen (centred, 30rem wide, from 600px), within thumb reach, and it ends below the header, so it never covers the dial; its backdrop does not catch taps, so the dial stays usable while it is open. It holds the console and the theme, and a short list of what each dial level adds (Off: how-to answers only; Places: adds where things are; Mild: adds light gameplay hints), which the dial's fieldset also uses as its description. Without script, or in a browser without popover, the chip still names the console; the dial stays in the header.
+- The footer About link is its own 48px target under the notice.
 - Use container queries for the cards and media queries for the page frame. No horizontal scrolling at any width from 320px up. Respect the user's text size setting.
 
 ## Touch
@@ -93,7 +112,8 @@ Two-tap rule: from `/`, every answer with `rank` 1 to 20 is reachable in at most
 The app is used mostly by touch, on a phone or tablet. Every screen holds to these rules, and later work reuses the shared tokens (`--tap`, `--gap-tap`, `--safe-*`, `--text-input`) and classes (`.tap-list`, `.seg`) in `tokens.css` and `global.css`.
 
 - Every tappable thing is at least 48 by 48 CSS px (`--tap`), with at least 8px (`--gap-tap`) between neighbours. Links inside a sentence are exempt.
-- The whole row is the target, not a small link inside it.
+- The whole row is the target, not a small link inside it. A checklist row is one label of at least 48px with an 8px gap to the next row; the tick box is only its picture. A card's stretched link covers the card's content, and the reveal control sits 8px or more below it.
+- **How it is tested** (`touch.spec.mjs`, at 320, 390 and 820 wide with touch, every screen, first-run and everything shown with every fold open, and the open settings sheet): for every interactive element the test samples the page with `elementFromPoint` (to the pixel at the edges) and keeps the points where a tap reaches that element, itself, a child, its label or a link stretched over a card. The hit area is the bounding box of those points, so a 24px box inside a bigger label is judged as the label, and a control another element covers is judged as what is left. Nothing is skipped for being part of something bigger. Under 48px either way fails; so does another control's hit area closer than 8px (judged by the tappable points). Fixed and sticky layers float over the page and are compared only within themselves, and what an open sheet covers is not judged until it closes. A self-check feeds the measure a 24px box in a 30px label, touching rows and a bare 24px link, and needs it to flag all three. `touch-report.mjs` prints the smallest hit area per screen and width.
 - The tab bar sits at the bottom on phones. Leave clear space around the spoiler dial and the reveal controls.
 - Respect the safe-area insets in both orientations: `viewport-fit=cover` and `env(safe-area-inset-*)` on the header, bars, rail, content and footer.
 - Nothing depends on hover, long-press, double-tap, drag or swipe. Hover styles live under `@media (hover: hover)`. Taps show a pressed state with `:active`, and `touch-action: manipulation` removes the double-tap delay.
@@ -121,7 +141,7 @@ Two themes from one set of named tokens. The app follows the device setting, and
   - New `--wash` (accent 12% over `--surface`, hover and current) and `--press` (accent 22%, `:active`). They replace the repeated `color-mix` values.
   - `--radius` 0.5rem to 0.75rem. `--text-h1` `clamp(1.5rem, 1.1rem + 2vw, 2.25rem)` to `clamp(1.625rem, 1.2rem + 2vw, 2.5rem)`, weight 750, letter-spacing -0.02em. `--text-h2` 1.25rem to 1.3125rem (21px, one 1.25 step above body), weight 650. New `--space-7` 3rem.
   - New motion tokens: `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`, `--press-scale` 0.98 (rows, cards) and `--press-scale-small` 0.96 (compact controls). One press recipe in `global.css`: the surface tints with no delay, shrinks slightly (70ms in), and eases back (160ms out). Under `prefers-reduced-motion: reduce` the shrink is dropped and the tint stays. Motion is `scale`, `opacity` and colour only.
-  - The Settings panel drops in 6px and fades (160ms, `--ease-out`; it moves but never resizes, so its targets stay 48px); a revealed detail fades in and settles 4px (200ms); page changes crossfade in 150ms.
+  - The settings sheet slides up 1.5rem and fades in (200ms, `--ease-out`, `@starting-style`; it moves but never resizes, so its targets stay 48px; under reduced motion it only fades); a revealed detail fades in and settles 4px (200ms); page changes crossfade in 150ms.
   - Layout: the rail is a full-height panel with a tinted current item; the spoiler dial stays on one row beside its label at 600px and up; the content column is at most 64rem; the Ask and Checklist screens share one drawn tick box.
 - Night uses colour for state only (selected tab, links, the dial); surfaces stay quiet. Day is warm and flat.
 - System font stack for text. `ui-monospace` for anything a player copies or reads as a value: sizes, button names, times, version numbers.

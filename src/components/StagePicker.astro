@@ -1,8 +1,11 @@
 ---
 import { stages } from '../data/stages';
+import OtherConsoles from './OtherConsoles.astro';
+import { onlyOf } from '../lib/console.js';
+import type { AnswerData } from '../lib/answers';
 
 interface Props {
-  todos: { id: string; stage: string; todo: string }[];
+  todos: AnswerData[]; // in the order the Checklist uses too
 }
 const { todos } = Astro.props;
 // Short names fit four across at 320px; the full name heads each list.
@@ -40,7 +43,7 @@ const short: Record<string, string> = { before: 'Before', 'hour-1': 'Hour 1', 'd
               {/* Script on: tick boxes. Script off: plain links to the answers. */}
               <ul class="tap-list todo-list needs-js">
                 {items.map((t) => (
-                  <li class="todo">
+                  <li class="todo" data-only={onlyOf(t.consoles)}>
                     <label>
                       <input type="checkbox" data-todo={t.id} />
                       <span>{t.todo}</span>
@@ -52,8 +55,9 @@ const short: Record<string, string> = { before: 'Before', 'hour-1': 'Hour 1', 'd
                 ))}
               </ul>
               <ul class="tap-list todo-links">
-                {items.map((t) => <li><a href={`/a/${t.id}/`}>{t.todo}</a></li>)}
+                {items.map((t) => <li data-only={onlyOf(t.consoles)}><a href={`/a/${t.id}/`}>{t.todo}</a></li>)}
               </ul>
+              <OtherConsoles items={items.map((t) => ({ ...t, label: t.todo! }))} />
             </>
           )}
         </div>
