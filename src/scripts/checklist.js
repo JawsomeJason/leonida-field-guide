@@ -73,7 +73,7 @@ $('#import-go')?.addEventListener('click', () => {
   absorb(result.state); // merged in: a newer tick or setting on this device is kept
   dispatchEvent(new Event('lfg:write')); // so the sync copies it on (lfg:change has already repainted)
   input.value = '';
-  say(note, 'Progress restored on this device.');
+  say(note, 'Ticks from the code are now on this device.');
 });
 
 paint();
