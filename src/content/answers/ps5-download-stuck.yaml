@@ -1,24 +1,25 @@
 id: ps5-download-stuck
 question: "My PS5 download won't start or is stuck. What do I try?"
-short: "Check PlayStation's status page, update the system software, then pause and resume the download. If it is still stuck, cancel, delete and download again. Safe Mode's Rebuild Database is the last resort."
+short: "Check PlayStation's status page, update the system software, then pause and resume the download. If still stuck, cancel, delete and download again. Last resort: Safe Mode (a start-up menu) and Rebuild Database."
 body: |-
-  Order to try, from Output Lag's summary of Sony's steps
-  1. Check the PlayStation status page. Wait if there are alerts.
+  In this order, from PlayStation's own support page
+  1. Check [PlayStation status](https://status.playstation.com/). Wait if there are alerts.
   2. Update: Settings, System, System Software, System Software Update and Settings.
   3. Downloads/Uploads in the control center: select the game, then Pause and Resume.
-  4. Cancel and Delete, then download again from your Game Library.
-  5. Check free space, and test the connection: Settings, Network, Connection Status.
-  6. Last resort: start in Safe Mode and choose Clear Cache and Rebuild Database.
+  4. Choose Cancel and Delete, then download again from your Game Library.
+  5. Check free space (Settings, Storage). The game's minimum is under More, then View Product in your Game Library.
+  6. Stuck, not slow? Test the connection: Settings, Network, Connection Status, Test Internet Connection.
+  7. Last resort: start in Safe Mode (a start-up menu with repair tools) and choose Clear Cache and Rebuild Database. See the crash card for how to start it.
 
-  Rockstar's install-issues page sends PS5 players to Sony's own troubleshooter and adds no steps.
+  Rockstar's install-issues page sends PS5 players to this same PlayStation page and adds no steps.
 topic: fixes
 stage: hour-1
 tier: none
 consoles: [ps5]
-confidence: community
+confidence: official
 sources:
+  - url: "https://www.playstation.com/support/games/troubleshoot-downloaded-playstation-game/"
+    title: "How to troubleshoot game downloads from PlayStation Store (PlayStation Support)"
   - url: "https://support.rockstargames.com/articles/3t8W3cKfObijZuwZuqT2eM/issues-installing-grand-theft-auto-vi"
     title: "Issues installing Grand Theft Auto VI (Rockstar Support)"
-  - url: "https://outputlag.com/guides/gta-6-not-working-day-one-problems-fixes/"
-    title: "GTA 6 Not Working? Day One Problems and Official Fixes on PS5 and Xbox (Output Lag)"
 checked: "2026-11-19"

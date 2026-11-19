@@ -1,16 +1,17 @@
 id: xbox-says-you-dont-own-it
 question: "Xbox says I don't own the game. What now?"
-short: "Per Microsoft, as quoted by Output Lag: the pre-order was either canceled or the payment failed in time. Check your order history first. If the Store shows a price instead of Install, do not buy again."
+short: "Per Microsoft: the pre-order was either canceled or the payment failed in time. Check your order history first. If the Store shows a price instead of Install, do not buy again."
 body: |-
-  - Microsoft charges card pre-orders about 10 days before release and retries once a few days later. If both fail, the pre-order is canceled and you need to buy again.
-  - If the purchase went through, the Store shows Install and you will not pay twice.
-  - Output Lag quotes Microsoft. We did not open Microsoft's page.
+  - Microsoft charges card pre-orders about 10 days before release and tries once more a few days later. If both fail, the pre-order is canceled and you need to buy again.
+  - Check your order history: sign in to your Microsoft account, then Payment & billing, then Order history. A finished purchase shows as "Completed".
+  - If it shows Completed but the console offers no Install, contact Xbox Support.
+  - To find the game: press the Xbox button, then Home, Store, Browse games, Search games. Pick the pre-order edition and choose Install.
 topic: fixes
 stage: hour-1
 tier: none
 consoles: [xbox-x, xbox-s]
-confidence: community
+confidence: official
 sources:
-  - url: "https://outputlag.com/guides/gta-6-not-working-day-one-problems-fixes/"
-    title: "GTA 6 Not Working? Day One Problems and Official Fixes on PS5 and Xbox (Output Lag)"
+  - url: "https://support.xbox.com/help/subscriptions-billing/buy-games-apps/pre-order-faq"
+    title: "Pre-order Xbox digital games in the Microsoft Store (Xbox Support)"
 checked: "2026-11-19"
