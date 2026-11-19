@@ -36,6 +36,6 @@ test('only a single-console page has other consoles', () => {
 test('forWhom names the consoles a page is for', () => {
   assert.equal(forWhom(['ps5']), 'PS5');
   assert.equal(forWhom(['xbox-x', 'xbox-s']), 'Xbox');
-  assert.equal(forWhom(['xbox-x']), 'Xbox X');
-  assert.equal(forWhom(['ps5', 'xbox-s']), 'PS5 and Xbox S');
+  assert.equal(forWhom(['xbox-x']), 'Xbox Series X');
+  assert.equal(forWhom(['ps5', 'xbox-s']), 'PS5 and Xbox Series S');
 });

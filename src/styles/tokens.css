@@ -58,6 +58,7 @@
   --text-small: 0.9375rem;
   --text-h1: clamp(1.625rem, 1.2rem + 2vw, 2.5rem);
   --text-h2: 1.3125rem; /* 21px: one 1.25 step above body */
+  --text-lead: 1.1875rem; /* 19px: a notch above body, the short answer under its question */
 
   --tap: 3rem; /* 48px: minimum size of anything tappable */
   --gap-tap: 0.5rem; /* 8px: minimum space between tappable neighbours */

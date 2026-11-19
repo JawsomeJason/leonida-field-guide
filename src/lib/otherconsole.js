@@ -1,14 +1,14 @@
 // A page for one console, opened by a player on another (see "Console" in docs/spec.md). Plain JS: the build and node:test use it.
-const NAMES = { ps5: 'PS5', 'xbox-x': 'Xbox Series X', 'xbox-s': 'Xbox Series S' };
+import { consoles as NAMES } from '../data/consoles.js';
 const SKIP = new Set(['ps5', 'ps', 'playstation', 'xbox', 'series', 'x', 's', 'the', 'a', 'an', 'my', 'do', 'does', 'how', 'what', 'is', 'to', 'i', 'it', 'on', 'for', 'of', 'and', 'or', 'will', 'not', 'when', 'can', 'if', 'in']);
 
 /** The words a record is about: its question and keywords, console names and filler dropped. */
 const words = (r) => new Set([r.question, ...(r.keywords ?? [])].join(' ').toLowerCase().match(/[a-z0-9]+/g)?.filter((w) => !SKIP.has(w)) ?? []);
 
-/** "PS5", "Xbox" or "PS5 and Xbox X": how to name the consoles a page is for. */
+/** "PS5", "Xbox" or "PS5 and Xbox Series X": how to name the consoles a page is for. */
 export const forWhom = (consoles) => {
   const xbox = consoles.filter((c) => c.startsWith('xbox'));
-  return [...(consoles.includes('ps5') ? ['PS5'] : []), ...(xbox.length === 2 ? ['Xbox'] : xbox.map((c) => NAMES[c].replace('Series ', '')))].join(' and ');
+  return [...(consoles.includes('ps5') ? ['PS5'] : []), ...(xbox.length === 2 ? ['Xbox'] : xbox.map((c) => NAMES[c].name))].join(' and ');
 };
 
 /** The best page for `owned` next to `record`: same topic, `consoles` a list that holds `owned`, most words in common.
@@ -25,4 +25,4 @@ export function counterpart(record, all, owned) {
 
 /** For a single-console record: one entry per console it is not for. */
 export const others = (record, all) =>
-  Array.isArray(record.consoles) ? Object.keys(NAMES).filter((c) => !record.consoles.includes(c)).map((c) => ({ console: c, name: NAMES[c], ...counterpart(record, all, c) })) : [];
+  Array.isArray(record.consoles) ? Object.keys(NAMES).filter((c) => !record.consoles.includes(c)).map((c) => ({ console: c, name: NAMES[c].name, ...counterpart(record, all, c) })) : [];

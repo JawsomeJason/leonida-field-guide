@@ -31,9 +31,10 @@ test('page ids: none gets only its records; a hidden tier gets its records and t
   assert.deepEqual(revealTiers(withDetail), ['places', 'mild']);
 });
 
-test('related never rises above the page tier', () => {
+test('related lists default answers and the page\'s own tier, never another hidden tier', () => {
   assert.deepEqual(related(plain, all).map((a) => a.id), ['detail']);
-  assert.deepEqual(related(mild, all).map((a) => a.id).sort(), ['detail', 'place', 'plain']);
+  assert.deepEqual(related(mild, all).map((a) => a.id).sort(), ['detail', 'plain']); // not 'place': its question is places text
+  assert.equal(related(place, all).some((a) => a.tier === 'mild'), false);
 });
 
 test('button names switch by console and text is escaped', () => {

@@ -1,6 +1,6 @@
 id: cloud-gaming-remote-play
 question: "Can I stream it or use Remote Play?"
-short: "Remote Play is fully supported on your console. Streaming the game from the cloud depends on your console."
+short: "Rockstar says the game fully supports Remote Play (playing your console's game on another screen). Streaming it from the cloud depends on your console."
 body: |-
   - Rockstar warns that connection speed and other technical factors may affect performance in ways local play would not.
 topic: setup
@@ -8,13 +8,17 @@ stage: before
 tier: none
 consoles: all
 byConsole:
-  ps5: "Remote Play is fully supported on PS5, so you can play your PS5 game on another screen. Rockstar lists no cloud streaming for PS5."
-  xbox-x: "Xbox Cloud Gaming can stream it to Xbox Series X|S and Xbox One consoles. You must own the game and have cloud playtime. Remote Play is also fully supported."
-  xbox-s: "Xbox Cloud Gaming can stream it to Xbox Series X|S and Xbox One consoles. You must own the game and have cloud playtime. Remote Play is also fully supported."
+  ps5: "Rockstar says Remote Play is fully supported on PS5, and the PlayStation Store page lists it too, so you can play your PS5 game on another screen. Rockstar lists no cloud streaming for PS5."
+  xbox-x: "Xbox Cloud Gaming can stream it to Xbox Series X|S and Xbox One consoles. You must own the game, and streaming uses cloud playtime from Game Pass or a purchase, or ad-supported cloud gaming. Rockstar says Remote Play is also fully supported."
+  xbox-s: "Xbox Cloud Gaming can stream it to Xbox Series X|S and Xbox One consoles. You must own the game, and streaming uses cloud playtime from Game Pass or a purchase, or ad-supported cloud gaming. Rockstar says Remote Play is also fully supported."
 confidence: official
 sources:
   - url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
     title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
   - url: "https://www.xbox.com/en-us/games/grand-theft-auto-vi"
     title: "Grand Theft Auto VI (Xbox)"
+    console: [xbox-x, xbox-s]
+  - url: "https://www.playstation.com/en-us/games/grand-theft-auto-vi/"
+    title: "Grand Theft Auto VI on PS5 (PlayStation Store)"
+    console: ps5
 checked: "2026-11-19"

@@ -31,7 +31,7 @@ sources:
   - url: "https://support.rockstargames.com/request"
     title: "Submit a Request (Rockstar Support)"
 checked: "2026-11-19"
-rank: 6
+rank: 7
 reveal:
   - tier: mild
     text: "Some bonus items are not there at the very start. A store listing says they become available as you progress, so a missing bonus early on may not be a fault."

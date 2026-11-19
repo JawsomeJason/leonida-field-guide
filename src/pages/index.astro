@@ -5,6 +5,8 @@ import Search from '../components/Search.astro';
 import MostAsked from '../components/MostAsked.astro';
 import StagePicker from '../components/StagePicker.astro';
 import ConsoleCard from '../components/ConsoleCard.astro';
+import Sunset from '../components/Sunset.astro';
+import NextUp from '../components/NextUp.astro';
 import { todosOf } from '../lib/answers';
 
 // Only `none` records reach this page: hidden-tier text must never be in a default page.
@@ -17,10 +19,11 @@ const todos = todosOf(answers);
 <Base>
   <div class="home"><div class="home__grid">
     <div class="home__ask">
+      <Sunset />
       <h1 id="ask-title" tabindex="-1">Ask the field guide</h1>
       <p class="lede">Plain answers about setup, settings and getting started. Spoilers stay off until you turn them on.</p>
       <Search answers={answers} />
-      <ConsoleCard />
+      <NextUp todos={todos} />
       <MostAsked answers={answers} />
     </div>
     <div class="home__stage"><StagePicker todos={todos} /></div>

@@ -70,11 +70,14 @@ test('labels: community only for forums; official needs an allowed host; reporte
   }
 });
 
-test('keep-your-cash names what each source says and which one stands alone', () => {
+test('keep-your-cash: Off holds one warning line; the details and which source says what are in the Mild detail', () => {
   const a = get('keep-your-cash');
-  assert.match(a.body, /Vice Atlas.*ATM/);
-  assert.match(a.body, /GameSpot.*cash on hand/);
-  assert.match(a.body, /rests on Vice Atlas alone/);
+  assert.match(a.short, /can be lost if you die/);
+  assert.doesNotMatch([a.short, a.body].join(' '), /ATM|bank|deposit/i);
+  const hidden = a.reveal.map((r) => r.text).join(' ');
+  assert.match(hidden, /Vice Atlas.*ATM/);
+  assert.match(hidden, /GameSpot.*cash on hand/);
+  assert.match(hidden, /rests on Vice Atlas alone/);
   assert.equal(a.sources.length, 2);
 });
 
@@ -96,6 +99,14 @@ test('a none answer never says in its default text what its hidden details say',
 test('every record was checked on a real date and the old per-console storage card is gone', () => {
   for (const a of records) assert.match(a.checked, /^\d{4}-\d{2}-\d{2}$/);
   assert.equal(get('storage-options'), undefined);
+});
+
+test('the fast travel, stolen cars, police and core stats answers are Mild whole, with no rank or checklist step at Off', () => {
+  for (const id of ['fast-travel', 'stolen-cars', 'wanted-and-police', 'core-stats']) {
+    const a = get(id);
+    assert.equal(a.tier, 'mild', id);
+    assert.equal(a.rank, undefined, `${id} cannot be in Most asked at Off`);
+  }
 });
 
 test('ranks 1 to 20 are each used once', () => {

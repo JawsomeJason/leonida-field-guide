@@ -12,6 +12,7 @@ confidence: official
 sources:
   - url: "https://support.xbox.com/help/games-apps/troubleshooting/troubleshoot-game-or-app-installation-problems-on-xbox-one"
     title: "Troubleshoot game or app installation problems on your Xbox console (Xbox Support)"
+    console: [xbox-x, xbox-s]
 checked: "2026-11-19"
 todo: "Check for an Xbox console update and install it"
 order: 20

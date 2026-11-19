@@ -22,8 +22,10 @@ sources:
     title: "Game Activation for Grand Theft Auto VI (Rockstar Support)"
   - url: "https://www.playstation.com/support/store/redeem-ps-store-voucher-code"
     title: "How to redeem a PlayStation Store voucher code (PlayStation Support)"
+    console: ps5
   - url: "https://support.xbox.com/help/subscriptions-billing/redeem-codes-gifting/redeem-prepaid-codes"
     title: "How to redeem gift cards, codes, and offers (Xbox Support)"
+    console: [xbox-x, xbox-s]
 checked: "2026-11-19"
 rank: 18
 todo: "Redeem your boxed-copy code"

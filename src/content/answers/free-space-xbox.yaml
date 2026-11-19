@@ -2,7 +2,7 @@ id: free-space-xbox
 question: "Make room: how do I check free space and clear space on my Xbox?"
 short: "Press the Xbox button, then Profile & system, Settings, System, Storage devices to see free space. To make room, uninstall games you are not playing, or move them to an external drive."
 body: |-
-  - Uninstalling does not remove your licence or your progress. Both stay in the cloud, and saved data comes back when you reinstall.
+  - Uninstalling does not lose the game or your progress. Details: [Will I lose anything?](/a/will-i-lose-anything/)
   - When the drive is getting full, Xbox's smart storage points out games that are good to remove.
   - You will never see the whole drive free. Microsoft says some of it is reserved for saved games and system files.
   - Microsoft's rule: games built for the newer Xbox hardware (the store labels them Optimized for Series X|S) must be installed on the internal drive or a Storage Expansion Card (a plug-in drive sold separately). An external USB drive can only park them: move a game back to play it. We have not confirmed this game's label, so plan on that rule.
@@ -15,7 +15,9 @@ confidence: official
 sources:
   - url: "https://support.xbox.com/en-US/help/hardware-network/storage/manage-storage"
     title: "Manage storage on your Xbox console (Xbox Support)"
+    console: [xbox-x, xbox-s]
   - url: "https://support.xbox.com/help/games-apps/troubleshooting/troubleshoot-game-or-app-installation-problems-on-xbox-one"
     title: "Troubleshoot game or app installation problems on your Xbox console (Xbox Support)"
+    console: [xbox-x, xbox-s]
 checked: "2026-11-19"
 keywords: ["storage full", "delete games", "free up space"]

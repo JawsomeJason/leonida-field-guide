@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { saved, press, setDial } from './helpers.mjs';
+import { loadRecords } from '../../scripts/check-leak.mjs';
 
 const width = (page) => page.viewportSize().width;
 const rects = (locator) => locator.evaluateAll((els) => els.map((e) => { const r = e.getBoundingClientRect(); return { x: Math.round(r.x), y: Math.round(r.y), w: r.width, h: r.height }; }));
@@ -162,3 +163,97 @@ test('the main answer is raised; secondary lists are plain rows with no card and
   await raised('a cheat sheet answer', page.locator('.card'));
 });
 
+// Fix round 3: the question is the page's title, the short answer is calmer.
+test('on an answer page the question is the title and the short answer is calmer, and a real-length answer stays short on a phone', async ({ page }) => {
+  await page.goto('/a/sample-02/');
+  const style = (sel) => page.locator(sel).evaluate((el) => { const c = getComputedStyle(el); return { size: parseFloat(c.fontSize), weight: +c.fontWeight }; });
+  const body = parseFloat(await page.evaluate(() => getComputedStyle(document.body).fontSize));
+  const q = await style('h1.answer__q');
+  const a = await style('.answer__a');
+  expect(q.size, 'the question is larger than the answer').toBeGreaterThan(a.size);
+  expect(q.weight, 'the question is the heavier of the two').toBeGreaterThan(a.weight);
+  expect(a.weight, 'the answer is regular to medium').toBeLessThanOrEqual(500);
+  expect(a.size, 'the answer is still larger than body text').toBeGreaterThan(body);
+  // Real answers run to 240 characters. Measure the median and the longest of the real records (lengths only), at the phone width.
+  const lengths = loadRecords('src/content/answers').filter((r) => r.tier === 'none').map((r) => r.short.length).sort((x, y) => x - y);
+  const text = (n) => 'Check the free space first and clear the difference, then rerun the update from the home screen until the number shown is above what the install asks for. '.repeat(3).slice(0, n).trim();
+  const lines = (n) => page.locator('.answer__a').evaluate((el, s) => { el.textContent = s; const c = getComputedStyle(el); return Math.round((el.clientHeight - parseFloat(c.paddingTop) - parseFloat(c.paddingBottom)) / parseFloat(c.lineHeight)); }, text(n));
+  if (width(page) === 390) {
+    // The CI machine's fallback system font is wider than a phone's: one more line is allowed there (the old layout needed seven).
+    const slack = process.env.CI ? 1 : 0;
+    expect(await lines(lengths[Math.floor(lengths.length / 2)]), 'a median answer fits in five lines').toBeLessThanOrEqual(5 + slack);
+    expect(await lines(lengths.at(-1)), 'the longest answer fits in six lines').toBeLessThanOrEqual(6 + slack);
+  }
+});
+
+test('the checklist columns start at the same height wherever there are two', async ({ page }) => {
+  await saved(page, { console: 'ps5' });
+  for (const [w, h] of [[820, 1180], [1024, 768], [1180, 820], [1440, 900]]) {
+    await page.setViewportSize({ width: w, height: h });
+    await page.goto('/checklist/');
+    const stages = await rects(page.locator('section[data-stage]'));
+    const firstOfColumn = [...Map.groupBy(stages, (s) => s.x).values()].map((col) => col[0].y);
+    expect(new Set(firstOfColumn).size, `at ${w} wide the columns start at ${firstOfColumn}`).toBe(1);
+  }
+});
+
+test.describe('Show places', () => {
+  test('is a real 48px button that sets the dial through the settings path', async ({ page }) => {
+    await page.goto('/places/');
+    await expect(page.getByRole('link', { name: 'Show places' })).toHaveCount(0); // the link floor is for no script
+    const button = page.getByRole('button', { name: 'Show places' });
+    expect((await rects(button))[0].h).toBeGreaterThanOrEqual(48);
+    await expect(button).not.toHaveAttribute('aria-pressed', /.*/); // an action, not a toggle
+    await press(button);
+    await expect(page.locator('html')).toHaveAttribute('data-dial', 'places');
+    expect(await page.evaluate(() => document.cookie)).toContain('lfg_dial=places'); // the same write() the sheet uses
+    await expect(page.getByRole('heading', { name: 'Places are switched off' })).toBeHidden();
+  });
+
+  test('is a plain link to the places list without script', async ({ browser }, info) => {
+    const context = await browser.newContext({ ...info.project.use, javaScriptEnabled: false });
+    const page = await context.newPage();
+    await page.goto('/places/');
+    await expect(page.getByRole('button', { name: 'Show places' })).toHaveCount(0);
+    await expect(page.getByRole('link', { name: 'Show places' })).toHaveAttribute('href', '/places/list/');
+    await context.close();
+  });
+});
+
+test.describe('the sunset on the Ask screen', () => {
+  for (const theme of ['night', 'day']) {
+    test(`is a decorative picture in ${theme}, in that theme's colours, and keeps the search on the first screen`, async ({ page }) => {
+      await saved(page, { theme, console: 'ps5' });
+      await page.goto('/');
+      const sun = page.locator('.sunset');
+      await expect(sun).toBeVisible();
+      await expect(sun).toHaveAttribute('aria-hidden', 'true');
+      expect((await sun.innerText()).trim(), 'no text in it').toBe('');
+      const paint = await sun.evaluate((el) => { const c = getComputedStyle(el, '::before'); return { image: c.backgroundImage, mask: c.maskImage || c.webkitMaskImage, animation: c.animationName, rule: getComputedStyle(el).borderImageSource }; });
+      expect(paint.image).toContain('gradient');
+      expect(paint.mask, 'the sun has bands').toContain('gradient');
+      expect(paint.animation, 'it never moves').toBe('none');
+      const [accent, accent2] = theme === 'night' ? ['rgb(255, 159, 69)', 'rgb(255, 111, 97)'] : ['rgb(11, 111, 117)', 'rgb(194, 64, 31)'];
+      for (const c of [accent, accent2]) expect(paint.image + paint.rule, `uses ${c}`).toContain(c);
+      const { y, h } = (await rects(page.locator('#q')))[0];
+      if (width(page) === 390) expect(y, 'the search box is not pushed below y=300').toBeLessThanOrEqual(300);
+      const vh = page.viewportSize().height;
+      expect(y + h, 'the search box is on the first screen').toBeLessThan(vh);
+      const next = (await rects(page.locator('.most-asked h2, h2:has-text("Most asked")')))[0];
+      expect(next.y, 'the start of the next block is on the first screen too').toBeLessThan(vh - (width(page) < 600 ? 64 : 0));
+    });
+  }
+
+  test('does not change size or push anything while the page loads', async ({ page }) => {
+    await page.addInitScript(() => {
+      window.__cls = 0;
+      new PerformanceObserver((l) => l.getEntries().forEach((e) => { if (!e.hadRecentInput) window.__cls += e.value; })).observe({ type: 'layout-shift', buffered: true });
+    });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('.sunset')).toBeVisible();
+    const first = (await rects(page.locator('.sunset')))[0];
+    await page.waitForLoadState('networkidle');
+    expect((await rects(page.locator('.sunset')))[0], 'the same box at first paint and after load').toEqual(first);
+    expect(await page.evaluate(() => window.__cls), 'no layout shift on the Ask screen').toBe(0);
+  });
+});

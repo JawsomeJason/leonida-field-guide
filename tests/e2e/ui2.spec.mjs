@@ -71,9 +71,10 @@ for (const path of ['/checklist/', '/']) {
     const tick = row.locator('label');
     const open = row.locator('a.todo__open');
     const [t, o] = [await box(tick), await box(open)];
-    expect(t.h, 'the tick row').toBeGreaterThanOrEqual(48);
-    expect(o.w).toBeGreaterThanOrEqual(48);
-    expect(o.h).toBeGreaterThanOrEqual(48);
+    // sub-pixel layout can give 47.9999: half a pixel of slack
+    expect(t.h, 'the tick row').toBeGreaterThanOrEqual(47.5);
+    expect(o.w).toBeGreaterThanOrEqual(47.5);
+    expect(o.h).toBeGreaterThanOrEqual(47.5);
     expect(o.x - t.r, 'between the tick row and the arrow').toBeGreaterThanOrEqual(16);
     expect((await open.innerText()).trim(), 'an arrow, not the word Answer').toBe('');
     await expect(open).toHaveAccessibleName(/^Open (the )?answer/);
@@ -140,12 +141,12 @@ for (const [path, owned, whom, other] of cases) {
     await expect(note).toHaveCount(1);
     await expect(note.getByRole('heading', { level: 1 })).toContainText(`This page is for ${whom}`);
     await expect(note.getByRole('link')).toHaveAttribute('href', other);
-    expect((await box(note.getByRole('link'))).h).toBeGreaterThanOrEqual(48);
+    expect((await box(note.getByRole('link'))).h).toBeGreaterThanOrEqual(47.5);
     const fold = page.locator('details.other-fold');
     await expect(fold).not.toHaveAttribute('open', '');
     await expect(fold.getByRole('heading', { level: 1 })).toBeHidden();
     await expect(fold.locator(':scope > summary')).toHaveText(`Show the ${whom} version`);
-    expect((await box(fold.locator(':scope > summary'))).h).toBeGreaterThanOrEqual(48);
+    expect((await box(fold.locator(':scope > summary'))).h).toBeGreaterThanOrEqual(47.5);
     expect((await new AxeBuilder({ page }).analyze()).violations.map((v) => v.id)).toEqual([]);
     await press(fold.locator(':scope > summary'));
     await expect(fold.getByRole('heading', { level: 1 })).toBeVisible();
@@ -164,7 +165,7 @@ test('changing console on a single-console page folds and unfolds it', async ({ 
   await pageFor(page, 'ps5', '/a/console-ps5/');
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await press(page.locator('.chip--console'));
-  await press(page.locator('#settings').getByRole('radio', { name: 'Xbox X', exact: true }));
+  await press(page.locator('#settings').getByRole('radio', { name: 'Xbox Series X', exact: true }));
   await expect(page.locator('details.other-fold h1')).toBeHidden();
   await press(page.locator('.chip--console'));
   await press(page.locator('#settings').getByRole('radio', { name: 'PS5', exact: true }));

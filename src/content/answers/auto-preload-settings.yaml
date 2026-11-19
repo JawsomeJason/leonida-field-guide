@@ -1,5 +1,5 @@
 id: auto-preload-settings
-question: "How do I make the game download by itself before launch?"
+question: "How do I make the game download by itself?"
 short: "Turn on automatic downloads or updates, and leave the console on or in its rest or sleep mode."
 body: |-
   - Rockstar's pre-load (download before launch) FAQ gives the requirements for each console and links to the console maker's own steps.
@@ -18,6 +18,11 @@ sources:
     title: "Grand Theft Auto VI Pre-Load FAQ (Rockstar Support)"
   - url: "https://www.playstation.com/support/games/pre-order-games-automatic-download-ps-store"
     title: "How to pre-order and auto-download games from PlayStation Store (PlayStation Support)"
+    console: ps5
+  - url: "https://support.xbox.com/help/hardware-network/settings-updates/system-update-overview"
+    title: "Xbox system update overview (Xbox Support)"
+    console: [xbox-x, xbox-s]
 checked: "2026-11-19"
 todo: "Turn on automatic downloads and updates"
 order: 40
+keywords: ["preload", "pre load", "download before launch day", "download early"]

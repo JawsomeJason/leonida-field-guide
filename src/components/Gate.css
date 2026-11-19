@@ -9,8 +9,12 @@
   border-radius: var(--radius);
   background: var(--action);
   color: var(--bg);
+  border: 0;
+  font: inherit;
   font-weight: 600;
   text-decoration: none;
+  cursor: pointer;
 }
+html.js a.gate__on { display: none; }
 .gate__on:active { background-color: color-mix(in srgb, var(--action) 75%, var(--text)); }
 html:is([data-dial='places'], [data-dial='mild']) .gate { display: none; }

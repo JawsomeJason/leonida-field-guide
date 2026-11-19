@@ -19,11 +19,15 @@ confidence: official
 sources:
   - url: "https://support.xbox.com/en-US/help/games-apps/troubleshooting/game-issues-solution"
     title: "Troubleshoot game issues on Xbox (Xbox Support)"
+    console: [xbox-x, xbox-s]
   - url: "https://support.xbox.com/en-US/help/hardware-network/power/restart-or-power-cycle-console"
     title: "How to restart or power cycle your Xbox console (Xbox Support)"
+    console: [xbox-x, xbox-s]
   - url: "https://support.xbox.com/en-US/help/games-apps/game-issues/known-issues-browse"
     title: "Known issues for Xbox and Windows PC game releases (Xbox Support)"
+    console: [xbox-x, xbox-s]
   - url: "https://support.xbox.com/en-US/help/hardware-network/storage/manage-storage"
     title: "Manage storage on your Xbox console (Xbox Support)"
+    console: [xbox-x, xbox-s]
 checked: "2026-11-19"
 keywords: ["crash", "crashing", "keeps crashing", "freezing", "game crashes"]

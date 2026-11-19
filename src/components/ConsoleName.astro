@@ -1,0 +1,9 @@
+---
+// A console's short name on screen, with the full name for a screen reader and for copied text: "Series X" reads "Xbox Series X".
+import { consoles } from '../data/consoles.js';
+const { id } = Astro.props;
+const { name, short } = consoles[id as keyof typeof consoles];
+const lead = name.slice(0, name.length - short.length);
+---
+
+{lead && <span class="sr-only">{lead}</span>}{short}

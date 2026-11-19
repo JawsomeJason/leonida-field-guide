@@ -45,6 +45,19 @@ html[data-console] .console-card { display: none; }
   cursor: pointer;
 }
 
+/* Outside links with a `console` (OutsideList.astro): they show for that console, or for everyone until one is chosen. The rest wait
+   in the list's fold, which shows only while a chosen console leaves something in it. */
+html[data-console='ps5'] [data-src-for]:not([data-src-for~='ps5']),
+html[data-console='xbox-x'] [data-src-for]:not([data-src-for~='xbox-x']),
+html[data-console='xbox-s'] [data-src-for]:not([data-src-for~='xbox-s']) { display: none; }
+.other-sources { display: none; }
+html[data-console='ps5'] .other-sources:has([data-src-other]:not([data-src-other~='ps5'])),
+html[data-console='xbox-x'] .other-sources:has([data-src-other]:not([data-src-other~='xbox-x'])),
+html[data-console='xbox-s'] .other-sources:has([data-src-other]:not([data-src-other~='xbox-s'])) { display: block; }
+html[data-console='ps5'] [data-src-other~='ps5'],
+html[data-console='xbox-x'] [data-src-other~='xbox-x'],
+html[data-console='xbox-s'] [data-src-other~='xbox-s'] { display: none; }
+
 /* A page for one console, opened by a player on another: the note and the fold's summary show only then (other-console.js folds it). */
 .other-note, .other-fold > summary { display: none; }
 html[data-console='ps5'] :is(.other-note, .other-fold)[data-for~='ps5'],

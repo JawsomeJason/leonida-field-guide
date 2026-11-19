@@ -19,5 +19,9 @@ sources:
     title: "Grand Theft Auto VI Pre-Load Begins on November 10 (Rockstar Newswire)"
   - url: "https://www.xbox.com/en-us/games/grand-theft-auto-vi"
     title: "Grand Theft Auto VI (Xbox)"
+    console: [xbox-x, xbox-s]
+  - url: "https://www.playstation.com/en-us/games/grand-theft-auto-vi/"
+    title: "Grand Theft Auto VI on PS5 (PlayStation Store)"
+    console: ps5
 checked: "2026-11-19"
 rank: 15

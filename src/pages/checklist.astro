@@ -90,7 +90,8 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
     .stage { break-inside: avoid; }
   }
   .overall, .stage, .backup { max-inline-size: 70ch; }
-  .stage { margin-block-start: var(--space-5); }
+  /* Padding, not margin: a margin at the top of the second column is cut off, so the two columns would start at different heights. */
+  .stage { padding-block-start: var(--space-5); }
   .stage h2 { margin-block: 0 var(--space-1); }
 
   /* Without JS the page is a list of links; JS swaps in the tick rows. */

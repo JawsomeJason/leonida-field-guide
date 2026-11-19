@@ -6,16 +6,13 @@ body: |-
   - Hollow stars mean an alarm went off but the police do not know who they want. Red stars with a red radius on the minimap mean you got out of sight but are still inside the search area.
   - Remembered details show as red indicators under the stars. Ignoring them makes you easier to spot later.
   - At the top level the search reportedly covers the whole map.
+  - Ways IGGM lists for clearing the remembered details: destroy camera footage, change into a second outfit kept in your car, wear a mask or helmet before a crime, and hide or drop weapons the police saw.
 topic: good-to-know
 stage: day-1
-tier: none
+tier: mild
 consoles: all
 confidence: reported
 sources:
   - url: "https://www.iggm.com/news/gta-6-wanted-level-system-explained-how-heat-indicators-police-memory"
-    title: "GTA 6 Wanted Level System Explained: How Heat Indicators and Police Memory Work (IGGM)"
+    title: "GTA 6 wanted level system (IGGM)"
 checked: "2026-11-19"
-rank: 13
-reveal:
-  - tier: mild
-    text: "Ways IGGM lists for clearing the remembered details: destroy camera footage, change into a second outfit kept in your car, wear a mask or helmet before a crime, and hide or drop weapons the police saw."
