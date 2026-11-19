@@ -23,7 +23,7 @@
     --muted: #c5b6bd;
     --accent: #ff9f45;
     --accent-2: #ff6f61;
-    --action: #f0c48a;
+    --action: #ff9f45; /* night: the same amber as --accent, so there is one filled-button colour */
     --shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 4px 14px rgb(0 0 0 / 0.35);
     color-scheme: dark;
   }
@@ -38,7 +38,7 @@
   --muted: #c5b6bd;
   --accent: #ff9f45;
   --accent-2: #ff6f61;
-  --action: #f0c48a;
+  --action: #ff9f45; /* night: the same amber as --accent, so there is one filled-button colour */
   --shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 4px 14px rgb(0 0 0 / 0.35);
   color-scheme: dark;
 }

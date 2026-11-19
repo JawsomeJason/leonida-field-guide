@@ -41,26 +41,37 @@ input, select, textarea { font-size: var(--text-input); }
 /* Touch rules shared by every screen: no double-tap delay, a pressed state, hover only where hover exists. */
 a, button, summary, label, input { touch-action: manipulation; }
 
-/* A list of whole-row targets. Use it for any list of links. Plain by default (tertiary): no card, no shadow, a hairline between rows.
-   Each row keeps its 48px target; the 8px between neighbours is margin on the link, the hairline sits in the middle of it.
-   A list that is the main thing on its screen opts in with .tap-list--cards. */
-.tap-list { list-style: none; margin: 0; padding: 0; display: grid; }
-.tap-list > li { border-block-end: 1px solid var(--line); }
-.tap-list > li:last-child { border-block-end: 0; }
+/* A list of whole-row targets. Use it for any list of links. Plain by default (tertiary): no card, no shadow, a hairline between rows,
+   and an arrow at the end of every row so it reads as something to tap (a link in running text is underlined instead).
+   Each row keeps its 48px target; the 8px between neighbours is the list's own gap (dead space, not margin inside the row),
+   with the hairline in the middle of it. A list that is the main thing on its screen opts in with .tap-list--cards. */
+.tap-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--gap-tap); }
+.tap-list > li { position: relative; }
+.tap-list:not(.tap-list--cards) > li:not(:last-child)::after { content: ''; position: absolute; inset-inline: 0; inset-block-end: calc(var(--gap-tap) / -2 - 0.5px); border-block-end: 1px solid var(--line); pointer-events: none; }
 .tap-list a {
+  position: relative;
   display: flex;
   align-items: center;
   min-block-size: var(--tap);
-  margin-block: calc(var(--gap-tap) / 2);
   padding: var(--space-2) var(--space-2) var(--space-2) calc(var(--space-2) - 3px);
   margin-inline: calc(var(--space-2) * -1);
   border-inline-start: 3px solid transparent; /* the current row takes the accent here, so nothing shifts */
   color: var(--text);
   text-decoration: none;
 }
+.tap-list:not(.tap-list--cards) a:not(:has(svg)) { padding-inline-end: calc(var(--space-2) + 1.75rem); }
+.tap-list:not(.tap-list--cards) a:not(:has(svg))::after {
+  content: '';
+  position: absolute;
+  inset-inline-end: var(--space-2);
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  background: var(--muted);
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='m9 6 6 6-6 6'/></svg>") no-repeat center / contain;
+}
 /* Primary (the main answers on a screen): a raised card per row. Day lifts off the page; night adds a faint top edge and a soft drop. */
-.tap-list--cards { gap: var(--gap-tap); }
-.tap-list--cards > li { border-block-end: 0; }
 .tap-list--cards a {
   margin: 0;
   padding: var(--space-2) var(--space-4);
