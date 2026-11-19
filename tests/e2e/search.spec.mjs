@@ -26,16 +26,17 @@ test.describe('plain sentences find the right answer', () => {
   });
 });
 
-// No confident answer: the floor line, then up to three possibly related and a way to Topics. Never a dead end.
-for (const query of ['zzyzx qqqq', 'how do i get a million dollars fast', 'my kid wants to play too']) {
-  test(`"${query}" has no answer: the floor line, possibly related, a way to Topics`, async ({ page }) => {
+// No real match (no meaningful word of the question found in an answer's question or keywords): the floor line and the way to Topics, nothing else. Never a dead end, never a weak card.
+const NONE = ['zzyzx qqqq', 'how do i get a million dollars fast', 'my kid wants to play too', 'how do i unlock the secret car', 'where is the nearest gun shop in the city', 'how do i get a better weapon', 'who is the main character', 'what is the best car'];
+for (const query of NONE) {
+  test(`"${query}" has no answer: the floor line and a way to Topics, no Possibly related`, async ({ page }) => {
     await ask(page, query);
-    await expect(page.getByRole('status')).toHaveText('This guide has no answer for that yet.');
-    await expect(page.getByRole('heading', { name: 'Possibly related' })).toBeVisible();
+    const where = await page.locator('#q-where').isVisible(); // a place question shows its own note instead of the floor line
+    if (!where) await expect(page.getByRole('status')).toHaveText('This guide has no answer for that yet.');
+    await expect(page.getByText('Possibly related')).toHaveCount(0);
     const links = results(page).getByRole('link');
-    await expect(links).toHaveCount(4);
-    await expect(links.last()).toHaveAttribute('href', '/topics/');
-    await expect(links.first()).toHaveAttribute('href', /^\/a\//);
+    await expect(links).toHaveCount(1);
+    await expect(links.first()).toHaveAttribute('href', '/topics/');
     await expect(page.getByRole('button', { name: 'Show more' })).toBeHidden();
     if (test.info().project.use.hasTouch) {
       const { problems } = await measure(page);
@@ -43,6 +44,19 @@ for (const query of ['zzyzx qqqq', 'how do i get a million dollars fast', 'my ki
     }
   });
 }
+
+test('one word that only an unrelated answer holds is no answer: no cards under the floor line or the places note', async ({ page }) => {
+  await page.route('**/search/none.json', (route) =>
+    route.fulfill({ json: [{ id: 'bonus', question: 'Does the city edition include a bonus pack?', short: 'It does.', topic: 'setup', consoles: 'all', rank: 1 }, { id: 'timing', question: 'When does the unlock happen?', short: 'At night.', topic: 'setup', consoles: 'all', rank: 2 }] }),
+  );
+  for (const query of ['where is the nearest gun shop in the city', 'how do i unlock the secret car']) {
+    await ask(page, query);
+    await expect(results(page).getByRole('link')).toHaveCount(1);
+    await expect(results(page).getByRole('link')).toHaveAttribute('href', '/topics/');
+    await expect(page.locator('#q-results a[href^="/a/"]')).toHaveCount(0);
+  }
+  await expect(page.getByRole('status')).toHaveText('This guide has no answer for that yet.');
+});
 
 test('no answer says so plainly and hints at nothing hidden: no Mild line, no settings button', async ({ page }) => {
   await ask(page, 'zzyzx qqqq');
@@ -52,19 +66,20 @@ test('no answer says so plainly and hints at nothing hidden: no Mild line, no se
   await expect(page.locator('#q-mild')).toHaveCount(0);
 });
 
-test('an answer shows no floor line and no Possibly related heading', async ({ page }) => {
+test('an answer shows no floor line', async ({ page }) => {
   await ask(page, 'how do i save my game');
   await expect(page.getByRole('status')).not.toHaveText(/no answer/);
-  await expect(page.getByRole('heading', { name: 'Possibly related' })).toBeHidden();
+  await expect(page.getByText('Possibly related')).toHaveCount(0);
 });
 
-test('a weaker match (short text only) is offered as possibly related, not as the answer', async ({ page }) => {
+test('a weaker match (short text only) is not offered at all', async ({ page }) => {
   await page.route('**/search/none.json', (route) =>
     route.fulfill({ json: [{ id: 'a-one', question: 'Alpha question?', short: 'Mentions the zebra kiosk here.', topic: 'setup', consoles: 'all', rank: 1 }] }),
   );
   await ask(page, 'zebra kiosk');
   await expect(page.getByRole('status')).toHaveText('This guide has no answer for that yet.');
-  await expect(results(page).getByRole('link').first()).toHaveAttribute('href', '/a/a-one/');
+  await expect(results(page).getByRole('link')).toHaveCount(1);
+  await expect(results(page).getByRole('link')).toHaveAttribute('href', '/topics/');
 });
 
 // Five answers show; a real 48px button shows the rest.

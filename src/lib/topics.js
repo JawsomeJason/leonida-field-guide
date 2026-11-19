@@ -20,3 +20,10 @@ export function tileStates({ none = 0, places = 0, mild = 0 }) {
 
 /** The level that first opens something for a topic with no default answers, as its name ('Places', 'Mild'), or '' when nothing is hidden either. */
 export const hiddenUntil = (counts) => tileStates(counts).find((s) => s.levels.startsWith('off'))?.until ?? '';
+
+/** The rows a tile renders. A topic with nothing at Off is its closed state plus ONE open row for every level that opens it, with no count at all:
+ *  the page never carries a number a level hides, so the script counts from the hidden index once the dial reaches it. Other topics render as tileStates says. */
+export function tileRows(counts) {
+  const [first, ...rest] = tileStates(counts);
+  return first.count === 0 && rest.length ? [{ ...first, open: false }, { levels: rest.map((s) => s.levels).join(' '), open: true }] : tileStates(counts).map((s) => ({ ...s, open: s.count > 0 }));
+}

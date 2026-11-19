@@ -65,21 +65,19 @@ test('the topic name counts, and keywords reach words the text does not use', ()
   assert.deepEqual(ids([rec('c', 'Anything?', { topic: 'getting-around' })], 'getting around'), ['c']);
 });
 
-test('ranking: question beats keywords; short and topic hits are only possibly related', () => {
+test('ranking: question beats keywords; short and topic hits are no match', () => {
   const records = [
     rec('short', 'Nothing.', { short: 'You can save here.' }),
     rec('keyword', 'Nothing.', { keywords: ['save'] }),
     rec('question', 'How do I save?'),
   ];
   assert.deepEqual(ids(records, 'save'), ['question', 'keyword']);
-  const weak = search([records[0], rec('topic', 'Nothing.', { topic: 'saving' })], 'save cloud'); // nothing but weak hits: no answer, and the weaker matches are offered
-  assert.deepEqual(weak.found, []);
-  assert.deepEqual(weak.related.map((r) => r.id).sort(), ['short', 'topic']);
+  assert.deepEqual(ids([records[0], rec('topic', 'Nothing.', { topic: 'saving' })], 'save cloud'), []); // nothing but weak hits: no answer, and nothing offered
 });
 
 test('ranking: a match in the question outranks a match in the short text, even with more words there', () => {
   const records = [rec('body', 'Nothing.', { short: 'Save to the cloud here.' }), rec('title', 'Where do I save?')];
-  assert.deepEqual(ids(records, 'save cloud'), ['title']); // body has save and cloud, but only in its short text: possibly related, never the answer
+  assert.deepEqual(ids(records, 'save cloud'), ['title']); // body has save and cloud, but only in its short text: never the answer
 });
 
 test('a query that is only a topic name lists that topic', () => {
@@ -108,20 +106,29 @@ test('an unfinished last word still matches', () => {
   assert.deepEqual(ids(records, 'sche control'), ['a']);
 });
 
-test('no answer: up to three possibly related, else the most asked', () => {
+test('no answer: nothing is offered, not even a weak match', () => {
   const records = [
     rec('a', 'How do I save?', { rank: 3 }),
     rec('b', 'Is there fast travel?', { rank: 1 }),
     rec('c', 'Is there a map?', { rank: 2 }),
     rec('d', 'Is there co-op?'),
   ];
-  const none = search(records, 'zzyzx');
-  assert.deepEqual(none.found, []);
-  assert.deepEqual(none.related.map((r) => r.id), ['b', 'c', 'a']); // most asked first
+  assert.deepEqual(search(records, 'zzyzx'), { found: [] });
   // Four words, one in each of four answers: half of four is two, so nothing is an answer.
-  const part = search(records, 'save travel map cooperate');
-  assert.deepEqual(part.found, []);
-  assert.equal(part.related.length, 3);
+  assert.deepEqual(search(records, 'save travel map cooperate').found, []);
+});
+
+test('one word of a longer question is not an answer: the words the guide has never seen count against it', () => {
+  const records = [rec('t', 'When does the unlock happen?')];
+  assert.deepEqual(ids(records, 'unlock'), ['t']);
+  assert.deepEqual(ids(records, 'how do i unlock the secret car'), []); // unlock, secret, car: one of three
+  assert.deepEqual(ids(records, 'unlock the car'), ['t']); // one of two is half
+});
+
+test('a word in the short text or the topic alone is no match', () => {
+  const records = [rec('a', 'Alpha question?', { short: 'Mentions the zebra kiosk here.', topic: 'setup' })];
+  assert.deepEqual(ids(records, 'zebra kiosk'), []);
+  assert.deepEqual(ids(records, 'setup'), ['a']); // a topic's own name lists it (browse), the one exception
 });
 
 test('the floor: filler, short words and words that match nothing never make an answer', () => {

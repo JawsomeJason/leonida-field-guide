@@ -95,12 +95,16 @@ test('a topic whose answers all sit at Mild is a quiet row, not a link, at Off a
     await expect(r.getByRole('link')).toHaveCount(0);
     await expect(r.locator('svg')).toHaveCount(0);
     await expect(r).not.toContainText(/0 answers|No answers/);
+    // Hidden means no count anywhere: not in the text (shown or not), and no number in any attribute of the topic's rows.
+    const rows = page.locator('.tiles li', { has: page.locator('a[href="/topics/getting-around/"], .tile--closed:has-text("Getting around")') });
+    expect(await rows.evaluateAll((els) => els.map((e) => e.textContent).join(' '))).not.toMatch(/\d/);
+    expect(await rows.evaluateAll((els) => els.flatMap((e) => [e, ...e.querySelectorAll('*')]).flatMap((n) => [...n.attributes].filter((a) => /\d/.test(a.value) && a.name !== 'class' && a.name !== 'd' && !/^(viewBox|width|height|stroke-width)$/.test(a.name)).map((a) => `${a.name}=${a.value}`)))).toEqual([]);
   }
   await saved(page, { dial: 'mild' });
   await page.goto('/topics/');
   const r = row(page, 'Getting around');
   await expect(r.getByRole('link')).toHaveAttribute('href', '/topics/getting-around/');
-  await expect(r).toContainText('1 answer');
+  await expect(r).toContainText('1 answer'); // counted from the hidden index once the dial reaches Mild
   await expect(r.locator('svg')).toBeVisible();
 });
 
