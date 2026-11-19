@@ -18,8 +18,6 @@ const put = (body, headers = {}) =>
   fn.fetch(new Request(url, { method: 'PUT', headers: { 'content-type': 'application/json', cookie, ...headers }, body: typeof body === 'string' ? body : JSON.stringify(body) }));
 const state = (items = {}) => ({ v: 3, items });
 const empty = state();
-let retired = 0;
-fn.store.retire = async () => { retired++; throw new Error('old blob refused'); }; // a failing retirement must never fail a request
 
 test('the function file loads and exports a fetch handler', () => {
   assert.equal(typeof fn.fetch, 'function');
@@ -83,10 +81,6 @@ test('GET returns only ticks, even if the stored blob carries settings or is the
   assert.deepEqual(await (await fn.fetch(new Request(url, { headers: { cookie } }))).json(), empty);
   saved = state({ a: { done: true, at: 1 } });
   assert.deepEqual(await (await fn.fetch(new Request(url, { headers: { cookie } }))).json(), saved);
-});
-
-test('the one-off retirement of the old blob runs once, and its failure never fails a request', () => {
-  assert.equal(retired, 1);
 });
 
 test('the function stores under progress/ticks.json, not the abandoned state.json', async () => {

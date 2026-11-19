@@ -2,26 +2,18 @@
 // ticks into them and returns the result. Ticks only: a body with settings or any unknown field is a 400.
 // The password gate is checked here with decide(), so there is no auth, cookie, user id or database of its own. BLOB_READ_WRITE_TOKEN is read by @vercel/blob itself.
 // If this function returns 500 on the live site, check the merge import first: it must keep its .js extension.
-import { del, get, put } from '@vercel/blob';
+import { get, put } from '@vercel/blob';
 import { emptyTicks, mergeTicks, parseTicks } from '../src/lib/merge.js';
 import { decide } from '../src/lib/gate.js';
 
 declare const process: { env: Record<string, string | undefined> };
 
 const PATH = 'progress/ticks.json';
-const OLD_PATH = 'progress/state.json'; // held settings from every device; abandoned
 const MAX_BODY = 64 * 1024;
 const HEADERS = { 'content-type': 'application/json', 'cache-control': 'no-store' };
 const reply = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: HEADERS });
 
-// shortcut: one-off retirement of the old blob, best effort, once per instance and never fails a request.
-// Delete this and OLD_PATH once progress/state.json is gone from the store.
-let retired = false;
-
 const store = {
-  async retire() {
-    await del(OLD_PATH);
-  },
   async read(): Promise<unknown> {
     const blob = await get(PATH, { access: 'private', useCache: false });
     if (blob?.statusCode !== 200) return null;
@@ -38,11 +30,6 @@ async function handle(request: Request) {
   const gate = await decide({ path: '/api/progress', method: 'GET', cookie: request.headers.get('cookie'), formPassword: null, expectedPassword: process.env.SITE_PASSWORD });
   if (gate.action !== 'allow') return reply(gate.action === 'refuse' ? 503 : 401, { error: 'Sign in first' });
   if (request.method !== 'GET' && request.method !== 'PUT') return new Response(null, { status: 405, headers: { allow: 'GET, PUT' } });
-
-  if (!retired) {
-    retired = true;
-    await store.retire().catch(() => {});
-  }
 
   let incoming = emptyTicks();
   if (request.method === 'PUT') {
