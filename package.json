@@ -10,11 +10,12 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check && npm run build && npm run test:unit && npm run check:leak && npm run check:links && npm run check:console && npm run test:e2e",
+    "check": "astro check && npm run build && npm run test:unit && npm run check:leak && npm run check:links && npm run check:console && npm run check:dates && npm run test:e2e",
     "test:unit": "node --test \"tests/**/*.test.js\" \"tests/**/*.test.mjs\"",
     "check:leak": "node scripts/check-leak.mjs",
     "check:links": "node scripts/check-links.mjs",
     "check:console": "node scripts/check-console-text.mjs",
+    "check:dates": "node scripts/check-dates.mjs",
     "test:e2e": "playwright test"
   },
   "devDependencies": {
