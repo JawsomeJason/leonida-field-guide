@@ -28,6 +28,13 @@ export const DAY = 'rgb(246, 239, 226)';
 /** Tap on a touch project, click otherwise. */
 export const press = (locator) => (test.info().project.use.hasTouch ? locator.tap() : locator.click());
 
+/** Ask, with a console chosen: the full stage list is folded behind "See all N steps"; open it (the player's open or close stays). */
+export const openFold = async (page) => {
+  const row = page.locator('.stage-fold > summary');
+  await row.waitFor();
+  if (!(await page.locator('.stage-fold').evaluate((el) => el.open))) await press(row);
+};
+
 /** Start the page with these saved settings (runs before every load of the page). */
 export const saved = (page, settings) => page.addInitScript((s) => localStorage.setItem('lfg:v1', JSON.stringify(s)), settings);
 

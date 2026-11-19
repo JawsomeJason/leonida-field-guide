@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { ranked, records, press, setDial, setTheme, saved, shown, SCREENS, NIGHT, DAY } from './helpers.mjs';
+import { openFold, ranked, records, press, setDial, setTheme, saved, shown, SCREENS, NIGHT, DAY } from './helpers.mjs';
 
 test.describe('two taps from the home screen', () => {
   for (const a of ranked) {
@@ -216,6 +216,7 @@ for (const [c, label, gone, shown] of [['xbox-x', 'Xbox Series X', /PS5|PlayStat
       expect(text, `${path} names another console`).not.toMatch(gone);
     }
     await page.goto('/');
+    await openFold(page);
     await expect(page.getByRole('checkbox', { name: shown })).toBeVisible();
     await expect(page.getByRole('region', { name: 'Which console do you play on?' })).toBeHidden();
     // The other console's step is a link in the fold, not a tick box.
@@ -240,6 +241,7 @@ test('the checklist lists steps in the order the Ask screen does', async ({ page
   await saved(page, { console: 'ps5' });
   for (const [stage, label] of [['before', 'Before'], ['day-1', 'Day 1']]) {
     await page.goto('/');
+    await openFold(page);
     await press(page.getByRole('radio', { name: label, exact: true }));
     const home = await page.locator(`.stage[data-stage="${stage}"] .todo-list .todo:visible label`).allInnerTexts();
     await page.goto('/checklist/');
