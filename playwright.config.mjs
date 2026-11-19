@@ -14,11 +14,11 @@ export default defineConfig({
   webServer: { command: 'node tests/e2e/serve.mjs', url: `http://127.0.0.1:${port}/`, timeout: 180_000, reuseExistingServer: !process.env.CI },
   // No test is skipped at run time: each project simply owns the files that apply to it.
   projects: [
-    { name: 'phone-320', use: { viewport: { width: 320, height: 640 }, ...touch }, ...only('touch') },
-    { name: 'phone-390', use: { viewport: { width: 390, height: 844 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'a11y', 'search', 'notfound', 'design') },
-    { name: 'tablet-820', use: { viewport: { width: 820, height: 1180 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'search', 'design') },
+    { name: 'phone-320', use: { viewport: { width: 320, height: 640 }, ...touch }, ...only('touch', 'hidden-gate') },
+    { name: 'phone-390', use: { viewport: { width: 390, height: 844 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'a11y', 'search', 'notfound', 'design', 'hidden-gate') },
+    { name: 'tablet-820', use: { viewport: { width: 820, height: 1180 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'search', 'design', 'hidden-gate') },
     { name: 'sync', ...only('sync') },
     { name: 'new-screen', use: { viewport: { width: 390, height: 844 }, ...touch }, ...only('new') },
-    { name: 'desktop-1440', use: { viewport: { width: 1440, height: 900 } }, ...only('behaviour', 'nojs', 'a11y', 'overflow', 'leak', 'search', 'notfound', 'design') },
+    { name: 'desktop-1440', use: { viewport: { width: 1440, height: 900 } }, ...only('behaviour', 'nojs', 'a11y', 'overflow', 'leak', 'search', 'notfound', 'design', 'hidden-gate') },
   ],
 });

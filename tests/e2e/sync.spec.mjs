@@ -208,6 +208,6 @@ test('the About page says what is true about saving and privacy', async ({ page 
   expect(text).toMatch(/spoiler setting, console, theme and stage stay on this device/);
   expect(text).toMatch(/every new device starts with spoilers off/);
   expect(text).toMatch(/no analytics/i);
-  expect(text).toMatch(/one cookie is the sign-in cookie/);
+  expect(text).toMatch(/only cookies are the sign-in cookie/);
   expect(text).not.toMatch(/no cookies|settings are saved on this device only/i);
 });

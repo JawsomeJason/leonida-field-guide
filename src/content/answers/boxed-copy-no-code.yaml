@@ -1,0 +1,16 @@
+id: boxed-copy-no-code
+question: "My sealed box had no code inside. What now?"
+short: "Notebookcheck reported on 14 November that some sealed boxes had no code inside, for more than one console. It did not look widespread. Start with where you bought it, then Rockstar's activation help."
+body: |-
+  - The same report says some buyers who asked Rockstar or a shop for a refund were refused. This is a news report, not a Rockstar statement.
+  - Where to go next is on the missing or rejected code card: [My code or pre-order bonus is missing or rejected](/a/missing-or-rejected-code/).
+topic: bonuses
+stage: hour-1
+tier: none
+consoles: all
+confidence: reported
+sources:
+  - url: "https://www.notebookcheck.net/Some-physical-GTA-6-boxes-are-missing-codes-with-Rockstar-refusing-to-help.1449998.0.html"
+    title: "Some physical GTA 6 boxes are missing codes, with Rockstar refusing to help (Notebookcheck)"
+checked: "2026-11-19"
+keywords: ["empty box", "no code in box", "box has no code", "missing code", "sealed box", "refund"]

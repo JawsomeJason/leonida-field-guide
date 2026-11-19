@@ -1,0 +1,287 @@
+{
+ "_how": "Every record and every reveal, with the tier it holds and why, from the rule in docs/spec.md 'The spoiler dial'. Off: what the game itself teaches every player (menus, tutorials, launch material). Mild: what you would rather find out by playing. Places: where things are. Change a tier and this file together.",
+ "records": [
+  {
+   "id": "aiming-options",
+   "tier": "none",
+   "reason": "a settings menu choice every player is shown"
+  },
+  {
+   "id": "auto-preload-settings",
+   "tier": "none",
+   "reason": "console setting from the publisher and console maker pages"
+  },
+  {
+   "id": "avoid-spoilers",
+   "tier": "none",
+   "reason": "how to mute things; teaches nothing about the game"
+  },
+  {
+   "id": "best-settings-first",
+   "tier": "none",
+   "reason": "settings menus"
+  },
+  {
+   "id": "boxed-copy-no-code",
+   "tier": "none",
+   "reason": "a launch-week purchase problem and where to go; no gameplay"
+  },
+  {
+   "id": "boxed-copy-redeem",
+   "tier": "none",
+   "reason": "how to redeem and download; from the publisher"
+  },
+  {
+   "id": "cloud-gaming-remote-play",
+   "tier": "none",
+   "reason": "how the game can be streamed; from the publisher"
+  },
+  {
+   "id": "cloud-saves-and-backup",
+   "tier": "none",
+   "reason": "saving basics for every player"
+  },
+  {
+   "id": "code-regions",
+   "tier": "none",
+   "reason": "how codes and regions work; from the publisher"
+  },
+  {
+   "id": "code-regions-ps5",
+   "tier": "none",
+   "reason": "how codes and regions work; from the console maker"
+  },
+  {
+   "id": "control-schemes",
+   "tier": "none",
+   "reason": "the controls screen and layouts every player is shown"
+  },
+  {
+   "id": "core-stats",
+   "tier": "none",
+   "reason": "the stats screen names the three stats and what trains them; upkeep consequences are in a Mild detail"
+  },
+  {
+   "id": "crash-steps-ps5",
+   "tier": "none",
+   "reason": "support steps from the console maker"
+  },
+  {
+   "id": "crash-steps-xbox",
+   "tier": "none",
+   "reason": "support steps from the console maker"
+  },
+  {
+   "id": "crashes-and-launch-problems",
+   "tier": "none",
+   "reason": "support steps and status pages"
+  },
+  {
+   "id": "day-one-patches",
+   "tier": "none",
+   "reason": "update sizes shown by console download prompts"
+  },
+  {
+   "id": "early-unlock-trick",
+   "tier": "none",
+   "reason": "only the warning not to do it; how it is done is in a Mild detail"
+  },
+  {
+   "id": "error-codes-and-ownership",
+   "tier": "none",
+   "reason": "support pages from the publisher and console makers"
+  },
+  {
+   "id": "fast-travel",
+   "tier": "none",
+   "reason": "travel options the game shows on its phone and map"
+  },
+  {
+   "id": "frame-rate-modes",
+   "tier": "none",
+   "reason": "display options and performance measured by outlets"
+  },
+  {
+   "id": "free-gta-plus-month",
+   "tier": "none",
+   "reason": "a store offer from the publisher"
+  },
+  {
+   "id": "free-space-ps5",
+   "tier": "none",
+   "reason": "console storage steps from the console maker"
+  },
+  {
+   "id": "free-space-xbox",
+   "tier": "none",
+   "reason": "console storage steps from the console maker"
+  },
+  {
+   "id": "hdr-calibration",
+   "tier": "none",
+   "reason": "display settings"
+  },
+  {
+   "id": "how-to-save",
+   "tier": "none",
+   "reason": "saving basics; the case where saving switches off is in a Mild detail"
+  },
+  {
+   "id": "hz-and-vrr",
+   "tier": "none",
+   "reason": "display settings"
+  },
+  {
+   "id": "install-size-and-preload",
+   "tier": "none",
+   "reason": "download size and space; from the publisher"
+  },
+  {
+   "id": "keep-your-cash",
+   "tier": "none",
+   "reason": "money basics: what the game shows about carried cash and the bank"
+  },
+  {
+   "id": "missing-or-rejected-code",
+   "tier": "none",
+   "reason": "where to go when a code fails; the later-arriving bonus note is in a Mild detail"
+  },
+  {
+   "id": "motion-blur-and-camera-shake",
+   "tier": "none",
+   "reason": "display and camera settings"
+  },
+  {
+   "id": "online-or-co-op",
+   "tier": "none",
+   "reason": "what modes the store page lists"
+  },
+  {
+   "id": "pc-download-scams",
+   "tier": "none",
+   "reason": "safety advice"
+  },
+  {
+   "id": "platforms",
+   "tier": "none",
+   "reason": "which consoles it runs on; from the publisher"
+  },
+  {
+   "id": "pre-order-bonus-pack",
+   "tier": "none",
+   "reason": "what the pre-order includes; from the publisher"
+  },
+  {
+   "id": "printable-map-and-poster",
+   "tier": "places",
+   "reason": "a map of where things are"
+  },
+  {
+   "id": "ps5-download-stuck",
+   "tier": "none",
+   "reason": "support steps from the console maker"
+  },
+  {
+   "id": "ps5-system-update",
+   "tier": "none",
+   "reason": "console setup"
+  },
+  {
+   "id": "ps5-trigger-and-haptics",
+   "tier": "none",
+   "reason": "controller settings"
+  },
+  {
+   "id": "resolution-by-console",
+   "tier": "none",
+   "reason": "display figures"
+  },
+  {
+   "id": "series-s-space",
+   "tier": "none",
+   "reason": "storage figures"
+  },
+  {
+   "id": "social-club-rockstar-account",
+   "tier": "none",
+   "reason": "account setup"
+  },
+  {
+   "id": "standard-vs-ultimate",
+   "tier": "none",
+   "reason": "what each edition is; from the publisher"
+  },
+  {
+   "id": "stolen-cars",
+   "tier": "none",
+   "reason": "only that a phone app lists buyers and car security; the tricks are in a Mild detail"
+  },
+  {
+   "id": "subtitles-and-accessibility",
+   "tier": "none",
+   "reason": "accessibility settings"
+  },
+  {
+   "id": "unlock-time",
+   "tier": "none",
+   "reason": "launch time; from the publisher"
+  },
+  {
+   "id": "unlock-time-us-zones",
+   "tier": "none",
+   "reason": "launch time by US zone; a news report"
+  },
+  {
+   "id": "wanted-and-police",
+   "tier": "none",
+   "reason": "police basics the HUD shows every player; ways to clear it are in a Mild detail"
+  },
+  {
+   "id": "xbox-download-stuck",
+   "tier": "none",
+   "reason": "support steps from the console maker"
+  },
+  {
+   "id": "xbox-says-you-dont-own-it",
+   "tier": "none",
+   "reason": "support steps from the console maker"
+  },
+  {
+   "id": "xbox-system-update",
+   "tier": "none",
+   "reason": "console setup"
+  }
+ ],
+ "reveals": [
+  {
+   "id": "core-stats",
+   "tier": "mild",
+   "reason": "what happens to boosts and gains over time: effects the game does not explain up front"
+  },
+  {
+   "id": "early-unlock-trick",
+   "tier": "mild",
+   "reason": "how the region workaround is done: a trick"
+  },
+  {
+   "id": "how-to-save",
+   "tier": "mild",
+   "reason": "what switches saving off: an effect the game does not explain up front"
+  },
+  {
+   "id": "missing-or-rejected-code",
+   "tier": "mild",
+   "reason": "a bonus that only arrives later in play: what unlocks later"
+  },
+  {
+   "id": "stolen-cars",
+   "tier": "mild",
+   "reason": "what expensive cars do to the police and buyers: an effect the game does not explain up front"
+  },
+  {
+   "id": "wanted-and-police",
+   "tier": "mild",
+   "reason": "ways to clear what the police remember: a trick"
+  }
+ ]
+}

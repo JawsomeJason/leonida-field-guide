@@ -1,6 +1,6 @@
 // Vercel Routing Middleware: the password gate in front of every page and asset. Thin wrapper over src/lib/gate.js.
 import { next } from '@vercel/functions';
-import { decide, loginPage } from './src/lib/gate.js';
+import { decide, dialRule, loginPage } from './src/lib/gate.js';
 
 declare const process: { env: Record<string, string | undefined> };
 
@@ -39,8 +39,12 @@ export default async function middleware(request: Request) {
   });
 
   switch (d.action) {
-    case 'allow':
+    case 'allow': {
+      // Signed in. Now the spoiler dial: a hidden-tier address below the player's level goes to its gate page.
+      const rule = dialRule({ path: url.pathname, search: url.search, cookie: request.headers.get('cookie'), revealHeader: request.headers.get('x-lfg-reveal') });
+      if (rule.action === 'redirect') return new Response(null, { status: 302, headers: { 'cache-control': 'no-store', location: rule.location, 'x-lfg-redirect': 'dial' } });
       return next();
+    }
     case 'set-cookie-redirect':
       return new Response(null, { status: 303, headers: { ...headers, location: d.location, 'set-cookie': d.setCookie } });
     case 'refuse':

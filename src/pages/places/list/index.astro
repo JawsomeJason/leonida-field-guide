@@ -1,0 +1,9 @@
+---
+// The gate address of the no-script places list: no record text here. See HiddenGuard.astro.
+import Base from '../../../layouts/Base.astro';
+import HiddenGuard from '../../../components/HiddenGuard.astro';
+---
+
+<Base title="Hidden page" description="A page that stays closed until the spoiler setting allows it.">
+  <HiddenGuard tier="places" show="/places/list/show/" />
+</Base>

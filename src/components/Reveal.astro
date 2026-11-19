@@ -1,6 +1,6 @@
 ---
-// "1 mild detail hidden. Show" for a none answer. A plain link to the detail's own page; reveal.js
-// upgrades it to fetch the fragment in place. Nothing hidden is in this markup.
+// "1 mild detail hidden. Show" for a none answer. A plain link to the detail's explicit page (with the reveal marker
+// the server needs below the tier); reveal.js upgrades it to fetch the fragment in place. Nothing hidden is in this markup.
 import { revealTiers, revealsOf, type AnswerData } from '../lib/answers';
 import './Reveal.css';
 
@@ -16,7 +16,7 @@ const boxes = revealTiers(answer).map((tier) => {
 
 {boxes.map(({ tier, label }) => (
   <div class="reveal" data-reveal data-tier={tier}>
-    <a class="reveal__btn" href={`/${tier}/${answer.id}/`} data-src={`/h/${tier}/a/${answer.id}/`}>{label}</a>
+    <a class="reveal__btn" href={`/${tier}/${answer.id}/show/?reveal=1`} data-src={`/h/${tier}/a/${answer.id}/`}>{label}</a>
     <div class="reveal__out" tabindex="-1" hidden></div>
   </div>
 ))}

@@ -32,6 +32,7 @@ const answers = defineCollection({
       sources: z.array(z.strictObject({ url: z.url(), title: z.string().min(1) })).min(1),
       checked: z.iso.date(),
       rank: z.number().int().positive().optional(),
+      order: z.number().int().positive().optional(), // to-dos in a stage: lower first, by what depends on what
       todo: z.string().min(1).optional(),
       // Words players use that the answer text does not (quicksave, instal). Search only; never shown on a page.
       keywords: z.array(z.string().min(1).max(40)).max(20).optional(),
