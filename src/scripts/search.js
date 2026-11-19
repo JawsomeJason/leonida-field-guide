@@ -15,6 +15,8 @@ const input = document.querySelector('#q');
 const status = document.querySelector('#q-status');
 const list = document.querySelector('#q-results');
 const where = document.querySelector('#q-where');
+const maybe = document.querySelector('#q-related');
+const more = document.querySelector('#q-more');
 
 const cache = new Map();
 function load(tier) {
@@ -55,7 +57,10 @@ function link(href, text) {
   return li;
 }
 
+const FIRST = 5; // the list is cut here until the player asks for more
 let run = 0;
+let asked = ''; // the query the list was last built for, so a new question starts cut again
+let all = false;
 async function update() {
   const n = ++run;
   const query = input.value;
@@ -63,17 +68,28 @@ async function update() {
   const records = (await Promise.all((allowed[dial] ?? allowed.off).map(load))).flat();
   if (n !== run) return; // a newer keystroke is already running
   // An answer for other consoles stays out of the way, like the cards do.
-  const { found, closest } = search(records.filter((r) => !Array.isArray(r.consoles) || r.consoles.includes(owned)), query);
-  const asked = !!query.trim();
-  const none = asked && !found.length;
-  list.replaceChildren(...(none ? closest.map(row) : found.map(row)), ...(none ? [link('/topics/', 'Browse all topics')] : []));
-  list.hidden = !asked;
-  where.hidden = !(asked && asksWhere(query) && (dial ?? 'off') === 'off'); // places are only hidden at Off
+  const { found, related } = search(records.filter((r) => !Array.isArray(r.consoles) || r.consoles.includes(owned)), query);
+  if (query !== asked) all = false;
+  asked = query;
+  const typed = !!query.trim();
+  const none = typed && !found.length;
+  const cut = typed && !all && found.length > FIRST;
+  list.replaceChildren(...(none ? related : cut ? found.slice(0, FIRST) : found).map(row), ...(none ? [link('/topics/', 'Browse all topics')] : []));
+  list.hidden = !typed;
+  maybe.hidden = !none;
+  more.hidden = !cut;
+  where.hidden = !(typed && asksWhere(query) && (dial ?? 'off') === 'off'); // places are only hidden at Off
   // The places note says it all: no count above it.
-  status.textContent = !asked || !where.hidden ? '' : found.length ? `${found.length} ${found.length === 1 ? 'answer' : 'answers'}` : 'Nothing matches those words. These are the closest answers.';
+  status.toggleAttribute('data-floor', none && where.hidden);
+  status.textContent = !typed || !where.hidden ? '' : found.length ? `${found.length} ${found.length === 1 ? 'answer' : 'answers'}` : 'This guide has no answer for that yet.';
 }
 
 input.addEventListener('input', update);
+more.addEventListener('click', async () => {
+  all = true;
+  await update();
+  list.children[FIRST]?.querySelector('a')?.focus(); // focus lands on the first new answer, not on a button that has gone
+});
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   input.blur(); // closes the keyboard so the results are in view

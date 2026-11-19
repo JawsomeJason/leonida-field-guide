@@ -30,7 +30,9 @@ import OutsideLink from './OutsideLink.astro';
       <li><OutsideLink href="https://fullsweepmap.com" title="FullSweep" /></li>
     </ul>
   </div>
+  <h2 id="q-related" class="ask-related" hidden>Possibly related</h2>
   <ul id="q-results" class="tap-list ask-rows" hidden></ul>
+  <button id="q-more" type="button" class="ask-more" hidden>Show more</button>
 </search>
 
 {/* No-script floor: every default answer, as links. With script, the search results replace it. */}
@@ -64,8 +66,23 @@ import OutsideLink from './OutsideLink.astro';
   .ask-search input:focus-visible { outline-offset: 3px; border-color: var(--accent); }
   .ask-search input::placeholder { color: var(--muted); opacity: 1; }
   .ask-status { min-block-size: 1.5rem; margin: var(--space-2) 0 var(--space-1); color: var(--muted); font-size: var(--text-small); }
+  .ask-status[data-floor] { color: var(--text); font: 600 var(--text-body) / 1.4 var(--font-text); } /* the no-answer line is the message, not a footnote */
   .ask-search ul { margin-block-end: var(--space-5); }
   .ask-search [hidden] { display: none; } /* .tap-list's display would otherwise beat the hidden attribute */
+  .ask-related { margin: var(--space-3) 0 var(--space-1); font: var(--font-label); color: var(--muted); } /* quiet: it says these are not the answer */
+  .ask-more {
+    min-block-size: var(--tap);
+    padding-inline: var(--space-5);
+    margin-block: 0 var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--accent);
+    font: 600 var(--text-body) / 1 var(--font-text);
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .ask-more:active { scale: var(--press-scale-small); background: var(--press); }
   #q-where p { margin: 0 0 var(--space-2); }
 
   .tap-list.ask-rows a { flex-direction: column; align-items: flex-start; justify-content: center; }
