@@ -2,7 +2,7 @@ id: online-or-co-op
 question: "Is there online or co-op at launch?"
 short: "No online or co-op mode is listed for launch. The game is described as a single-player experience."
 body: |-
-  - We read this on a console store page, which calls the game "a single-player experience".
+  - We read two console store pages. One calls the game "a single-player experience"; the other lists no online or co-op feature.
   - Rockstar's service status page lists its online services but has no separate row for this game.
   - If an online mode is announced, this card will change.
 topic: good-to-know
@@ -13,7 +13,11 @@ confidence: official
 sources:
   - url: "https://www.xbox.com/en-us/games/grand-theft-auto-vi"
     title: "Grand Theft Auto VI (Xbox)"
+    console: [xbox-x, xbox-s]
   - url: "https://support.rockstargames.com/servicestatus"
     title: "Service Status (Rockstar Support)"
+  - url: "https://www.playstation.com/en-us/games/grand-theft-auto-vi/"
+    title: "Grand Theft Auto VI on PS5 (PlayStation Store)"
+    console: ps5
 checked: "2026-11-19"
 rank: 4

@@ -19,10 +19,13 @@ confidence: official
 sources:
   - url: "https://www.playstation.com/en-us/support/games/game-freeze-crash/"
     title: "PlayStation game freezes or crashes (PlayStation Support)"
+    console: ps5
   - url: "https://www.playstation.com/en-us/support/hardware/safe-mode-playstation/"
     title: "How to use Safe Mode on PS5 consoles (PlayStation Support)"
+    console: ps5
   - url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
     title: "How to manage storage space on your PS5 console (PlayStation Support)"
+    console: ps5
   - url: "https://support.rockstargames.com/request"
     title: "Submit a Request (Rockstar Support)"
 checked: "2026-11-19"

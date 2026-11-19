@@ -22,8 +22,10 @@ sources:
     title: "Submit a Request (Rockstar Support)"
   - url: "https://www.playstation.com/en-us/support/games/game-freeze-crash/"
     title: "PlayStation game freezes or crashes (PlayStation Support)"
+    console: ps5
   - url: "https://support.xbox.com/en-US/help/games-apps/troubleshooting/game-issues-solution"
     title: "Troubleshoot game issues on Xbox (Xbox Support)"
+    console: [xbox-x, xbox-s]
 checked: "2026-11-19"
 rank: 2
 keywords: ["crash", "crashing", "freezing", "wont start", "game crashes"]

@@ -3,7 +3,7 @@ question: "Make room: how do I check free space and clear space on my PS5?"
 short: "Go to Settings, then Storage to see your free space. To make room, delete games you are not playing, or move games to an M.2 SSD or a USB extended storage drive."
 body: |-
   - To see one game's size, open it in your Game Library, choose More, then View Product.
-  - To delete: Settings, Storage, Console Storage, Games and Apps. Pick the data and choose Delete. You can download purchased games again from your Game Library, so nothing is lost.
+  - To delete: Settings, Storage, Console Storage, Games and Apps. Pick the data and choose Delete. You can download purchased games again from your Game Library. For saved data and cash, see [Will I lose anything?](/a/will-i-lose-anything/)
   - Some games show Customize. It lets you delete parts of a game you do not need.
   - An M.2 SSD (a fast drive that fits inside the PS5) can run PS5 games. A USB extended storage drive can only park them: move a game back to the console to play it.
   - Saved data: PlayStation Plus members can upload it to cloud storage.
@@ -15,7 +15,9 @@ confidence: official
 sources:
   - url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
     title: "How to manage storage space on your PS5 console (PlayStation Support)"
+    console: ps5
   - url: "https://www.playstation.com/support/games/troubleshoot-downloaded-playstation-game/"
     title: "How to troubleshoot game downloads from PlayStation Store (PlayStation Support)"
+    console: ps5
 checked: "2026-11-19"
 keywords: ["storage full", "delete games", "free up space"]
