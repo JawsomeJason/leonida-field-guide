@@ -9,4 +9,5 @@ export const FIXTURE_QUERIES = [
   ['will it fit on my Series S', 'find-install'],
   ['how much space on 512GB drive', 'find-install'],
   ['my code does not work', 'find-code'],
+  ['how do i svae my game', 'find-save'], // two swapped letters are one typo
 ];

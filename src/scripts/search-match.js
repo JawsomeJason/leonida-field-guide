@@ -14,7 +14,7 @@ const STOP = new Set(
 );
 // Words so common in questions that matching one alone is no answer (mode, change, work): they rank, but never make a confident answer by themselves.
 const GENERIC = new Set('mode change work problem issue help time new open first last tonight today now console version before after'.split(' ').map((w) => stem(w)));
-const SHORT_OK = new Set(['pc', 'gb', 'tb', 'hz', 'tv', 'hd']); // real two-letter terms; every other meaningful word has three letters or more
+const SHORT_OK = new Set(['pc', 'gb', 'tb', 'hz', 'tv', 'hd']); // real two-letter terms, and a number of two digits or more (60, 07); every other meaningful word has three letters or more
 
 // Words players use for the same thing share one name. A group's own name is a member too.
 const SYN = Object.fromEntries(
@@ -37,7 +37,7 @@ const split = (text) =>
     .replace(/['’]/g, '')
     .replace(/(\d)(\p{L})/gu, '$1 $2') // 512gb is 512 and gb
     .split(SPLIT)
-    .filter((t) => t && (t.length > 2 || SHORT_OK.has(t)) && !STOP.has(t));
+    .filter((t) => t && (t.length > 2 || SHORT_OK.has(t) || (t.length > 1 && /\d/.test(t))) && !STOP.has(t));
 
 function stem(w) {
   let s = w;
