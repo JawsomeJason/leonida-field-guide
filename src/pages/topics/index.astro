@@ -71,14 +71,15 @@ const chevron = { viewBox: '0 0 24 24', width: 20, height: 20 };
 
 <style>
   /* Topic rows: plain (secondary), a hairline between them, the name and its count on one line. */
-  .tiles { list-style: none; margin: 0; padding: 0; display: grid; max-inline-size: 40rem; }
-  .tiles li { border-block-end: 1px solid var(--line); }
+  .tiles { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--gap-tap); max-inline-size: 40rem; }
+  .tiles li { position: relative; }
+  .tiles li:not(:last-child, :has(.tile--places))::after { content: ''; position: absolute; inset-inline: 0; inset-block-end: calc(var(--gap-tap) / -2 - 0.5px); border-block-end: 1px solid var(--line); pointer-events: none; }
   /* A count, or a whole row, exists once per distinct state; the dial picks the one that shows. No script: Off. */
   .tiles [data-levels] { display: none; }
   :global(html:not([data-dial='places'], [data-dial='mild'])) .tiles [data-levels~='off'],
   :global(html[data-dial='places']) .tiles [data-levels~='places'],
   :global(html[data-dial='mild']) .tiles [data-levels~='mild'] { display: revert; }
-  /* Every row is one tap target, 8px clear of the next (margin, with the hairline in the middle). */
+  /* Every row is one tap target, 8px clear of the next (the list's own gap, with the hairline in the middle). */
   .tile {
     display: flex;
     flex-wrap: wrap;
@@ -86,7 +87,6 @@ const chevron = { viewBox: '0 0 24 24', width: 20, height: 20 };
     justify-content: space-between;
     gap: var(--space-1) var(--space-3);
     min-block-size: var(--tap);
-    margin-block: calc(var(--gap-tap) / 2);
     margin-inline: calc(var(--space-2) * -1);
     padding: var(--space-2);
     color: var(--text);
@@ -103,7 +103,7 @@ const chevron = { viewBox: '0 0 24 24', width: 20, height: 20 };
     .tiles li:has(.tile--places) { grid-column: 1 / -1; }
   }
   /* Dashed edge means "hidden until you ask", here and on the Show controls. It is the one topic row with an outline. */
-  .tiles li:has(.tile--places) { border-block-end: 0; margin-block-start: var(--space-3); }
+  .tiles li:has(.tile--places) { margin-block-start: var(--space-3); }
   .tile--places { margin-inline: 0; padding-inline: var(--space-4); border: 1px dashed var(--muted); border-radius: var(--radius); }
   .open { display: none; }
   :global(html:is([data-dial='places'], [data-dial='mild'])) .tile--places { border-style: solid; border-color: var(--line); }

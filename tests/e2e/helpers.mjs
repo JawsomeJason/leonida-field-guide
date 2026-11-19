@@ -144,6 +144,28 @@ export async function measure(page) {
         if (apart < 7) problems.push(`${a.name} and ${b.name} are ${Math.max(Math.round(apart), 0)}px apart`);
       }
     });
+    // Neighbours in one list or stack (fix round 6): the gap between two neighbouring targets must be real dead space. Take the midpoint of
+    // the gap between their hit areas and ask what a tap there reaches (elementFromPoint, the same as a thumb): it must be neither of them.
+    // The 8px used to sit inside each row's label as margin, so rows looked as if they touched and the check above (which measures the
+    // hit areas of the tappable points) could only say "8px". Now the space is the list's own gap and this check holds it, at the middle.
+    const host = (el) => (el.closest('li') ?? el.labels?.[0] ?? el).parentElement;
+    const ctl = new Map(controls.map((el, i) => [el, areas[i]]));
+    const groups = new Map();
+    for (const [el, a] of ctl) if (!a.covered) groups.set(host(el), [...(groups.get(host(el)) ?? []), { el, a }]);
+    for (const members of groups.values()) {
+      members.forEach(({ el: ea, a }, i) => {
+        for (const { el: eb, a: b } of members.slice(i + 1)) {
+          if (a.layer !== b.layer) continue;
+          const ox0 = Math.max(a.x, b.x), ox1 = Math.min(a.x + a.w, b.x + b.w), oy0 = Math.max(a.y, b.y), oy1 = Math.min(a.y + a.h, b.y + b.h);
+          let mid = null;
+          if (ox1 > ox0 && oy1 <= oy0) mid = [(ox0 + ox1) / 2, (Math.min(a.y + a.h, b.y + b.h) + Math.max(a.y, b.y)) / 2];
+          else if (oy1 > oy0 && ox1 <= ox0) mid = [(Math.min(a.x + a.w, b.x + b.w) + Math.max(a.x, b.x)) / 2, (oy0 + oy1) / 2];
+          if (!mid) continue;
+          const hit = activates(...mid);
+          if (hit === ea || hit === eb) problems.push(`${a.name} and ${b.name} have no dead space between them: a tap in the middle of their gap activates one`);
+        }
+      });
+    }
     const live = areas.filter((a) => !a.covered);
     const small = live.reduce((m, a) => (Math.min(a.w, a.h) < Math.min(m.w, m.h) ? a : m), live[0]);
     const bare = live.filter((a) => a.own).reduce((m, a) => (!m || Math.min(a.own.w, a.own.h) < Math.min(m.own.w, m.own.h) ? a : m), null);

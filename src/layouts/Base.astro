@@ -23,7 +23,8 @@ const nav = [
   { href: '/checklist/', label: 'Checklist' },
   { href: '/new/', label: 'New' },
 ];
-const current = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+// The tab is the section: Ask holds /, /a/** and /search; Topics /topics/**; Checklist; New. Answers are reached from Ask, so Ask stays lit there.
+const current = (href: string) => (href === '/' ? /^\/(a\/|search|$)/.test(path) : path.startsWith(href));
 
 const dial = [
   ['off', 'Off', 'the basics: setup, settings, controls, saving, fixes'],
