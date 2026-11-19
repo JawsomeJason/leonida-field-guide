@@ -58,6 +58,45 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
           if (v && v !== 'system') h.dataset[k] = v;
         }
       } catch (e) {}
+      // A tap on a setting control, or on a tick box, before the bundled scripts have arrived (a slow phone waits seconds): save and show it here.
+      // settings.js removes these listeners when it loads, re-applies the saved state and writes the early ticks.
+      // shortcut: a pre-v2 saved shape is left for settings.js to convert (that tap shows, but is not stored), drop once no device holds one.
+      (function () {
+        var ticks = (window.lfgTicks = {});
+        function put(k, v) {
+          try {
+            var s = JSON.parse(localStorage.getItem('lfg:v1')) || { v: 2, settings: {}, items: {} }, was = s.settings && s.settings[k];
+            if (s.v === 2) {
+              s.settings[k] = { value: v, at: Math.max(Date.now(), (was ? was.at : -1) + 1) };
+              localStorage.setItem('lfg:v1', JSON.stringify(s));
+            }
+          } catch (e) {}
+          if (k === 'theme' && v === 'system') delete document.documentElement.dataset.theme;
+          else if (k !== 'stage') document.documentElement.dataset[k] = v;
+        }
+        function click(e) {
+          var b = e.target.closest && e.target.closest('[data-set]');
+          if (!b || e.button || e.metaKey || e.ctrlKey || e.shiftKey) return;
+          e.preventDefault();
+          put(b.dataset.set, b.dataset.value);
+          var to = document.querySelector(b.dataset.focus);
+          if (to) to.focus();
+        }
+        function change(e) {
+          var t = e.target;
+          if (t.matches('input[data-setting]')) {
+            put(t.name, t.value);
+            var sheet = t.closest('#settings');
+            if (sheet && sheet.hidePopover) sheet.hidePopover();
+          } else if (t.matches('input[data-todo]')) ticks[t.dataset.todo] = t.checked;
+        }
+        addEventListener('click', click);
+        addEventListener('change', change);
+        window.lfgEarly = function () {
+          removeEventListener('click', click);
+          removeEventListener('change', change);
+        };
+      })();
     </script>
   </head>
   <body>

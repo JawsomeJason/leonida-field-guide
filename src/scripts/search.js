@@ -113,3 +113,4 @@ form.addEventListener('submit', (e) => {
 });
 // Registered after settings.js, so the dial has already been saved when this runs.
 addEventListener('change', (e) => e.target.matches?.('input[name="dial"]') && update());
+if (input.value) update(); // typed before this script arrived: answer it without another keystroke
