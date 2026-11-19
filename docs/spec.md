@@ -40,7 +40,7 @@ type Answer = {
   consoles: Console[] | 'all';
   byConsole?: Partial<Record<Console, string>>;   // replaces `short` for that console
   confidence: 'official' | 'reported' | 'community';
-  sources: { url: string; title: string }[];      // at least one
+  sources: { url: string; title: string; console?: Console | Console[] }[];   // at least one; `console` on a source made for one console family only (see "Source console")
   checked: string;               // ISO date the sources were last checked
   rank?: number;                 // 1 = most asked; drives "Most asked"
   order?: number;                // to-dos only: lower first within a stage, by what depends on what (see "Console", One order)
@@ -57,6 +57,7 @@ Rules the schema or the checks enforce:
 - `topic: 'places'` implies `tier: 'places'`.
 - **Confidence labels.** `official`: the claim was read on rockstargames.com, support.rockstargames.com, take2games.com, playstation.com or xbox.com. `reported`: news, guides and creators, and any claim we could not read on an official page. `community`: forums and player posts only; a news site or a console maker is never `community`. A page that returned no text is never a source for a claim.
 - **Console text.** `consoles: all` text (question, `short` where there is no `byConsole`, `body`, `todo`, `reveal`) names no console and uses no console's button names, except as the tokens `{cross}` `{circle}` `{square}` `{triangle}` `{l1}` `{r1}` `{l2}` `{r2}` `{l3}` `{r3}` `{options}` `{create}`. A fact that differs by console goes in `byConsole`, or in records limited with `consoles: [...]`. `scripts/check-console-text.mjs` (`npm run check:console`) reads what each console would show and fails on another console's name or buttons.
+- **Source console.** A source may carry `console`: `ps5`, `xbox-x`, `xbox-s` or a list of them, set when the page is for those consoles only. No `console` means the source applies to every console. Every source on a playstation.com host is `ps5`; every source on an xbox.com host (support pages and the store listing) is `xbox-x` and `xbox-s`, or just the one whose console page it is. An answer page shows the sources that apply to the chosen console and folds the others under "Other consoles". A record that is `official` for a console has at least one source on an official host that applies to that console. `tests/content/sources.test.mjs` enforces all three.
 - **Units.** Sizes are in GB, never bytes or GiB. Jargon is put in plain words where it first appears, for example pre-load (the download before launch) and Safe Mode (a start-up menu with repair tools).
 
 ## The spoiler dial
