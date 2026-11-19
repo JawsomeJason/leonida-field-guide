@@ -1,0 +1,16 @@
+id: motion-blur-and-camera-shake
+question: "How do I turn off motion blur and camera shake?"
+short: "Settings, Display: drag Motion Blur Strength to 0. Settings, Camera: switch Camera Shake off. Both help if fast camera moves make you queasy at 30 fps."
+body: |-
+  - KeenGamer says blur smears the picture on fast turns at a locked 30 fps.
+  - It also suggests turning off your TV's motion smoothing.
+  - Kill cam and crash cam options sit with the camera settings too.
+topic: settings
+stage: hour-1
+tier: none
+consoles: all
+confidence: reported
+sources:
+  - url: "https://www.keengamer.com/articles/guides/best-gta-6-settings-to-change-first-motion-blur-aim-and-ps5-pro/"
+    title: "Best GTA 6 Settings to Change First: Motion Blur, Aim, and PS5 Pro (KeenGamer)"
+checked: "2026-11-19"
