@@ -36,10 +36,10 @@ const outside = [
     <h2>Where facts come from</h2>
     <p>
       Every answer links to its sources and shows the date we last checked them. We restate facts in our
-      own words. Each answer also carries a confidence level:
+      own words. Each answer also says how sure we are:
     </p>
     <ul>
-      {Object.values(confidence).map((c) => <li><strong>{c.label}.</strong> {c.text}</li>)}
+      {Object.values(confidence).map((c) => <li><strong>{c.label}, {c.short}.</strong> {c.text}</li>)}
     </ul>
     <p>If we could not find a source, there is no answer. We do not guess.</p>
 

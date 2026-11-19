@@ -33,9 +33,13 @@
 .answer__q { margin-block-end: var(--space-3); font-size: var(--text-h2); font-weight: 500; color: var(--muted); line-height: 1.3; }
 .answer__a {
   margin: var(--space-4) 0;
-  padding-inline-start: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--line);
   border-inline-start: 4px solid var(--action);
-  max-inline-size: 42ch;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow); /* the one raised thing on this screen */
+  max-inline-size: 44ch;
   font-size: calc(var(--text-h1) * 0.85);
   font-weight: 600;
   line-height: 1.35;
@@ -66,21 +70,15 @@
 .facts > div { display: grid; gap: var(--space-1) var(--space-4); }
 .facts dt { color: var(--muted); font: var(--font-label); }
 .facts dd { margin: 0; }
-/* The confidence label is a native disclosure: tap it and the plain-word meaning opens below. The whole row is the target. */
+/* How sure we are: the label is plain text, and the meaning is a native disclosure, a plain 48px row in the link colour. */
+.trust__now { margin: 0; }
 .trust summary {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
   min-block-size: var(--tap);
-  padding-inline: var(--space-4);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow);
+  color: var(--accent);
   cursor: pointer;
 }
-.trust summary span { color: var(--muted); font: var(--font-label); }
-.trust[open] summary { margin-block-end: var(--gap-tap); }
 .trust p { margin: 0; padding-inline-start: var(--space-4); border-inline-start: 3px solid var(--line); }
 @container (min-width: 34rem) {
   .facts > div { grid-template-columns: 8rem minmax(0, 1fr); }
@@ -88,7 +86,7 @@
 
 /* Desktop list column: the topic's other answers. */
 .list__title { margin: 0 0 var(--space-3); color: var(--muted); font: var(--font-label); }
-.tap-list a[aria-current='page'] { border-color: var(--accent); background: var(--wash); }
+.tap-list a[aria-current='page'] { border-inline-start-color: var(--accent); background: var(--wash); }
 
 /* Cards loaded in by the dial sit apart from the default ones. */
 [data-hidden-list]:not(:empty) { margin-block-start: var(--gap-tap); outline: none; }

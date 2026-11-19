@@ -14,7 +14,7 @@ const top = [...Astro.props.answers]
   top.length > 0 && (
     <section class="most-asked" aria-labelledby="most-title">
       <h2 id="most-title">Most asked</h2>
-      <ul class="tap-list most-asked__list">
+      <ul class="tap-list tap-list--cards most-asked__list">
         {top.map((a) => (
           <li data-only={onlyOf(a.consoles)}>
             <a href={`/a/${a.id}/`}>{a.question}</a>

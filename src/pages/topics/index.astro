@@ -12,7 +12,7 @@ const count = (id: string) => none.filter((a) => a.topic === id).length;
   <h1>Topics</h1>
   <ul class="tiles">
     {topics.map((t) => (
-      <li class:list={{ wide: t.id === 'places' }}>
+      <li>
         <a class:list={['tile', { 'tile--places': t.id === 'places' }]} href={`/topics/${t.id}/`}>
           <span class="tile__name">{t.label}</span>
           {t.id === 'places' ? (
@@ -30,26 +30,29 @@ const count = (id: string) => none.filter((a) => a.topic === id).length;
 </Base>
 
 <style>
-  .tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr)); gap: var(--gap-tap); max-inline-size: 64rem; }
-  /* Every tile is one tap target. */
+  /* Topic rows: plain (secondary), a hairline between them, the name and its count on one line. */
+  .tiles { list-style: none; margin: 0; padding: 0; display: grid; max-inline-size: 40rem; }
+  .tiles li { border-block-end: 1px solid var(--line); }
+  /* Every row is one tap target, 8px clear of the next (margin, with the hairline in the middle). */
   .tile {
-    display: grid;
-    align-content: center;
-    gap: var(--space-1);
-    min-block-size: calc(var(--tap) * 1.5);
-    padding: var(--space-3) var(--space-4);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: var(--surface);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-3);
+    min-block-size: var(--tap);
+    margin-block: calc(var(--gap-tap) / 2);
+    margin-inline: calc(var(--space-2) * -1);
+    padding: var(--space-2);
     color: var(--text);
     text-decoration: none;
     touch-action: manipulation;
   }
   .tile__name { font-weight: 650; line-height: 1.3; }
   .tile__meta { color: var(--muted); font: var(--font-label); }
-  /* Dashed edge means "hidden until you ask", here and on the Show controls. */
-  .wide { grid-column: 1 / -1; }
-  .tile--places { border-style: dashed; border-color: var(--muted); }
+  /* Dashed edge means "hidden until you ask", here and on the Show controls. It is the one topic row with an outline. */
+  .tiles li:has(.tile--places) { border-block-end: 0; margin-block-start: var(--space-3); }
+  .tile--places { margin-inline: 0; padding-inline: var(--space-4); border: 1px dashed var(--muted); border-radius: var(--radius); }
   .open { display: none; }
   :global(html:is([data-dial='places'], [data-dial='mild'])) .tile--places { border-style: solid; border-color: var(--line); }
   :global(html:is([data-dial='places'], [data-dial='mild'])) .locked { display: none; }
