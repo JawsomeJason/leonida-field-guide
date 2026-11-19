@@ -51,7 +51,7 @@ import OutsideLink from './OutsideLink.astro';
     inline-size: 100%;
     min-block-size: 3.5rem;
     padding: var(--space-2) var(--space-4);
-    border: 2px solid var(--accent);
+    border: 2px solid var(--muted);
     border-radius: var(--radius);
     background: var(--surface);
     color: var(--text);
@@ -61,7 +61,7 @@ import OutsideLink from './OutsideLink.astro';
     appearance: none;
     box-shadow: var(--shadow);
   }
-  .ask-search input:focus-visible { outline-offset: 3px; }
+  .ask-search input:focus-visible { outline-offset: 3px; border-color: var(--accent); }
   .ask-search input::placeholder { color: var(--muted); opacity: 1; }
   .ask-status { min-block-size: 1.5rem; margin: var(--space-2) 0 var(--space-1); color: var(--muted); font-size: var(--text-small); }
   .ask-search ul { margin-block-end: var(--space-5); }

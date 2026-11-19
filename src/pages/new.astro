@@ -42,12 +42,10 @@ const problems = entries.flatMap((e) => e.problems);
     padding: var(--space-2) var(--space-4);
     border: 1px solid var(--accent);
     border-radius: var(--radius);
-    font-family: var(--font-mono);
-    font-size: var(--text-small);
+    font: var(--font-label);
   }
   .entry { margin-block-start: var(--space-5); max-inline-size: 40rem; }
   .entry h2 { margin-block: 0 var(--space-2); }
-  .entry time { font-family: var(--font-mono); }
   .entry h3 { margin-block: var(--space-3) var(--space-1); font-size: var(--text-body); color: var(--muted); }
   .entry ul:not(.tap-list) { margin-block: 0; padding-inline-start: var(--space-5); display: grid; gap: var(--space-2); }
   .fix { display: block; }

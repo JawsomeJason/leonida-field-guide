@@ -7,32 +7,35 @@
   --muted: #55666b;
   --accent: #0b6f75;
   --accent-2: #c2401f;
+  --action: #0b6f75; /* filled buttons, rules: the call to act (day: the same teal as --accent) */
   --shadow: 0 1px 2px rgb(28 42 46 / 0.08), 0 2px 8px rgb(28 42 46 / 0.05);
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='day']) {
-    --bg: #0b1020;
-    --surface: #141b34;
-    --line: #2a3460;
-    --text: #eef1ff;
-    --muted: #a3acd0;
+    --bg: #181320;
+    --surface: #231c2a;
+    --line: #43364a;
+    --text: #f7efe6;
+    --muted: #c5b6bd;
     --accent: #3ee6e0;
     --accent-2: #ff6f91;
+    --action: #f0c48a;
     --shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
     color-scheme: dark;
   }
 }
 
 :root[data-theme='night'] {
-  --bg: #0b1020;
-  --surface: #141b34;
-  --line: #2a3460;
-  --text: #eef1ff;
-  --muted: #a3acd0;
+  --bg: #181320;
+  --surface: #231c2a;
+  --line: #43364a;
+  --text: #f7efe6;
+  --muted: #c5b6bd;
   --accent: #3ee6e0;
   --accent-2: #ff6f91;
+  --action: #f0c48a;
   --shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
   color-scheme: dark;
 }
@@ -48,7 +51,8 @@
   --space-7: 3rem;
 
   --font-text: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; /* values a player copies: <kbd>, <code>, the progress code */
+  --font-label: 600 var(--text-small) / 1.3 var(--font-text); /* small labels and notices: sans, never mono */
 
   --text-body: 1.0625rem; /* 17px at the default size */
   --text-small: 0.9375rem;

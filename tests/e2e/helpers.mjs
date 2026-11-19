@@ -8,7 +8,7 @@ export const ranked = records.filter((a) => a.tier === 'none' && a.rank <= 20).s
 /** One screen of every kind, as paths of the fixture build. */
 export const SCREENS = ['/', '/topics/', '/topics/settings/', '/a/sample-02/', '/checklist/', '/new/', '/places/', '/about/'];
 
-export const NIGHT = 'rgb(11, 16, 32)';
+export const NIGHT = 'rgb(24, 19, 32)';
 export const DAY = 'rgb(246, 239, 226)';
 
 /** Tap on a touch project, click otherwise. */
