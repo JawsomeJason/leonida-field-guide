@@ -28,10 +28,10 @@ kbd {
   text-align: center;
   white-space: nowrap;
 }
-kbd .xb { display: none; }
-/* Nothing chosen yet: both names, PlayStation first. */
-html:not([data-console]) kbd .xb { display: inline; }
-html:not([data-console]) kbd .ps::after { content: '/'; padding-inline: 0.15em; color: var(--muted); }
+kbd .xb, kbd .sep { display: none; }
+/* Nothing chosen yet: both names, PlayStation first, with a spaced slash that is real text ("L3 / LS"). */
+html:not([data-console]) kbd :is(.xb, .sep) { display: inline; }
+html:not([data-console]) kbd .sep { color: var(--muted); }
 html:is([data-console='xbox-x'], [data-console='xbox-s']) kbd {
   & .ps { display: none; }
   & .xb { display: inline; }

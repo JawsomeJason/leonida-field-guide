@@ -29,26 +29,42 @@ html[data-console='xbox-s'] .other-consoles:not(:has([data-other]:not([data-othe
 }
 .other-consoles[open] summary { margin-block-end: var(--gap-tap); }
 
-/* The first-run card on the Ask screen: three big buttons, gone once a console is chosen. */
+/* The first-run prompt on the Ask screen, under the search: a heading and one row of three buttons, gone once a console is chosen. */
 html[data-console] .console-card { display: none; }
-.console-card {
-  margin-block-end: var(--space-5);
-  padding: var(--space-4);
-  border: 2px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow);
-}
-.console-card h2 { margin-block: 0 var(--space-2); }
-.console-card p { margin-block: 0 var(--space-4); }
-.console-card__btns { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: var(--gap-tap); }
+.console-card { margin-block: var(--space-4) var(--space-5); }
+.console-card h2 { margin-block: 0 var(--space-2); font: var(--font-label); color: var(--muted); }
+.console-card__btns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap-tap); }
 .console-btn {
-  min-block-size: 4rem;
-  padding-inline: var(--space-4);
+  min-block-size: var(--tap);
+  padding-inline: var(--space-2);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--bg);
+  background: var(--surface);
   color: var(--text);
-  font: 650 1.25rem / 1.2 var(--font-text);
+  font: 650 var(--text-body) / 1.2 var(--font-text);
   cursor: pointer;
 }
+
+/* A page for one console, opened by a player on another: the note and the fold's summary show only then (other-console.js folds it). */
+.other-note, .other-fold > summary { display: none; }
+html[data-console='ps5'] :is(.other-note, .other-fold)[data-for~='ps5'],
+html[data-console='xbox-x'] :is(.other-note, .other-fold)[data-for~='xbox-x'],
+html[data-console='xbox-s'] :is(.other-note, .other-fold)[data-for~='xbox-s'] { display: block; }
+html[data-console='ps5'] .other-fold[data-for~='ps5'] > summary,
+html[data-console='xbox-x'] .other-fold[data-for~='xbox-x'] > summary,
+html[data-console='xbox-s'] .other-fold[data-for~='xbox-s'] > summary { display: flex; }
+.other-note { max-inline-size: 40rem; margin-block: 0 var(--space-3); }
+.other-note h1 { margin-block: 0; font-size: var(--text-h2); line-height: 1.3; letter-spacing: -0.01em; }
+.other-note a { display: flex; align-items: center; min-block-size: var(--tap); margin-block-start: var(--space-2); }
+.other-fold > summary {
+  align-items: center;
+  min-block-size: var(--tap);
+  padding-inline: var(--space-4);
+  border: 1px dashed var(--muted);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--muted);
+  font: var(--font-label);
+  cursor: pointer;
+}
+.other-fold[open] > summary { margin-block-end: var(--gap-tap); }

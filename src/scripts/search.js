@@ -1,5 +1,6 @@
 import { read } from './settings.js';
 import { search, asksWhere, pagePath } from './search-match.js';
+import { textHtml } from '../lib/console.js';
 
 // Each tier's records live under that tier's own paths; hidden tiers load only when the dial allows them.
 const tiers = {
@@ -38,7 +39,7 @@ function row(r) {
   q.className = 'q';
   q.textContent = r.question;
   s.className = 's';
-  s.textContent = (tiers[r.tier].label ? `${tiers[r.tier].label}. ` : '') + r.short;
+  s.innerHTML = textHtml((tiers[r.tier].label ? `${tiers[r.tier].label}. ` : '') + r.short); // button tokens become button names (both consoles' until one is chosen)
   a.append(q, s);
   li.append(a);
   return li;
@@ -68,7 +69,8 @@ async function update() {
   list.replaceChildren(...(none ? closest.map(row) : found.map(row)), ...(none ? [link('/topics/', 'Browse all topics')] : []));
   list.hidden = !asked;
   where.hidden = !(asked && asksWhere(query) && (dial ?? 'off') === 'off'); // places are only hidden at Off
-  status.textContent = !asked ? '' : found.length ? `${found.length} ${found.length === 1 ? 'answer' : 'answers'}` : 'Nothing matches those words. These are the closest answers.';
+  // The places note says it all: no count above it.
+  status.textContent = !asked || !where.hidden ? '' : found.length ? `${found.length} ${found.length === 1 ? 'answer' : 'answers'}` : 'Nothing matches those words. These are the closest answers.';
 }
 
 input.addEventListener('input', update);

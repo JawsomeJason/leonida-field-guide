@@ -99,7 +99,7 @@ const short: Record<string, string> = { before: 'Before', 'hour-1': 'Hour 1', 'd
   .stages:has([name='stage'][value='week-1']:checked) .stage[data-stage='week-1'] { display: block; }
 
   /* Row: the label is the big target; the small arrow on the end opens the answer. */
-  .todo-list .todo { display: grid; grid-template-columns: minmax(0, 1fr) var(--tap); gap: var(--gap-tap); }
+  .todo-list .todo { display: grid; grid-template-columns: minmax(0, 1fr) var(--tap); gap: var(--space-4); } /* 16px between the tick row and the arrow */
   .todo-list .todo label {
     display: flex;
     align-items: center;

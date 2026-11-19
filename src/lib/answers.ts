@@ -1,5 +1,6 @@
 // Tier helpers. Pure functions on record data, so node:test can import this file.
 import type { CollectionEntry } from 'astro:content';
+import { withButtons } from './console.js';
 
 export type AnswerData = CollectionEntry<'answers'>['data'];
 export type Tier = AnswerData['tier'];
@@ -48,19 +49,7 @@ export function related(a: AnswerData, all: AnswerData[], limit = 4) {
     .slice(0, limit);
 }
 
-/** Button names in text: write `{cross}`; both console labels are emitted and CSS shows the chosen console's. */
-const buttons: Record<string, [string, string]> = {
-  cross: ['✕', 'A'], circle: ['○', 'B'], square: ['□', 'X'], triangle: ['△', 'Y'],
-  l1: ['L1', 'LB'], r1: ['R1', 'RB'], l2: ['L2', 'LT'], r2: ['R2', 'RT'], l3: ['L3', 'LS'], r3: ['R3', 'RS'],
-  options: ['Options', 'Menu'], create: ['Create', 'View'],
-};
-export const withButtons = (text: string) =>
-  text.replace(/\{(\w+)\}/g, (m, k: string) => (buttons[k] ? `<kbd><span class="ps">${buttons[k][0]}</span><span class="xb">${buttons[k][1]}</span></kbd>` : m));
-
-export const escapeHtml = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
-
-/** Plain text to safe HTML with button names. */
-export const textHtml = (s: string) => withButtons(escapeHtml(s));
+export { escapeHtml, textHtml, withButtons } from './console.js'; // button names in text live in console.js: the search results use them in the browser too
 
 /** A link to another site says so, inside the link: the other site may show spoilers (same words as <OutsideLink>). */
 export const markOutside = (html: string) =>

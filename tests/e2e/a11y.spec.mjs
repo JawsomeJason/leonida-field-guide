@@ -19,7 +19,7 @@ for (const [theme, bg] of [['day', DAY], ['night', NIGHT]]) {
       await page.goto(s.path);
       await expect(page.locator('body')).toHaveCSS('background-color', bg);
       if (s.open) {
-        await press(page.locator('.chip'));
+        await press(page.locator('.chip--console'));
         await page.evaluate(() => Promise.allSettled(document.getAnimations().map((a) => a.finished))); // axe reads colours; not while the sheet fades in
       }
       if (s.search) await page.getByRole('searchbox').fill(s.search);
