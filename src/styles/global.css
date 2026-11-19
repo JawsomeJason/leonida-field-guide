@@ -321,9 +321,9 @@ html:has(.sheet:popover-open) { overflow: hidden; scrollbar-gutter: stable; }
 .sheet .levels legend { float: none; margin-block-end: var(--space-1); }
 .sheet .seg { flex-basis: 12rem; }
 .sheet .setting .seg label { flex: 1 1 0; padding-inline: var(--space-1); font-size: var(--text-small); }
-/* A short phone: the sheet may take four fifths of the screen so all three spoiler levels show without scrolling, and on the very shortest
+/* A short phone: the sheet may take nine tenths of the screen so all three spoiler levels show without scrolling, and on the very shortest
    (568px) the sentence under them steps aside (it is on About too). The tall phones keep two thirds. */
-@media (max-height: 43.75rem) { .sheet { max-block-size: min(80dvh, 40rem); } .sheet__in { gap: var(--space-1); } } /* a wider font than ours still fits all three levels */
+@media (max-height: 43.75rem) { .sheet { max-block-size: min(90dvh, 40rem); } .sheet__in { gap: var(--space-1); } } /* a wider font than ours still fits all three levels */
 @media (max-height: 37.5rem) { .levels__why { display: none; } }
 /* The three spoiler levels: radios, each with its one-line meaning. The whole row is the target. */
 .levels { display: grid; gap: var(--gap-tap); }

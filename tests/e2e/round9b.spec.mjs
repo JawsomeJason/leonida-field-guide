@@ -39,7 +39,7 @@ for (const theme of ['day', 'night']) {
       expect(m.done.h, 'Done is 48px').toBeGreaterThanOrEqual(48);
       expect(m.done.b, 'Done is on screen').toBeLessThanOrEqual(m.vh);
       expect(m.rows.at(-1).b, 'the last level sits above Done').toBeLessThanOrEqual(m.done.t);
-      expect(m.sheetH, 'the sheet is never more than 80% of a short screen, 70% of a tall one').toBeLessThanOrEqual(m.vh * (h <= 700 ? 0.8 : 0.7));
+      expect(m.sheetH, 'the sheet is never more than 90% of a short screen, 70% of a tall one').toBeLessThanOrEqual(m.vh * (h <= 700 ? 0.9 : 0.7));
     });
   }
 }
