@@ -5,6 +5,7 @@ import AnswerCard from '../../components/AnswerCard.astro';
 import AnswerCardList from '../../components/AnswerCardList.astro';
 import { topics } from '../../data/topics';
 import { byTier, related } from '../../lib/answers';
+import { others, forWhom } from '../../lib/otherconsole.js';
 
 export async function getStaticPaths() {
   const all = (await getCollection('answers')).map((e) => e.data);
@@ -14,15 +15,37 @@ export async function getStaticPaths() {
       answer,
       more: byTier(all, 'none').filter((b) => b.topic === answer.topic),
       related: related(answer, all),
+      others: others(answer, all),
     },
   }));
 }
 
-const { answer, more } = Astro.props;
+const { answer, more, others: elsewhere } = Astro.props;
 const topic = topics.find((t) => t.id === answer.topic)!.label;
+const consoles = elsewhere.map((o) => o.console).join(' ');
+const whom = Array.isArray(answer.consoles) ? forWhom(answer.consoles) : '';
 ---
 
 <Base title={answer.question} description={answer.short}>
   <Fragment slot="list"><AnswerCardList answers={more} current={answer.id} label={topic} /></Fragment>
-  <AnswerCard answer={answer} related={Astro.props.related} full />
+  {
+    elsewhere.length > 0 ? (
+      <>
+        {/* For a player on another console (other-console.js, console.css): one line (the page's heading while the rest is folded) and a link to their page. */}
+        {elsewhere.map((o) => (
+          <div class="other-note" data-for={o.console}>
+            <h1>This page is for {whom}, not {o.name}.</h1>
+            <a href={o.href}>{o.title ? `Open the ${o.name} page: ${o.title}` : `See the ${topic} cheat sheet for ${o.name}`}</a>
+          </div>
+        ))}
+        <details class="other-fold" data-for={consoles} open>
+          <summary>Show the {whom} version</summary>
+          <AnswerCard answer={answer} related={Astro.props.related} full />
+        </details>
+      </>
+    ) : (
+      <AnswerCard answer={answer} related={Astro.props.related} full />
+    )
+  }
+  <script>import '../../scripts/other-console.js';</script>
 </Base>

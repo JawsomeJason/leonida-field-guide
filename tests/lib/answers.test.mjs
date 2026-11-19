@@ -37,7 +37,7 @@ test('related never rises above the page tier', () => {
 });
 
 test('button names switch by console and text is escaped', () => {
-  assert.match(textHtml('Press {cross} <b>'), /<kbd><span class="ps">✕<\/span><span class="xb">A<\/span><\/kbd> &#60;b&#62;/);
+  assert.match(textHtml('Press {cross} <b>'), /<kbd><span class="ps">✕<\/span><span class="sep"> \/ <\/span><span class="xb">A<\/span><\/kbd> &#60;b&#62;/);
   assert.equal(textHtml('{nope}'), '{nope}');
 });
 
