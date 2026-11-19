@@ -1,7 +1,7 @@
 // Every password below is invented for the test. Nothing here reads the environment or the network.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { decide, loginPage } from '../../src/lib/gate.ts';
+import { decide, loginPage } from '../../middleware.ts';
 
 const PASS = 'fake-pass-one';
 const base = { path: '/', method: 'GET', expectedPassword: PASS };

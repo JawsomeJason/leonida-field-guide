@@ -127,7 +127,7 @@ One `localStorage` key, `lfg:v1`: `{ console, dial, theme, stage, done: string[]
 
 ## Access gate
 
-While the site is private, a Vercel Routing Middleware (`middleware.ts` at the repo root, a thin wrapper over the pure `decide()` in `src/lib/gate.ts`) stands in front of every page and asset. Output stays static Astro; no adapter, no runtime dependency, nothing added to the browser.
+While the site is private, a Vercel Routing Middleware (`middleware.ts` at the repo root, one self-contained file whose pure `decide()` is exported for the tests) stands in front of every page and asset. Output stays static Astro; no adapter, no runtime dependency, nothing added to the browser.
 
 - **Password.** The Vercel env var `SITE_PASSWORD` (production and preview). It never appears in the repo, a commit, a log or a test. If it is unset or empty, the gate answers 503 to everything: closed, never open.
 - **No valid cookie.** 401 and a small login page: inline styles from the tokens in both themes, one labelled password field (16px or more), one big button, 48px targets, `no-store`, `noindex`, and a CSP that allows no script. Posting the right password sets the cookie and answers 303 to the page first asked for. Only a same-origin path is followed (a path starting `//` or `/\` goes to `/`). A wrong password re-shows the page, 401, with one plain error line.
