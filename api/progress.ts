@@ -4,6 +4,9 @@
 // If this function returns 500 on the live site, check the merge import first: it must keep its .js extension.
 import { get, put } from '@vercel/blob';
 import { empty, merge, parse } from '../src/lib/merge.js';
+import { decide } from '../middleware.ts';
+
+declare const process: { env: Record<string, string | undefined> };
 
 const PATH = 'progress/state.json';
 const MAX_BODY = 64 * 1024;
@@ -22,6 +25,10 @@ const store = {
 };
 
 async function handle(request: Request) {
+  // The password gate (middleware.ts) skips this path because the platform answered 404 when middleware handed
+  // requests on to a function, so the function asks the same decide() itself: one rule, two callers.
+  const gate = await decide({ path: '/api/progress', method: 'GET', cookie: request.headers.get('cookie'), formPassword: null, expectedPassword: process.env.SITE_PASSWORD });
+  if (gate.action !== 'allow') return reply(gate.action === 'refuse' ? 503 : 401, { error: 'Sign in first' });
   if (request.method !== 'GET' && request.method !== 'PUT') return new Response(null, { status: 405, headers: { allow: 'GET, PUT' } });
 
   let incoming = empty();

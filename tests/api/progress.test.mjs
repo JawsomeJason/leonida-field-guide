@@ -3,6 +3,10 @@ import assert from 'node:assert/strict';
 
 // Loads the real function file the way the platform does (a bad relative import fails here, not only on Vercel),
 // then swaps its storage for memory. No network, no token.
+process.env.SITE_PASSWORD = 'a-made-up-test-password';
+const { decide } = await import('../../middleware.ts');
+const signedIn = await decide({ path: '/', method: 'POST', cookie: null, formPassword: process.env.SITE_PASSWORD, expectedPassword: process.env.SITE_PASSWORD });
+const cookie = signedIn.setCookie.split(';')[0];
 const { default: fn } = await import('../../api/progress.ts');
 let saved = null;
 let writes = 0;
@@ -11,7 +15,7 @@ fn.store.write = async (s) => { saved = JSON.parse(JSON.stringify(s)); writes++;
 
 const url = 'https://example.test/api/progress';
 const put = (body, headers = {}) =>
-  fn.fetch(new Request(url, { method: 'PUT', headers: { 'content-type': 'application/json', ...headers }, body: typeof body === 'string' ? body : JSON.stringify(body) }));
+  fn.fetch(new Request(url, { method: 'PUT', headers: { 'content-type': 'application/json', cookie, ...headers }, body: typeof body === 'string' ? body : JSON.stringify(body) }));
 const state = (settings = {}, items = {}) => ({ v: 2, settings, items });
 const empty = state();
 
@@ -20,7 +24,7 @@ test('the function file loads and exports a fetch handler', () => {
 });
 
 test('GET on nothing saved returns the empty state', async () => {
-  const res = await fn.fetch(new Request(url));
+  const res = await fn.fetch(new Request(url, { headers: { cookie } }));
   assert.equal(res.status, 200);
   assert.equal(res.headers.get('cache-control'), 'no-store');
   assert.deepEqual(await res.json(), empty);
@@ -34,7 +38,7 @@ test('PUT merges into what is saved and returns the merge', async () => {
   const merged = await res.json();
   assert.deepEqual(merged.settings.dial, { value: 'mild', at: 10 });
   assert.deepEqual(Object.keys(merged.items), ['first-thing', 'second-thing']);
-  assert.deepEqual(await (await fn.fetch(new Request(url))).json(), merged);
+  assert.deepEqual(await (await fn.fetch(new Request(url, { headers: { cookie } }))).json(), merged);
 });
 
 test('a PUT that changes nothing does not write', async () => {
@@ -57,7 +61,7 @@ test('bad bodies are refused before anything is stored', async () => {
 
 test('other methods are 405', async () => {
   for (const method of ['POST', 'DELETE', 'PATCH']) {
-    const res = await fn.fetch(new Request(url, { method }));
+    const res = await fn.fetch(new Request(url, { method, headers: { cookie } }));
     assert.equal(res.status, 405, method);
     assert.equal(res.headers.get('allow'), 'GET, PUT');
   }
@@ -65,9 +69,26 @@ test('other methods are 405', async () => {
 
 test('a damaged saved blob reads as empty, and a storage failure is a plain 500', async () => {
   saved = { nonsense: true };
-  assert.deepEqual(await (await fn.fetch(new Request(url))).json(), empty);
+  assert.deepEqual(await (await fn.fetch(new Request(url, { headers: { cookie } }))).json(), empty);
   fn.store.read = async () => { throw new Error('secret detail'); };
-  const res = await fn.fetch(new Request(url));
+  const res = await fn.fetch(new Request(url, { headers: { cookie } }));
   assert.equal(res.status, 500);
   assert.doesNotMatch(await res.text(), /secret/);
+});
+
+test('without the cookie the function answers 401 and stores nothing', async () => {
+  const before = writes;
+  for (const init of [{}, { headers: { cookie: 'lfg_gate=wrong' } }, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(state()) }]) {
+    const res = await fn.fetch(new Request(url, init));
+    assert.equal(res.status, 401);
+    assert.deepEqual(await res.json(), { error: 'Sign in first' });
+  }
+  assert.equal(writes, before);
+});
+
+test('with no password configured the function refuses everything', async () => {
+  const keep = process.env.SITE_PASSWORD;
+  delete process.env.SITE_PASSWORD;
+  assert.equal((await fn.fetch(new Request(url, { headers: { cookie } }))).status, 503);
+  process.env.SITE_PASSWORD = keep;
 });

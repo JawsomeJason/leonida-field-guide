@@ -166,6 +166,7 @@ While the site is private, a Vercel Routing Middleware (`middleware.ts` at the r
 - **Rotate.** Change `SITE_PASSWORD` and redeploy; every old cookie stops working.
 - **Tests.** `npm run test:unit` runs `node:test` over `tests/**` with invented passwords and no network. Run against the live site only by the build orchestrator.
 - **Progress sync.** `/api/progress` is a Vercel Function behind this gate (see "Synced progress"). Its Blob token is a separate env var and is never read by the gate.
+- **The sync function.** `/api/progress` is the one path the middleware does not match: the platform answered 404 when middleware handed a request on to a function. The function calls the same `decide()` itself and answers 401 without a valid cookie (503 if the password variable is unset), so there is one rule and two callers.
 
 ## Needs JavaScript
 
