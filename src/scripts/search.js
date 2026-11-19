@@ -84,10 +84,20 @@ async function update() {
   const n = ++run;
   const query = input.value;
   const { dial, console: owned } = read();
+  // The note needs no records, so it follows the dial and the query at once, before any file is awaited.
+  // A question about where something is gets the where-is note: at Off the no-link sentence and the gate to Places, at Places or Mild "shown at your level" and the outside map links (maps.js fills them from the Places tier once the note is shown). Nothing else carries the gate or a map link. At Off the note says it all: no count above it.
+  const typed = !!query.trim();
+  const asksPlace = typed && asksWhere(query);
+  const was = where.hidden;
+  where.querySelector(':scope > .where-off, :scope > .where-on')?.remove();
+  if (asksPlace) where.prepend(notes[dial === 'off' ? 'off' : 'on'].content.cloneNode(true));
+  where.hidden = !asksPlace;
+  if (where.hidden !== was) dispatchEvent(new Event('lfg:note')); // the map links come and go with the note
+  const offNote = asksPlace && dial === 'off';
   const on = allowed[dial] ?? allowed.off;
   const waiting = on.filter((t) => !ready.has(t));
   // A file that has not arrived is not "no answer": say what is happening, and run the query again when it is here.
-  if (query.trim() && waiting.length) {
+  if (typed && waiting.length) {
     status.removeAttribute('data-floor');
     status.textContent = `Loading the ${name(waiting)} answers...`;
     list.hidden = more.hidden = true;
@@ -100,7 +110,6 @@ async function update() {
   const found = answersFor(records, query, owned);
   if (query !== asked) all = false;
   asked = query;
-  const typed = !!query.trim();
   const known = typed && asksKnown(query); // the row to the known-problems list is an answer by itself
   const none = typed && !found.length && !known && !failed.length; // answers that could not load are not "no answer"
   const cut = typed && !all && found.length > FIRST;
@@ -108,14 +117,6 @@ async function update() {
   list.replaceChildren(...(known ? [link('/new/', 'Known problems and what changed', 'ask-known')] : []), ...(cut ? found.slice(0, FIRST) : found).map(row), ...(none ? [link('/topics/', 'Browse all topics')] : []));
   list.hidden = !typed;
   more.hidden = !cut;
-  // A question about where something is gets the where-is note: at Off the no-link sentence and the gate to Places, at Places or Mild "shown at your level" and the outside map links (maps.js fills them from the Places tier once the note is shown). Nothing else carries the gate or a map link. At Off the note says it all: no count above it.
-  const asksPlace = typed && asksWhere(query);
-  const was = where.hidden;
-  where.querySelector(':scope > .where-off, :scope > .where-on')?.remove();
-  if (asksPlace) where.prepend(notes[dial === 'off' ? 'off' : 'on'].content.cloneNode(true));
-  where.hidden = !asksPlace;
-  if (where.hidden !== was) dispatchEvent(new Event('lfg:note')); // the map links come and go with the note
-  const offNote = asksPlace && dial === 'off';
   status.toggleAttribute('data-floor', none && !offNote);
   status.textContent = typed && failed.length ? `The ${name(failed)} answers cannot load right now. Check your connection and type again.` : !typed || offNote || (known && !found.length) ? '' : found.length ? `${found.length} ${found.length === 1 ? 'answer' : 'answers'}` : asksStory(query) ? 'This guide carries no story content, by design.' : 'This guide has no answer for that yet.';
 }

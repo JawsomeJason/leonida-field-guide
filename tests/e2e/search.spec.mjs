@@ -341,6 +341,10 @@ test('raise the level and type at once while the hidden search file is held back
   await expect(status).toHaveAttribute('role', 'status');
   await expect(results(page)).toBeHidden();
   await expect(page.getByText('This guide has no answer for that yet.')).toHaveCount(0);
+  await page.getByRole('searchbox').fill('where is the gun shop'); // the where-is note follows the raised level at once, not after the file
+  await expect(page.locator('#q-where')).toContainText('Places are shown at your level.');
+  await expect(page.getByRole('link', { name: 'Places: turn them on' })).toHaveCount(0);
+  await page.getByRole('searchbox').fill('zebra kiosk');
   release();
   await expect(results(page).getByRole('link').first()).toHaveAttribute('href', '/places/place-01/');
   await expect(status).not.toHaveText(/Loading/);
