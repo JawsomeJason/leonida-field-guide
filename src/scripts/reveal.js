@@ -31,26 +31,37 @@ async function open(box, auto) {
     if (!auto) location.href = btn.href; // no script path: the detail's own page
     return;
   }
+  // A detail the player opened with a tap can be put away again; one the dial itself shows goes when the dial drops.
+  if (!auto) out.append(Object.assign(document.createElement('button'), { type: 'button', className: 'reveal__hide', innerHTML: 'Hide<span class="sr-only"> this detail</span>' }));
   box.dataset.open = auto ? 'auto' : 'tap';
   btn.hidden = true;
   out.hidden = false;
   if (!auto) out.focus();
 }
 
+// Takes the revealed text out of the page, not just out of sight, and brings the Show control back.
 function close(box) {
-  box.querySelector('.reveal__out').hidden = true;
-  box.querySelector('.reveal__btn').hidden = false;
+  const out = box.querySelector('.reveal__out');
+  const btn = box.querySelector('.reveal__btn');
+  const focused = out.contains(document.activeElement);
+  out.replaceChildren();
+  out.hidden = true;
+  btn.hidden = false;
   delete box.dataset.open;
+  if (focused) btn.focus();
 }
 
 let seq = 0;
+let level = read().dial;
 async function sync() {
   const n = ++seq;
+  const lowered = RANK[read().dial] < RANK[level];
+  level = read().dial;
   // A gate page forwards to its explicit address once the dial reaches its tier. The link carries the marker, so a missing cookie cannot loop.
   for (const gate of document.querySelectorAll('[data-gate]')) if (allowed(gate.dataset.gate)) return location.replace(gate.querySelector('.guard__show').href);
   for (const box of document.querySelectorAll('[data-reveal]')) {
     if (allowed(box.dataset.tier)) box.dataset.open || open(box, true);
-    else if (box.dataset.open === 'auto') close(box);
+    else if (box.dataset.open && (lowered || box.dataset.open === 'auto')) close(box); // lowering the dial takes every revealed detail out of the page at once
   }
   for (const mount of document.querySelectorAll('[data-hidden-list]')) {
     const tiers = mount.dataset.tiers.split(' ').filter(allowed);
@@ -72,6 +83,10 @@ addEventListener('click', (e) => {
   if (!btn || e.button || e.metaKey || e.ctrlKey || e.shiftKey) return; // new-tab clicks keep the link
   e.preventDefault();
   open(btn.closest('[data-reveal]'), false);
+});
+addEventListener('click', (e) => {
+  const hide = e.target.closest?.('.reveal__hide');
+  if (hide) close(hide.closest('[data-reveal]'));
 });
 addEventListener('lfg:change', sync);
 sync();
