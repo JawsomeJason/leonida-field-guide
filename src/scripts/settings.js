@@ -36,7 +36,7 @@ function apply(s) {
   if (s.theme === 'day' || s.theme === 'night') html.dataset.theme = s.theme;
   else delete html.dataset.theme;
   for (const input of document.querySelectorAll('input[data-setting]')) input.checked = input.value === s[input.name];
-  for (const b of document.querySelectorAll('button[data-set]')) b.setAttribute('aria-pressed', b.dataset.value === s[b.dataset.set]);
+  for (const b of document.querySelectorAll('button[data-set]:not([data-action])')) b.setAttribute('aria-pressed', b.dataset.value === s[b.dataset.set]);
   dispatchEvent(new CustomEvent('lfg:change', { detail: s })); // reveal.js re-syncs on this
 }
 
