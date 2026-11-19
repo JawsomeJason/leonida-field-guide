@@ -38,14 +38,14 @@ Work through this list and keep a count beside each item. A run that cannot show
    - Nothing changed: the entry holds exactly one line, in this form (the date in words, the count of sources you actually opened and read): `Checked on 20 November 2026: nothing new confirmed. We opened 23 sources.`
    - Something changed: list what a player would notice, each a full plain sentence with no story content, then finish with one line `Checked on <date>. We opened <N> sources.`
    - Plain words only: no schema, record, branch, content, keywords, commit and similar words (`tests/content/new.test.mjs` fails on them). Never describe a date as still to come. Leave `problems` empty when none are confirmed; the New screen then says so itself.
-7. **Run the checks.** `npm run check`. Fix any failure in the records or the entry, not in the checks. Do not report done on a failing run.
+7. **Run the content checks.** `npm run check:content`. It builds the site (which validates every record against the schema) and runs the unit tests, the leak, link, answer-link, console-text and date checks, the headline checks and the search question table. It needs no browser and takes well under a minute. Fix any failure in the records or the entry, not in the checks. Do not report done on a failing run. Do not run `npm run check` in the cloud sandbox: it adds the browser tests, which are slow there and depend on the machine. They run in GitHub Actions on your branch before the merge (the workflow runs the full `npm run check` after the path guard), and nothing merges unless they pass.
 8. **Commit and push, every run.** Stage only the two allowed places (`git add src/content/answers src/data/new.json`), commit with a plain message such as `content: refresh <date>`, and `git push -u origin refresh/<YYYY-MM-DD>`. No attribution lines. Because the New entry is always written, there is always something to push.
 
 The workflow then opens a pull request and merges it once the guard and the checks pass. Check the run on GitHub; a red run means nothing merged.
 
 ## When nothing changed
 
-Still write the "nothing new confirmed" entry, still push the branch. Setting `checked` on records you re-verified is a change too. The only time you do not push is when `npm run check` fails and you cannot fix it: then say so, plainly, in your report.
+Still write the "nothing new confirmed" entry, still push the branch. Setting `checked` on records you re-verified is a change too. The only time you do not push is when `npm run check:content` fails and you cannot fix it: then say so, plainly, in your report.
 
 ## Final reply
 
@@ -60,5 +60,5 @@ End your reply with this checklist and a count beside each item (a zero is a val
 - Records changed: n; records added: n (ids); `rank` changes: n
 - A question players ask that the guide cannot answer: the question, or none found
 - New entry written: yes (quote its first line)
-- `npm run check`: the result as it printed
+- `npm run check:content`: the result as it printed
 - Branch pushed: its name, and the pull request once the workflow opens it
