@@ -5,6 +5,9 @@ const port = process.env.LFG_PORT ?? 4399;
 const touch = { hasTouch: true, isMobile: true };
 const only = (...files) => ({ testMatch: files.map((f) => `**/${f}.spec.mjs`) });
 
+// Default run (local and CI): phone 390 and desktop 1440, plus the sync and new-screen projects. LFG_ALL=1 adds phone 320 and tablet 820.
+const wanted = (p) => process.env.LFG_ALL || !['phone-320', 'tablet-820'].includes(p.name);
+
 export default defineConfig({
   testDir: 'tests/e2e',
   forbidOnly: true,
@@ -22,5 +25,5 @@ export default defineConfig({
     { name: 'sync', ...only('sync') },
     { name: 'new-screen', use: { viewport: { width: 390, height: 844 }, ...touch }, ...only('new') },
     { name: 'desktop-1440', use: { viewport: { width: 1440, height: 900 } }, ...only('behaviour', 'nojs', 'a11y', 'overflow', 'leak', 'search', 'notfound', 'design', 'ui2', 'hidden-gate', 'nextup', 'outside', 'consoles', 'round4', 'round5', 'round6', 'round6b', 'round7', 'round7b', 'round8a', 'round8b') },
-  ],
+  ].filter(wanted),
 });
