@@ -67,3 +67,19 @@ test('the real build, its scripts and every record are clean', { skip: !existsSy
   assert.deepEqual(hits, []);
   assert.ok(scanned > 100, `scanned ${scanned}`);
 });
+
+// Fix round 7: "Could not reach the online store (the sync service)" confused three reviewers. None of those words ships anywhere a player reads,
+// and the three sync sentences pass the plain-words rule on their own (they carry "copying online" beside "sync").
+test('the words sync service, sync store and online store are used nowhere in the site source, and the three sync sentences are plain', async () => {
+  const { readFileSync, readdirSync, statSync } = await import('node:fs');
+  const files = (dir) => readdirSync(dir).flatMap((n) => (statSync(`${dir}/${n}`).isDirectory() ? files(`${dir}/${n}`) : [`${dir}/${n}`]));
+  const bad = files('src').filter((f) => /\b(sync service|sync store|online store)\b/i.test(readFileSync(f, 'utf8')));
+  assert.deepEqual(bad, []);
+  const sentences = [
+    'Not syncing (copying online) right now. Your ticks are saved on this device. We will try again.',
+    'Syncing (copying online) is not available here. Your ticks are saved on this device only.',
+    "Copied online (synced) at 3:04 PM: your ticks are saved on this device and in this site's private store.",
+  ];
+  for (const s of sentences) assert.deepEqual(plainWordHits('/checklist/', s), [], s);
+  assert.equal(plainWordHits('/planted/', 'Not syncing right now.').length, 1); // the bare word is still flagged
+});
