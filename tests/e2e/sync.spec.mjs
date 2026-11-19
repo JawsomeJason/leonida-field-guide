@@ -33,7 +33,7 @@ const html = (page) => page.evaluate(() => ({ ...document.documentElement.datase
 const phone = { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true };
 // The three things the status line may say, in the words a player reads (the line is one role=status region).
 const SYNCED = /^Synced at .+: your ticks are saved on this device and in this site's private store\.$/;
-const KEPT = 'Could not reach the sync store. Your ticks are kept on this device for now and will be sent later.';
+const KEPT = 'Could not reach the sync service for this site. Your ticks are kept on this device for now and will be sent later.';
 const NOT_HERE = 'Syncing is not available here. Your ticks are saved on this device only.';
 const status = (page) => page.locator('[data-sync]');
 

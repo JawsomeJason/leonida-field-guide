@@ -9,7 +9,7 @@ import { absorb, state } from './settings.js';
 const ENDPOINT = '/api/progress';
 const SAYS = {
   synced: (at) => `Synced at ${at}: your ticks are saved on this device and in this site's private store.`,
-  kept: () => 'Could not reach the sync store. Your ticks are kept on this device for now and will be sent later.',
+  kept: () => 'Could not reach the sync service for this site. Your ticks are kept on this device for now and will be sent later.',
   off: () => 'Syncing is not available here. Your ticks are saved on this device only.',
 };
 const DELAY = 400; // debounce after a change, ms

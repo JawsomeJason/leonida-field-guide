@@ -29,8 +29,8 @@ test('search results never name a console "Xbox X" or "Xbox S"', async ({ page }
 test('the header chip always names the console in use, and asks until one is chosen', async ({ page }) => {
   const chip = page.locator('.chip--console');
   await page.goto('/');
-  expect(await shown(chip)).toBe('Choose');
-  await expect(chip).toHaveAccessibleName('Console: choose one, change');
+  expect(await shown(chip)).toBe('Pick console');
+  await expect(chip).toHaveAccessibleName('Pick console, change');
   await press(chip); // tapping it opens the sheet, where the console is chosen
   await expect(page.locator('#settings')).toBeVisible();
   for (const [console, name] of [['ps5', 'PS5'], ['xbox-x', 'Xbox Series X'], ['xbox-s', 'Xbox Series S']]) {
@@ -57,7 +57,7 @@ test('a page for another console says which, in the full names', async ({ page }
 });
 
 test('the header stays one row with both chips at their longest, and nothing scrolls sideways', async ({ page }) => {
-  await saved(page, { dial: 'places' }); // "Choose" and "Places"
+  await saved(page, { dial: 'places' }); // "Pick console" and "Places"
   await page.goto('/');
   const ys = await page.evaluate(() => [...document.querySelectorAll('.site-header__row > *')].map((e) => Math.round(e.getBoundingClientRect().y)));
   expect(new Set(ys).size, 'one row').toBe(1);
@@ -74,7 +74,7 @@ const lines = (page) => page.evaluate(() => [...document.querySelectorAll('.chip
 
 test('the header is as tall at 320 as at 390, also at 130% text, and no chip text wraps', async ({ page }) => {
   test.setTimeout(60_000);
-  for (const settings of [{ console: 'xbox-x', dial: 'places' }, { dial: 'mild' }, {}]) { // longest words, and the never-chosen "Choose"
+  for (const settings of [{ console: 'xbox-x', dial: 'places' }, { dial: 'mild' }, {}]) { // longest words, and the never-chosen "Pick console"
     await saved(page, settings);
     for (const scale of ['100%', '130%']) {
       const seen = [];
