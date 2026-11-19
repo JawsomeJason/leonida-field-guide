@@ -26,17 +26,66 @@ test.describe('plain sentences find the right answer', () => {
   });
 });
 
-test('nothing matches: three closest answers and a way to Topics, never a dead end', async ({ page }) => {
-  await ask(page, 'zzyzx qqqq');
-  await expect(page.getByRole('status')).toContainText('closest answers');
+// No confident answer: the floor line, then up to three possibly related and a way to Topics. Never a dead end.
+for (const query of ['zzyzx qqqq', 'how do i get a million dollars fast', 'my kid wants to play too']) {
+  test(`"${query}" has no answer: the floor line, possibly related, a way to Topics`, async ({ page }) => {
+    await ask(page, query);
+    await expect(page.getByRole('status')).toHaveText('This guide has no answer for that yet.');
+    await expect(page.getByRole('heading', { name: 'Possibly related' })).toBeVisible();
+    const links = results(page).getByRole('link');
+    await expect(links).toHaveCount(4);
+    await expect(links.last()).toHaveAttribute('href', '/topics/');
+    await expect(links.first()).toHaveAttribute('href', /^\/a\//);
+    await expect(page.getByRole('button', { name: 'Show more' })).toBeHidden();
+    if (test.info().project.use.hasTouch) {
+      const { problems } = await measure(page);
+      expect(problems).toEqual([]);
+    }
+  });
+}
+
+test('an answer shows no floor line and no Possibly related heading', async ({ page }) => {
+  await ask(page, 'how do i save my game');
+  await expect(page.getByRole('status')).not.toHaveText(/no answer/);
+  await expect(page.getByRole('heading', { name: 'Possibly related' })).toBeHidden();
+});
+
+test('a weaker match (short text only) is offered as possibly related, not as the answer', async ({ page }) => {
+  await page.route('**/search/none.json', (route) =>
+    route.fulfill({ json: [{ id: 'a-one', question: 'Alpha question?', short: 'Mentions the zebra kiosk here.', topic: 'setup', consoles: 'all', rank: 1 }] }),
+  );
+  await ask(page, 'zebra kiosk');
+  await expect(page.getByRole('status')).toHaveText('This guide has no answer for that yet.');
+  await expect(results(page).getByRole('link').first()).toHaveAttribute('href', '/a/a-one/');
+});
+
+// Five answers show; a real 48px button shows the rest.
+const many = Array.from({ length: 8 }, (_, i) => ({ id: `row-${i + 1}`, question: `How do I rotate the widget, part ${i + 1}?`, short: 'Fixture.', topic: 'setup', consoles: 'all', rank: i + 1 }));
+test('five answers show, Show more shows the rest, a new question starts cut again', async ({ page }) => {
+  await page.route('**/search/none.json', (route) => route.fulfill({ json: many }));
+  await ask(page, 'rotate widget');
   const links = results(page).getByRole('link');
-  await expect(links).toHaveCount(4);
-  await expect(links.last()).toHaveAttribute('href', '/topics/');
-  await expect(links.first()).toHaveAttribute('href', /^\/a\//);
+  const more = page.getByRole('button', { name: 'Show more' });
+  await expect(links).toHaveCount(5);
+  await expect(page.getByRole('status')).toHaveText('8 answers');
+  await expect(more).toBeVisible();
+  expect((await more.boundingBox()).height).toBeGreaterThanOrEqual(48);
   if (test.info().project.use.hasTouch) {
     const { problems } = await measure(page);
     expect(problems).toEqual([]);
   }
+  await press(more);
+  await expect(links).toHaveCount(8);
+  await expect(more).toBeHidden();
+  await expect(links.nth(5)).toBeFocused();
+  await page.getByRole('searchbox').fill('rotate widget part');
+  await expect(links).toHaveCount(5);
+  await expect(more).toBeVisible();
+});
+
+test('two swapped letters are one typo', async ({ page }) => {
+  await ask(page, 'how do i svae my game');
+  await expect(results(page).getByRole('link').first()).toHaveAttribute('href', '/a/find-save/');
 });
 
 test('where is something: places are hidden by design, with the gate and two outside maps', async ({ page }) => {
@@ -57,7 +106,7 @@ test('where is something: places are hidden by design, with the gate and two out
 
 test('hidden keywords are not searched at Off, and are at Places', async ({ page }) => {
   await ask(page, 'zebra kiosk');
-  await expect(page.getByRole('status')).toContainText('closest answers'); // no match, so nothing from the hidden tier
+  await expect(page.getByRole('status')).toHaveText('This guide has no answer for that yet.'); // no match, so nothing from the hidden tier
   await expect(results(page).locator('a[href^="/places/"]')).toHaveCount(0);
   expect(await (await page.request.get('/search/none.json')).text()).not.toContain('zebra');
 

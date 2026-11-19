@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { search, asksWhere } from '../../src/scripts/search-match.js';
 import { loadRecords, hiddenStrings } from '../../scripts/check-leak.mjs';
-import { FIXTURE_QUERIES, REAL_QUERIES } from './queries.mjs';
+import { FIXTURE_QUERIES } from './queries.mjs';
+import { checkQuestions } from '../../scripts/check-search-questions.mjs';
 
 const index = (dir) => loadRecords(dir).filter((a) => a.tier === 'none');
 const ids = (records, query) => search(records, query).found.map((r) => r.id);
@@ -12,12 +13,11 @@ const fixtures = index('tests/fixtures/answers');
 test('every query from the design owner finds its answer first (fixtures)', () => {
   for (const [query, id] of FIXTURE_QUERIES) assert.equal(ids(fixtures, query)[0], id, query);
 });
-test('every query from the design owner finds its answer first (real content)', () => {
-  const real = index('src/content/answers');
-  for (const [query, id, owned = 'ps5'] of REAL_QUERIES) {
-    const shown = real.filter((r) => r.consoles === 'all' || r.consoles.includes(owned)); // the page hides other consoles' answers
-    assert.ok([id].flat().includes(ids(shown, query)[0]), `${query} (${owned}) found ${ids(shown, query)[0]}`);
-  }
+test('every question in tests/search/questions.json finds its answer first, or none (real content)', () => {
+  const { failures, passed, total, pending } = checkQuestions();
+  assert.deepEqual(failures, []);
+  assert.equal(passed + pending, total);
+  assert.ok(total >= 60);
 });
 
 test('empty, punctuation-only and filler-only queries match nothing', () => {
@@ -48,11 +48,12 @@ test('one typo is forgiven in words of five letters or more, two are not', () =>
   assert.deepEqual(ids(four, 'sabe'), []); // four letters: no typo allowed
 });
 
-test('console and storage words are synonyms', () => {
+test('console and storage words are synonyms, but a console word alone is no answer', () => {
   const ps = [rec('a', 'Does it run on PlayStation?')];
-  assert.deepEqual(ids(ps, 'ps5'), ['a']);
-  assert.deepEqual(ids([rec('b', 'Does it run on PS5?')], 'playstaton'), ['b']);
-  assert.deepEqual(ids([rec('c', 'Is it on the Xbox Series S?')], 'series s'), ['c']);
+  assert.deepEqual(ids(ps, 'ps5 run'), ['a']);
+  assert.deepEqual(ids(ps, 'ps5'), []); // it says what the player owns, not what they ask
+  assert.deepEqual(ids([rec('b', 'Does it run on PS5?')], 'run playstaton'), ['b']);
+  assert.deepEqual(ids([rec('c', 'Does it fit on the Xbox Series S?')], 'series s fit'), ['c']);
   const space = [rec('d', 'How much space do I need?')];
   for (const q of ['drive', 'disk', 'storage', 'GB', '512gb']) assert.deepEqual(ids(space, q), ['d'], q);
 });
@@ -64,14 +65,27 @@ test('the topic name counts, and keywords reach words the text does not use', ()
   assert.deepEqual(ids([rec('c', 'Anything?', { topic: 'getting-around' })], 'getting around'), ['c']);
 });
 
-test('ranking: question beats keywords beats short beats topic', () => {
+test('ranking: question beats keywords; short and topic hits are only possibly related', () => {
   const records = [
-    rec('topic', 'Nothing.', { topic: 'saving' }),
     rec('short', 'Nothing.', { short: 'You can save here.' }),
     rec('keyword', 'Nothing.', { keywords: ['save'] }),
     rec('question', 'How do I save?'),
   ];
-  assert.deepEqual(ids(records, 'save'), ['question', 'keyword', 'short', 'topic']);
+  assert.deepEqual(ids(records, 'save'), ['question', 'keyword']);
+  const weak = search([records[0], rec('topic', 'Nothing.', { topic: 'saving' })], 'save cloud'); // nothing but weak hits: no answer, and the weaker matches are offered
+  assert.deepEqual(weak.found, []);
+  assert.deepEqual(weak.related.map((r) => r.id).sort(), ['short', 'topic']);
+});
+
+test('ranking: a match in the question outranks a match in the short text, even with more words there', () => {
+  const records = [rec('body', 'Nothing.', { short: 'Save to the cloud here.' }), rec('title', 'Where do I save?')];
+  assert.deepEqual(ids(records, 'save cloud'), ['title']); // body has save and cloud, but only in its short text: possibly related, never the answer
+});
+
+test('a query that is only a topic name lists that topic', () => {
+  const records = [rec('a', 'Where does my cash go?', { topic: 'money' }), rec('b', 'How do I save?', { topic: 'saving' })];
+  assert.deepEqual(ids(records, 'money'), ['a']);
+  assert.deepEqual(ids(records, 'money cash'), ['a']);
 });
 
 test('ranking: more of the words matched ranks higher', () => {
@@ -94,7 +108,7 @@ test('an unfinished last word still matches', () => {
   assert.deepEqual(ids(records, 'sche control'), ['a']);
 });
 
-test('no match: three closest answers, else the most asked', () => {
+test('no answer: up to three possibly related, else the most asked', () => {
   const records = [
     rec('a', 'How do I save?', { rank: 3 }),
     rec('b', 'Is there fast travel?', { rank: 1 }),
@@ -103,12 +117,33 @@ test('no match: three closest answers, else the most asked', () => {
   ];
   const none = search(records, 'zzyzx');
   assert.deepEqual(none.found, []);
-  assert.deepEqual(none.closest.map((r) => r.id), ['b', 'c', 'a']); // most asked first
-  // Two words, one in each of two answers: half of two is one, so both are found. Four words need two.
-  const part = search(records, 'save fast travel co-op');
+  assert.deepEqual(none.related.map((r) => r.id), ['b', 'c', 'a']); // most asked first
+  // Four words, one in each of four answers: half of four is two, so nothing is an answer.
+  const part = search(records, 'save travel map cooperate');
   assert.deepEqual(part.found, []);
-  assert.deepEqual(part.closest.map((r) => r.id)[0], 'b'); // fast + travel
-  assert.equal(part.closest.length, 3);
+  assert.equal(part.related.length, 3);
+});
+
+test('the floor: filler, short words and words that match nothing never make an answer', () => {
+  const records = [rec('a', 'How do I save the game?', { short: 'Press the button to play.' }), rec('b', 'Is there fast travel?')];
+  for (const q of ['how do i get a million dollars fast', 'my kid wants to play too', 'fast', 'play', 'game', 'up to']) assert.deepEqual(ids(records, q), [], q);
+  assert.deepEqual(ids(records, 'how do i save my game'), ['a']);
+});
+
+test('generic words such as mode and change rank an answer but never make one alone', () => {
+  const records = [rec('a', 'Is there a 60 fps or performance mode?'), rec('b', 'How do I change my controls?')];
+  assert.deepEqual(ids(records, 'is there a battle royale mode'), []);
+  assert.deepEqual(ids(records, 'change my username'), []);
+  assert.deepEqual(ids(records, 'performance mode'), ['a']);
+  assert.deepEqual(ids(records, 'change controls'), ['b']);
+});
+
+test('swapped neighbouring letters are one typo, from four letters; other typos need five', () => {
+  const records = [rec('a', 'How do I save?'), rec('b', 'Is there a map?')];
+  assert.deepEqual(ids(records, 'how do i svae my game'), ['a']);
+  assert.deepEqual(ids(records, 'mpa'), []); // three letters: no typo at all
+  assert.deepEqual(ids(records, 'sabe'), []); // a wrong letter in a four-letter word is not forgiven
+  assert.deepEqual(ids([rec('c', 'How do I use the cash?')], 'crash'), []); // cash is not crash
 });
 
 test('asks where: only questions about where something is', () => {
