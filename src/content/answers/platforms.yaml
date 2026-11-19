@@ -26,3 +26,31 @@ sources:
     console: ps5
 checked: "2026-11-19"
 rank: 15
+support:
+  - claim: "Rockstar lists PS5 and Xbox Series X|S"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "You can pre-order Grand Theft Auto VI for PlayStation 5 and XBOX Series X|S."
+    checked: "2026-11-19"
+  - claim: "the newswire post names only those two consoles"
+    url: "https://www.rockstargames.com/newswire/article/k4ak9okk485712/grand-theft-auto-vi-pre-load-begins-on-november-10"
+    quote: "The arrival of Grand Theft Auto VI on PlayStation 5 and XBOX Series X|S consoles is now only a few weeks away."
+    checked: "2026-11-19"
+  - claim: "the newswire post title uses the word pre-load"
+    url: "https://www.rockstargames.com/newswire/article/k4ak9okk485712/grand-theft-auto-vi-pre-load-begins-on-november-10"
+    quote: "Grand Theft Auto VI Pre-Load Begins on November 10"
+    checked: "2026-11-19"
+  - claim: "PS5: the PlayStation Store lists it for PS5"
+    url: "https://www.playstation.com/en-us/games/grand-theft-auto-vi/"
+    quote: "Available on PS5"
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "Xbox: Xbox One only through Cloud Gaming"
+    url: "https://www.xbox.com/en-us/games/grand-theft-auto-vi"
+    quote: "XBOX One players can also experience the game with XBOX Cloud Gaming*."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "Xbox: Rockstar lists Xbox One only through Cloud Gaming"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "GTAVI will be available via XBOX Cloud Gaming on XBOX Series X|S and XBOX One consoles, utilizing XBOX Series S graphics settings."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]

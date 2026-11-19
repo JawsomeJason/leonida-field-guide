@@ -43,7 +43,7 @@ test('a record whose sources mix official and other hosts says per claim which i
 
 test('the install-size answer names the publisher claim and the news claim separately', () => {
   const a = records.find((r) => r.id === 'install-size-and-preload');
-  assert.deepEqual(a.basis.map((b) => b.confidence), ['official', 'reported']);
+  assert.deepEqual(a.basis.map((b) => b.confidence), ['official', 'official', 'reported']); // the space, each console's storage size, then the Series S's usable space
   assert.equal(a.confidence, 'reported');
 });
 

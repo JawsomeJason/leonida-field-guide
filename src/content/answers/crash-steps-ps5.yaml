@@ -1,13 +1,13 @@
 id: crash-steps-ps5
 question: "My PS5 game crashes or freezes. What do I try, in order?"
-short: "Restart the game, check for a game update, update the PS5 system software, then upload your saves (PlayStation Plus), delete the game and download it again. Still crashing: contact PlayStation Support."
+short: "Check the game fully downloaded and is up to date, update the PS5 system software, then upload your saves (PlayStation Plus), delete the game and download it again. Still crashing: contact PlayStation Support."
 body: |-
-  In this order, from PlayStation's own support page. Also check [Known problems and what changed](/new/).
+  In this order, from PlayStation's own support pages. Also check [Known problems and what changed](/new/).
   1. Check [PlayStation status](https://status.playstation.com/). Wait if there are alerts.
   2. Make sure the game fully downloaded: highlight it, press {options}, choose Information, then Download Status.
   3. Check for a game update: highlight the game, press {options}, then choose Check for Update.
   4. Update the system software: Settings, System, System Software, System Software Update and Settings.
-  5. Delete the game and download it again from your Game Library. You keep what you bought. PlayStation does not say what happens to saved data, so upload it first if you have PlayStation Plus (Settings, Saved Data and Game/App Settings). To delete: Settings, Storage, Console Storage, Games and Apps.
+  5. Delete the game and download it again from your Game Library. You keep what you bought. Saved data is separate, so upload it first if you have PlayStation Plus (Settings, Saved Data and Game/App Settings). To delete: Settings, Storage, Console Storage, Games and Apps.
   6. Safe Mode (a start-up menu with repair tools): choose Clear Cache and Rebuild Database. It scans the drive and builds a fresh list of what is installed. Sony warns that some Safe Mode options erase data, so back up first, and do not pick a Reset option.
      - To start it: hold the power button for three seconds to turn the PS5 off. Hold it again and let go after the second beep (about seven seconds). Plug in a controller with a USB cable and press the PS button.
   7. Still crashing? Contact PlayStation Support from the link at the bottom of [PlayStation's crash page](https://www.playstation.com/en-us/support/games/game-freeze-crash/). Tell them what happens and how to repeat it, and add a screenshot or video. For a problem in this game, PlayStation says to ask the publisher too: [Rockstar Support](https://support.rockstargames.com/request).
@@ -26,7 +26,71 @@ sources:
   - url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
     title: "How to manage storage space on your PS5 console (PlayStation Support)"
     console: ps5
+  - url: "https://www.playstation.com/support/games/troubleshoot-downloaded-playstation-game/"
+    title: "How to troubleshoot game downloads from PlayStation Store (PlayStation Support)"
+    console: ps5
   - url: "https://support.rockstargames.com/request"
     title: "Submit a Request (Rockstar Support)"
 checked: "2026-11-19"
 keywords: ["crash", "crashing", "keeps crashing", "freezing", "game crashes"]
+support:
+  - claim: "check the PlayStation status page first"
+    url: "https://www.playstation.com/support/games/troubleshoot-downloaded-playstation-game/"
+    quote: "Check the PlayStation status page. If you see any alerts, wait until the service is up and running and then try again."
+    checked: "2026-11-19"
+  - claim: "check the game fully downloaded"
+    url: "https://www.playstation.com/en-us/support/games/game-freeze-crash/"
+    quote: "Check the game has fully downloaded and installed. Highlight the game you want to check and press the Options button > Information > Download Status."
+    checked: "2026-11-19"
+  - claim: "check for a game update"
+    url: "https://www.playstation.com/en-us/support/games/game-freeze-crash/"
+    quote: "Check the game is updated to the latest version."
+    checked: "2026-11-19"
+  - claim: "update the system software and where to find it"
+    url: "https://www.playstation.com/support/games/troubleshoot-downloaded-playstation-game/"
+    quote: "Go to Settings > System > System Software > System Software Update and Settings."
+    checked: "2026-11-19"
+  - claim: "delete the game and download it again"
+    url: "https://www.playstation.com/en-us/support/games/game-freeze-crash/"
+    quote: "Delete the game from your console. Download and reinstall the game."
+    checked: "2026-11-19"
+  - claim: "deleting a game does not remove your purchase"
+    url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
+    quote: "you won't lose access to any deleted games or applications"
+    checked: "2026-11-19"
+  - claim: "where to delete a game"
+    url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
+    quote: "Go to Settings > Storage > Console Storage > Games and Apps."
+    checked: "2026-11-19"
+  - claim: "saved data can be uploaded with PlayStation Plus"
+    url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
+    quote: "When you're a PlayStation Plus member, you can upload your saved data to cloud storage."
+    checked: "2026-11-19"
+  - claim: "how to start Safe Mode: power off"
+    url: "https://www.playstation.com/en-us/support/hardware/safe-mode-playstation/"
+    quote: "Turn off your console by holding the power button for three seconds."
+    checked: "2026-11-19"
+  - claim: "how to start Safe Mode: second beep"
+    url: "https://www.playstation.com/en-us/support/hardware/safe-mode-playstation/"
+    quote: "Release it after you hear the second beep"
+    checked: "2026-11-19"
+  - claim: "how to start Safe Mode: controller"
+    url: "https://www.playstation.com/en-us/support/hardware/safe-mode-playstation/"
+    quote: "Connect the controller with the USB cable and press the PS button on the controller."
+    checked: "2026-11-19"
+  - claim: "Clear Cache and Rebuild Database scans the drive"
+    url: "https://www.playstation.com/en-us/support/hardware/safe-mode-playstation/"
+    quote: "Select Rebuild Database to scan the drive"
+    checked: "2026-11-19"
+  - claim: "some Safe Mode options erase data"
+    url: "https://www.playstation.com/en-us/support/hardware/safe-mode-playstation/"
+    quote: "Some Safe Mode options will result in the loss of data."
+    checked: "2026-11-19"
+  - claim: "contact PlayStation Support with details and a screenshot or video"
+    url: "https://www.playstation.com/en-us/support/games/game-freeze-crash/"
+    quote: "A detailed description of what happens and steps to replicate the issue. A screenshot or video of the issue if possible."
+    checked: "2026-11-19"
+  - claim: "a problem in one game: ask the publisher too"
+    url: "https://www.playstation.com/en-us/support/games/game-freeze-crash/"
+    quote: "please contact the game publisher to see if there are any known issues with the game."
+    checked: "2026-11-19"

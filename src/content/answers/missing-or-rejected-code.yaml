@@ -18,8 +18,8 @@ tier: none
 consoles: all
 byConsole:
   ps5: "Check you redeemed it on the PlayStation account you play on, and that it matches the code's country group. Bought in the PlayStation Store: contact PlayStation Support. Otherwise Rockstar's activation help is the next step."
-  xbox-x: "Check you redeemed it on the Microsoft account you play on. Xbox codes are not limited to one country (region-locked). Bought in the Microsoft Store: contact Xbox Support. Otherwise Rockstar's activation help is the next step."
-  xbox-s: "Check you redeemed it on the Microsoft account you play on. Xbox codes are not limited to one country (region-locked). Bought in the Microsoft Store: contact Xbox Support. Otherwise Rockstar's activation help is the next step."
+  xbox-x: "Check you redeemed it on the Microsoft account you play on. An Xbox code is not tied to one country. Bought in the Microsoft Store: contact Xbox Support. Otherwise Rockstar's activation help is the next step."
+  xbox-s: "Check you redeemed it on the Microsoft account you play on. An Xbox code is not tied to one country. Bought in the Microsoft Store: contact Xbox Support. Otherwise Rockstar's activation help is the next step."
 confidence: official
 sources:
   - url: "https://support.rockstargames.com/articles/5gwDh0peG05GQhMej2ukbY/game-activation-for-grand-theft-auto-vi"
@@ -30,6 +30,63 @@ sources:
     title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
   - url: "https://support.rockstargames.com/request"
     title: "Submit a Request (Rockstar Support)"
+  - url: "https://www.playstation.com/support/store/redeem-ps-store-voucher-code"
+    title: "How to redeem a PlayStation Store voucher code (PlayStation Support)"
+    console: ps5
+  - url: "https://support.xbox.com/help/subscriptions-billing/redeem-codes-gifting/redeem-prepaid-codes"
+    title: "How to redeem gift cards, codes, and offers (Xbox Support)"
+    console: [xbox-x, xbox-s]
 checked: "2026-11-19"
 rank: 7
 keywords: ["code doesnt work", "code not working", "invalid code", "wont redeem", "code error"]
+support:
+  - claim: "Rockstar's activation help covers a boxed copy or a gifted code"
+    url: "https://support.rockstargames.com/articles/5gwDh0peG05GQhMej2ukbY/game-activation-for-grand-theft-auto-vi"
+    quote: "whether a physical (code-in-box) version or a gifted digital game code, visit the support link of your platform below"
+    checked: "2026-11-19"
+  - claim: "Rockstar says it is available 24/7"
+    url: "https://support.rockstargames.com/articles/5gwDh0peG05GQhMej2ukbY/game-activation-for-grand-theft-auto-vi"
+    quote: "We're available to assist you 24/7."
+    checked: "2026-11-19"
+  - claim: "boxed copies hold a download code and no disc"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "A disc will not be included in the box."
+    checked: "2026-11-19"
+  - claim: "Rockstar Store physical copies: contact Xsolla"
+    url: "https://support.rockstargames.com/articles/40DHWEDBnq5jUuWJqKcH02/grand-theft-auto-vi-pre-order-purchase-support-faq"
+    quote: "For issues with physical version purchases completed on the Rockstar Store, contact Xsolla support at the link below:"
+    checked: "2026-11-19"
+  - claim: "other retailers: ask the retailer"
+    url: "https://support.rockstargames.com/articles/40DHWEDBnq5jUuWJqKcH02/grand-theft-auto-vi-pre-order-purchase-support-faq"
+    quote: "should be directed to the retailer where you purchased Grand Theft Auto VI."
+    checked: "2026-11-19"
+  - claim: "PS5: match the code's country group"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "Codes purchased in the following regions are to only be used by users holding an account for PlayStation registered to a specific set of countries as follows:"
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "PS5: redeem on the account you play on"
+    url: "https://www.playstation.com/support/store/redeem-ps-store-voucher-code"
+    quote: "It isn't possible to transfer funds or content between accounts, so make sure to redeem your code on the correct account."
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "PS5: PlayStation Store purchases go to PlayStation Support"
+    url: "https://support.rockstargames.com/articles/40DHWEDBnq5jUuWJqKcH02/grand-theft-auto-vi-pre-order-purchase-support-faq"
+    quote: "PlayStation Support: https://www.playstation.com/en-us/support/"
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "Xbox codes are not tied to one country"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "XBOX: Codes purchased are not region-locked."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "Xbox: redeem on the account you play on"
+    url: "https://support.xbox.com/help/subscriptions-billing/redeem-codes-gifting/redeem-prepaid-codes"
+    quote: "Make sure that you're signed in to the correct Microsoft account before redeeming."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "Xbox: Microsoft Store purchases go to Xbox Support"
+    url: "https://support.rockstargames.com/articles/40DHWEDBnq5jUuWJqKcH02/grand-theft-auto-vi-pre-order-purchase-support-faq"
+    quote: "Xbox Support: https://support.xbox.com/en-US/contact-us"
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]

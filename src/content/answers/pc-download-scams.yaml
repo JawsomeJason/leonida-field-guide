@@ -21,3 +21,8 @@ sources:
   - url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
     title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
 checked: "2026-11-19"
+support:
+  - claim: "that no Windows version is announced"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "You can pre-order Grand Theft Auto VI for PlayStation 5 and XBOX Series X|S."
+    checked: "2026-11-19"

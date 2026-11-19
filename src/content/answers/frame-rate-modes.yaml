@@ -1,6 +1,6 @@
 id: frame-rate-modes
 question: "Is there a 60 fps or performance mode?"
-short: "No console has a 40 or 60 fps mode: every one targets 30 fps, Digital Foundry found."
+short: "No console has a 40 or 60 fps mode; every one targets 30 fps. Digital Foundry found this."
 body: |-
   - Input lag (the delay between moving the stick and the camera moving) was about 180 ms, similar to other Rockstar 30 fps games. Digital Foundry measured it on one console, with a wireless controller, plus about 10 ms of delay in the display. It did not change at 60 Hz, 120 Hz or 120 Hz VRR.
   - TechPowerUp says Rockstar confirmed the 30 fps target. We have not seen that on a Rockstar page.
@@ -10,9 +10,9 @@ stage: hour-1
 tier: none
 consoles: all
 byConsole:
-  ps5: "There is no 40 or 60 fps mode, not even on PS5 Pro: the game targets 30 fps, Digital Foundry found. It reports PS5 Pro holds 30 fps, with brief drops to 24 in heavy explosions. A base PS5 drifts between 30 and the high 20s, and can reach the low 20s at worst."
-  xbox-x: "There is no 40 or 60 fps mode: the game targets 30 fps, Digital Foundry found. It reports a Series X drifts between 30 and the high 20s, dips to the mid 20s in heavy explosions and the low 20s at worst. Its camera lag measured about 180 ms, normal for a Rockstar 30 fps game."
-  xbox-s: "There is no 40 or 60 fps mode: the game targets 30 fps, Digital Foundry found. It reports a Series S often sits in the mid to high 20s and drops to about 20 in heavy explosions. Input lag was measured on one console only: about 180 ms."
+  ps5: "No 40 or 60 fps mode, not even on PS5 Pro: the game targets 30 fps. Digital Foundry found this. It reports PS5 Pro holds 30 fps, with brief drops to 24 in heavy explosions. A base PS5 drifts between 30 and the high 20s, and can reach the low 20s at worst."
+  xbox-x: "No 40 or 60 fps mode: the game targets 30 fps. Digital Foundry found this. It reports a Series X drifts between 30 and the high 20s, dips to the mid 20s in heavy explosions and the low 20s at worst. Its camera lag measured about 180 ms, normal for a Rockstar 30 fps game."
+  xbox-s: "No 40 or 60 fps mode: the game targets 30 fps. Digital Foundry found this. It reports a Series S often sits in the mid to high 20s and drops to about 20 in heavy explosions. Input lag was measured on one console only: about 180 ms."
 confidence: reported
 sources:
   - url: "https://www.digitalfoundry.net/features/gta-6-ps5-vs-ps5-pro-xbox-series-x-and-series-s-which-console-plays-best"

@@ -12,15 +12,20 @@ stage: hour-1
 tier: none
 consoles: all
 byConsole:
-  ps5: "Check status.playstation.com. Restart the game, then update the game and the PS5 system software. Still crashing: upload your saves first (PlayStation Plus), then delete and reinstall it, or use Safe Mode (a start-up menu with repair tools). Then contact PlayStation Support."
-  xbox-x: "Check Xbox's status page. Quit and restart the game, then switch the console fully off and on again (a power cycle: hold its Xbox button for 10 seconds). Then update the console and test your network. Still crashing: contact Xbox Support."
-  xbox-s: "Check Xbox's status page. Quit and restart the game, then switch the console fully off and on again (a power cycle: hold its Xbox button for 10 seconds). Then update the console and test your network. Still crashing: contact Xbox Support."
+  ps5: "Check status.playstation.com. Update the game and the PS5 system software. Still crashing: upload your saves first (PlayStation Plus), then delete and reinstall it. Then contact PlayStation Support."
+  xbox-x: "Check Xbox's status page. Quit and restart the game, then switch the console fully off and on again (a power cycle: hold its Xbox button for 10 seconds). Then test your network, and update the console if it asks. Still crashing: contact Xbox Support."
+  xbox-s: "Check Xbox's status page. Quit and restart the game, then switch the console fully off and on again (a power cycle: hold its Xbox button for 10 seconds). Then test your network, and update the console if it asks. Still crashing: contact Xbox Support."
 confidence: official
 sources:
   - url: "https://support.rockstargames.com/servicestatus"
     title: "Service Status (Rockstar Support)"
   - url: "https://support.rockstargames.com/request"
     title: "Submit a Request (Rockstar Support)"
+  - url: "https://support.rockstargames.com/articles/5gwDh0peG05GQhMej2ukbY/game-activation-for-grand-theft-auto-vi"
+    title: "Game Activation for Grand Theft Auto VI (Rockstar Support)"
+  - url: "https://www.playstation.com/support/games/troubleshoot-downloaded-playstation-game/"
+    title: "How to troubleshoot game downloads from PlayStation Store (PlayStation Support)"
+    console: ps5
   - url: "https://www.playstation.com/en-us/support/games/game-freeze-crash/"
     title: "PlayStation game freezes or crashes (PlayStation Support)"
     console: ps5
@@ -30,3 +35,51 @@ sources:
 checked: "2026-11-19"
 rank: 2
 keywords: ["crash", "crashing", "freezing", "wont start", "game crashes"]
+support:
+  - claim: "Rockstar's status page showed all services operational on 19 November"
+    url: "https://support.rockstargames.com/servicestatus"
+    quote: "All services operational As of November 19, 2026"
+    checked: "2026-11-19"
+  - claim: "Rockstar says support is available 24/7"
+    url: "https://support.rockstargames.com/articles/5gwDh0peG05GQhMej2ukbY/game-activation-for-grand-theft-auto-vi"
+    quote: "We're available to assist you 24/7."
+    checked: "2026-11-19"
+  - claim: "Rockstar has a support request form with Grand Theft Auto VI as a topic"
+    url: "https://support.rockstargames.com/request"
+    quote: "What do you need help with? Store Account GTA+ Grand Theft Auto VI"
+    checked: "2026-11-19"
+  - claim: "check status, update the game and the PS5 system software, upload saves, delete and reinstall, Safe Mode"
+    url: "https://www.playstation.com/en-us/support/games/game-freeze-crash/"
+    quote: "Check the game is updated to the latest version."
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "PS5: update the system software"
+    url: "https://www.playstation.com/en-us/support/games/game-freeze-crash/"
+    quote: "Make sure your system software is the latest version."
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "PS5: contact PlayStation Support"
+    url: "https://www.playstation.com/en-us/support/games/game-freeze-crash/"
+    quote: "If you're still having issues contact us using the link at the bottom of this page."
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "Xbox: restart the game"
+    url: "https://support.xbox.com/en-US/help/games-apps/troubleshooting/game-issues-solution"
+    quote: "Sometimes a game freeze or startup problem can be caused by a temporary issue that can be corrected simply by exiting and restarting the game."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "Xbox: power cycle erases nothing"
+    url: "https://support.xbox.com/en-US/help/games-apps/troubleshooting/game-issues-solution"
+    quote: "A full power cycle completely reboots your console. Doing this does not erase any of your games or data."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "Xbox: test the network"
+    url: "https://support.xbox.com/en-US/help/games-apps/troubleshooting/game-issues-solution"
+    quote: "On the Network settings screen, select Test network connection."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "Xbox: check outages and known issues first"
+    url: "https://support.xbox.com/en-US/help/games-apps/troubleshooting/game-issues-solution"
+    quote: "Check for service outages: XBOX status page Check the known issues for game launches page"
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
