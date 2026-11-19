@@ -139,7 +139,7 @@ test('Will I lose anything? is the one place for uninstalling, saves and cash, s
     // A reported record's headline never reads as certain that saves come back: round 4 found "Uninstalling loses nothing ... saved data comes back".
     assert.doesNotMatch(h, /loses nothing|comes? (right )?back|will be (kept|safe)|nothing (is|will be) lost/i, h);
     assert.match(h, /not confirmed|does not say/, `a headline says saves are unconfirmed: ${h}`);
-    assert.match(h, /before you (delete|uninstall)|check first|upload it first|stay signed in/i, `a headline says what to do first: ${h}`);
+    assert.match(h, /before you (delete|uninstall)|check first|upload (it|them) first|stay signed in/i, `a headline says what to do first: ${h}`);
     assert.match(h, /carried cash can be lost/i, h);
     assert.match(h, /bank it/i, `the cash warning carries its remedy: ${h}`);
   }
