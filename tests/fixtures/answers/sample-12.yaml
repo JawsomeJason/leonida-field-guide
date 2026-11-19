@@ -1,0 +1,13 @@
+id: sample-12
+question: "Sample question 12: how do I do thing 12?"
+short: "Sample answer 12: do thing 12 like this."
+topic: controls
+stage: week-1
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+rank: 12

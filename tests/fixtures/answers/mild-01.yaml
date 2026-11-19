@@ -1,0 +1,12 @@
+id: mild-01
+question: "What does the wombat switch do?"
+short: "The wombat switch opens the sample door."
+topic: settings
+stage: hour-1
+tier: mild
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"

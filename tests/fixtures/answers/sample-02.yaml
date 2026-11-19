@@ -1,0 +1,19 @@
+id: sample-02
+question: "Sample question 02: how do I do thing 02?"
+short: "Sample answer 02: do thing 02 like this."
+topic: settings
+stage: hour-1
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+rank: 2
+todo: "Do sample thing 02"
+reveal:
+  - tier: mild
+    text: Wombat note one for the mild reveal of sample two.
+  - tier: places
+    text: Quokka note one for the places reveal of sample two.

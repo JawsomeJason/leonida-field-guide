@@ -1,0 +1,13 @@
+id: sample-09
+question: "Sample question 09: how do I do thing 09?"
+short: "Sample answer 09: do thing 09 like this."
+topic: good-to-know
+stage: before
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+rank: 9

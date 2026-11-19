@@ -1,0 +1,16 @@
+id: sample-04
+question: "Sample question 04: how do I do thing 04?"
+short: "Press {cross} to open the sample menu."
+topic: saving
+stage: week-1
+tier: none
+consoles: all
+byConsole:
+  xbox-x: "Press {cross} to open the sample menu on this console."
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+rank: 4
+todo: "Do sample thing 04"

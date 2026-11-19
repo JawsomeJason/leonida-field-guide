@@ -1,0 +1,13 @@
+id: sample-06
+question: "Sample question 06: how do I do thing 06?"
+short: "Sample answer 06: do thing 06 like this."
+topic: getting-around
+stage: hour-1
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+rank: 6

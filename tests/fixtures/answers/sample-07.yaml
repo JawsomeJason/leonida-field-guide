@@ -1,0 +1,14 @@
+id: sample-07
+question: "Sample question 07: how do I do thing 07?"
+short: "Sample answer 07: do thing 07 like this."
+topic: bonuses
+stage: day-1
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+rank: 7
+todo: "Do sample thing 07"

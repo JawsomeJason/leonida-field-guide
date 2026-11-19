@@ -1,0 +1,13 @@
+id: sample-18
+question: "Sample question 18: how do I do thing 18?"
+short: "Sample answer 18: do thing 18 like this."
+topic: good-to-know
+stage: hour-1
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+rank: 18
