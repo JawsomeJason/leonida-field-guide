@@ -1,4 +1,5 @@
 // Vercel Routing Middleware: the password gate in front of every page and asset. Thin wrapper over src/lib/gate.ts.
+import { next } from '@vercel/functions';
 import { decide, loginPage } from './src/lib/gate';
 
 declare const process: { env: Record<string, string | undefined> };
@@ -34,7 +35,7 @@ export default async function middleware(request: Request) {
 
   switch (d.action) {
     case 'allow':
-      return new Response(null, { headers: { 'x-middleware-next': '1' } }); // what next() from @vercel/functions sends
+      return next();
     case 'set-cookie-redirect':
       return new Response(null, { status: 303, headers: { ...headers, location: d.location, 'set-cookie': d.setCookie } });
     case 'refuse':
