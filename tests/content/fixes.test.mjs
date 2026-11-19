@@ -17,14 +17,18 @@ test('"Before you start" lists steps by what depends on what: redeem, then room,
   assert.ok(at('ps5-system-update') < at('install-size-and-preload') && at('xbox-system-update') < at('install-size-and-preload'), 'update the console before the download');
 });
 
-test('install size: the Series S usable-space figure, its source, a link to the space answer, and the next step', () => {
+test('install size: the official answer rests on official pages; the Series S usable-space figure lives in its own reported answer', () => {
   const a = get('install-size-and-preload');
-  assert.match(a.byConsole['xbox-s'], /364 GB usable/);
-  assert.match(a.byConsole['xbox-s'], /IGN/);
+  assert.equal(a.confidence, 'official');
+  assert.doesNotMatch(all(a), /364|IGN/);
+  assert.ok(a.sources.every((s) => /(^|\.)(rockstargames|playstation|xbox)\.com$/.test(new URL(s.url).hostname)), 'every source of the official answer is on an official host');
   assert.match(a.body, /\]\(\/a\/series-s-space\/\)/);
   assert.match(a.body, /check your free space, then clear the difference/i);
-  assert.ok(a.sources.some((s) => s.url.includes('ign.com')));
-  assert.doesNotMatch(all(a), /See the 512 GB card/);
+  assert.match(a.byConsole['xbox-s'], /part of the drive is reserved/);
+  const s = get('series-s-space');
+  assert.equal(s.confidence, 'reported');
+  assert.match(s.short, /364 GB/);
+  assert.ok(s.sources.some((x) => x.url.includes('ign.com')));
 });
 
 test('an official record that cites a news site says so in its text', () => {
@@ -41,7 +45,7 @@ test('unlock time and missing code: the official card holds official sources onl
     const a = get(id);
     assert.equal(a.confidence, 'official');
     assert.ok(a.sources.every((s) => /rockstargames|playstation|xbox/.test(s.url)), `${id} cites a news site`);
-    assert.doesNotMatch(all(a), /Forbes|Notebookcheck/);
+    assert.doesNotMatch(all(a), /Notebookcheck/);
   }
   assert.equal(get('unlock-time-us-zones').confidence, 'reported');
   assert.equal(get('boxed-copy-no-code').confidence, 'reported');
@@ -70,4 +74,55 @@ test('jargon comes second: a plain phrase first, the term after it in brackets o
 
 test('the printable map answer does not speak of a date that has passed as still to come', () => {
   assert.doesNotMatch(all(get('printable-map-and-poster')), /\bwould add\b/);
+});
+
+test('the two unlock-time answers name their disagreement, and each says which source says which', () => {
+  const official = all(get('unlock-time'));
+  const zones = all(get('unlock-time-us-zones'));
+  for (const text of [official, zones]) {
+    assert.match(text, /Rockstar[^.]*midnight local/i);
+    assert.match(text, /Forbes[^.]*(earlier|evening)/i);
+    assert.match(text, /do not match|disagree/i);
+  }
+  assert.match(get('unlock-time-us-zones').short, /disagree/);
+  assert.equal(get('unlock-time').confidence, 'official');
+  assert.ok(get('unlock-time').sources.every((s) => !s.url.includes('forbes.com')), 'the official card never cites Forbes');
+});
+
+test('the early-unlock answer says only what its source says: reportedly warned, not a flat claim that it breaks the terms', () => {
+  const a = get('early-unlock-trick');
+  assert.doesNotMatch([a.short, a.body].join(' '), /\bbreaks? the (platform's )?terms\b/i);
+  assert.match(a.short, /Notebookcheck reports/);
+  assert.match(a.body, /allegedly|reportedly/i);
+});
+
+test('Remote Play is said to be supported by Rockstar, with the PlayStation page for PS5', () => {
+  const a = get('cloud-gaming-remote-play');
+  assert.doesNotMatch(a.short, /fully supported on your console/);
+  assert.match(a.short, /^Rockstar says/);
+  assert.ok(a.sources.some((s) => s.url.includes('playstation.com') && s.console === 'ps5'));
+});
+
+test('launch day has come: no step or question speaks of the launch as still to wait for', () => {
+  assert.equal(get('unlock-time').todo, 'Check the game is ready to play on your console');
+  assert.doesNotMatch(get('unlock-time').short, /Check your console's countdown/);
+  assert.doesNotMatch(get('auto-preload-settings').question, /before launch/);
+  assert.doesNotMatch(get('ps5-system-update').short, /before midnight/);
+  assert.match(get('ps5-system-update').short, /Launch day has come/);
+});
+
+test('Will I lose anything? is the one place for uninstalling, saves and cash, and says what is not known', () => {
+  const a = get('will-i-lose-anything');
+  assert.equal(a.tier, 'none');
+  assert.ok(a.rank <= 8, 'it is in the first Most asked rows');
+  assert.match(a.body, /What we do not know/);
+  assert.doesNotMatch([a.short, a.body, ...Object.values(a.byConsole)].join(' '), /ATM|bank|deposit/i);
+  for (const c of ['ps5', 'xbox-x', 'xbox-s']) assert.ok(a.byConsole[c].length <= 240 && /Carried cash can be lost/.test(a.byConsole[c]), c);
+  assert.ok(a.sources.some((s) => s.console === 'ps5') && a.sources.some((s) => Array.isArray(s.console)));
+  for (const id of ['free-space-xbox', 'free-space-ps5', 'cloud-saves-and-backup', 'keep-your-cash'])
+    assert.match(all(get(id)), /\]\(\/a\/will-i-lose-anything\/\)|\"Will I lose anything\?\" answer/, `${id} points to it`);
+});
+
+test('the printable map answer says where in the cited post the announcement sits', () => {
+  assert.match(all(get('printable-map-and-poster')), /last paragraphs/);
 });

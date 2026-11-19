@@ -1,175 +1,209 @@
 {
- "_how": "Every record and every reveal, with the tier it holds and why, from the rule in docs/spec.md 'The spoiler dial'. Off: what the game itself teaches every player (menus, tutorials, launch material). Mild: what you would rather find out by playing. Places: where things are. Change a tier and this file together.",
+ "_how": "Every record and every reveal, with the tier it holds and why, from the line in docs/spec.md 'The spoiler dial'. Off holds the basics: setup, install, account and bonus codes, settings, controls, saving, performance, known problems and fixes, what is and is not in the game at launch, and one plain line of warning where a player could lose something. For a game system, Off may say only that it exists. Mild holds how a game system works in play: named in-game apps and services, prices and fees, how selling or stealing works, how police respond, how stats rise, and anything a press guide learned by playing rather than Rockstar stating it before launch. Places: where things are. Each Off record says which part of the Off list it holds (holds); one that rests on a play-guide source says why that is fine (pressGuide). Change a tier and this file together.",
  "records": [
   {
    "id": "aiming-options",
    "tier": "none",
-   "reason": "a settings menu choice every player is shown"
+   "reason": "a settings menu choice every player is shown",
+   "holds": "controls"
   },
   {
    "id": "auto-preload-settings",
    "tier": "none",
-   "reason": "console setting from the publisher and console maker pages"
+   "reason": "console setting from the publisher and console maker pages",
+   "holds": "install"
   },
   {
    "id": "avoid-spoilers",
    "tier": "none",
-   "reason": "how to mute things; teaches nothing about the game"
+   "reason": "how to mute things; teaches nothing about the game",
+   "holds": "settings"
   },
   {
    "id": "best-settings-first",
    "tier": "none",
-   "reason": "settings menus"
+   "reason": "settings menus",
+   "holds": "settings"
   },
   {
    "id": "boxed-copy-no-code",
    "tier": "none",
-   "reason": "a launch-week purchase problem and where to go; no gameplay"
+   "reason": "a launch-week purchase problem and where to go; no gameplay",
+   "holds": "codes"
   },
   {
    "id": "boxed-copy-redeem",
    "tier": "none",
-   "reason": "how to redeem and download; from the publisher"
+   "reason": "how to redeem and download; from the publisher",
+   "holds": "setup"
   },
   {
    "id": "cloud-gaming-remote-play",
    "tier": "none",
-   "reason": "how the game can be streamed; from the publisher"
+   "reason": "how the game can be streamed; from the publisher",
+   "holds": "launch-fact"
   },
   {
    "id": "cloud-saves-and-backup",
    "tier": "none",
-   "reason": "saving basics for every player"
+   "reason": "saving basics for every player",
+   "holds": "saving"
   },
   {
    "id": "code-regions",
    "tier": "none",
-   "reason": "how codes and regions work; from the publisher"
+   "reason": "how codes and regions work; from the publisher",
+   "holds": "codes"
   },
   {
    "id": "code-regions-ps5",
    "tier": "none",
-   "reason": "how codes and regions work; from the console maker"
+   "reason": "how codes and regions work; from the console maker",
+   "holds": "codes"
   },
   {
    "id": "control-schemes",
    "tier": "none",
-   "reason": "the controls screen and layouts every player is shown"
+   "reason": "the controls screen and layouts every player is shown",
+   "holds": "controls"
   },
   {
    "id": "core-stats",
-   "tier": "none",
-   "reason": "the stats screen names the three stats and what trains them; upkeep consequences are in a Mild detail"
+   "tier": "mild",
+   "reason": "how a game system works in play: how stats rise and fade, from a press guide"
   },
   {
    "id": "crash-steps-ps5",
    "tier": "none",
-   "reason": "support steps from the console maker"
+   "reason": "support steps from the console maker",
+   "holds": "fix"
   },
   {
    "id": "crash-steps-xbox",
    "tier": "none",
-   "reason": "support steps from the console maker"
+   "reason": "support steps from the console maker",
+   "holds": "fix"
   },
   {
    "id": "crashes-and-launch-problems",
    "tier": "none",
-   "reason": "support steps and status pages"
+   "reason": "support steps and status pages",
+   "holds": "fix"
   },
   {
    "id": "day-one-patches",
    "tier": "none",
-   "reason": "update sizes shown by console download prompts"
+   "reason": "update sizes shown by console download prompts",
+   "holds": "install"
   },
   {
    "id": "early-unlock-trick",
    "tier": "none",
-   "reason": "only the warning not to do it; how it is done is in a Mild detail"
+   "reason": "only the warning not to do it; how it is done is in a Mild detail",
+   "holds": "warning"
   },
   {
    "id": "error-codes-and-ownership",
    "tier": "none",
-   "reason": "support pages from the publisher and console makers"
+   "reason": "support pages from the publisher and console makers",
+   "holds": "fix"
   },
   {
    "id": "fast-travel",
-   "tier": "none",
-   "reason": "travel options the game shows on its phone and map"
+   "tier": "mild",
+   "reason": "how a game system works in play: travel options, an in-game app and its fee, from a press guide"
   },
   {
    "id": "frame-rate-modes",
    "tier": "none",
-   "reason": "display options and performance measured by outlets"
+   "reason": "display options and performance measured by outlets",
+   "holds": "performance"
   },
   {
    "id": "free-gta-plus-month",
    "tier": "none",
-   "reason": "a store offer from the publisher"
+   "reason": "a store offer from the publisher",
+   "holds": "codes"
   },
   {
    "id": "free-space-ps5",
    "tier": "none",
-   "reason": "console storage steps from the console maker"
+   "reason": "console storage steps from the console maker",
+   "holds": "install"
   },
   {
    "id": "free-space-xbox",
    "tier": "none",
-   "reason": "console storage steps from the console maker"
+   "reason": "console storage steps from the console maker",
+   "holds": "install"
   },
   {
    "id": "hdr-calibration",
    "tier": "none",
-   "reason": "display settings"
+   "reason": "display settings",
+   "holds": "settings"
   },
   {
    "id": "how-to-save",
    "tier": "none",
-   "reason": "saving basics; the case where saving switches off is in a Mild detail"
+   "reason": "saving basics; the case where saving switches off is in a Mild detail",
+   "holds": "saving",
+   "pressGuide": "saving: a save-by-hand habit from a press guide; the slot count is stated as unconfirmed"
   },
   {
    "id": "hz-and-vrr",
    "tier": "none",
-   "reason": "display settings"
+   "reason": "display settings",
+   "holds": "performance"
   },
   {
    "id": "install-size-and-preload",
    "tier": "none",
-   "reason": "download size and space; from the publisher"
+   "reason": "download size and space; from the publisher",
+   "holds": "install"
   },
   {
    "id": "keep-your-cash",
    "tier": "none",
-   "reason": "money basics: what the game shows about carried cash and the bank"
+   "reason": "one plain line of warning where a player could lose something; how money works in play is in the Mild detail",
+   "holds": "warning",
+   "pressGuide": "only the warning line: carried cash can be lost"
   },
   {
    "id": "missing-or-rejected-code",
    "tier": "none",
-   "reason": "where to go when a code fails; the later-arriving bonus note is in a Mild detail"
+   "reason": "where to go when a code fails; the later-arriving bonus note is in a Mild detail",
+   "holds": "codes"
   },
   {
    "id": "motion-blur-and-camera-shake",
    "tier": "none",
-   "reason": "display and camera settings"
+   "reason": "display and camera settings",
+   "holds": "settings"
   },
   {
    "id": "online-or-co-op",
    "tier": "none",
-   "reason": "what modes the store page lists"
+   "reason": "what modes the store page lists",
+   "holds": "launch-fact"
   },
   {
    "id": "pc-download-scams",
    "tier": "none",
-   "reason": "safety advice"
+   "reason": "safety advice",
+   "holds": "warning"
   },
   {
    "id": "platforms",
    "tier": "none",
-   "reason": "which consoles it runs on; from the publisher"
+   "reason": "which consoles it runs on; from the publisher",
+   "holds": "launch-fact"
   },
   {
    "id": "pre-order-bonus-pack",
    "tier": "none",
-   "reason": "what the pre-order includes; from the publisher"
+   "reason": "what the pre-order includes; from the publisher",
+   "holds": "launch-fact"
   },
   {
    "id": "printable-map-and-poster",
@@ -179,85 +213,100 @@
   {
    "id": "ps5-download-stuck",
    "tier": "none",
-   "reason": "support steps from the console maker"
+   "reason": "support steps from the console maker",
+   "holds": "fix"
   },
   {
    "id": "ps5-system-update",
    "tier": "none",
-   "reason": "console setup"
+   "reason": "console setup",
+   "holds": "install"
   },
   {
    "id": "ps5-trigger-and-haptics",
    "tier": "none",
-   "reason": "controller settings"
+   "reason": "controller settings",
+   "holds": "settings"
   },
   {
    "id": "resolution-by-console",
    "tier": "none",
-   "reason": "display figures"
+   "reason": "display figures",
+   "holds": "performance"
   },
   {
    "id": "series-s-space",
    "tier": "none",
-   "reason": "storage figures"
+   "reason": "storage figures",
+   "holds": "install"
   },
   {
    "id": "social-club-rockstar-account",
    "tier": "none",
-   "reason": "account setup"
+   "reason": "account setup",
+   "holds": "account"
   },
   {
    "id": "standard-vs-ultimate",
    "tier": "none",
-   "reason": "what each edition is; from the publisher"
+   "reason": "what each edition is; from the publisher",
+   "holds": "launch-fact"
   },
   {
    "id": "stolen-cars",
-   "tier": "none",
-   "reason": "only that a phone app lists buyers and car security; the tricks are in a Mild detail"
+   "tier": "mild",
+   "reason": "how a game system works in play: what buyers want and how cars are secured, from a pre-launch report"
   },
   {
    "id": "subtitles-and-accessibility",
    "tier": "none",
-   "reason": "accessibility settings"
+   "reason": "accessibility settings",
+   "holds": "settings"
   },
   {
    "id": "unlock-time",
    "tier": "none",
-   "reason": "launch time; from the publisher"
+   "reason": "launch time; from the publisher",
+   "holds": "launch-fact"
   },
   {
    "id": "unlock-time-us-zones",
    "tier": "none",
-   "reason": "launch time by US zone; a news report"
+   "reason": "launch time by US zone; a news report",
+   "holds": "launch-fact"
   },
   {
    "id": "wanted-and-police",
+   "tier": "mild",
+   "reason": "how a game system works in play: how police respond and how to shake them"
+  },
+  {
+   "id": "will-i-lose-anything",
    "tier": "none",
-   "reason": "police basics the HUD shows every player; ways to clear it are in a Mild detail"
+   "reason": "launch-time facts from the console makers about uninstalling and saves, plus one warning line; press-learned cash details are in the Mild detail",
+   "holds": "saving",
+   "pressGuide": "the cash warning line only; the cash details are a Mild detail"
   },
   {
    "id": "xbox-download-stuck",
    "tier": "none",
-   "reason": "support steps from the console maker"
+   "reason": "support steps from the console maker",
+   "holds": "fix"
   },
   {
    "id": "xbox-says-you-dont-own-it",
    "tier": "none",
-   "reason": "support steps from the console maker"
+   "reason": "support steps from the console maker",
+   "holds": "fix"
   },
   {
    "id": "xbox-system-update",
    "tier": "none",
-   "reason": "console setup"
+   "reason": "console setup",
+   "holds": "install"
   }
  ],
  "reveals": [
-  {
-   "id": "core-stats",
-   "tier": "mild",
-   "reason": "what happens to boosts and gains over time: effects the game does not explain up front"
-  },
   {
    "id": "early-unlock-trick",
    "tier": "mild",
@@ -269,19 +318,19 @@
    "reason": "what switches saving off: an effect the game does not explain up front"
   },
   {
+   "id": "keep-your-cash",
+   "tier": "mild",
+   "reason": "how a game system works in play: where carried cash is safe, from press guides"
+  },
+  {
    "id": "missing-or-rejected-code",
    "tier": "mild",
    "reason": "a bonus that only arrives later in play: what unlocks later"
   },
   {
-   "id": "stolen-cars",
+   "id": "will-i-lose-anything",
    "tier": "mild",
-   "reason": "what expensive cars do to the police and buyers: an effect the game does not explain up front"
-  },
-  {
-   "id": "wanted-and-police",
-   "tier": "mild",
-   "reason": "ways to clear what the police remember: a trick"
+   "reason": "how a game system works in play: what dying costs, from press guides"
   }
  ]
 }

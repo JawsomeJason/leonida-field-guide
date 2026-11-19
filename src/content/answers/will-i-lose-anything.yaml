@@ -1,5 +1,5 @@
 id: will-i-lose-anything
-question: "Will I lose my game, my saves or my cash?"
+question: "Will I lose my progress, saves or cash?"
 short: "Deleting the game does not take back what you bought, and your console can back up saved data. Carried cash can be lost. Below is what we know, and what nobody has confirmed yet."
 byConsole:
   ps5: "Deleting the game does not lose it: you can download it again from your Game Library. PlayStation's page does not say what happens to saved data, so upload it first with PlayStation Plus. Carried cash can be lost."
@@ -37,7 +37,7 @@ sources:
   - url: "https://www.gamespot.com/articles/gta-6-tips-everything-i-wish-i-knew-before-i-started-playing/"
     title: "GTA 6 Tips: Everything I Wish I Knew Before I Started Playing (GameSpot)"
 checked: "2026-11-19"
-rank: 5
+rank: 6
 keywords: ["lose progress", "lose my save", "uninstall", "delete the game", "lose my money", "keep my progress"]
 reveal:
   - tier: mild
