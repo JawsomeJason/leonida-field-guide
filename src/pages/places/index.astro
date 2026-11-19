@@ -2,10 +2,12 @@
 import Base from '../../layouts/Base.astro';
 import Gate from '../../components/Gate.astro';
 import RevealList from '../../components/RevealList.astro';
+import OutsideMaps from '../../components/OutsideMaps.astro';
 ---
 
 <Base title="Places" description="Places are hidden until you turn them on.">
   <h1>Places</h1>
   <Gate />
   <RevealList tiers="places" empty="No places here yet." />
+  <OutsideMaps />
 </Base>

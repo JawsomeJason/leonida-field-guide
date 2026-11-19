@@ -44,25 +44,12 @@ for (const query of ['zzyzx qqqq', 'how do i get a million dollars fast', 'my ki
   });
 }
 
-test('no answer below Mild carries one generic line and opens the spoiler settings', async ({ page }) => {
-  await ask(page, 'zzyzx qqqq');
-  const note = page.locator('#q-mild');
-  await expect(note).toContainText('Some answers sit behind the Mild spoiler setting.');
-  expect(await note.innerText()).not.toMatch(/place|mission|story|travel|police|car/i); // it names no topic and hints at nothing
-  await press(note.getByRole('button', { name: 'Spoiler settings' }));
-  await expect(page.locator('#settings')).toBeVisible();
-  await page.keyboard.press('Escape');
-  await page.getByRole('searchbox').fill('how do i save my game'); // an answer: no line
-  await expect(note).toBeHidden();
-  await page.getByRole('searchbox').fill('where is the gun shop'); // the places note says it already
-  await expect(note).toBeHidden();
-});
-
-test('at Mild the generic line is gone', async ({ page }) => {
-  await saved(page, { dial: 'mild' });
+test('no answer says so plainly and hints at nothing hidden: no Mild line, no settings button', async ({ page }) => {
   await ask(page, 'zzyzx qqqq');
   await expect(page.getByRole('status')).toHaveText('This guide has no answer for that yet.');
-  await expect(page.locator('#q-mild')).toBeHidden();
+  await expect(page.getByText(/behind the Mild/i)).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Spoiler settings' })).toHaveCount(0);
+  await expect(page.locator('#q-mild')).toHaveCount(0);
 });
 
 test('an answer shows no floor line and no Possibly related heading', async ({ page }) => {
@@ -109,14 +96,13 @@ test('two swapped letters are one typo', async ({ page }) => {
   await expect(results(page).getByRole('link').first()).toHaveAttribute('href', '/a/find-save/');
 });
 
-test('where is something: places are hidden by design, with the gate and two outside maps', async ({ page }) => {
+test('where is something at Off: places are hidden by design, outside maps exist, one link to the Places gate and no map link', async ({ page }) => {
   await ask(page, 'where is the gun shop');
   const note = page.locator('#q-where');
   await expect(note).toBeVisible();
-  await expect(note).toContainText('hidden by design');
+  await expect(note.locator('.where-off p')).toHaveText('Places are hidden by design. Outside maps exist; they appear here once Places is on.');
+  await expect(note.getByRole('link')).toHaveCount(1);
   await expect(note.getByRole('link', { name: /Places/ })).toHaveAttribute('href', '/places/');
-  await expect(note.getByRole('link', { name: /gtamap\.io/ })).toHaveAttribute('href', 'https://gtamap.io');
-  await expect(note.getByRole('link', { name: /FullSweep/ })).toHaveAttribute('href', 'https://fullsweepmap.com');
   if (test.info().project.use.hasTouch) {
     const { problems } = await measure(page);
     expect(problems).toEqual([]);

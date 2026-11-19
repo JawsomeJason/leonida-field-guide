@@ -147,7 +147,7 @@ test('swapped neighbouring letters are one typo, from four letters; other typos 
 });
 
 test('asks where: only questions about where something is', () => {
-  for (const q of ['where is the gun shop', 'Where can I find a car', 'location of the shop', "where's the nearest bank", 'nearest garage']) assert.ok(asksWhere(q), q);
+  for (const q of ['where is the gun shop', 'Where can I find a car', 'location of the shop', "where's the nearest bank", 'nearest garage', 'map', 'is there a map']) assert.ok(asksWhere(q), q);
   for (const q of ['how do I save', 'where can I put the game', 'controls']) assert.ok(!asksWhere(q), q);
 });
 

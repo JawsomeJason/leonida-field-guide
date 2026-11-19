@@ -3,7 +3,8 @@ interface Props {
   answers: { id: string; question: string }[];
 }
 const { answers } = Astro.props;
-import OutsideList from './OutsideList.astro';
+import OutsideMaps from './OutsideMaps.astro';
+import { mapsOffLine } from '../data/outside-maps.js';
 ---
 
 <search class="ask-search">
@@ -23,15 +24,14 @@ import OutsideList from './OutsideList.astro';
   </form>
   <p id="q-status" role="status" class="ask-status"></p>
   <div id="q-where" hidden>
-    <p>Places are hidden by design, so this guide does not say where things are. Turn them on, or use a map.</p>
-    <ul class="tap-list">
-      <li><a href="/places/">Places: turn them on</a></li>
-    </ul>
-    <OutsideList links={[{ href: 'https://gtamap.io', title: 'gtamap.io' }, { href: 'https://fullsweepmap.com', title: 'FullSweep' }]} />
-  </div>
-  <div id="q-mild" hidden>
-    <p>Some answers sit behind the Mild spoiler setting.</p>
-    <button type="button" class="ask-more" popovertarget="settings">Spoiler settings</button>
+    {/* At Off (or with no script) the no-link sentence and the Places gate; at Places or Mild OutsideMaps shows the links and the dated line (CSS, from html[data-dial]). */}
+    <div class="where-off">
+      <p>Places are hidden by design. {mapsOffLine}</p>
+      <ul class="tap-list">
+        <li><a href="/places/">Places: turn them on</a></li>
+      </ul>
+    </div>
+    <OutsideMaps />
   </div>
   <h2 id="q-related" class="ask-related" hidden>Possibly related</h2>
   <ul id="q-results" class="tap-list ask-rows" hidden></ul>
@@ -86,8 +86,8 @@ import OutsideList from './OutsideList.astro';
     touch-action: manipulation;
   }
   .ask-more:active { scale: var(--press-scale-small); background: var(--press); }
-  #q-mild p { margin: 0 0 var(--space-2); }
   #q-where p { margin: 0 0 var(--space-2); }
+  html:is([data-dial='places'], [data-dial='mild']) .where-off { display: none; }
 
   .tap-list.ask-rows a { flex-direction: column; align-items: flex-start; justify-content: center; }
   .ask-rows .q { color: var(--text); }
