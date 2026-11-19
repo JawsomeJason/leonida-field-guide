@@ -80,8 +80,9 @@ test('(c) dial up while offline: the stored value changes, nothing navigates, an
   await stayed(page, url);
 
   // A hidden page's gate: the dial reaching the tier would forward to the explicit page, which is not on the device. It stays and says so.
-  await context.setOffline(false);
+  // The stored dial is cleared while still offline: coming back online with it at Places would (rightly) fetch the hidden files at once.
   await page.evaluate(() => localStorage.clear());
+  await context.setOffline(false);
   await ready(page, '/places/list/');
   await context.setOffline(true);
   const gate = page.url();
