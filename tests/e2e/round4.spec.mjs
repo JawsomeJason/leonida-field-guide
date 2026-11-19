@@ -73,10 +73,10 @@ test('the dial moves the map links in and out without a reload', async ({ page }
   await expect(page.locator(MAPS)).toHaveCount(0);
 });
 
-// The false promise: no page says an outside site hides spoilers. (/about/ is the sync-wording worker's file and is checked by theirs.)
+// The false promise: no page says an outside site hides spoilers.
 test('no page says an outside site hides spoilers', async ({ page }) => {
   const found = [];
-  for (const path of PAGES.filter((p) => p !== '/about/')) {
+  for (const path of PAGES) {
     const html = await (await page.request.get(path)).text();
     if (/hides? spoilers|spoilers (are )?hidden by default|default-on spoiler/i.test(html)) found.push(path);
   }
