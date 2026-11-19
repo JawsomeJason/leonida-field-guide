@@ -1,5 +1,6 @@
-// Progressive enhancement: registers the service worker (public/sw.js), tells it when a hidden tier is on,
-// and reveals any [data-offline] element once the default cache is complete. Fails silently.
+// Progressive enhancement: registers the service worker (public/sw.js), tells it which hidden tiers are on (it
+// drops the files of the others, so lowering the dial clears that tier from the device), and reveals any
+// [data-offline] element once the default cache is complete. Fails silently.
 const READY = '/__lfg-ready';
 const TIERS = { off: [], places: ['places'], mild: ['places', 'mild'] };
 
@@ -22,8 +23,7 @@ async function start() {
   // The dial lives in settings.js; its data-dial attribute is the one signal every change goes through.
   const root = document.documentElement;
   const sendTiers = async () => {
-    const tiers = TIERS[root.dataset.dial || 'off'] ?? [];
-    if (tiers.length) (await sw.ready).active?.postMessage({ type: 'tiers', tiers });
+    (await sw.ready).active?.postMessage({ type: 'tiers', tiers: TIERS[root.dataset.dial || 'off'] ?? [] });
   };
   new MutationObserver(sendTiers).observe(root, { attributes: true, attributeFilter: ['data-dial'] });
   sendTiers();

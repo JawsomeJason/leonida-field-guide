@@ -1,17 +1,22 @@
 // Offline cache. src/integrations/offline.mjs runs after the build: it replaces __BUILD__ below and writes
 //   /offline-urls.json            { version, urls }  default-tier URLs only, cached on install
 //   /h/<tier>/offline-urls.json   { urls }           one hidden tier, cached only once the player turns it on
-// Only same-origin GETs are touched. Redirects and error pages are never stored, so a password gate
-// in front of the network cannot overwrite a good cached page.
+// Only same-origin GETs are touched. Redirects, error pages and the gate's login page (header x-lfg-gate, which
+// the gate may answer with a 200) are never stored, so a password gate in front of the network cannot
+// overwrite a good cached page. When the player lowers the dial, the page sends the tiers that stay on and the
+// worker deletes the files of every other hidden tier from the cache.
 const VERSION = '__BUILD__';
 const CACHE = `lfg-${VERSION}`;
 const READY = '/__lfg-ready';
 const TIERS = ['places', 'mild'];
 
+// Only a real page or asset is kept: not an error, a redirect or the gate's login page.
+const keepable = (res) => res.ok && !res.redirected && !res.headers.has('x-lfg-gate');
+
 const store = async (cache, url) => {
   try {
     const res = await fetch(url, { cache: 'reload' });
-    if (!res.ok || res.redirected) return false;
+    if (!keepable(res)) return false;
     await cache.put(url, res);
     return true;
   } catch {
@@ -45,6 +50,15 @@ async function addTier(tier) {
   } catch {}
 }
 
+// The player lowered the dial: delete that tier's pages, fragments, search index and its cached mark.
+async function dropTier(tier) {
+  const cache = await caches.open(CACHE);
+  for (const req of await cache.keys()) {
+    const { pathname } = new URL(req.url);
+    if (pathname.startsWith(`/${tier}/`) || pathname.startsWith(`/h/${tier}/`) || pathname === `/__lfg-tier-${tier}`) await cache.delete(req);
+  }
+}
+
 self.addEventListener('install', (e) => {
   self.skipWaiting();
   e.waitUntil(precache());
@@ -60,7 +74,10 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('message', (e) => {
-  if (e.data?.type === 'tiers' && Array.isArray(e.data.tiers)) e.waitUntil(Promise.all(e.data.tiers.map(addTier)));
+  // `tiers` is every hidden tier that is on now: those are added, all the others are dropped.
+  if (e.data?.type === 'tiers' && Array.isArray(e.data.tiers)) {
+    e.waitUntil(Promise.all(TIERS.map((t) => (e.data.tiers.includes(t) ? addTier(t) : dropTier(t)))));
+  }
 });
 
 // Only what is already stored is served or refreshed here; nothing new is added by browsing,
@@ -73,7 +90,7 @@ self.addEventListener('fetch', (e) => {
   const refresh = async (cache) => {
     try {
       const res = await fetch(req);
-      if (res.ok && !res.redirected) await cache.put(req, res);
+      if (keepable(res)) await cache.put(req, res);
       return res;
     } catch {}
   };
@@ -85,7 +102,7 @@ self.addEventListener('fetch', (e) => {
         const held = await cache.match(req, { ignoreSearch: true });
         try {
           const res = await fetch(req); // network first
-          if (held && res.ok && !res.redirected) await cache.put(new URL(req.url).pathname, res.clone());
+          if (held && keepable(res)) await cache.put(new URL(req.url).pathname, res.clone());
           return res;
         } catch {
           return held || Response.error();
