@@ -4,15 +4,15 @@ short: "Cloud backup depends on your console. Cultured Vultures reports that pro
 body: |-
   - Rockstar has not announced shared progress between consoles.
   - Assume saves stay within your console family.
-  - For installs, saves and cash together, see [Will I lose anything?](/a/will-i-lose-anything/).
+  - For installs and saves together, see [Will I lose anything?](/a/will-i-lose-anything/).
 topic: saving
 stage: week-1
 tier: none
 consoles: all
 byConsole:
   ps5: "Not confirmed for this game. With PlayStation Plus you can upload saved data yourself: Settings, Saved Data and Game/App Settings, Saved Data (PS5), then Upload or Delete from Console Storage. Treat your save as local until Rockstar says more."
-  xbox-x: "Reported as supported: Cultured Vultures says the Xbox listing shows cloud saves, and they should sync between your Xbox consoles on one account. We could not read that on the listing ourselves. Xbox says saves sync while you are connected, and playing offline can leave the online copy out of date: stay online before you uninstall."
-  xbox-s: "Reported as supported: Cultured Vultures says the Xbox listing shows cloud saves, and they should sync between your Xbox consoles on one account. We could not read that on the listing ourselves. Xbox says saves sync while you are connected, and playing offline can leave the online copy out of date: stay online before you uninstall."
+  xbox-x: "Reported as supported: Cultured Vultures says the Xbox listing shows saves kept online (cloud saves), and they should be copied (synced) between your Xbox consoles on one account. We could not read that on the listing ourselves. Xbox says saves are copied online while you are connected, and playing offline can leave the online copy out of date: stay online before you uninstall."
+  xbox-s: "Reported as supported: Cultured Vultures says the Xbox listing shows saves kept online (cloud saves), and they should be copied (synced) between your Xbox consoles on one account. We could not read that on the listing ourselves. Xbox says saves are copied online while you are connected, and playing offline can leave the online copy out of date: stay online before you uninstall."
 confidence: reported
 sources:
   - url: "https://culturedvultures.com/does-gta-6-have-cloud-saves-and-cross-progression/"

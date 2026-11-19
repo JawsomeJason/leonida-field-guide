@@ -9,7 +9,7 @@ body: |-
   4. Update the console: Profile & system, Settings, System, Updates. Install anything you find.
   5. Test the network: Profile & system, Settings, General, Network settings, Test network connection.
   6. Try another profile (Profile & system, Add or switch). If the game works there, your own profile data may be damaged: Microsoft's steps are to remove the profile and add it again.
-  7. Uninstall the game and download it again. Xbox says saved games sync online while you are connected and come back with the game. We have not confirmed that for this game, so connect and let it sync first.
+  7. Uninstall the game and download it again. Xbox says saved games are copied online (synced) while you are connected and come back with the game. We have not confirmed that for this game, so connect and let it sync first.
   8. Still crashing? [Contact Xbox Support](https://support.xbox.com/contact-us). For a problem in this game, also use Rockstar's [support request form](https://support.rockstargames.com/request).
 topic: fixes
 stage: hour-1

@@ -61,9 +61,10 @@ test('frame rate: the measured dips and the input lag are stated, with the sourc
 });
 
 test('round 4 jargon (power cycle, pre-load, cross-progression, Optimized for Series X|S) comes second in every record, detail and to-do', () => {
-  const terms = [/power[- ]?cycl\w*/gi, /pre-?load\w*/gi, /cross-progression/gi, /Optimized for Series X\|S/g];
+  // Round 5 adds licence, sync, region-locked and cloud saves. Only the first use in a text needs its plain words.
+  const terms = [/power[- ]?cycl\w*/gi, /pre-?load\w*/gi, /cross-progression/gi, /Optimized for Series X\|S/g, /licen[cs]e\w*/gi, /\bsync\w*/gi, /region-locked/gi, /cloud saves?/gi];
   const seen = (a) => [a.question, a.short, ...Object.values(a.byConsole ?? {}), a.body, a.todo, ...(a.reveal ?? []).map((r) => r.text)].filter(Boolean);
-  const first = (text) => terms.flatMap((re) => [...text.matchAll(re)]).filter((m) => {
+  const first = (text) => terms.flatMap((re) => [...text.matchAll(re)].slice(0, 1)).filter((m) => {
     const before = text.slice(Math.max(0, m.index - 70), m.index);
     return !(before.lastIndexOf('(') > before.lastIndexOf(')') || /called $/.test(before));
   }).map((m) => m[0]);
@@ -73,6 +74,15 @@ test('round 4 jargon (power cycle, pre-load, cross-progression, Optimized for Se
   assert.deepEqual(first('Pre-load opens early.'), ['Pre-load']);
   assert.deepEqual(first('Progress shared between consoles (cross-progression) is not announced.'), []);
   assert.deepEqual(first('Switch it fully off and on again (a power cycle).'), []);
+  assert.deepEqual(first('Your licence is kept.'), ['licence']);
+  assert.deepEqual(first('Saves sync online.'), ['sync']);
+  assert.deepEqual(first('Codes are region-locked.'), ['region-locked']);
+  assert.deepEqual(first('Xbox keeps your right to play (your licence) and copies saves online (synced); it syncs while you are connected.'), []);
+});
+
+test('a record whose source title says pre-load says in its own words what that is', () => {
+  for (const a of records.filter((r) => r.sources.some((s) => /pre-?load/i.test(s.title))))
+    assert.match(all(a), /downloading (the game )?before launch \(pre-load\)/i, `${a.id} cites a page titled pre-load without saying what it means`);
 });
 
 test('jargon comes second: a plain phrase first, the term after it in brackets or "called"', () => {
@@ -91,14 +101,15 @@ test('the printable map answer does not speak of a date that has passed as still
   assert.doesNotMatch(all(get('printable-map-and-poster')), /\bwould add\b/);
 });
 
-test('the two unlock-time answers name their disagreement, and each says which source says which', () => {
+test('the reported unlock-time answer names the disagreement and which source says which; the official one makes no claim from a news site and links it', () => {
   const official = all(get('unlock-time'));
   const zones = all(get('unlock-time-us-zones'));
-  for (const text of [official, zones]) {
-    assert.match(text, /Rockstar[^.]*midnight local/i);
-    assert.match(text, /Forbes[^.]*(earlier|evening)/i);
-    assert.match(text, /do not match|disagree/i);
-  }
+  assert.match(zones, /Rockstar[^.]*midnight local/i);
+  assert.match(zones, /Forbes[^.]*(earlier|evening)/i);
+  assert.match(zones, /do not match|disagree/i);
+  // Round 5: the official card carried Forbes's claim with no citation. It now says only that a news report differs and links the card that cites it.
+  assert.doesNotMatch(official, /Forbes|Eastern|evening of 18/i);
+  assert.match(official, /news report[^\n]*\]\(\/a\/unlock-time-us-zones\/\)/);
   assert.match(get('unlock-time-us-zones').short, /disagree/);
   assert.equal(get('unlock-time').confidence, 'official');
   assert.ok(get('unlock-time').sources.every((s) => !s.url.includes('forbes.com')), 'the official card never cites Forbes');
@@ -132,31 +143,31 @@ test('Will I lose anything? is the one place for uninstalling, saves and cash, s
   assert.equal(a.confidence, 'reported');
   assert.ok(a.rank <= 8, 'it is in the first Most asked rows');
   assert.match(a.body, /What we do not know/);
-  // The details of cash stay Mild: no ATM or deposit at Off. "Bank it" is the plain remedy.
-  assert.doesNotMatch([a.short, a.body, ...Object.values(a.byConsole)].join(' '), /ATM|deposit/i);
+  // Round 5: Off says only that money can be lost; the rule and how to avoid it is the Mild detail (tests/content/loss.test.mjs holds the whole rule).
+  assert.doesNotMatch([a.short, a.body, ...Object.values(a.byConsole)].join(' '), /ATM|deposit|bank|carried cash/i);
   const headlines = [a.short, ...Object.values(a.byConsole)];
   for (const h of headlines) {
     // A reported record's headline never reads as certain that saves come back: round 4 found "Uninstalling loses nothing ... saved data comes back".
     assert.doesNotMatch(h, /loses nothing|comes? (right )?back|will be (kept|safe)|nothing (is|will be) lost/i, h);
     assert.match(h, /not confirmed|does not say/, `a headline says saves are unconfirmed: ${h}`);
     assert.match(h, /before you (delete|uninstall)|check first|upload (it|them) first|stay signed in/i, `a headline says what to do first: ${h}`);
-    assert.match(h, /carried cash can be lost/i, h);
-    assert.match(h, /bank it/i, `the cash warning carries its remedy: ${h}`);
+    assert.match(h, /You can lose in-game money\.$/, h);
   }
   for (const c of ['ps5', 'xbox-x', 'xbox-s']) assert.ok(a.byConsole[c].length <= 240, c);
   assert.match(a.byConsole.ps5, /Settings, Saved Data and Game\/App Settings/, 'PlayStation steps for checking, from its own support page');
-  assert.match(a.byConsole['xbox-x'], /go online|stay online|connected|syncs online/i, 'Xbox says its saves sync online');
+  assert.match(a.byConsole['xbox-x'], /stay (signed in and )?online|synced/i, 'Xbox says its saves sync online');
   assert.ok(a.sources.some((s) => s.console === 'ps5') && a.sources.some((s) => Array.isArray(s.console)));
   for (const id of ['free-space-xbox', 'free-space-ps5', 'cloud-saves-and-backup', 'keep-your-cash'])
     assert.match(all(get(id)), /\]\(\/a\/will-i-lose-anything\/\)/, `${id} points to it with a link`);
 });
 
-test('keep your cash: the Off line warns and says what to do, and the how stays Mild', () => {
+test('keep your cash: Off says only that money can be lost, and the rule, with how to avoid it, is the Mild detail', () => {
   const a = get('keep-your-cash');
   assert.equal(a.tier, 'none');
-  assert.match(a.short, /can be lost if you die\. Bank it before you take risks/);
-  assert.doesNotMatch([a.short, a.body].join(' '), /ATM|deposit/i);
+  assert.equal(a.short, 'You can lose in-game money.');
+  assert.doesNotMatch([a.short, a.body].join(' '), /ATM|deposit|bank|die/i);
   assert.match(a.reveal[0].text, /ATM/);
+  assert.match(a.reveal[0].text, /deposit after a big score, before you take risks/i);
 });
 
 test('Xbox control schemes: the face buttons are said to be unconfirmed, never translated from PlayStation names', () => {

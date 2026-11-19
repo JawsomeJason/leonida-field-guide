@@ -165,7 +165,7 @@
   {
    "id": "keep-your-cash",
    "tier": "none",
-   "reason": "one plain line of warning where a player could lose something; how money works in play is in the Mild detail",
+   "reason": "one generic line that a loss is possible and no game rule; the rule, with how to keep it safe, is in the Mild detail",
    "holds": "warning",
    "pressGuide": "only the warning line: carried cash can be lost"
   },
@@ -321,11 +321,6 @@
    "id": "keep-your-cash",
    "tier": "mild",
    "reason": "how a game system works in play: where carried cash is safe, from press guides"
-  },
-  {
-   "id": "missing-or-rejected-code",
-   "tier": "mild",
-   "reason": "a bonus that only arrives later in play: what unlocks later"
   },
   {
    "id": "will-i-lose-anything",

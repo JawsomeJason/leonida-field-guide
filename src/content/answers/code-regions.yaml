@@ -13,8 +13,8 @@ tier: none
 consoles: all
 byConsole:
   ps5: "PlayStation codes only work on accounts from the country group where the code was sold, for example Canada and the United States together, and the UK on its own. Buy from a store in your account's country."
-  xbox-x: "Xbox codes are not region-locked. Rockstar still advises buying from a retailer in the country of your account, to avoid activation problems."
-  xbox-s: "Xbox codes are not region-locked. Rockstar still advises buying from a retailer in the country of your account, to avoid activation problems."
+  xbox-x: "Xbox codes are not limited to one country (region-locked). Rockstar still advises buying from a retailer in the country of your account, to avoid activation problems."
+  xbox-s: "Xbox codes are not limited to one country (region-locked). Rockstar still advises buying from a retailer in the country of your account, to avoid activation problems."
 confidence: official
 sources:
   - url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
