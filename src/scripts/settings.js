@@ -31,7 +31,7 @@ function apply(s) {
   else delete html.dataset.console; // never chosen: the page shows only every-console records and asks
   html.dataset.dial = s.dial;
   // The header chips show short words; their full names are read out. CSS cannot change an aria-label, so it is set here.
-  document.querySelector('.chip--console')?.setAttribute('aria-label', `Console: ${consoles[s.console]?.name ?? 'choose one'}, change`);
+  document.querySelector('.chip--console')?.setAttribute('aria-label', `${consoles[s.console] ? `Console: ${consoles[s.console].name}` : 'Pick console'}, change`);
   document.querySelector('.chip--dial')?.setAttribute('aria-label', `Spoilers: ${s.dial[0].toUpperCase()}${s.dial.slice(1)}, change`);
   // The level word, mirrored for the server (src/lib/gate.js dialRule) on load and on every change; used for nothing else.
   try {

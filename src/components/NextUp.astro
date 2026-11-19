@@ -19,7 +19,7 @@ const first = Astro.props.todos.filter((t) => t.stage === 'before' && t.consoles
       <h2 id="next-title">Next up</h2>
       <a class="next-up__count" href="/checklist/">See the checklist</a>
     </div>
-    <ul class="tap-list next-up__list">
+    <ul class="tap-list tap-list--cards next-up__list">
       {first.map((t) => <li><a href={`/a/${t.id}/`}>{t.todo}</a></li>)}
     </ul>
   </section>
@@ -29,7 +29,17 @@ const first = Astro.props.todos.filter((t) => t.stage === 'before' && t.consoles
   /* With script and no console chosen, the prompt above takes this place. */
   html.js:not([data-console]) .next-up { display: none; }
   .next-up { margin-block: var(--space-4) var(--space-5); }
-  .next-up__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-block-end: var(--space-1); }
+  .next-up__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-block-end: var(--gap-tap); } /* the count link and the first row are neighbours: 8px apart */
   .next-up h2 { margin: 0; font-size: var(--text-body); }
+  /* A row you can tap: the Most asked card, plus the arrow the checklist rows end on. */
+  .next-up__list a { justify-content: space-between; gap: var(--space-3); }
+  .next-up__list a::after {
+    content: '';
+    flex: none;
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    background: var(--muted);
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='m9 6 6 6-6 6'/></svg>") no-repeat center / contain;
+  }
   .next-up__count { display: flex; align-items: center; min-block-size: var(--tap); padding-inline: var(--space-2); margin-inline-end: calc(var(--space-2) * -1); font: var(--font-label); }
 </style>

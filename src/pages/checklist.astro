@@ -121,9 +121,9 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
     appearance: none;
     display: block;
     inline-size: 100%;
-    block-size: 0.5rem;
+    block-size: 0.625rem;
     margin-block: var(--space-2) var(--space-3);
-    border: 0 solid;
+    border: 1px solid var(--edge); /* the track's edge carries the 3 to 1 against the page; the fill is --accent on --line */
     border-radius: 0.25rem;
     overflow: clip;
     background: var(--line);
@@ -152,7 +152,7 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
   .backup textarea {
     inline-size: 100%;
     padding: var(--space-3);
-    border: 1px solid var(--line);
+    border: 1px solid var(--edge);
     border-radius: var(--radius);
     background: var(--surface);
     color: var(--text);

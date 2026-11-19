@@ -42,6 +42,7 @@ test('the sources block says it once, and the About page and Places gate too', a
   await page.goto('/about/');
   await expect(page.locator('main [data-outside]').getByText(NOTE)).toHaveCount(1);
   await expect(page.locator('main a[href^="http"]')).toHaveCount(1); // Rockstar Support only: no map link on About
+  await saved(page, { dial: 'places' }); // the map links, and so their list and note, are Places-tier: they arrive once the dial allows Places
   await page.goto('/places/');
   await expect(page.locator('main [data-outside]').getByText(NOTE)).toHaveCount(1);
 });

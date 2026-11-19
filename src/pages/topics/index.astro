@@ -2,11 +2,13 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import { topics } from '../../data/topics';
-import { tileStates } from '../../lib/topics.js';
+import { tileStates, tileRows } from '../../lib/topics.js';
 
 const all = (await getCollection('answers')).map((e) => e.data);
 // Per topic: how many records each tier holds. The count a tile shows follows the dial (CSS, html[data-dial]); with no script it is the default-tier count.
-const states = (id: string) => tileStates(Object.fromEntries((['none', 'places', 'mild'] as const).map((t) => [t, all.filter((a) => a.topic === id && a.tier === t).length])));
+const counts = (id: string) => Object.fromEntries((['none', 'places', 'mild'] as const).map((t) => [t, all.filter((a) => a.topic === id && a.tier === t).length]));
+const states = (id: string) => tileStates(counts(id));
+const rows = (id: string) => tileRows(counts(id));
 const chevron = { viewBox: '0 0 24 24', width: 20, height: 20 };
 ---
 
@@ -39,14 +41,14 @@ const chevron = { viewBox: '0 0 24 24', width: 20, height: 20 };
           </a>
         </li>
       ) : (
-        /* Nothing opens at some level: a row per state. Where nothing opens it is not a link and says where the answers are. */
-        states(t.id).map((s) => (
+        /* Nothing opens at Off: a quiet row that says where the answers are, and one link row for the levels that open them. Its count is never in this page; the script fills it from the hidden index once the dial reaches it. A topic with nothing anywhere says so. */
+        rows(t.id).map((s) => (
           <li data-levels={s.levels}>
-            {s.count > 0 ? (
+            {s.open ? (
               <a class="tile" href={`/topics/${t.id}/`}>
                 <span class="tile__name">{t.label}</span>
                 <span class="tile__end">
-                  <span class="tile__meta">{s.count} {s.count === 1 ? 'answer' : 'answers'}</span>
+                  <span class="tile__meta" data-count-topic={t.id}></span>
                   <svg {...chevron} aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </span>
               </a>
@@ -62,6 +64,10 @@ const chevron = { viewBox: '0 0 24 24', width: 20, height: 20 };
     ))}
   </ul>
 </Base>
+
+<script>
+  import '../../scripts/topic-counts.js';
+</script>
 
 <style>
   /* Topic rows: plain (secondary), a hairline between them, the name and its count on one line. */

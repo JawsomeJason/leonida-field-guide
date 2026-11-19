@@ -1,11 +1,13 @@
 import { test, expect } from '@playwright/test';
-import { PAGES, OLD_ADDRESSES, records, saved } from './helpers.mjs';
+import { PAGES, OLD_ADDRESSES, records, saved, setDial } from './helpers.mjs';
 import { mapsLine, mapsOffLine } from '../../src/data/outside-maps.js';
 
 // Fix round 4, items 1, 7, 10 and 14: outside map links, empty topics, two columns, old addresses.
-const LINE = 'We do not control these sites. On 19 November 2026 at least one showed story content by default, so set its own spoiler option before you look.';
+const LINE = 'On 19 November 2026 we opened both sites in a fresh browser. One showed story content by default; the other had no spoiler control. We do not control them, so set a spoiler option, if there is one, before you look.';
 const OFF = 'Outside maps exist; they appear here once Places is on.';
-const MAPS = 'a[href*="gtamap"]:visible, a[href*="fullsweep"]:visible';
+const NAMES = /gtamap|fullsweep|fresh browser|story content by default/i;
+const MAPS = 'a[href*="gtamap"], a[href*="fullsweep"]';
+const FRAGMENT = '/h/places/maps/';
 const WHERE = 'where is the gun shop';
 
 test('the one shared line and the no-link sentence are the ones the owner gave', () => {
@@ -13,24 +15,57 @@ test('the one shared line and the no-link sentence are the ones the owner gave',
   expect(mapsOffLine).toBe(OFF);
 });
 
+// Item 2 (fix round 5): at Off the map links are in no served markup at all, not hidden by CSS: not in any page, not in any script.
+test('at Off no page of the build carries a map address, site name or the dated note, and no script it loads does either', async ({ page }) => {
+  const found = [];
+  const scripts = new Set();
+  for (const path of PAGES) {
+    if (/\/show\/$/.test(path) && path.startsWith('/places/')) continue; // Places-tier markup: allowed to carry them
+    const html = await (await page.request.get(path)).text();
+    if (NAMES.test(html)) found.push(path);
+    for (const m of html.matchAll(/<script[^>]*\ssrc="([^"]+)"/g)) scripts.add(m[1]);
+    for (const m of html.matchAll(/import\s*["']([^"']+\.js)["']|from\s*["']([^"']+\.js)["']/g)) scripts.add(m[1] ?? m[2]);
+  }
+  for (const src of scripts) if (NAMES.test(await (await page.request.get(src)).text())) found.push(src);
+  expect(found).toEqual([]);
+});
+
+test('the map fragment is refused below Places (a redirect to the gate, the reveal marker does not open it) and served at Places', async ({ playwright, baseURL }) => {
+  const ask = (headers) => playwright.request.newContext({ baseURL, extraHTTPHeaders: headers });
+  for (const headers of [{}, { 'x-lfg-reveal': '1' }, { cookie: 'lfg_dial=off' }]) {
+    const r = await (await ask(headers)).get(FRAGMENT, { maxRedirects: 0 });
+    expect(r.status(), JSON.stringify(headers)).toBe(302);
+    expect(r.headers()['x-lfg-redirect']).toBe('dial');
+    expect(r.headers().location).toBe('/places/');
+  }
+  for (const dial of ['places', 'mild']) {
+    const r = await (await ask({ cookie: `lfg_dial=${dial}` })).get(FRAGMENT, { maxRedirects: 0 });
+    expect(r.status()).toBe(200);
+    const body = await r.text();
+    expect(body).toContain('https://gtamap.io');
+    expect(body).toContain('https://fullsweepmap.com');
+    expect(body).toContain(LINE);
+  }
+});
+
 const noMapAnywhere = async (page, label) => {
   for (const path of ['/', '/places/', '/topics/places/']) {
     await page.goto(path);
-    if (path === '/') {
-      await page.getByRole('searchbox').fill(WHERE).catch(() => {}); // no script: no search box to type in
-    }
+    if (path === '/') await page.getByRole('searchbox').fill(WHERE).catch(() => {}); // no script: no search box to type in
     await expect(page.locator(MAPS), `${label} ${path}`).toHaveCount(0);
-    const text = await page.locator('main').innerText();
-    expect(text, `${label} ${path}`).not.toMatch(/gtamap|fullsweep|story content by default/i);
+    expect(await page.content(), `${label} ${path}`).not.toMatch(NAMES); // the live DOM too, hidden nodes included
   }
 };
 
-test('at Off no map link or site name shows on Ask, the where-is note or the Places gate; the gate says outside maps exist', async ({ page }) => {
+test('at Off no map link or site name is in Ask, the where-is note or the Places gate; the gate says outside maps exist; the fragment is never asked for', async ({ page }) => {
+  const asked = [];
+  page.on('request', (r) => asked.push(r.url()));
   await noMapAnywhere(page, 'Off');
   for (const path of ['/places/', '/topics/places/']) {
     await page.goto(path);
     await expect(page.locator('.gate').getByText(OFF)).toBeVisible();
   }
+  expect(asked.filter((u) => u.includes(FRAGMENT))).toEqual([]);
 });
 
 test.describe('without script (the dial is unknown)', () => {
@@ -43,10 +78,12 @@ test.describe('without script (the dial is unknown)', () => {
 });
 
 for (const dial of ['places', 'mild']) {
-  test(`at ${dial} the map links and the one dated line show: Places gate, topic page and the where-is note`, async ({ page }) => {
+  test(`at ${dial} the map links and the one dated line arrive from the Places fragment: Places gate, topic page and the where-is note`, async ({ page }) => {
     await saved(page, { dial });
     for (const path of ['/places/', '/topics/places/']) {
+      const fetched = page.waitForResponse((r) => r.url().endsWith(FRAGMENT) && r.status() === 200);
       await page.goto(path);
+      await fetched;
       const box = page.locator('.maps');
       await expect(box.getByRole('link', { name: /gtamap\.io/ })).toHaveAttribute('href', 'https://gtamap.io');
       await expect(box.getByRole('link', { name: /FullSweep/ })).toHaveAttribute('href', 'https://fullsweepmap.com');
@@ -63,14 +100,21 @@ for (const dial of ['places', 'mild']) {
   });
 }
 
-test('the dial moves the map links in and out without a reload', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('searchbox').fill(WHERE);
+test('the dial moves the map links in and out of the page without a reload, and the markup holds none once it drops', async ({ page }) => {
+  await page.goto('/places/');
   await expect(page.locator(MAPS)).toHaveCount(0);
-  await page.evaluate(() => (document.documentElement.dataset.dial = 'places')); // what settings.js sets on a change
+  await setDial(page, 'Places');
   await expect(page.locator(MAPS)).toHaveCount(2);
-  await page.evaluate(() => (document.documentElement.dataset.dial = 'off'));
+  await setDial(page, 'Off');
   await expect(page.locator(MAPS)).toHaveCount(0);
+  expect(await page.content()).not.toMatch(NAMES);
+});
+
+// About says no map link is shown at Off: true of the markup, not only of the screen.
+test('About says no map link is shown at Off, and its markup has none', async ({ page }) => {
+  await page.goto('/about/');
+  await expect(page.locator('main')).toContainText('At Off no map link is shown.');
+  expect(await page.content()).not.toMatch(NAMES);
 });
 
 // The false promise: no page says an outside site hides spoilers.
@@ -95,12 +139,16 @@ test('a topic whose answers all sit at Mild is a quiet row, not a link, at Off a
     await expect(r.getByRole('link')).toHaveCount(0);
     await expect(r.locator('svg')).toHaveCount(0);
     await expect(r).not.toContainText(/0 answers|No answers/);
+    // Hidden means no count anywhere: not in the text (shown or not), and no number in any attribute of the topic's rows.
+    const rows = page.locator('.tiles li', { has: page.locator('a[href="/topics/getting-around/"], .tile--closed:has-text("Getting around")') });
+    expect(await rows.evaluateAll((els) => els.map((e) => e.textContent).join(' '))).not.toMatch(/\d/);
+    expect(await rows.evaluateAll((els) => els.flatMap((e) => [e, ...e.querySelectorAll('*')]).flatMap((n) => [...n.attributes].filter((a) => /\d/.test(a.value) && a.name !== 'class' && a.name !== 'd' && !/^(viewBox|width|height|stroke-width)$/.test(a.name)).map((a) => `${a.name}=${a.value}`)))).toEqual([]);
   }
   await saved(page, { dial: 'mild' });
   await page.goto('/topics/');
   const r = row(page, 'Getting around');
   await expect(r.getByRole('link')).toHaveAttribute('href', '/topics/getting-around/');
-  await expect(r).toContainText('1 answer');
+  await expect(r).toContainText('1 answer'); // counted from the hidden index once the dial reaches Mild
   await expect(r.locator('svg')).toBeVisible();
 });
 

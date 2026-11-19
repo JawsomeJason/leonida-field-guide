@@ -1,15 +1,15 @@
 id: will-i-lose-anything
 question: "Will I lose my progress, saves or cash?"
-short: "Console makers say deleting a game keeps what you bought. Saves for this game are not confirmed as backed up, so check first. GameSpot reports carried cash can be lost: bank it before you take risks."
+short: "Console makers say deleting a game keeps what you bought. Saves for this game are not confirmed as backed up, so check first. You can lose in-game money."
 byConsole:
-  ps5: "PlayStation says a deleted game can be downloaded again. Saves are not confirmed as backed up: with PlayStation Plus, upload them first (Settings, Saved Data and Game/App Settings). GameSpot reports carried cash can be lost: bank it."
-  xbox-x: "Xbox says uninstalling keeps your licence, and saved data syncs online. Cloud saves for this game are reported, not confirmed: stay signed in and online until it syncs. GameSpot reports carried cash can be lost: bank it first."
-  xbox-s: "Xbox says uninstalling keeps your licence, and saved data syncs online. Cloud saves for this game are reported, not confirmed: stay signed in and online until it syncs. GameSpot reports carried cash can be lost: bank it first."
+  ps5: "PlayStation says a deleted game can be downloaded again. Saves are not confirmed as backed up: with PlayStation Plus, upload them first (Settings, Saved Data and Game/App Settings). You can lose in-game money."
+  xbox-x: "Xbox says uninstalling keeps your right to play (your licence), and saved data is copied online (synced). Saves kept online for this game are reported, not confirmed: stay signed in and online until it syncs. You can lose in-game money."
+  xbox-s: "Xbox says uninstalling keeps your right to play (your licence), and saved data is copied online (synced). Saves kept online for this game are reported, not confirmed: stay signed in and online until it syncs. You can lose in-game money."
 body: |-
   What we know
-  - Your console maker says deleting or uninstalling a game does not remove your right to play it. You download it again from your library.
+  - Your console maker says deleting or uninstalling a game does not remove your right to play it. You download it again from your library. Your saves are a separate matter.
   - A saved game is separate from the game files. Before you delete, check your save is backed up: your console's steps are in [Are my saves backed up in the cloud?](/a/cloud-saves-and-backup/).
-  - Carried cash can be lost if you die. A report says money in the bank is safe, so bank it before you take risks. How that works sits behind the Mild setting.
+  - You can lose in-game money.
 
   What we do not know
   - Whether this game backs up saves to the cloud on every console. Rockstar has not said.
@@ -41,4 +41,5 @@ rank: 6
 keywords: ["lose progress", "lose my save", "uninstall", "delete the game", "lose my money", "keep my progress"]
 reveal:
   - tier: mild
-    text: "Cash you carry is lost if you die before you deposit it at an ATM, and money in the bank is safe (Vice Atlas, before launch). Dying while you hold loot bags loses the bags and your cash on hand (GameSpot, after playing). Neither source says what happens on arrest, so we claim nothing there."
+    label: "Show how to keep it safe (one small game rule)"
+    text: "Cash you carry is lost if you die before you deposit it at an ATM, and money in the bank is safe (Vice Atlas, before launch). Dying while you hold stash bags loses the bags and your cash on hand (GameSpot, after playing). Neither source says what happens on arrest, so we claim nothing there. To keep it safe, deposit it before you take risks."

@@ -7,7 +7,9 @@ import { newEntries } from '../data/new';
 const crash = (await getCollection('answers')).find((e) => e.id === 'crashes-and-launch-problems')!.data;
 const checked = new Date(`${crash.checked}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
+// Players read the latest few dates, three lines each (tests/content/new.test.mjs holds the data to the same limits).
 const entries = [...newEntries].sort((a, b) => b.date.localeCompare(a.date));
+const LATEST_DATES = 3, LINES_PER_DATE = 3;
 const problems = entries.flatMap((e) => e.problems);
 ---
 
@@ -32,11 +34,10 @@ const problems = entries.flatMap((e) => e.problems);
     )}
   </section>
 
-  {entries.filter((e) => e.changed.length > 0).map((e) => (
+  {entries.filter((e) => e.changed.length > 0).slice(0, LATEST_DATES).map((e) => (
     <section class="entry">
       <h2><time datetime={e.date}>{new Date(`${e.date}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })}</time></h2>
-      <h3>Changed</h3>
-      <ul>{e.changed.map((c) => <li>{c}</li>)}</ul>
+      <ul>{e.changed.slice(0, LINES_PER_DATE).map((c) => <li>{c}</li>)}</ul>
     </section>
   ))}
 </Base>
@@ -51,7 +52,6 @@ const problems = entries.flatMap((e) => e.problems);
   }
   .entry { margin-block-start: var(--space-5); max-inline-size: 40rem; }
   .entry h2 { margin-block: 0 var(--space-2); }
-  .entry h3 { margin-block: var(--space-3) var(--space-1); font-size: var(--text-body); color: var(--muted); }
   .entry ul:not(.tap-list) { margin-block: 0; padding-inline-start: var(--space-5); display: grid; gap: var(--space-2); }
   .fix { display: block; }
 </style>

@@ -67,12 +67,12 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
           <span class="sun-mark" aria-hidden="true"></span>
           <span class="site-name__text">{site}</span>
         </a>
-        {/* The short name ("Series X") or "Choose". The full name ("Console: Xbox Series X, change") is the aria-label, kept current by settings.js; no visible
+        {/* The short name ("Series X") or "Pick console". The full name ("Console: Xbox Series X, change") is the aria-label, kept current by settings.js; no visible
             label word, because axe wants the visible text to sit whole inside the name and "Console" would split "Xbox Series X". */}
-        <button class="chip chip--console needs-js" type="button" popovertarget="settings" aria-label="Console: choose one, change">
+        <button class="chip chip--console needs-js" type="button" popovertarget="settings" aria-label="Pick console, change">
           <span class="chip__v">
             {Object.entries(consoles).map(([id, c]) => <span data-c={id}>{c.short}</span>)}
-            <span data-c="">Choose</span>
+            <span data-c="">Pick console</span>
           </span>
         </button>
         {/* A small label over the level word, which is always there. The aria-label is "Spoilers: Off, change"; without script the chip still opens the sheet, where the dial is. */}
@@ -91,6 +91,7 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
           {dial.map(([value, label, meaning]) => (
             <label><input type="radio" name="dial" value={value} data-setting checked={value === 'off'} /><span><strong>{label}</strong> {meaning}</span></label>
           ))}
+          <p class="levels__why">Off names a game system only to say it exists; where you could lose something, Off says so and one tap shows how to avoid it.</p>
         </fieldset>
         <fieldset class="setting needs-js">
           <legend>Console</legend>

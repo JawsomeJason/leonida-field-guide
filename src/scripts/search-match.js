@@ -1,7 +1,7 @@
 // Plain-sentence search over the loaded index. Pure (no DOM), so a test can import it.
 // A query is cut into words; filler words go; each word is folded to a stem (plurals, -ing, -ed),
 // console and storage words become synonyms, and one typo is forgiven (see weigh).
-// A result is a confident answer only when a word matches its question or keywords; a hit in the short text or the topic name is "possibly related".
+// A result is an answer only when a word matches its question or keywords and half the meaningful words are covered; a hit in the short text or the topic name alone is no match.
 // No library: shortcut: stems are a few suffix rules, not a stemmer; upgrade if real queries miss.
 
 // The one list of filler. A word here is never meaningful: it cannot make a match and cannot count against one.
@@ -97,10 +97,9 @@ function weigh(fields, q, typing, len) {
 
 /**
  * records: [{ id, question, short, topic, keywords?, rank? }]
- * Returns { found, related }.
- * `found` holds the confident answers, best first: records with a strong match (question or keywords) on at least half of the
- * meaningful words the guide knows. When found is empty the guide has no answer. `related` is then up to three records for a
- * "Possibly related" list: the best weaker matches (short or topic only, or too few of the words), else the most asked.
+ * Returns { found }: the confident answers, best first. A record is one only when a meaningful word matches its question or keywords
+ * and the words found in it cover at least half of all the meaningful words typed, a word the guide has never seen counting against.
+ * A hit in the short text or the topic name alone is not a match. When found is empty the guide has no answer, and shows nothing else.
  * A query made only of one topic's name lists that topic, so a topic hit counts as strong then.
  */
 export function search(records, query) {
@@ -113,7 +112,8 @@ export function search(records, query) {
     .map(([q, len]) => ({ q, len, hits: docs.filter((d) => weigh(d.f, q, q === last, len).best).length }))
     .filter((k) => k.hits)
     .map((k) => ({ ...k, rare: Math.log(1 + docs.length / k.hits), info: !GENERIC.has(k.q) && !WEAK.has(k.q) })); // a word in few answers says more than one in most
-  const need = Math.ceil(known.filter((k) => k.info).length / 2); // coverage is judged on the words that say what is asked, not on a console, a no or a mode
+  const asked = [...typed.keys()].filter((q) => !GENERIC.has(q) && !WEAK.has(q)).length;
+  const need = Math.ceil(asked / 2); // coverage is judged on every word that says what is asked (one the guide has never seen counts against), not on a console, a no or a mode
   const scored = docs
     .map((d) => {
       const browse = typed.size > 0 && [...typed.keys()].every((q) => d.f.topic.includes(q));
@@ -141,9 +141,7 @@ export function search(records, query) {
   const answers = scored.filter((d) => d.strong && d.matched >= need);
   const best = (a, b) => b.strong - a.strong || b.count - a.count || b.phrase - a.phrase || b.score - a.score || (a.r.rank ?? 1e9) - (b.r.rank ?? 1e9) || a.i - b.i;
   const found = answers.sort(best).map((d) => d.r);
-  if (found.length) return { found, related: [] };
-  const mostAsked = [...records].sort((a, b) => (a.rank ?? 1e9) - (b.rank ?? 1e9));
-  return { found, related: (scored.length ? scored.sort(best).map((d) => d.r) : mostAsked).slice(0, 3) };
+  return { found };
 }
 
 /** A question about where something is: the guide keeps places behind the dial. */

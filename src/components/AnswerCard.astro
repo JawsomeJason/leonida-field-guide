@@ -44,6 +44,7 @@ const body = full && a.body ? await renderBody(a.body) : '';
         <dt>How sure we are</dt>
         <dd>
           <p class="trust__now"><strong>{trust.label}, {trust.short}</strong></p>
+          <p class="label-key">Official: from the publisher or the console maker. Reported: from a news or guide site.</p>
           <details class="trust">
             <summary>What does this mean?</summary>
             <p>{trust.text}</p>
@@ -70,6 +71,7 @@ const body = full && a.body ? await renderBody(a.body) : '';
       <h2 class="card__q"><a href={pathOf(a)}>{a.question}</a></h2>
       <p class="card__a"><ConsoleText text={a.short} byConsole={a.byConsole} /></p>
       {(only || a.tier !== 'none') && <p class="card__meta">{[a.tier === 'none' ? '' : a.tier === 'places' ? 'Places' : 'Mild', only].filter(Boolean).join(', ')}</p>}
+      {a.tier !== 'none' && <p class="card__meta">Source, date checked and how sure we are: open the answer.</p>}
     </div>
     <Reveal answer={a} />
   </article>

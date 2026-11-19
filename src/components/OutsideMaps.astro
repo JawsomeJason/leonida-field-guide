@@ -1,18 +1,16 @@
 ---
-// The outside map links, with the dated line beside them. Not shown until the dial is Places or Mild: with script off (dial unknown) or Off
-// the page shows only its own no-link sentence. The data is in src/data/outside-maps.js; every page reads it from there.
-import OutsideList from './OutsideList.astro';
-import { mapLinks, mapsLine } from '../data/outside-maps.js';
+// An empty mount for the outside map links and the dated line. They live in the Places tier (/h/places/maps/); maps.js fills this
+// only while the dial is Places or Mild. Nothing about any map site is in this markup. Data: src/data/outside-maps.js.
+import './OutsideLink.css';
 ---
 
-<div class="maps" data-maps>
-  <OutsideList links={mapLinks} />
-  <p class="maps__line">{mapsLine}</p>
-</div>
+<div class="maps" data-maps></div>
+
+<script>
+  import '../scripts/maps.js';
+</script>
 
 <style is:global>
-  /* Shown only once the dial is Places or Mild (settings.js sets html[data-dial]); with no script, and at Off, it is not. */
-  .maps[data-maps] { display: none; }
-  html:is([data-dial='places'], [data-dial='mild']) .maps[data-maps] { display: block; margin-block-start: var(--space-5); } /* clear of a list above it */
+  .maps:not(:empty) { margin-block-start: var(--space-5); } /* clear of a list above it */
   .maps__line { margin-block: var(--space-2) var(--space-5); color: var(--muted); font: var(--font-label); max-inline-size: 40rem; }
 </style>

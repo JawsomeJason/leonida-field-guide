@@ -1,12 +1,12 @@
 id: ps5-download-stuck
 question: "My PS5 download won't start or is stuck. What do I try?"
-short: "Check PlayStation's status page, update the system software, then pause and resume the download. If still stuck, cancel, delete and download again. Last resort: Safe Mode (a start-up menu) and Rebuild Database."
+short: "Check PlayStation's status page, update the system software, then pause and resume the download. If still stuck, cancel and download again. Last resort: Safe Mode (a start-up menu) and Rebuild Database."
 body: |-
   In this order, from PlayStation's own support page
   1. Check [PlayStation status](https://status.playstation.com/). Wait if there are alerts.
   2. Update: Settings, System, System Software, System Software Update and Settings.
   3. Downloads/Uploads in the control center: select the game, then Pause and Resume.
-  4. Choose Cancel and Delete, then download again from your Game Library.
+  4. Choose Cancel and Delete, then download again from your Game Library. If you already have saved data for this game, check it is backed up first: [Will I lose anything?](/a/will-i-lose-anything/)
   5. Check free space (Settings, Storage). The game's minimum is under More, then View Product in your Game Library.
   6. Stuck, not slow? Test the connection: Settings, Network, Connection Status, Test Internet Connection.
   7. Last resort: start in Safe Mode (a start-up menu with repair tools) and choose Clear Cache and Rebuild Database. To start it, follow step 6 of [My PS5 game crashes or freezes. What do I try, in order?](/a/crash-steps-ps5/).

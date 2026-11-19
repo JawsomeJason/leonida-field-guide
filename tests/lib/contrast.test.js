@@ -65,3 +65,47 @@ test('the check can fail: the old day muted on the pressed tint is under the flo
   const t = { ...themes.day, muted: '#55666b', accent: '#0b6f75' };
   assert.ok(ratio(t.muted, surfaces(t).press) < FLOOR);
 });
+
+// ---- Non-text contrast (WCAG 1.4.11): the parts of a control that show where it is or what state it is in, 3 to 1 against what is next to them.
+// [part, colour token, what it is next to]. Exempt, on purpose: a text-labelled button or link whose label names it (Show more, the console
+// buttons, the Ask rows and cards: their --line border is a hairline, not what identifies them), a card's own border, a hairline between rows,
+// and disabled controls (there are none). tests/e2e/contrast.mjs measures the same parts on the real screens.
+const NON_TEXT = [
+  ['progress track edge', 'edge', ['bg', 'surface', 'wash']],
+  ['progress fill on the track', 'accent', ['line']], // the empty part of the track is --line
+  ['search box and text area border', 'muted', ['bg', 'surface']],
+  ['text area border (backup code boxes)', 'edge', ['bg', 'surface']],
+  ['chip border', 'edge', ['bg', 'surface', 'wash']],
+  ['dial, console and theme options: border of an unselected option', 'edge', ['bg', 'surface', 'wash']],
+  ['dial, console and theme options: the selected fill against the unselected one', 'accent', ['surface']],
+  ['sheet level row: border of an unselected row', 'edge', ['bg', 'surface', 'wash']],
+  ['sheet level row: the selected row border against the unselected one', 'accent', ['surface']],
+  ['sheet radio ring', 'muted', ['surface', 'wash']],
+  ['sheet radio, selected fill', 'accent', ['surface', 'wash']],
+  ['tick box border', 'muted', ['bg', 'surface', 'wash']],
+  ['tick box, ticked fill', 'accent', ['bg', 'surface', 'wash']],
+  ['focus ring', 'accent', ['bg', 'surface', 'wash', 'press']],
+];
+const FLOOR_NON_TEXT = 3;
+
+for (const [theme, t] of Object.entries(themes)) {
+  const on = { ...surfaces(t), line: t.line };
+  for (const [part, token, where] of NON_TEXT) {
+    for (const next of where) {
+      test(`${theme}, non-text: ${part}: --${token} on ${next} is at least ${FLOOR_NON_TEXT} to 1`, () => {
+        const r = ratio(t[token], on[next]);
+        assert.ok(r >= FLOOR_NON_TEXT, `${t[token]} on ${on[next]} is ${r.toFixed(2)} to 1`);
+      });
+    }
+  }
+  for (const [mark, ground] of [['bg', 'accent']]) {
+    test(`${theme}, non-text: the tick and the radio dot (--${mark}) on the --${ground} fill are at least ${FLOOR_NON_TEXT} to 1`, () => {
+      assert.ok(ratio(t[mark], t[ground]) >= FLOOR_NON_TEXT);
+    });
+  }
+}
+
+test('the check can fail: the old progress track (--line) was under 3 to 1 on the page, in both themes', () => {
+  for (const t of Object.values(themes)) assert.ok(ratio(t.line, t.bg) < FLOOR_NON_TEXT);
+  assert.ok(ratio(themes.night.line, themes.night.bg) < 1.7 && ratio(themes.day.line, themes.day.bg) < 1.4); // 1.62 and 1.35 as measured
+});

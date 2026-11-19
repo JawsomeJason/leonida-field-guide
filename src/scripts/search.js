@@ -15,7 +15,6 @@ const input = document.querySelector('#q');
 const status = document.querySelector('#q-status');
 const list = document.querySelector('#q-results');
 const where = document.querySelector('#q-where');
-const maybe = document.querySelector('#q-related');
 const more = document.querySelector('#q-more');
 
 const cache = new Map();
@@ -68,17 +67,16 @@ async function update() {
   const records = (await Promise.all((allowed[dial] ?? allowed.off).map(load))).flat();
   if (n !== run) return; // a newer keystroke is already running
   // An answer for other consoles stays out of the way, like the cards do.
-  const { found, related } = search(records.filter((r) => !Array.isArray(r.consoles) || r.consoles.includes(owned)), query);
+  const { found } = search(records.filter((r) => !Array.isArray(r.consoles) || r.consoles.includes(owned)), query);
   if (query !== asked) all = false;
   asked = query;
   const typed = !!query.trim();
   const none = typed && !found.length;
   const cut = typed && !all && found.length > FIRST;
-  list.replaceChildren(...(none ? related : cut ? found.slice(0, FIRST) : found).map(row), ...(none ? [link('/topics/', 'Browse all topics')] : []));
+  list.replaceChildren(...(cut ? found.slice(0, FIRST) : found).map(row), ...(none ? [link('/topics/', 'Browse all topics')] : []));
   list.hidden = !typed;
-  maybe.hidden = !none;
   more.hidden = !cut;
-  // A question about where something is gets the where-is note (OutsideMaps and the Off sentence swap by CSS on the dial). At Off the note says it all: no count above it.
+  // A question about where something is gets the where-is note (the Off sentence shows by CSS until the dial allows Places; maps.js then fills OutsideMaps from the Places tier). At Off the note says it all: no count above it.
   where.hidden = !(typed && asksWhere(query));
   const offNote = !where.hidden && dial === 'off';
   status.toggleAttribute('data-floor', none && !offNote);

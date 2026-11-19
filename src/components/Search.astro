@@ -33,7 +33,6 @@ import { mapsOffLine } from '../data/outside-maps.js';
     </div>
     <OutsideMaps />
   </div>
-  <h2 id="q-related" class="ask-related" hidden>Possibly related</h2>
   <ul id="q-results" class="tap-list ask-rows" hidden></ul>
   <button id="q-more" type="button" class="ask-more" hidden>Show more</button>
 </search>
@@ -72,7 +71,6 @@ import { mapsOffLine } from '../data/outside-maps.js';
   .ask-status[data-floor] { color: var(--text); font: 600 var(--text-body) / 1.4 var(--font-text); } /* the no-answer line is the message, not a footnote */
   .ask-search ul { margin-block-end: var(--space-5); }
   .ask-search [hidden] { display: none; } /* .tap-list's display would otherwise beat the hidden attribute */
-  .ask-related { margin: var(--space-3) 0 var(--space-1); font: var(--font-label); color: var(--muted); } /* quiet: it says these are not the answer */
   .ask-more {
     min-block-size: var(--tap);
     padding-inline: var(--space-5);
