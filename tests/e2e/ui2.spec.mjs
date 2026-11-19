@@ -86,7 +86,8 @@ for (const path of ['/checklist/', '/']) {
     await press(row.locator('label span'));
     await expect(row.getByRole('checkbox')).toBeChecked();
     // Rows sit 8px apart.
-    const rows = await page.locator('.todo-list .todo:visible, .todos .todo:visible').evaluateAll((els) => els.map((e) => e.getBoundingClientRect()).slice(0, 3));
+    // The label is the tick target: the rows are plain (hairline) rows, so the 8px sits inside each row as the label's margin.
+    const rows = await page.locator('.todo-list .todo:visible label, .todos .todo:visible label').evaluateAll((els) => els.map((e) => e.getBoundingClientRect()).slice(0, 3));
     for (let i = 1; i < rows.length; i++) expect(rows[i].top - rows[i - 1].bottom).toBeGreaterThanOrEqual(8);
   });
 }

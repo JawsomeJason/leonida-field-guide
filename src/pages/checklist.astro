@@ -111,7 +111,7 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
   .todo__tick:has(:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
   /* Done: colour and a line through, never a change of size. */
   .todo__tick:has(:checked) span { color: var(--muted); text-decoration: line-through; }
-  .todo__open { flex: none; inline-size: var(--tap); justify-content: center; padding: 0; color: var(--muted); }
+  .todo__open { flex: none; inline-size: var(--tap); justify-content: center; margin-inline: 0; padding: 0; border-inline-start: 0; color: var(--muted); }
 
   /* Progress: a thin bar, filled with the accent. The count beside it is the real information. */
   progress {

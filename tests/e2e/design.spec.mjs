@@ -113,7 +113,7 @@ test('night state colour is amber or orange on every state element, never cyan',
   await page.locator('#q').focus();
   const states = {
     'selected tab': await colour(page.locator('.nav a[aria-current="page"]'), 'color'),
-    'spoiler chip state': await colour(page.locator('.dial .seg label:has(:checked)'), 'backgroundColor'),
+    'spoiler chip state': await colour(page.locator('.sheet .seg label:has(:checked)').first(), 'backgroundColor'),
     link: await colour(page.locator('.footer-link'), 'color'),
     'focus ring': await colour(page.locator('#q'), 'outlineColor'),
   };
