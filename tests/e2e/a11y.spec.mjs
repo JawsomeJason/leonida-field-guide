@@ -18,7 +18,10 @@ for (const [theme, bg] of [['day', DAY], ['night', NIGHT]]) {
       await saved(page, { ...s.settings, theme });
       await page.goto(s.path);
       await expect(page.locator('body')).toHaveCSS('background-color', bg);
-      if (s.open) await press(page.locator('.chip'));
+      if (s.open) {
+        await press(page.locator('.chip'));
+        await page.evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished))); // axe reads colours; not while the sheet fades in
+      }
       if (s.search) await page.getByRole('searchbox').fill(s.search);
       if (s.settings.dial) await page.waitForLoadState('networkidle');
       const { violations } = await new AxeBuilder({ page }).analyze();
