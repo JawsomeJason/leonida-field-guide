@@ -4,6 +4,7 @@ import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { findLeaks, loadRecords } from '../../scripts/check-leak.mjs';
+import { mapLinks } from '../../src/data/outside-maps.js';
 
 const records = loadRecords('tests/fixtures/answers');
 const place = 'The quokka marker sits beside the sample fountain.';
@@ -70,4 +71,16 @@ test('the default search index and the offline list may not name a hidden record
   assert.match(out, /search\/none\.json: names hidden record "place-01"/);
   assert.match(out, /offline-urls\.json: names hidden record "mild-01"/);
   assert.match(out, /offline-urls\.json: lists a mild path/);
+});
+
+test('an outside map hostname or site name in a default page, a gate page or a script bundle is caught; the Places files may hold them', () => {
+  const host = mapLinks.map((l) => new URL(l.href).hostname);
+  assert.ok(host.length >= 2);
+  for (const path of ['index.html', 'places/index.html', 'topics/places/index.html', 'places/list/index.html', 'about/index.html', '_astro/maps.js', 'search/none.json']) {
+    for (const text of [`<a href="https://${host[0]}">x</a>`, `go to ${host[1]}`, `<p>${mapLinks[1].title} map</p>`]) {
+      assert.match(findLeaks({ dist: dist({ [path]: text }), records }).join('\n'), new RegExp(`${path.replace(/\./g, '\\.')}: names outside map site`), `${path} ${text}`);
+    }
+  }
+  const fine = dist({ 'h/places/maps/index.html': `<a href="https://${host[0]}">${mapLinks[0].title}</a>`, 'places/list/show/index.html': `<a href="https://${host[1]}">x</a>`, 'index.html': '<p>Outside maps exist.</p>' });
+  assert.deepEqual(findLeaks({ dist: fine, records }), []);
 });

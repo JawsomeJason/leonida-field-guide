@@ -2,7 +2,8 @@
 :root {
   --bg: #f6efe2;
   --surface: #fffaf0;
-  --line: #dccfb6;
+  --line: #dccfb6; /* hairlines and fills that carry no meaning: never a control's only edge */
+  --edge: #6b7a7e; /* a control's edge and a progress track: at least 3 to 1 on --bg, --surface and --wash (WCAG 1.4.11) */
   --text: #1c2a2e;
   --muted: #4d5d62;
   --accent: #0a6369;
@@ -17,6 +18,7 @@
     --bg: #181320;
     --surface: #231c2a;
     --line: #43364a;
+    --edge: #8b7a93;
     --text: #f7efe6;
     --muted: #c5b6bd;
     --accent: #ff9f45;
@@ -31,6 +33,7 @@
   --bg: #181320;
   --surface: #231c2a;
   --line: #43364a;
+  --edge: #8b7a93;
   --text: #f7efe6;
   --muted: #c5b6bd;
   --accent: #ff9f45;
