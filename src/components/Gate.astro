@@ -1,0 +1,16 @@
+---
+// Shown wherever places would be: it says they are off and offers the switch. With JavaScript off the
+// switch is a plain link to the places pages. CSS hides the gate once the dial allows places.
+import './Gate.css';
+---
+
+<section class="gate" aria-labelledby="gate-title">
+  <h2 id="gate-title">Places are switched off</h2>
+  <p>Places and collectibles stay hidden until you ask for them. Nothing about them is on this page.</p>
+  <a class="gate__on" href="/places/list/" data-set="dial" data-value="places" data-focus="#hidden-list">Show places</a>
+  <p>Prefer a map? These two hide spoilers by default.</p>
+  <ul class="tap-list">
+    <li><a href="https://gtamap.io" rel="noopener"><span>gtamap.io</span><span class="gate__out">outside site</span></a></li>
+    <li><a href="https://fullsweepmap.com" rel="noopener"><span>FullSweep</span><span class="gate__out">outside site</span></a></li>
+  </ul>
+</section>

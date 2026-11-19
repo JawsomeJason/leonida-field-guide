@@ -1,0 +1,35 @@
+.ct > [data-c] { display: none; }
+/* PS5 is the console until a player picks another, so it also covers "nothing saved yet". */
+html:is(:not([data-console]), [data-console='ps5']) .ct {
+  &:has(> [data-c='ps5']) > .ct-base { display: none; }
+  & > [data-c='ps5'] { display: inline; }
+}
+html[data-console='xbox-x'] .ct {
+  &:has(> [data-c='xbox-x']) > .ct-base { display: none; }
+  & > [data-c='xbox-x'] { display: inline; }
+}
+html[data-console='xbox-s'] .ct {
+  &:has(> [data-c='xbox-s']) > .ct-base { display: none; }
+  & > [data-c='xbox-s'] { display: inline; }
+}
+
+/* Button names: a key cap, not a glyph image. Both labels are in the HTML; the console picks one. */
+kbd {
+  display: inline-block;
+  min-inline-size: 1.75em;
+  padding-inline: var(--space-2);
+  border: 1px solid var(--line);
+  border-block-end-width: 2px;
+  border-radius: var(--space-1);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9em;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+}
+kbd .xb { display: none; }
+html:is([data-console='xbox-x'], [data-console='xbox-s']) kbd {
+  & .ps { display: none; }
+  & .xb { display: inline; }
+}

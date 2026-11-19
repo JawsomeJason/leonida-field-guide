@@ -1,0 +1,18 @@
+---
+// An empty mount. When the dial allows a tier, reveal.js fills it from /h/<tier>/a/. Nothing hidden is in this markup.
+import './AnswerCard.css';
+import './ConsoleText.css';
+
+interface Props {
+  tiers: string; // space-separated hidden tiers this list may show
+  topic?: string; // only cards of this topic
+  empty?: string; // note to show when the dial allows the tier but nothing matches
+}
+const { tiers, topic, empty } = Astro.props;
+---
+
+<div id="hidden-list" tabindex="-1" data-hidden-list data-tiers={tiers} data-topic={topic} data-empty={empty}></div>
+
+<script>
+  import '../scripts/reveal.js';
+</script>

@@ -1,0 +1,13 @@
+---
+// The base text, plus one span per console override. CSS picks one by <html data-console>; no script.
+import { textHtml } from '../lib/answers';
+import './ConsoleText.css';
+
+interface Props {
+  text: string;
+  byConsole?: Partial<Record<string, string>>;
+}
+const { text, byConsole = {} } = Astro.props;
+---
+
+<span class="ct"><span class="ct-base" set:html={textHtml(text)} />{Object.entries(byConsole).map(([c, t]) => <span data-c={c} set:html={textHtml(t ?? '')} />)}</span>

@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import AnswerCard from '../../components/AnswerCard.astro';
+import AnswerCardList from '../../components/AnswerCardList.astro';
+import '../../components/ConsoleText.css';
+import { topics } from '../../data/topics';
+import { pageIds, related, revealsOf, textHtml } from '../../lib/answers';
+
+// Hidden text for this tier lives only under /mild/ and /h/mild/.
+export async function getStaticPaths() {
+  const all = (await getCollection('answers')).map((e) => e.data);
+  return pageIds(all, 'mild').map(({ id, detail }) => {
+    const answer = all.find((a) => a.id === id)!;
+    return {
+      params: { id },
+      props: {
+        answer,
+        detail,
+        more: all.filter((b) => b.tier === 'mild' && b.topic === answer.topic),
+        related: related(answer, all),
+      },
+    };
+  });
+}
+
+const { answer, detail, more } = Astro.props;
+const topic = topics.find((t) => t.id === answer.topic)!.label;
+---
+
+<Base title={answer.question} description="An answer you chose to show.">
+  <Fragment slot="list"><AnswerCardList answers={more} current={answer.id} label={topic} /></Fragment>
+  {detail ? (
+    <>
+      <h1>{answer.question}</h1>
+      {revealsOf(answer, 'mild').map((text) => <p set:html={textHtml(text)} />)}
+      <ul class="tap-list"><li><a href={`/a/${answer.id}/`}>Back to the answer</a></li></ul>
+    </>
+  ) : (
+    <AnswerCard answer={answer} related={Astro.props.related} full />
+  )}
+</Base>

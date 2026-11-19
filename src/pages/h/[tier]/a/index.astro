@@ -1,0 +1,15 @@
+---
+// Fragment: every record of one hidden tier as list items, for reveal.js to insert. No page frame.
+import { getCollection } from 'astro:content';
+import AnswerCard from '../../../../components/AnswerCard.astro';
+import { byTier, hiddenTiers } from '../../../../lib/answers';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('answers')).map((e) => e.data);
+  return hiddenTiers.map((tier) => ({ params: { tier }, props: { records: byTier(all, tier) } }));
+}
+
+const { records } = Astro.props;
+---
+
+{records.map((a) => <li data-topic={a.topic}><AnswerCard answer={a} /></li>)}

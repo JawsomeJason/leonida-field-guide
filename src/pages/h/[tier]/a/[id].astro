@@ -1,0 +1,18 @@
+---
+// Fragment: the details of one none answer at one hidden tier, for the in-place Show control.
+import { getCollection } from 'astro:content';
+import { hiddenTiers, pageIds, revealsOf, textHtml } from '../../../../lib/answers';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('answers')).map((e) => e.data);
+  return hiddenTiers.flatMap((tier) =>
+    pageIds(all, tier)
+      .filter((p) => p.detail)
+      .map(({ id }) => ({ params: { tier, id }, props: { texts: revealsOf(all.find((a) => a.id === id)!, tier) } })),
+  );
+}
+
+const { texts } = Astro.props;
+---
+
+{texts.map((t) => <p set:html={textHtml(t)} />)}
