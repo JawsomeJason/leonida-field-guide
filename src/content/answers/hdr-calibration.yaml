@@ -1,6 +1,6 @@
 id: hdr-calibration
 question: "How do I set up HDR?"
-short: "Set HDR to On When Supported, run your console's HDR calibration, then run the in-game HDR Calibration in the Display menu."
+short: "Set HDR (a wider range of brightness and colour) to On When Supported, run your console's HDR calibration, then run the in-game HDR Calibration in the Display menu."
 body: |-
   - KeenGamer says this keeps dark interiors and night streets detailed.
   - Turn off your TV's motion smoothing too. It adds fake frames.

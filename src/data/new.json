@@ -5,7 +5,11 @@
       "Added a plain answer on install size for each console, including a 512 GB Series S, with how to check free space and how to make room.",
       "Added step-by-step crash help for PS5 and Xbox, from PlayStation's and Xbox's own support pages.",
       "Boxed-copy code answers now link to Rockstar's activation help and its support request form.",
-      "Checked every Official answer against the page it cites, and re-labelled answers that only had news or console-maker sources."
+      "Checked every Official answer against the page it cites, and re-labelled answers that only had news or console-maker sources.",
+      "Unlock time now cites Rockstar and the console makers only. The US time-zone times, which come from a news report, have their own Reported answer, and so does the report of sealed boxes with no code.",
+      "The install-size answer now gives the usable space on a 512 GB Series S and links the answer behind it. The frame-rate answer now gives the measured dips and input lag.",
+      "Before you start now runs in the order each step depends on: redeem the code, update the console, free the space, turn on automatic downloads, check the countdown.",
+      "Spelled out what each spoiler setting holds, moved a few gameplay sentences behind Mild, and put jargon after a plain phrase."
     ],
     "problems": []
   }

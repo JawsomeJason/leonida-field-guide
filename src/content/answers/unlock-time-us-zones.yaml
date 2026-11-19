@@ -1,0 +1,25 @@
+id: unlock-time-us-zones
+question: "When does it unlock in each US time zone?"
+short: "Forbes reports US stores key the unlock to Eastern time: 9 p.m. Pacific and 7 p.m. in Hawaii on 18 November. Rockstar has posted no US breakdown, so check your console's countdown."
+body: |-
+  Forbes's table (12 November), as a news report:
+  - Eastern: 12 a.m. Thursday 19 November
+  - Central: 11 p.m. Wednesday 18 November
+  - Mountain: 10 p.m. Wednesday 18 November
+  - Pacific: 9 p.m. Wednesday 18 November
+  - Alaska: 8 p.m. Wednesday 18 November
+  - Hawaii: 7 p.m. Wednesday 18 November
+
+  Rockstar's own page says "midnight local time" in all regions and gives no US time-zone breakdown, and we found none either. Your console's countdown is the final word. See the unlock time card.
+topic: setup
+stage: before
+tier: none
+consoles: all
+confidence: reported
+sources:
+  - url: "https://www.forbes.com/sites/brianmazique/2026/11/12/gta-6-unlocks-at-midnight-on-november-19-but-millions-of-americans-can-start-playing-the-night-before/"
+    title: "GTA 6 Unlocks At Midnight On November 19, But Millions Of Americans Can Start Playing The Night Before (Forbes)"
+  - url: "https://support.rockstargames.com/articles/29jV3Cv2cCgvwM1XgtMO5o/grand-theft-auto-vi-regional-pre-load-and-release-times-on-playstation-5-and-xbox-series-x-or-s"
+    title: "Grand Theft Auto VI regional pre-load and release times (Rockstar Support)"
+checked: "2026-11-19"
+keywords: ["west coast", "pacific time", "eastern time", "central time", "time zone", "what time", "evening before", "hawaii"]

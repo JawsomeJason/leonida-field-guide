@@ -5,7 +5,7 @@ body: |-
   Display
   - Run your console's HDR calibration first, then the in-game HDR calibration.
   - Motion Blur Strength: slide it to 0 (Display tab).
-  - Safe Zone: pull the HUD inward if your TV cuts off the minimap or money counter.
+  - Safe Zone: pull the HUD (the on-screen display) inward if your TV cuts off the minimap or money counter.
 
   Camera and gameplay
   - Camera Shake: switch it off (Camera tab).

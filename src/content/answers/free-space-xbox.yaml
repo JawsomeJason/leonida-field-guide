@@ -5,7 +5,7 @@ body: |-
   - Uninstalling does not remove your licence or your progress. Both stay in the cloud, and saved data comes back when you reinstall.
   - When the drive is getting full, Xbox's smart storage points out games that are good to remove.
   - You will never see the whole drive free. Microsoft says some of it is reserved for saved games and system files.
-  - Microsoft's rule: games marked Optimized for Series X|S must be installed on the internal drive or a Storage Expansion Card (a plug-in drive sold separately). An external USB drive can only park them: move a game back to play it. We have not confirmed this game's label, so plan on that rule.
+  - Microsoft's rule: games built for the newer Xbox hardware (the store labels them Optimized for Series X|S) must be installed on the internal drive or a Storage Expansion Card (a plug-in drive sold separately). An external USB drive can only park them: move a game back to play it. We have not confirmed this game's label, so plan on that rule.
   - An external drive must hold 128 GB or more and connect by USB 3.0 or newer. Moving a game there instead of deleting it saves a re-download.
 topic: setup
 stage: before

@@ -43,6 +43,7 @@ type Answer = {
   sources: { url: string; title: string }[];      // at least one
   checked: string;               // ISO date the sources were last checked
   rank?: number;                 // 1 = most asked; drives "Most asked"
+  order?: number;                // to-dos only: lower first within a stage, by what depends on what (see "Console", One order)
   todo?: string;                 // if set, the record is a checklist item with this label
   keywords?: string[];           // up to 20 short strings (40 characters each): words players use that the text does not
   reveal?: { tier: Exclude<Tier, 'none'>; text: string }[];  // hidden details inside a 'none' answer
@@ -63,6 +64,9 @@ Rules the schema or the checks enforce:
 One setting for the whole app: **Off** (the default), **Places**, **Mild**.
 
 - Off shows `none` records only. Places adds `places`. Mild adds `places` and `mild`.
+- **The line between Off and Mild.** Off is what the game itself teaches every player: its menus, tutorials and the publisher's own launch material. That is settings, saving, controls, money and police basics, and travel options. Mild is what a player would rather find out by playing: what unlocks later, tricks, and effects the game does not explain up front. Places is where things are. How the game's systems work is visible at Off; the shortcuts around them are Mild. When a `none` record holds one such sentence, the sentence goes in a Mild `reveal` and the record stays at Off; when a whole record is Mild, it is a `mild` record.
+- **The one-line wording** beside the dial and in the settings sheet is exactly: Off: "what the game itself teaches every player"; Places: "adds where things are"; Mild: "adds things you would rather find out by playing". The About page spells the rule out in plain words, with one example each.
+- **How the line is tested** (`tests/content/tiers.test.mjs`). `tests/content/tier-rubric.json` lists every record and every `reveal` with its tier and a one-line reason from the rule, and the test fails when the file and the records disagree. The same test holds a list of Mild signal words (unlocks later, later in the game, as you progress, secret, hidden trick, cheat, easter egg, glitch, exploit, workaround, trick, ways to shake the police and similar) and fails when the visible default text of a `none` record, source titles included, holds one. Changing a tier means changing the rubric in the same commit.
 - Hidden text is never in a page the default setting loads. The build writes each hidden tier to its own files (pages under `/places/` and `/mild/`, fragments and a search index under `/h/<tier>/`). Default pages, the default search index and the offline cache contain none of it.
 - Tap to show: a `none` answer with hidden details shows a control such as "1 mild detail hidden. Show". It is a link to the detail's own page. JavaScript upgrades it to fetch the fragment and insert it in place. The dial does not change.
 - The Places section opens on a gate that says places are off, with the switch to turn them on. With JavaScript off, the gate is a plain link to the places pages.
@@ -78,7 +82,7 @@ One stored setting, `console`: `ps5`, `xbox-x` or `xbox-s`. It is saved on the d
 - **Never chosen.** Treated as "no console matches": only `consoles: 'all'` records show, the console-only ones wait in the fold, `byConsole` is not used (the base text shows) and a button name shows both consoles' labels (`✕/A`). The card above is the calm prompt; there is nothing else to dismiss.
 - **Where it applies.** Everywhere answers are listed: Ask (Most asked rows, stage to-dos), Checklist, topic cheat sheets, the answer page's related list and the desktop list column. Most asked and the lists inside hidden tiers are only filtered, with no fold.
 - **Counts.** Progress counts only the to-dos that show for the console (`src/lib/console.js` `applies()`, used by `home-todos.js` and `checklist.js`). A tick on a to-do for another console stays saved and is not counted.
-- **One order.** The Ask screen and the Checklist list to-dos in the same order, from one function, `todosOf()` in `src/lib/answers.ts`: most asked (`rank`) first, then by id. A real "do this first" order needs a sequence field in the data; until then `rank` stands in for it.
+- **One order.** The Ask screen and the Checklist list to-dos in the same order, from one function, `todosOf()` in `src/lib/answers.ts`: most asked (`rank`) first, then by id. A to-do may carry `order` (a positive whole number, lower first), set where one step must wait for another; it wins over `rank`, and to-dos with no `order` follow in `rank` order. "Before you start" runs: redeem the boxed-copy code, update the console, free the space, turn on automatic downloads, check the countdown (`tests/content/fixes.test.mjs`).
 - **Test fixtures.** `tests/fixtures/answers` has a PS5-only and an Xbox-only record with a to-do each. After choosing a console the visible text of Ask, Topics, a cheat sheet, an answer and the Checklist names no other console outside the fold, and button names are that console's (`behaviour.spec.mjs`).
 
 ## Screens
@@ -224,6 +228,7 @@ Players type plain sentences, so search is forgiving. No search library: `src/sc
 - **Typos.** One typo (a missing, extra or wrong letter, or two letters swapped) is tolerated in words of five letters or more. The last word may be unfinished: it matches the start of a word.
 - **Synonyms.** `ps5`, `ps` and `playstation` are one word. `xbox`, `series`, `xsx` and `xss` are one word. `storage`, `space`, `drive`, `disk`, `ssd`, `hdd`, `gb`, `tb` and `gigabyte` are one word. `not`, `doesnt`, `dont`, `cant`, `wont`, `isnt`, `didnt`, `cannot` and `never` are one word, so "does not work" can meet a keyword "doesnt work". A single letter (the S of Series S) is dropped. Console words and the no-word count for less than other words: they say what the player owns or colour the question, they are not the thing asked.
 - **Fields and ranking.** A word is found in the question (weight 4), `keywords` (3), `short` (2) or the topic name (1). A record is a result when it matches at least half of the query words the guide knows; a word that appears in no answer does not count against it. Results are ordered by how many words match (console words and the no-word count 0.3), then by the weights, with rarer words worth more, then by `rank`.
+- **Natural questions.** "do I need to download a patch before I play" finds the day-one patch answer: the answer's `keywords` hold the words players use (patch, update before play, launch update). `tests/search/queries.mjs` holds the query and the answer it must return.
 - **Keywords.** `keywords` is an optional array in the schema (at most 20, each 1 to 40 characters). It holds the words players use that the text does not: `quicksave`, `instal`, `doesnt work`. For a hidden-tier record they are hidden text: they are in that tier's index only, and `check:leak` searches for them.
 - **Console.** Answers whose `consoles` is a list without the chosen console are left out of the results, like the cards.
 - **No match.** The list shows the three closest answers (the best partial matches, else the most asked), then a row "Browse all topics" that opens `/topics/`. The status line says nothing matched exactly. It is never a dead end.
@@ -249,10 +254,14 @@ Table 1 is the ranked question list and Table 3 is 30 sourced facts.
 - The report's "official" tags were never checked against a live page. Open each official source (Orca's browser renders the Rockstar pages that plain fetches cannot) and keep `official` only where the page says it. Otherwise set `reported`.
 - Where sources disagree, say so in `short` and cite both.
 - Skip a question rather than guess. A missing answer is fine; a wrong one is not.
-- **Install size** is one answer with a short per console (all three: up to 212 GB free, whether it fits, where to check free space), a Series S 512 GB answer (reported: the usable-space figure is IGN's) and one "Make room" answer per console family (PS5; Xbox). Install size ranks 1.
+- **Install size** is one answer with a short per console (all three: up to 212 GB free, whether it fits, where to check free space, then clear the difference). The Series S text and the body carry the usable-space figure (about 364 GB of 512 GB, IGN's count, named as a report) and link the Series S 512 GB answer (reported: the figure is IGN's). There is one "Make room" answer per console family (PS5; Xbox). Install size ranks 1.
 - **Crashes** have an answer for all consoles (status pages, a short per console, and where to report to Rockstar) and full numbered steps per console family from PlayStation's and Xbox's own support pages. The crash answer ranks in the top 8. Known problems go to the New screen when confirmed.
 - **Source choice.** Where two sources support a fact equally, cite the one whose page carries no story material. Rockstar's own pages are cited for the facts only they hold.
-- **Code problems.** A failed code says where to go next: Rockstar's activation help, its support request form, then the shop or console maker.
+- **Code problems.** A failed code says where to go next: Rockstar's activation help, its support request form, then the shop or console maker. The report of sealed boxes with no code inside is its own `reported` card, so the official card cites official pages only.
+- **Label by the weakest source.** A record is `official` only when every claim in it rests on an official page. A claim that needs a news site is split into its own `reported` record (unlock time and US time zones; missing code and boxes with no code). The one exception is a figure that answers the page's own question and that no official page gives (the Series S usable space on the install-size answer): the sentence names the outlet and says it is a report, and the outlet is in the sources. `tests/content/fixes.test.mjs` fails an `official` record that cites a news site without saying so.
+- **Numbers.** Where a cited source gives a figure that answers the question, the answer states it and names the source: the frame-rate answer carries Digital Foundry's measured dips and input lag.
+- **Plain words.** A term a non-gamer may not know comes second, after a plain phrase: "a sharpening boost (PSSR)", not "PSSR". `tests/content/fixes.test.mjs` holds a list of terms and fails when one comes first.
+- **Tense.** A record never speaks of a date on or before its `checked` date as still to come. `scripts/check-dates.mjs` (`npm run check:dates`, in `npm run check`) fails a sentence that holds such a date and a future cue (will, would, due, expected, coming, ...); a test plants a violation.
 
 ## Refresh
 
@@ -264,10 +273,11 @@ Table 1 is the ranked question list and Table 3 is 30 sourced facts.
 
 1. **Schema.** The build fails on a record missing a source, a date, a tier or a confidence.
 2. **Console text.** `scripts/check-console-text.mjs` fails on a record that shows a console another console's name or buttons (see "Rules the schema or the checks enforce").
-3. **Spoiler leak.** A script takes every hidden string (see "Data shape") and fails if it appears in any built file outside that tier's own paths. It also fails if the default search index or the offline list names a hidden record.
-4. **Behaviour**, in Playwright at 390, 820 and 1440 wide: each of the top 20 answers is reached in two taps from `/`; a ticked to-do survives a reload; the dial at Off shows no places and at Places shows them; the theme switch works and is remembered; nothing scrolls sideways; the main flows work with JavaScript off.
-5. **Accessibility.** axe finds no violations on every screen in both themes.
-6. **Speed.** Lighthouse on the deployed address scores 100 for performance, accessibility, best practices and SEO on mobile, with largest contentful paint under 1 second. This one runs against the live site, outside `npm run check`.
+3. **Dates.** `scripts/check-dates.mjs` (`npm run check:dates`) fails a record that speaks of a past date as still to come (see "First content", Tense).
+4. **Spoiler leak.** A script takes every hidden string (see "Data shape") and fails if it appears in any built file outside that tier's own paths. It also fails if the default search index or the offline list names a hidden record.
+5. **Behaviour**, in Playwright at 390, 820 and 1440 wide: each of the top 20 answers is reached in two taps from `/`; a ticked to-do survives a reload; the dial at Off shows no places and at Places shows them; the theme switch works and is remembered; nothing scrolls sideways; the main flows work with JavaScript off.
+6. **Accessibility.** axe finds no violations on every screen in both themes.
+7. **Speed.** Lighthouse on the deployed address scores 100 for performance, accessibility, best practices and SEO on mobile, with largest contentful paint under 1 second. This one runs against the live site, outside `npm run check`.
 
 Tests assert what a player sees, never internals.
 

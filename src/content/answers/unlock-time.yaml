@@ -1,18 +1,17 @@
 id: unlock-time
 question: "When does it unlock in my region?"
-short: "Rockstar: midnight local time on 19 November in every region. Forbes reports US stores key off Eastern time, so western US players may start the evening before. Check your console's countdown."
+short: "Rockstar: midnight local time on 19 November in every region. Check your console's countdown for your exact time."
 body: |-
-  Where sources disagree
   - Rockstar's support page says the game releases at "midnight local time on November 19, 2026, in all regions".
-  - Forbes (12 November) says US storefronts treat the country as one region on Eastern time, so a Hawaii player could unlock at 7 p.m. on 18 November. Forbes says Rockstar has not posted a US time-zone breakdown, and we found none either.
+  - In the US? A news report gives earlier times for the western time zones. Rockstar has not confirmed it, so it has its own card: [When does it unlock in each US time zone?](/a/unlock-time-us-zones/).
 topic: setup
 stage: before
 tier: none
 consoles: all
 byConsole:
-  ps5: "Rockstar: midnight local time on 19 November. On PS5, open the game in your Game Library and select its countdown timer to see when it unlocks. Forbes says some western US players may start the evening before."
-  xbox-x: "Rockstar: midnight local time on 19 November. Microsoft says play usually starts shortly after 12:00 AM local time, with possible delays in some zones of big countries. Forbes says some western US players may start the evening before."
-  xbox-s: "Rockstar: midnight local time on 19 November. Microsoft says play usually starts shortly after 12:00 AM local time, with possible delays in some zones of big countries. Forbes says some western US players may start the evening before."
+  ps5: "Rockstar: midnight local time on 19 November. On PS5, open the game in your Game Library: PlayStation shows a timer counting down to its release."
+  xbox-x: "Rockstar: midnight local time on 19 November. Microsoft says play usually starts shortly after 12:00 AM local time, with possible delays in some zones of big countries."
+  xbox-s: "Rockstar: midnight local time on 19 November. Microsoft says play usually starts shortly after 12:00 AM local time, with possible delays in some zones of big countries."
 confidence: official
 sources:
   - url: "https://support.rockstargames.com/articles/29jV3Cv2cCgvwM1XgtMO5o/grand-theft-auto-vi-regional-pre-load-and-release-times-on-playstation-5-and-xbox-series-x-or-s"
@@ -21,8 +20,7 @@ sources:
     title: "How to pre-order and auto-download games from PlayStation Store (PlayStation Support)"
   - url: "https://support.xbox.com/help/subscriptions-billing/buy-games-apps/pre-order-faq"
     title: "Pre-order Xbox digital games in the Microsoft Store (Xbox Support)"
-  - url: "https://www.forbes.com/sites/brianmazique/2026/11/12/gta-6-unlocks-at-midnight-on-november-19-but-millions-of-americans-can-start-playing-the-night-before/"
-    title: "GTA 6 Unlocks At Midnight On November 19, But Millions Of Americans Can Start Playing The Night Before (Forbes)"
 checked: "2026-11-19"
 rank: 7
 todo: "Check the launch countdown on your console"
+order: 60
