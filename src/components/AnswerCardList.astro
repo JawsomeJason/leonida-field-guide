@@ -1,0 +1,17 @@
+---
+// The desktop list column: other answers of the same topic, the current one marked.
+import { pathOf, type AnswerData } from '../lib/answers';
+import './AnswerCard.css';
+
+interface Props {
+  answers: AnswerData[];
+  label: string;
+  current?: string;
+}
+const { answers, label, current } = Astro.props;
+---
+
+<p class="list__title">{label}</p>
+<ul class="tap-list">
+  {answers.map((b) => <li><a href={pathOf(b)} aria-current={b.id === current ? 'page' : undefined}>{b.question}</a></li>)}
+</ul>

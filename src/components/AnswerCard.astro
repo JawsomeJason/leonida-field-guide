@@ -1,0 +1,69 @@
+---
+// Compact card for cheat sheets and lists; `full` is the answer page. Same data, two sizes.
+import ConsoleText from './ConsoleText.astro';
+import Reveal from './Reveal.astro';
+import { consoleLabels, pathOf, renderBody, type AnswerData } from '../lib/answers';
+import './AnswerCard.css';
+
+interface Props {
+  answer: AnswerData;
+  full?: boolean;
+  related?: AnswerData[];
+}
+const { answer: a, full = false, related = [] } = Astro.props;
+
+const only = a.consoles === 'all' ? '' : `${a.consoles.map((c) => consoleLabels[c]).join(' and ')} only`;
+const trust = {
+  official: ['Official', 'Stated by the publisher or the console maker.'],
+  reported: ['Reported', 'Seen in credible coverage. The publisher has not confirmed it.'],
+  community: ['Community', 'Shared by players. Treat it as a tip.'],
+}[a.confidence];
+const checked = new Date(`${a.checked}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const body = full && a.body ? await renderBody(a.body) : '';
+const consoles = [['ps5', 'PS5'], ['xbox-x', 'Xbox X'], ['xbox-s', 'Xbox S']];
+---
+
+{full ? (
+  <article class="answer">
+    <h1 class="answer__q">{a.question}</h1>
+    {a.byConsole && (
+      <fieldset class="setting needs-js">
+        <legend>Console</legend>
+        <div class="ctabs">
+          {consoles.map(([value, label]) => <button type="button" data-set="console" data-value={value}>{label}</button>)}
+        </div>
+      </fieldset>
+    )}
+    <p class="answer__a"><ConsoleText text={a.short} byConsole={a.byConsole} /></p>
+    {only && <p class="answer__note">{only}</p>}
+    {body && <div class="prose" set:html={body} />}
+    <Reveal answer={a} />
+    <dl class="facts">
+      <div><dt>Confidence</dt><dd><strong>{trust[0]}.</strong> {trust[1]}</dd></div>
+      <div><dt>Checked</dt><dd><time datetime={a.checked}>{checked}</time></dd></div>
+      <div>
+        <dt>Sources</dt>
+        <dd>
+          <ul class="tap-list">
+            {a.sources.map((s) => <li><a href={s.url} rel="noopener"><span>{s.title}</span><span class="host">{new URL(s.url).hostname.replace(/^www\./, '')}</span></a></li>)}
+          </ul>
+        </dd>
+      </div>
+    </dl>
+    {related.length > 0 && (
+      <section aria-labelledby="related">
+        <h2 id="related">Related</h2>
+        <ul class="tap-list">{related.map((b) => <li><a href={pathOf(b)}>{b.question}</a></li>)}</ul>
+      </section>
+    )}
+  </article>
+) : (
+  <article class="card" id={a.id}>
+    <div class="card__in">
+      <h2 class="card__q"><a href={pathOf(a)}>{a.question}</a></h2>
+      <p class="card__a"><ConsoleText text={a.short} byConsole={a.byConsole} /></p>
+      {(only || a.tier !== 'none') && <p class="card__meta">{[a.tier === 'none' ? '' : a.tier === 'places' ? 'Places' : 'Mild', only].filter(Boolean).join(', ')}</p>}
+    </div>
+    <Reveal answer={a} />
+  </article>
+)}
