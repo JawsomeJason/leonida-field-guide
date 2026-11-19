@@ -48,6 +48,24 @@ test('one typo is forgiven in words of five letters or more, two are not', () =>
   assert.deepEqual(ids(four, 'sabe'), []); // four letters: no typo allowed
 });
 
+test('a small typo is forgiven in each word: one in 4 to 7 letters, two from 8, none up to 3, and a typo of a filler word is filler', () => {
+  const save = [rec('a', 'How do I save my progress?')];
+  assert.deepEqual(ids(save, 'wher do i svae my progres'), ['a']); // wher is where, svae and progres are one typo each
+  assert.deepEqual(ids([rec('b', 'Where is the subtitle setting?')], 'sbutitel setings'), ['b']); // eight letters: two edits are fine
+  assert.deepEqual(ids([rec('c', 'How do I stream the game?')], 'streamer'), []); // two edits never make a longer word of a shorter one
+  assert.deepEqual(ids([rec('d', 'Is there a ten minute wait?')], 'tne'), []); // three letters: no typo
+  assert.deepEqual(ids(save, 'hwo do i svae the gaem'), ['a']); // swapped fillers (hwo, gaem) neither count against nor match
+  assert.deepEqual(ids(save, 'banana split'), []); // the floor still rejects nonsense
+});
+
+test('the answer about DOING what is asked leads the answers that only mention the noun', () => {
+  const lose = rec('lose', 'Will I lose my progress, saves or cash?', { keywords: ['lose my save'] });
+  const doIt = rec('doit', 'How do I save, and how many slots are there?');
+  assert.deepEqual(ids([lose, doIt], 'where do i save my progress'), ['doit', 'lose']);
+  assert.deepEqual(ids([lose, doIt], 'wher do i save my progres'), ['doit', 'lose']); // with two typos too
+  assert.equal(ids([doIt, lose], 'will i lose my saves')[0], 'lose'); // "saves" here is a noun, not the subject
+});
+
 test('console and storage words are synonyms, but a console word alone is no answer', () => {
   const ps = [rec('a', 'Does it run on PlayStation?')];
   assert.deepEqual(ids(ps, 'ps5 run'), ['a']);

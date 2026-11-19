@@ -1,6 +1,6 @@
 // Plain-sentence search over the loaded index. Pure (no DOM), so a test can import it.
 // A query is cut into words; filler words go; each word is folded to a stem (plurals, -ing, -ed),
-// console and storage words become synonyms, and one typo is forgiven (see weigh).
+// console and storage words become synonyms, and a small typo in each word is forgiven (see weigh).
 // A result is an answer only when a word matches its question or keywords and half the meaningful words are covered; a hit in the short text or the topic name alone is no match.
 // No library: shortcut: stems are a few suffix rules, not a stemmer; upgrade if real queries miss.
 
@@ -14,6 +14,7 @@ const STOP = new Set(
 );
 // Words so common in questions that matching one alone is no answer (mode, change, work): they rank, but never make a confident answer by themselves.
 const GENERIC = new Set('mode change work problem issue help time new open first last tonight today now console version before after'.split(' ').map((w) => stem(w)));
+const FILLER = [...STOP].filter((w) => w.length > 2);
 const SHORT_OK = new Set(['pc', 'gb', 'tb', 'hz', 'tv', 'hd']); // real two-letter terms, and a number of two digits or more (60, 07); every other meaningful word has three letters or more
 
 // Words players use for the same thing share one name. A group's own name is a member too.
@@ -26,6 +27,22 @@ const SYN = Object.fromEntries(
   }).flatMap(([name, words]) => words.split(' ').flatMap((w) => [[w, name], [stem(w), name]])), // stem(w) so drives and spaces fold too
 );
 const WEAK = new Set(['playstation', 'xbox', 'not']); // console words say what the player owns, not what they ask; a no only colours the question: they count for less
+
+// The things a player does. When a question names one, the answer about DOING it (the verb is in its question or keywords) leads the answers that only mention the noun.
+const ACTION = new Set('save redeem install uninstall fix change download update unlock delete backup transfer restore claim preload reset'.split(' ').map((w) => stem(w)));
+
+const BEFORE = new Set('i you we to can could do does should will would must'.split(' ')); // a verb follows these in a question ("do I save", "to download"); after a noun it is a plural ("my saves")
+const toks = (t) => String(t ?? '').toLowerCase().replace(/['’]/g, '').split(SPLIT).filter(Boolean);
+/** The query's subject verb: the word that comes right after "I", "we" or "you", or opens the question, or follows "how to" ("how do I save", "install the game"). */
+const subjectVerbs = (query) => new Set(toks(query).filter((t) => !/^(actually|really|just|also|even|still)$/.test(t)).filter((t, i, a) => i === 0 || /^(i|we|you)$/.test(a[i - 1]) || (a[i - 1] === 'to' && a[i - 2] === 'how')).map((t) => canon(t, true)));
+/** The action verbs a record is about: the first word of a keyword phrase, and a verb in its question that follows a BEFORE word or opens it. */
+function actions(r) {
+  const out = new Set();
+  for (const p of r.keywords ?? []) toks(p).slice(0, 1).filter((t) => ACTION.has(stem(t))).forEach((t) => out.add(canon(t)));
+  const q = toks(r.question);
+  q.forEach((t, i) => ACTION.has(stem(t)) && (i === 0 || BEFORE.has(q[i - 1])) && out.add(canon(t)));
+  return out;
+}
 
 const WEIGHT = { question: 4, keywords: 3, short: 2, topic: 1 };
 const STRONG = 3; // a word found in the question or the keywords is a strong match; short and topic are weak
@@ -49,15 +66,20 @@ function stem(w) {
   return s.replace(/(.)\1$/, '$1').replace(/(?<=...)e$/, ''); // install and instal meet; save, saves, saving, saved meet
 }
 
-/** True when a and b are one edit apart (insert, delete, change, or swap two neighbours), or equal: optimal string alignment distance 1. */
-function near(a, b) {
-  if (Math.abs(a.length - b.length) > 1) return false;
-  let i = 0;
-  while (i < a.length && a[i] === b[i]) i++;
-  const x = a.slice(i);
-  const y = b.slice(i);
-  return x.slice(1) === y.slice(1) || x.slice(1) === y || x === y.slice(1) || (x[0] === y[1] && x[1] === y[0] && x.slice(2) === y.slice(2));
+/** Edit distance between a and b where swapping two neighbours is one edit (optimal string alignment). */
+function osa(a, b) {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+    }
+  }
+  return d[a.length][b.length];
 }
+/** True when a and b are one edit apart (insert, delete, change, or swap two neighbours), or equal. */
+const near = (a, b) => Math.abs(a.length - b.length) <= 1 && osa(a, b) <= 1;
 /** Two neighbouring letters swapped and nothing else. */
 const swapped = (a, b) => a.length === b.length && a !== b && near(a, b) && [...a].filter((c, i) => c !== b[i]).length === 2;
 
@@ -79,20 +101,29 @@ const fieldsOf = (r) => ({
 /**
  * How word q matches a record: { best, sum }. `best` is the weight of the best field it is found in (0 for none), `sum` adds every field
  * it is found in, so a word the record says in its question, its keywords and its short text counts for more. len is how many letters
- * the player typed. One typo is forgiven: a letter more, fewer or different when both stems have 5 letters or more (cash is not crash),
- * and two swapped neighbours in words of 4 typed letters or more. `typing` lets the word be an unfinished start.
+ * the player typed. A small typo is forgiven in each word, by its length: none up to 3 letters, one in 4 to 7, two from 8 (the stem's length for two). A letter more,
+ * fewer or different counts when both stems have 5 letters or more (cash is not crash); two swapped neighbours are one typo, from 4 typed
+ * letters. `verb` says the word met an action verb (ACTION) in the record's question or keywords. `typing` lets the word be an unfinished start.
  */
-function weigh(fields, q, typing, len) {
+function weigh(fields, q, typing, len, acts) {
   let best = 0;
   let sum = 0;
-  const typo = (w) => (Math.min(q.length, w.length) > 4 && near(q, w)) || (len > 3 && swapped(q, w));
+  let verb = false;
+  const tol = q.length > 7 ? 2 : len > 3 ? 1 : 0; // by the stem, so controls (control) is no typo of console
+  const typo = (w) => {
+    if (!tol || Math.abs(q.length - w.length) > tol) return false;
+    if (Math.min(q.length, w.length) < 5) return swapped(q, w);
+    const d = osa(q, w);
+    return d <= 1 || (d <= tol && !w.startsWith(q) && !q.startsWith(w)); // two edits never make a longer word of a shorter one (stream, streamer)
+  };
   for (const [name, set] of Object.entries(fields)) {
-    if (set.some((w) => w === q || typo(w) || (typing && q.length > 2 && w.startsWith(q)))) {
-      best = Math.max(best, WEIGHT[name]);
-      sum += WEIGHT[name];
-    }
+    const w = set.find((w) => w === q || typo(w) || (typing && q.length > 2 && w.startsWith(q)));
+    if (w === undefined) continue;
+    best = Math.max(best, WEIGHT[name]);
+    sum += WEIGHT[name];
+    verb ||= WEIGHT[name] >= STRONG && acts.has(w);
   }
-  return { best, sum };
+  return { best, sum, verb };
 }
 
 /**
@@ -106,13 +137,16 @@ export function search(records, query) {
   const raw = split(query);
   const typed = new Map(); // folded word -> longest spelling typed
   for (const t of raw) typed.set(canon(t, true), Math.max(typed.get(canon(t, true)) ?? 0, t.length));
-  const docs = records.map((r, i) => ({ r, i, f: fieldsOf(r), phrases: (r.keywords ?? []).map(words).filter((p) => p.length > 1) }));
+  const docs = records.map((r, i) => ({ r, i, f: fieldsOf(r), acts: actions(r), phrases: (r.keywords ?? []).map(words).filter((p) => p.length > 1) }));
+  const subject = subjectVerbs(query);
   const last = raw.length ? canon(raw.at(-1), true) : '';
   const known = [...typed]
-    .map(([q, len]) => ({ q, len, hits: docs.filter((d) => weigh(d.f, q, q === last, len).best).length }))
+    .map(([q, len]) => ({ q, len, hits: docs.filter((d) => weigh(d.f, q, q === last, len, d.acts).best).length }))
     .filter((k) => k.hits)
     .map((k) => ({ ...k, rare: Math.log(1 + docs.length / k.hits), info: !GENERIC.has(k.q) && !WEAK.has(k.q) })); // a word in few answers says more than one in most
-  const asked = [...typed.keys()].filter((q) => !GENERIC.has(q) && !WEAK.has(q)).length;
+  // A word no answer holds that is a typo of a filler word (wher, shoud, hwo) is filler too, not a word the guide has never seen.
+  const filler = (q, len = typed.get(q)) => !known.some((k) => k.q === q) && len < 7 && FILLER.some((s) => (len > 3 || s.length === 4 ? near(q, s) : swapped(q, s))); // a three-letter word only by a swap or a lost letter of a four-letter filler (wat is what): car is not can
+  const asked = [...typed.keys()].filter((q) => !GENERIC.has(q) && !WEAK.has(q) && !filler(q)).length;
   const need = Math.ceil(asked / 2); // coverage is judged on every word that says what is asked (one the guide has never seen counts against), not on a console, a no or a mode
   const scored = docs
     .map((d) => {
@@ -121,12 +155,14 @@ export function search(records, query) {
       let count = 0;
       let strong = 0; // informative words found in its question or keywords
       let score = 0;
+      let verb = 0; // action verbs the query names that the record's question or keywords hold
       let any = false;
       for (const k of known) {
-        const { best, sum } = weigh(d.f, k.q, k.q === last, k.len);
+        const { best, sum, verb: act } = weigh(d.f, k.q, k.q === last, k.len, d.acts);
         if (!best) continue;
         const c = WEAK.has(k.q) ? 0.3 : 1;
         any = true;
+        if (act && subject.has(k.q)) verb++;
         count += c;
         score += sum * c * k.rare;
         if (k.info) {
@@ -135,11 +171,12 @@ export function search(records, query) {
         }
       }
       const phrase = d.phrases.filter((p) => p.every((w) => typed.has(w))).length; // a keyword phrase the question holds whole, such as update before play
-      return { ...d, matched, count, strong, score, any, phrase };
+      return { ...d, matched, count, strong, score, any, phrase, verb };
     })
     .filter((d) => d.any);
   const answers = scored.filter((d) => d.strong && d.matched >= need);
-  const best = (a, b) => b.strong - a.strong || b.count - a.count || b.phrase - a.phrase || b.score - a.score || (a.r.rank ?? 1e9) - (b.r.rank ?? 1e9) || a.i - b.i;
+  // The answer about doing the thing asked leads; then the rest as before.
+  const best = (a, b) => b.verb - a.verb || b.strong - a.strong || b.count - a.count || b.phrase - a.phrase || b.score - a.score || (a.r.rank ?? 1e9) - (b.r.rank ?? 1e9) || a.i - b.i;
   const found = answers.sort(best).map((d) => d.r);
   return { found };
 }
