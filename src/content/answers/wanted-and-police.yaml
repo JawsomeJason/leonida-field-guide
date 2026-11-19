@@ -1,0 +1,21 @@
+id: wanted-and-police
+question: "How do wanted levels and the police work?"
+short: "Police now remember what they saw, such as your face, clothes, weapons or car. A solid white star means they can see you; flashing white stars mean they are searching. Higher levels widen the search."
+body: |-
+  - IGGM wrote this before launch, from official clips. Treat it as a guide to what to look for, and check it against what you see in the game.
+  - Hollow stars mean an alarm went off but the police do not know who they want. Red stars with a red radius on the minimap mean you got out of sight but are still inside the search area.
+  - Remembered details show as red indicators under the stars. Ignoring them makes you easier to spot later.
+  - At the top level the search reportedly covers the whole map.
+topic: good-to-know
+stage: day-1
+tier: none
+consoles: all
+confidence: reported
+sources:
+  - url: "https://www.iggm.com/news/gta-6-wanted-level-system-explained-how-heat-indicators-police-memory"
+    title: "GTA 6 Wanted Level System Explained: How Heat Indicators and Police Memory Work (IGGM)"
+checked: "2026-11-19"
+rank: 13
+reveal:
+  - tier: mild
+    text: "Ways IGGM lists for clearing the remembered details: destroy camera footage, change into a second outfit kept in your car, wear a mask or helmet before a crime, and hide or drop weapons the police saw."

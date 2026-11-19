@@ -1,0 +1,19 @@
+id: core-stats
+question: "What are the core stats and how do I raise them?"
+short: "Three stats: Health, Stamina and Focus. Training raises them for good. Eating, sleeping and showering give temporary boosts that last until you die or end the session."
+body: |-
+  - Weights raise Health. Running, biking and kayaking raise Stamina. Calm activities such as fishing and pool raise Focus.
+  - To keep gains you need to keep training, says GameSpot.
+  - Focus controls how long you can slow time. Click both sticks to use it.
+  - Skipping the routine will not ruin the game, but it puts you at a disadvantage.
+topic: good-to-know
+stage: week-1
+tier: none
+consoles: all
+confidence: reported
+sources:
+  - url: "https://www.gamespot.com/articles/gta-6-tips-everything-i-wish-i-knew-before-i-started-playing/"
+    title: "GTA 6 Tips: Everything I Wish I Knew Before I Started Playing (GameSpot)"
+checked: "2026-11-19"
+rank: 20
+todo: "Start a routine: eat, sleep and train"

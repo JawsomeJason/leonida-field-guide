@@ -1,0 +1,20 @@
+id: how-to-save
+question: "How do I save, and how many slots are there?"
+short: "Save by hand from the main menu: Game, then Save Game. PC Gamer says there are 15 manual slots, but Rockstar has not confirmed the number, so treat it as unconfirmed."
+body: |-
+  - GameSpot advises saving by hand often. Progress moves on, and you cannot go back to an older state without a hard save.
+  - PC Gamer notes that some things, such as using cheats, switch saving off until you quit and come back.
+  - No Rockstar page we read gives a slot count or describes autosave. See the cloud saves card for backups.
+topic: saving
+stage: day-1
+tier: none
+consoles: all
+confidence: reported
+sources:
+  - url: "https://www.pcgamer.com/games/grand-theft-auto/gta-6-save-game/"
+    title: "How to save game in GTA 6 (PC Gamer)"
+  - url: "https://www.gamespot.com/articles/gta-6-tips-everything-i-wish-i-knew-before-i-started-playing/"
+    title: "GTA 6 Tips: Everything I Wish I Knew Before I Started Playing (GameSpot)"
+checked: "2026-11-19"
+rank: 3
+todo: "Make your first manual save"

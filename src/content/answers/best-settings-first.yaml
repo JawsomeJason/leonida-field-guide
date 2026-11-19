@@ -1,0 +1,25 @@
+id: best-settings-first
+question: "What are the best settings to change first?"
+short: "Run HDR calibration, set Motion Blur Strength to 0 and Camera Shake off if they bother you, turn Subtitles on, and pick your aiming help. One guide's advice; Rockstar has not published a settings guide."
+body: |-
+  Display
+  - Run your console's HDR calibration first, then the in-game HDR calibration.
+  - Motion Blur Strength: slide it to 0 (Display tab).
+  - Safe Zone: pull the HUD inward if your TV cuts off the minimap or money counter.
+
+  Camera and gameplay
+  - Camera Shake: switch it off (Camera tab).
+  - Subtitles start on a limited default. Switch them to On if you miss lines during action.
+  - Targeting starts on Partial. The aiming card covers the other modes.
+  - This guide suggests Minimap and Compass (Dynamic) for a first run.
+topic: settings
+stage: hour-1
+tier: none
+consoles: all
+confidence: reported
+sources:
+  - url: "https://www.keengamer.com/articles/guides/best-gta-6-settings-to-change-first-motion-blur-aim-and-ps5-pro/"
+    title: "Best GTA 6 Settings to Change First: Motion Blur, Aim, and PS5 Pro (KeenGamer)"
+checked: "2026-11-19"
+rank: 1
+todo: "Set your display, subtitle and aim options"
