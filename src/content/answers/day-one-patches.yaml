@@ -1,6 +1,6 @@
 id: day-one-patches
 question: "Is there a day-one patch, and how big is it?"
-short: "MakeTechEasier reports two updates reached early (pre-loaded) copies: 01.002.000 (from 13 November) and 01.002.001. Rockstar had no patch notes for either by 17 November."
+short: "MakeTechEasier reports two updates reached copies downloaded before launch (pre-loaded): 01.002.000 (from 13 November) and 01.002.001. Rockstar had no patch notes for either by 17 November."
 body: |-
   - The sizes come from console download prompts and press reports, not from Rockstar or the console makers.
   - MakeTechEasier checked Rockstar's newswire and product page on 17 November and found no mention of either update.
@@ -11,9 +11,9 @@ stage: hour-1
 tier: none
 consoles: all
 byConsole:
-  ps5: "MakeTechEasier reports two updates reached copies downloaded early (pre-loaded): 01.002.000 (about 1 GB, from 13 November) and 01.002.001 (about 602.5 MB). Reported sizes come from player screenshots, not Rockstar, which had no patch notes for either as of 17 November."
-  xbox-x: "MakeTechEasier reports two updates reached copies downloaded early (pre-loaded): 01.002.000 (about 1 GB, from 13 November) and 01.002.001 (about 1.6 GB). Reported sizes come from player screenshots, not Rockstar, which had no patch notes for either as of 17 November."
-  xbox-s: "MakeTechEasier reports two updates reached copies downloaded early (pre-loaded): 01.002.000 (about 1 GB, from 13 November) and 01.002.001 (about 1.6 GB). Reported sizes come from player screenshots, not Rockstar, which had no patch notes for either as of 17 November."
+  ps5: "MakeTechEasier reports two updates reached copies downloaded before launch (pre-loaded): 01.002.000 (about 1 GB, from 13 November) and 01.002.001 (about 602.5 MB). Reported sizes come from player screenshots, not Rockstar, which had no patch notes for either as of 17 November."
+  xbox-x: "MakeTechEasier reports two updates reached copies downloaded before launch (pre-loaded): 01.002.000 (about 1 GB, from 13 November) and 01.002.001 (about 1.6 GB). Reported sizes come from player screenshots, not Rockstar, which had no patch notes for either as of 17 November."
+  xbox-s: "MakeTechEasier reports two updates reached copies downloaded before launch (pre-loaded): 01.002.000 (about 1 GB, from 13 November) and 01.002.001 (about 1.6 GB). Reported sizes come from player screenshots, not Rockstar, which had no patch notes for either as of 17 November."
 confidence: reported
 sources:
   - url: "https://maketecheasier.com/gta-6-patch-01-002-001-size/"

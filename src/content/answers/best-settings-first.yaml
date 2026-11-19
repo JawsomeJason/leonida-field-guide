@@ -3,7 +3,7 @@ question: "What are the best settings to change first?"
 short: "Run HDR (bright picture) calibration, turn Motion Blur Strength to 0 and Camera Shake off if they bother you, turn Subtitles on, pick aiming help. One guide's advice; Rockstar has published no settings guide."
 body: |-
   Display
-  - Run your console's HDR calibration first, then the in-game HDR calibration.
+  - Run your console's HDR (extra-bright picture) calibration first, then the in-game HDR calibration.
   - Motion Blur Strength: slide it to 0 (Display tab).
   - Safe Zone: pull the HUD (the on-screen display) inward if your TV cuts off the minimap or money counter.
 

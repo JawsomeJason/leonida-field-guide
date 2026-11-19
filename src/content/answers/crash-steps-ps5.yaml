@@ -2,7 +2,7 @@ id: crash-steps-ps5
 question: "My PS5 game crashes or freezes. What do I try, in order?"
 short: "Restart the game, check for a game update, update the PS5 system software, then upload your saves (PlayStation Plus), delete the game and download it again. Still crashing: contact PlayStation Support."
 body: |-
-  In this order, from PlayStation's own support page
+  In this order, from PlayStation's own support page. Also check [Known problems and what changed](/new/).
   1. Check [PlayStation status](https://status.playstation.com/). Wait if there are alerts.
   2. Make sure the game fully downloaded: highlight it, press {options}, choose Information, then Download Status.
   3. Check for a game update: highlight the game, press {options}, then choose Check for Update.

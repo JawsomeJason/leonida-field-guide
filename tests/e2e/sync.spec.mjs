@@ -32,9 +32,9 @@ const html = (page) => page.evaluate(() => ({ ...document.documentElement.datase
 
 const phone = { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true };
 // The three things the status line may say, in the words a player reads (the line is one role=status region).
-const SYNCED = /^Synced at .+: your ticks are saved on this device and in this site's private store\.$/;
-const KEPT = 'Could not reach the sync service for this site. Your ticks are kept on this device for now and will be sent later.';
-const NOT_HERE = 'Syncing is not available here. Your ticks are saved on this device only.';
+const SYNCED = /^Copied online \(synced\) at .+: your ticks are saved on this device and in this site's private store\.$/;
+const KEPT = 'Could not reach the online store (the sync service) for this site. Your ticks are kept on this device for now and will be sent later.';
+const NOT_HERE = 'Copying ticks online (syncing) is not available here. Your ticks are saved on this device only.';
 const status = (page) => page.locator('[data-sync]');
 
 // Opens the checklist and returns its first to-do (the fixture content always has some).
@@ -330,6 +330,27 @@ test('About: "The only cookies are the sign-in cookie and a spoiler-level cookie
     expect(cookies[0].domain.startsWith('.')).toBe(false); // no Domain attribute: sent to this site only
     expect(await page.evaluate(() => document.cookie)).toBe(`lfg_dial=${level.toLowerCase()}`);
   }
+  await ctx.close();
+});
+
+test('About: "Your spoiler setting stays on this device, and its level is also sent to this site in that cookie so the server can refuse hidden pages ... not stored there or tied to a person" (the level goes with each request; nothing else carries it)', async ({ browser }) => {
+  const ctx = await browser.newContext({ ...phone, serviceWorkers: 'block' }); // the page's own request, not one the worker answers
+  const server = stubbed();
+  await server.attach(ctx);
+  const page = await ctx.newPage();
+  const box = await firstBox(page);
+  await setDial(page, 'Places');
+  await tick(box);
+  const sent = [];
+  page.on('request', async (r) => r.url().includes('/about/') && sent.push((await r.allHeaders()).cookie ?? ''));
+  await page.goto('/about/');
+  const para = page.locator('.prose p', { hasText: 'spoiler-level cookie' });
+  await expect(para).toContainText('(lfg_dial)');
+  await expect(para).toContainText('Your spoiler setting stays on this device, and its level is also sent to this site in that cookie so the server can refuse hidden pages;');
+  await expect(para).toContainText('the server reads it on each request and keeps nothing, so it is not stored there or tied to a person.');
+  await expect.poll(() => sent.join()).toContain('lfg_dial=places'); // the level really is sent with the request
+  expect(JSON.parse(await page.evaluate(() => localStorage.getItem('lfg:v1'))).settings.dial.value).toBe('places'); // and really is kept on the device
+  for (const body of server.puts) expect(JSON.stringify(body)).not.toMatch(/places|dial/); // the sync store never receives it
   await ctx.close();
 });
 

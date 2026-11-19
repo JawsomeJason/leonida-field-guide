@@ -17,14 +17,26 @@ test('"Before you start" lists steps by what depends on what: redeem, then room,
   assert.ok(at('ps5-system-update') < at('install-size-and-preload') && at('xbox-system-update') < at('install-size-and-preload'), 'update the console before the download');
 });
 
-test('install size: the official answer rests on official pages; the Series S usable-space figure lives in its own reported answer', () => {
+test('install size: the headline of each console holds the game size and that console\'s own figure; IGN\'s usable-space figure is attributed and labels the answer reported', () => {
   const a = get('install-size-and-preload');
-  assert.equal(a.confidence, 'official');
-  assert.doesNotMatch(all(a), /364|IGN/);
-  assert.ok(a.sources.every((s) => /(^|\.)(rockstargames|playstation|xbox)\.com$/.test(new URL(s.url).hostname)), 'every source of the official answer is on an official host');
+  // Round 6: the usable-space figure is now in the top box, so the answer takes the weakest source's label (it was official without it).
+  assert.equal(a.confidence, 'reported');
+  assert.match(a.byConsole['xbox-s'], /IGN reports about 364 GB of a 512 GB Series S is usable/);
+  assert.doesNotMatch([a.short, a.byConsole.ps5, a.byConsole['xbox-x'], a.body].join(' '), /364|IGN/, 'only the Series S line carries the reported figure');
+  assert.ok(a.sources.some((s) => s.url.includes('ign.com')), 'IGN is cited');
+  assert.ok(a.sources.filter((s) => !/(^|\.)(rockstargames|playstation|xbox)\.com$/.test(new URL(s.url).hostname)).every((s) => s.url.includes('ign.com')), 'the only outside source is IGN');
   assert.match(a.body, /\]\(\/a\/series-s-space\/\)/);
   assert.match(a.body, /check your free space, then clear the difference/i);
-  assert.match(a.byConsole['xbox-s'], /part of the drive is reserved/);
+  for (const line of [a.short, ...Object.values(a.byConsole)]) {
+    assert.ok(line.length <= 240, line);
+    assert.match(line, /\b\d+ GB\b/, 'a GB figure');
+    assert.match(line, /clear the difference/, 'the clear-the-difference idea');
+    assert.match(line, /less free than 212 GB/, 'the shortfall is stated against the game size');
+  }
+  for (const c of ['ps5', 'xbox-x', 'xbox-s']) assert.match(a.byConsole[c], /Rockstar says to plan for up to 212 GB/, c);
+  assert.match(a.byConsole.ps5, /825 GB of storage[\s\S]*Settings, then Storage/);
+  assert.match(a.byConsole['xbox-x'], /1 TB or more of storage[\s\S]*Storage devices/);
+  assert.match(a.byConsole['xbox-s'], /Storage devices/);
   const s = get('series-s-space');
   assert.equal(s.confidence, 'reported');
   assert.match(s.short, /364 GB/);
