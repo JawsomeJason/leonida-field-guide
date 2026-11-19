@@ -1,0 +1,13 @@
+id: sample-15
+question: "Sample question 15: how do I do thing 15?"
+short: "Sample answer 15: do thing 15 like this."
+topic: getting-around
+stage: day-1
+tier: none
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+rank: 15

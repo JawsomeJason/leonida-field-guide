@@ -1,0 +1,13 @@
+id: place-01
+question: "Where is the quokka marker?"
+short: "The quokka marker sits beside the sample fountain."
+topic: places
+stage: day-1
+tier: places
+consoles: all
+confidence: community
+sources:
+  - url: https://example.com/fixture
+    title: Fixture source
+checked: "2026-01-01"
+todo: "Visit the quokka marker"

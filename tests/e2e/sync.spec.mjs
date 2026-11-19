@@ -17,10 +17,10 @@ function stubbed() {
 const phone = { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true };
 const status = (page) => page.getByRole('status').filter({ hasText: /Synced|Saved on this device only/ });
 
-// Opens the checklist and returns its first to-do. A build with no to-do records has nothing to tick: skip, say so.
+// Opens the checklist and returns its first to-do (the fixture content always has some).
 async function firstBox(page) {
   await page.goto('/checklist/');
-  test.skip(!(await page.locator('input[data-todo]').count()), 'no to-do records in this build');
+  await expect(page.locator('input[data-todo]').first()).toBeVisible();
   return page.locator('input[data-todo]').first();
 }
 const tick = async (box) => box.locator('xpath=ancestor::label').tap();
