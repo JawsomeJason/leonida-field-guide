@@ -1,0 +1,16 @@
+id: printable-map-and-poster
+question: "Is there an official printable map and poster?"
+short: "Rockstar said it would add a free printable cover poster and map of Leonida to its site on 19 November. A double-sided physical poster follows from the Rockstar Store, $0.99 or free with any store purchase."
+body: |-
+  - The physical version was due shortly after launch.
+  - Rockstar's announcement is on its pre-load newswire post.
+topic: places
+stage: day-1
+tier: places
+consoles: all
+confidence: official
+sources:
+  - url: "https://www.rockstargames.com/newswire/article/k4ak9okk485712/grand-theft-auto-vi-pre-load-begins-on-november-10"
+    title: "Grand Theft Auto VI Pre-Load Begins on November 10 (Rockstar Newswire)"
+checked: "2026-11-19"
+todo: "Download the official printable map"

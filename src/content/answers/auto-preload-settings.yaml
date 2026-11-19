@@ -1,0 +1,23 @@
+id: auto-preload-settings
+question: "How do I make the game download by itself?"
+short: "PS5: turn on auto-downloads and leave the console on or in Rest Mode. Xbox: turn on automatic updates and leave it on or in Sleep mode."
+body: |-
+  - Rockstar's pre-load FAQ gives the PS5 and Xbox requirements above and links to each console maker's own steps.
+  - Output Lag adds, from Sony's page: on PS5, also turn on Stay Connected to the Internet, then select the countdown timer on the game in your Game Library and tick the content you want downloaded.
+  - If the automatic download did not happen, start it by hand from your library.
+topic: setup
+stage: before
+tier: none
+consoles: all
+byConsole:
+  ps5: "Turn on auto-downloads and leave the PS5 on or in Rest Mode."
+  xbox-x: "Turn on automatic updates and leave the console on or in Sleep mode."
+  xbox-s: "Turn on automatic updates and leave the console on or in Sleep mode."
+confidence: official
+sources:
+  - url: "https://support.rockstargames.com/articles/7nPqOA2uCbpEQHXx7KVrYd/grand-theft-auto-vi-pre-load-faq"
+    title: "Grand Theft Auto VI Pre-Load FAQ (Rockstar Support)"
+  - url: "https://outputlag.com/guides/gta-6-not-working-day-one-problems-fixes/"
+    title: "GTA 6 Not Working? Day One Problems and Official Fixes on PS5 and Xbox (Output Lag)"
+checked: "2026-11-19"
+todo: "Turn on auto-downloads or automatic updates"

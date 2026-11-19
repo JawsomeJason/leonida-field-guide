@@ -1,0 +1,15 @@
+id: social-club-rockstar-account
+question: "What happened to Social Club?"
+short: "Social Club is gone as a separate site. Its account settings, linked platforms and progress now live in your Rockstar Games account. Old Social Club links redirect there."
+body: |-
+  - GTABoom says linked accounts stay connected and progress carries over.
+  - If sign-in fails, see the error codes card.
+topic: setup
+stage: before
+tier: none
+consoles: all
+confidence: reported
+sources:
+  - url: "https://www.gtaboom.com/rockstar-social-club-killed-and-rebuilt-ahead-of-gta-6-launch-3f40"
+    title: "The Rockstar Social Club Is Dead and GTA 6 Is the Reason Why (GTABoom)"
+checked: "2026-11-19"
