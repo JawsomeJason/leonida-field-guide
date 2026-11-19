@@ -13,7 +13,7 @@ const cachedPaths = (page) => page.evaluate(async () => (await Promise.all((awai
 async function ready(page, path) {
   await page.goto(path);
   await page.evaluate(() => navigator.serviceWorker.ready);
-  await expect.poll(async () => (await cachedPaths(page)).includes('/__lfg-ready')).toBe(true);
+  await expect.poll(async () => (await cachedPaths(page)).includes('/__lfg-ready'), { timeout: 20_000 }).toBe(true); // the fill starts when the page has rested a second (fix round 9)
   await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
 }
 /** Nothing replaced the document: it is the same page, with its own heading, not the browser's error page. */

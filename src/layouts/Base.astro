@@ -175,6 +175,25 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
       <a class="footer-link" href="/about/">About</a>
     </footer>
 
+    {/* Offline, as early as the page allows: right after the first frame, so it never delays the first paint (Lighthouse counts a request started before the largest paint
+        against LCP: started at parse end it raised the home screen's from 0.65 s to 1.05 s). Registers the worker, and while no worker controls this page yet (the first
+        visits) the page stores itself under the worker's cache name (the build writes the version in), so it opens again offline. A controlled page is stored by the
+        worker. Same rules as the worker's keepable(): no error, no redirect, no gate page. Hidden pages are the worker's tier rules. */}
+    <script is:inline>
+      (function (v, n) {
+        if (!n.serviceWorker || !window.caches || v[0] === '_') return;
+        requestAnimationFrame(function () {
+          setTimeout(function () {
+            n.serviceWorker.register('/sw.js').catch(function () {});
+            if (n.serviceWorker.controller || /^\/(places|mild|h)\//.test(location.pathname)) return;
+            fetch(location.pathname).then(function (r) {
+              if (r.ok && !r.redirected && !r.headers.has('x-lfg-gate') && !r.headers.has('x-lfg-redirect'))
+                return caches.open('lfg-' + v).then(function (c) { return c.put(location.pathname, r); });
+            }).catch(function () {});
+          });
+        });
+      })('__BUILD__', navigator);
+    </script>
     <script>
       import '../scripts/settings.js';
       import '../scripts/sync.js';
