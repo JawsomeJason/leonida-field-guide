@@ -16,8 +16,10 @@ fn.store.write = async (s) => { saved = JSON.parse(JSON.stringify(s)); writes++;
 const url = 'https://example.test/api/progress';
 const put = (body, headers = {}) =>
   fn.fetch(new Request(url, { method: 'PUT', headers: { 'content-type': 'application/json', cookie, ...headers }, body: typeof body === 'string' ? body : JSON.stringify(body) }));
-const state = (settings = {}, items = {}) => ({ v: 2, settings, items });
+const state = (items = {}) => ({ v: 3, items });
 const empty = state();
+let retired = 0;
+fn.store.retire = async () => { retired++; throw new Error('old blob refused'); }; // a failing retirement must never fail a request
 
 test('the function file loads and exports a fetch handler', () => {
   assert.equal(typeof fn.fetch, 'function');
@@ -31,13 +33,14 @@ test('GET on nothing saved returns the empty state', async () => {
 });
 
 test('PUT merges into what is saved and returns the merge', async () => {
-  const a = state({ dial: { value: 'mild', at: 10 } }, { 'first-thing': { done: true, at: 5 } });
-  const b = state({ dial: { value: 'off', at: 4 } }, { 'second-thing': { done: true, at: 6 } });
+  const a = state({ 'first-thing': { done: true, at: 5 }, same: { done: true, at: 1 } });
+  const b = state({ 'second-thing': { done: true, at: 6 }, same: { done: false, at: 2 } });
   assert.equal((await put(a)).status, 200);
   const res = await put(b);
   const merged = await res.json();
-  assert.deepEqual(merged.settings.dial, { value: 'mild', at: 10 });
-  assert.deepEqual(Object.keys(merged.items), ['first-thing', 'second-thing']);
+  assert.deepEqual(Object.keys(merged), ['v', 'items']);
+  assert.deepEqual(Object.keys(merged.items), ['first-thing', 'same', 'second-thing']);
+  assert.deepEqual(merged.items.same, { done: false, at: 2 });
   assert.deepEqual(await (await fn.fetch(new Request(url, { headers: { cookie } }))).json(), merged);
 });
 
@@ -51,12 +54,44 @@ test('bad bodies are refused before anything is stored', async () => {
   const before = writes;
   assert.equal((await put('not json')).status, 400);
   assert.equal((await put({ v: 1, settings: {}, items: {} })).status, 400);
-  assert.equal((await put(state({ dial: { value: 'story', at: 1 } }))).status, 400);
-  assert.equal((await put(state({}, { 'Bad Id': { done: true, at: 1 } }))).status, 400);
+  assert.equal((await put(state({ 'Bad Id': { done: true, at: 1 } }))).status, 400);
   assert.equal((await put(empty, { 'content-type': 'text/plain' })).status, 400);
   assert.equal((await put('x'.repeat(64 * 1024 + 1))).status, 413);
   assert.equal((await put(empty, { 'content-length': '70000' })).status, 413);
   assert.equal(writes, before);
+});
+
+test('a body that carries settings or any unknown field is a 400 and stores nothing', async () => {
+  const before = writes;
+  const tick = { a: { done: true, at: 1 } };
+  const bodies = [
+    { v: 3, settings: { dial: { value: 'mild', at: 1 } }, items: tick }, // a setting
+    { v: 3, settings: {}, items: tick }, // an empty settings key is still a settings key
+    { v: 2, settings: { dial: { value: 'mild', at: 1 } }, items: tick }, // the old shape
+    { v: 2, settings: {}, items: tick },
+    { v: 3, items: tick, dial: 'mild' }, // an unknown top-level field
+    { v: 3, items: { a: { done: true, at: 1, note: 'x' } } }, // an unknown field on a tick
+  ];
+  for (const body of bodies) assert.equal((await put(body)).status, 400, JSON.stringify(body));
+  assert.equal(writes, before);
+});
+
+test('GET returns only ticks, even if the stored blob carries settings or is the old shape', async () => {
+  saved = { v: 3, settings: { dial: { value: 'mild', at: 9 } }, items: { a: { done: true, at: 1 } } };
+  assert.deepEqual(await (await fn.fetch(new Request(url, { headers: { cookie } }))).json(), empty);
+  saved = { v: 2, settings: { dial: { value: 'mild', at: 9 } }, items: { a: { done: true, at: 1 } } };
+  assert.deepEqual(await (await fn.fetch(new Request(url, { headers: { cookie } }))).json(), empty);
+  saved = state({ a: { done: true, at: 1 } });
+  assert.deepEqual(await (await fn.fetch(new Request(url, { headers: { cookie } }))).json(), saved);
+});
+
+test('the one-off retirement of the old blob runs once, and its failure never fails a request', () => {
+  assert.equal(retired, 1);
+});
+
+test('the function stores under progress/ticks.json, not the abandoned state.json', async () => {
+  const src = (await import('node:fs')).readFileSync(new URL('../../api/progress.ts', import.meta.url), 'utf8');
+  assert.match(src, /const PATH = 'progress\/ticks\.json'/);
 });
 
 test('other methods are 405', async () => {

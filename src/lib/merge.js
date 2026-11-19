@@ -1,5 +1,8 @@
-// Synced progress: the pure state shape and merge, shared by the browser and api/progress.ts.
-// No imports, no DOM, no storage. See "Synced progress" in docs/spec.md.
+// Pure state shapes and merge, shared by the browser and api/progress.ts.
+// No imports, no DOM, no storage. See "Saved on the device" and "Synced progress" in docs/spec.md.
+//
+// Two shapes. The device keeps State v2 (settings and ticks). Only ticks ever leave it: the wire shape,
+// v3, is { v: 3, items } and has no settings key, so a setting cannot be sent, stored or read back.
 //
 // State v2: { v: 2, settings: { <key>: { value, at } }, items: { <id>: { done, at } } }, `at` = ms timestamp.
 // Per key and per item the newest `at` wins. Ties: the larger value string wins for a setting, done=true
@@ -34,24 +37,39 @@ const pick = (x, y, wins) => {
 const newest = (tie) => (a, b) => (a.at !== b.at ? (a.at > b.at ? a : b) : tie(a, b));
 const bySetting = newest((a, b) => (String(a.value) >= String(b.value) ? a : b));
 const byItem = newest((a, b) => (a.done ? a : b));
+const joinTicks = (a, b) => ({ v: 3, items: pick(a.items, b.items, byItem) });
 const join = (a, b) => ({ v: 2, settings: pick(a.settings, b.settings, bySetting), items: pick(a.items, b.items, byItem) });
 
 // Strict check for a v2 state, used at every boundary (the API, an import code, a response). Returns the
 // state in canonical form, or null if anything is off: unknown key, bad enum, bad id, bad time, too many items.
 export function parse(x) {
   if (!isObj(x) || x.v !== 2 || !isObj(x.settings) || !isObj(x.items) || !exactly(x, ['v', 'settings', 'items'])) return null;
-  const ids = Object.keys(x.items);
-  const ok =
-    Object.entries(x.settings).every(
-      ([k, e]) => Object.hasOwn(ENUMS, k) && isObj(e) && exactly(e, ['value', 'at']) && ENUMS[k].includes(e.value) && isAt(e.at),
-    ) &&
-    ids.length <= LIMITS.items &&
-    ids.every((id) => {
-      const e = x.items[id];
-      return validId(id) && isObj(e) && exactly(e, ['done', 'at']) && typeof e.done === 'boolean' && isAt(e.at);
-    });
-  return ok ? join(x, empty()) : null;
+  const ok = Object.entries(x.settings).every(
+    ([k, e]) => Object.hasOwn(ENUMS, k) && isObj(e) && exactly(e, ['value', 'at']) && ENUMS[k].includes(e.value) && isAt(e.at),
+  );
+  return ok && itemsOk(x.items) ? join(x, empty()) : null;
 }
+
+const itemsOk = (items) =>
+  Object.keys(items).length <= LIMITS.items &&
+  Object.entries(items).every(([id, e]) => validId(id) && isObj(e) && exactly(e, ['done', 'at']) && typeof e.done === 'boolean' && isAt(e.at));
+
+export const emptyTicks = () => ({ v: 3, items: {} });
+
+// Strict check for the wire shape { v: 3, items }, used by the API. A settings key, any unknown field or
+// the old v2 shape is null (the API answers 400).
+export function parseTicks(x) {
+  return isObj(x) && x.v === 3 && isObj(x.items) && exactly(x, ['v', 'items']) && itemsOk(x.items) ? joinTicks(x, emptyTicks()) : null;
+}
+
+// The ticks of a v3 or v2 state, as v3; null for anything else. Settings in a v2 state are dropped here, so
+// an old server answer or an old export code can never change a setting on this device.
+export function ticksOf(x) {
+  const s = parseTicks(x) ?? parse(x);
+  return s && { v: 3, items: s.items };
+}
+
+export const mergeTicks = (a, b) => joinTicks(parseTicks(a) ?? emptyTicks(), parseTicks(b) ?? emptyTicks());
 
 // The old lfg:v1 shape { console, dial, theme, stage, done: string[] } as v2. Every old value gets `at`
 // (default 0, older than any change made since), so it never beats a newer value from another device and
