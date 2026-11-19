@@ -136,3 +136,81 @@ Palettes are starting ideas, not tokens. Fonts are on Google Fonts [MEMORY, chec
 - Not reached: Land-book, Lapa Ninja (403), Merlin site (403), speedrun.com (403). Not looked at at all: Hades or Elden Ring fan reference sites, Pokémon tracker apps beyond Serebii, transit and score apps (NBA Hide Scores only via help page).
 - Pattern 8 (freshness) has the weakest evidence.
 - Tablet behaviours are the most speculative.
+
+## Rivals seen in a real browser (2026-11-18)
+
+Method: Orca embedded browser, 390x844 at 2x with touch emulation, then 1280x800 for desktop. Read-only, no sign-ins, no walkthrough or story pages opened. Screenshots are kept outside the repo. Tap sizes are measured from the DOM (smallest link or button) unless marked "eyeballed". Everything below was observed on launch eve (the countdown read under 24 hours), so pages are in their busiest, most-edited state.
+
+Correction to the earlier notes: sixcountdown.com is a separate countdown site. The spoiler-safe map and tracker called Checkpoint Six lives at checkpointsix.com.
+
+| Site | First screen on a phone | Ads / pop-ups / consent / video | Spoilers | Checklist saves without account | Taps to a basic answer | Tap size and type (phone) | Maintained? |
+|---|---|---|---|---|---|---|---|
+| FullSweep (fullsweepmap.com) | A full-screen map with a slim countdown bar, a progress chip, and a five-tab bottom bar (Map, Checklist, Wiki, Guides, More) | No ads, no consent wall, no video. One dismissible launch-alert email strip at the top | A "Spoiler shield" selector, default "Prologue only", with steps up to "Show everything". Gating is by story act. On desktop the selector sits in the top bar; on a phone it is inside the filter panel | Page copy says "No account", progress "on your device". Not ticked or reloaded by me, so claimed, not tested | Install size: not found on home or the launch page within 2 taps (a map-size guide exists). Launch info: 2 taps (home, Launch plan) | Bottom tabs about 78x56 px (eyeballed), clear. Page text 14 px Inter, tight. Content pages are 16 px type on a dark page, readable | Yes: launch page dated 24 Sep, a public changelog, 9 languages. A small bug: the home says "in 1 days" while a sub-page says "0 days" |
+| Checkpoint Six (checkpointsix.com, plus sixcountdown.com) | A hero with the game's own logo, a live countdown, two big pill buttons | No ads or consent. A dismissible top banner pushes a trailer. Heavy full-bleed background image; a "Scroll" label overlaps the legal line at the bottom of the phone hero | Page copy promises "spoiler-safe by default, nothing unlocks until you find it". I did not find the control itself: the map page I opened is a long editorial article, not an interactive map. Home shows a character section with no hiding | No tracker seen. Not verified either way | Install size: 1 tap from the countdown site's chip row ("How big is it?"), but that is the sister domain. On checkpointsix.com the home does not answer it | Smallest links 15-23 px, so small. Body 17 px Public Sans, condensed all-caps display type; low contrast grey paragraph text over an image | Map article dated 29 Aug, countdown ticking, so lightly maintained. The product described on the home is not what the map page delivers |
+| gtamap.io | A full-height interactive map with a top bar (logo, Menu, search, language, theme, sign in) and a Filters button | Ad slots exist in the markup (five `ins` or iframe nodes) but rendered empty, so none seen. No consent wall. A site-wide "Skip to content" link | A "Spoiler-safe mode" switch, ON by default in my fresh session. It hides community-mapped landmarks and keeps only Rockstar-confirmed places. Pin labels (Official, Community-estimated, Unverified) explain what is shown | Local save plus a JSON and GeoJSON export and import. Sign-in is optional, for sync. Not ticked by me | Install size: not on home. The FAQ is 2 taps (Menu, FAQ) and opens with an at-a-glance table. Release date and price are on that page | Smallest controls about 19 px. Top-bar buttons about 44 px. Body 16 px rounded system font with a condensed display face. Readable | Yes: the FAQ says last edited 19 Nov, fact-checked 18 Nov, with the latest official announcement linked |
+| thegta6guide.com | An editorial hero: a large serif headline "Unlocks at midnight local time", a live countdown, and "up to 212 GB" printed under it. Two big buttons below | No ads, consent, pop-ups or autoplay. Light cream page, no tracking banner | None. The home lists a "Latest GTA 6 news" block whose headlines are walkthrough-style task titles. Nothing is hidden or gated. This is the main reason it fails a spoiler-safe test | Yes, stated twice: ticks are stored in the browser, no account, with a "Reset progress" button. 22 checkboxes counted. It labels the list "expected", not confirmed | Install size: 0 taps, on the first screen (212 GB). Release time: 0 taps | Primary buttons about 44 px tall. Smallest links 19-24 px. 16 px body, large serif headings. Very readable | Yes: items dated 19 Nov, 19-language switcher |
+
+### Phone and desktop observations
+
+- FullSweep desktop: a three-column app. Search and category filters with live counts on the left, the map in the middle, a launch-alert card and a progress panel on the right. It is the closest thing here to a real tool.
+- gtamap.io desktop: left panel with search, the spoiler switch, then layers with counts; map on the right. Same structure as FullSweep, plainer.
+- Checkpoint Six desktop: a marketing page, with the key art as a full-bleed image. Nothing app-like.
+- thegta6guide desktop: a two-column editorial hero, serif type on cream, nav of five links. Calm and legible, not an app.
+
+### Verdict
+
+Is any one of them already good enough that a new app adds little? No, with one close call. FullSweep is the nearest: a free, no-ads, no-account map with a default-on spoiler shield and a dated changelog. But its first phone screen is a map, not an answer. Install size and best settings are not within two taps, the spoiler control is buried on a phone and only gates by story act, and it sells a paid Pro tier. gtamap.io has the cleanest spoiler switch but carries ad slots and is map-only. thegta6guide answers questions fastest but has no spoiler control and shows task-style headlines on the home. Checkpoint Six's map is an article, not a tool.
+
+What a new app would need to do better to be worth building:
+1. Put the answers first: install size, best settings, controls and launch status on the first phone screen, zero or one tap, with no map load.
+2. A spoiler control that is visible on the first screen on a phone, defaults to hidden, works per item and not only per story act, and stays hidden through search results and share links.
+3. A checklist that saves on the device, can be exported and imported without any account, and still works offline.
+4. One-handed layout: bottom navigation, controls of at least 44 px, no overlapping or low-contrast text, nothing that auto-opens.
+5. No ads, no tracker banner, no paid tier on the core answers, and a visible "last checked" date on every fact.
+6. Original look. Two of the four sites lean on the game's own logo and key art. A new app should not.
+
+Not seen: the FullSweep and Checkpoint Six checklists in use (I did not tick or reload), the spoiler shield's behaviour once changed, any best-settings page on any of the four, whether FullSweep and gtamap.io count from a returning visitor's saved state, and the Checkpoint Six tracker if one exists (the claim was not confirmed).
+
+## Galleries seen in a real browser (2026-11-18)
+
+Method as above, desktop width 1280. About 11 gallery visits and 5 live-site visits at phone width. Fonts are read from the live page's computed style where I opened it; font names inside gallery tiles were not listed by any gallery.
+
+### What each gallery offers
+
+- godly.website redirects to recent.design, a general design feed (Design, Launch Videos, Websites, OG Images, App Screenshots, App Icons, Tools). Filter chips: All, Web, Interface, Branding, Motion, Illustration, Posters, Print. A sponsor tile and a jobs panel. Mostly motion and 3D showpieces, little documentation or tool design. Not useful for this brief.
+- land-book.com: search box, a cookie banner with Reject all, and a promo banner. Filters: Industry, Style, Type, Typography, Color, Platform, plus a Mobile view and a Sections view. A detail page shows a desktop and phone preview side by side, a swatch strip of extracted colours, tags (for example Sans Serif, Big Footer, Saas), but no named fonts. Best gallery for this brief.
+- lapa.ninja: dark site with a large category list (SaaS, Dev Tools, Productivity, App, Software, Dashboard-adjacent). Category pages carry a third-party ad block above the grid. Fonts have their own section.
+- darkmodedesign.com: a two-column grid of large dark-site cards, no categories or search, a sponsor card. Useful only as a mood board.
+- minimal.gallery: a black page with tag chips (SAAS, Tools, Software, Programming, Finance, Directory). Three-column grid with dates. Weekly email form at the top.
+- refero.design: a dark, search-first home: a prompt box with Web apps, iOS apps and Styles tabs and suggested searches such as data tables with filters and empty states. Filtering by page type (for example Dashboard) shows five results, then a sign-in wall ("1,449 more pages hidden"). A promo pop-up covers the lower left.
+- mobbin.com: the public home is a sign-up pitch with a cookie bar (Accept or Deny). I did not open the discover pages, so the screen library itself was not seen.
+
+### Designs worth borrowing (8)
+
+| # | Product | Gallery | Live | Layout | Colour and type | Borrow |
+|---|---|---|---|---|---|---|
+| 1 | Vercel Docs | lapa.ninja (Vercel listing, lapa.ninja/post/vercel-3/) | vercel.com/docs | Phone: slim top bar (mark, "Docs", more, menu), then a 48 px headline, short intro, three small pill buttons, a tab row (Deploy, Set up, Call a model) over a code card with a copy icon | Pure black ground, light grey text (237), Geist Sans and Geist Mono, green only on code tokens | One row of tabs that swaps the answer in place, and mono type for anything copyable |
+| 2 | Dash0 | land-book.com/websites/72595-opentelemetry-native-observability-dash0 | dash0.com | Phone: a coloured announcement strip, a floating rounded nav pill (logo, search, grid menu), a small mono label chip, a 32 px two-tone headline, one email field with a coral button, then a product screenshot | Near-black (16,16,16) with warm coral and amber accents; Roobert for text, Martian Mono for labels. Swatch strip on land-book: charcoal, brown, coral | A warm neon accent on charcoal and mono micro-labels. One accent, used sparingly |
+| 3 | Mintlify | land-book.com (documentation search; two Mintlify listings) | mintlify.com | Phone: logo and menu, a small live "agent traffic" ticker, a 40 px serif headline, a white primary button, then a docs-app mock with a left rail and card grid. Floating "Ask assistant" button | Dark teal-black ground, lime green line art, Inter plus a serif display face (Arizona Flare) | A persistent floating ask or search button, and a lime-on-dark accent that reads as neon without being pink |
+| 4 | Refero | refero.design (also listed on lapa.ninja) | refero.design | Desktop: a narrow left rail (New research, Web apps, iOS apps, Styles), a huge serif headline, then one wide prompt box with four mode chips and six suggested searches in two columns | Near-black ground, grey subtext, white pill for the active item, a serif display face and a clean sans for UI | The search-first home: one box, a handful of chips, suggested queries underneath |
+| 5 | Mercury (dashboard shots) | refero.design/search?page_types[id][]=28 (Dashboard filter) | mercury.com (not visited) | Light dashboards: a left rail, a welcome row, balance card with a chart, an accounts card, tabbed sub-pages | Light grey and white with one indigo accent, small dense type | Dense cards with one clear number each. Light, so only the structure applies |
+| 6 | The GTA 6 Guide | not in a gallery (found in Part 1) | thegta6guide.com | See table above: first screen is one answer, a countdown, then two full-width buttons | Cream ground, black and rust accent, a serif display face and a system sans | Answer-first hero: the thing people came for is on screen with no tap. Needs a dark skin and a spoiler gate |
+| 7 | FullSweep | not in a gallery (found in Part 1) | fullsweepmap.com | Phone: a map filling the screen, a bottom bar of five tabs, one floating menu and one floating stats button. Desktop: filters, map, side panel | Near-black UI, Inter, category colours as small rounded pins | The bottom tab bar and category colour coding; the filter panel behind a single floating button |
+| 8 | Vitrine and Lime Duo | darkmodedesign.com (first two cards) | joinvitrine.com, limeduo.com (not visited) | Centred hero on black, a single glowing object, a one-line headline | Black with one saturated accent (lime, cobalt) | Only the mood: one glowing accent on near-black. Not a layout to copy |
+
+### The three strongest models and why
+
+1. Vercel Docs: the clearest dark reference page, with one primary action, mono type for copyable values, and a tab strip that changes the answer without leaving the page.
+2. Dash0: proves a warm coral or amber accent on charcoal can feel neon and coastal at once, with mono micro-labels, and it stays legible at 16 px on a phone.
+3. Refero (with Mintlify's floating ask button as the second half): a search-first home where the box is the page, plus a persistent one-thumb search entry on every screen.
+Runner-up for structure: FullSweep's bottom tab bar, the only one of the Part 1 sites that suits one-handed use.
+Avoid: Checkpoint Six's use of the game's own logo and key art; every tile on godly.website and darkmodedesign.com as a layout model (they are showpieces, not tools).
+
+### Not seen
+
+- Mobbin discover, search and filter pages (only the home was opened). Its dashboard, checklist and mobile-web screens were not seen.
+- Any named font inside a gallery tile; names above come only from sites I opened.
+- Mercury, Vitrine and Lime Duo live pages (gallery thumbnails only).
+- Most of Refero's results past the first five (sign-in wall).
+- Dark theme and light theme toggles on the live sites, except where the default was dark.
+- Any page at tablet width.
