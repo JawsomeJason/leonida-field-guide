@@ -96,21 +96,10 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
     background: var(--surface);
     cursor: pointer;
   }
-  .todo__tick input {
-    flex: none;
-    inline-size: 1.5rem;
-    block-size: 1.5rem;
-    margin: 0;
-    accent-color: var(--accent);
-    cursor: pointer;
-  }
   .todo__tick:has(:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
   /* Done: colour and a line through, never a change of size. */
   .todo__tick:has(:checked) span { color: var(--muted); text-decoration: line-through; }
   .todo__open { flex: none; justify-content: center; }
-  @media (hover: hover) {
-    .todo__tick:hover { background-color: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
-  }
 
   /* Progress: a thin bar, filled with the accent. The count beside it is the real information. */
   progress {

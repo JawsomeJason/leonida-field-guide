@@ -115,6 +115,13 @@ Two themes from one set of named tokens. The app follows the device setting, and
 | `--accent-2` | `#ff6f91` | `#c2401f` |
 
 - These are starting values. Every text and control pairing must pass WCAG AA contrast in both themes; adjust a value if axe says it fails, and record the change here.
+- **Visual pass (every change to a token or a value, in `tokens.css`).** The colour table above is unchanged.
+  - New `--shadow`: Day `0 1px 2px rgb(28 42 46 / .08), 0 2px 8px rgb(28 42 46 / .05)`; Night `inset 0 1px 0 rgb(255 255 255 / .04)` (a faint top edge, so surfaces stay quiet). Used on rows, tiles, cards and controls.
+  - New `--wash` (accent 12% over `--surface`, hover and current) and `--press` (accent 22%, `:active`). They replace the repeated `color-mix` values.
+  - `--radius` 0.5rem to 0.75rem. `--text-h1` `clamp(1.5rem, 1.1rem + 2vw, 2.25rem)` to `clamp(1.625rem, 1.2rem + 2vw, 2.5rem)`, weight 750, letter-spacing -0.02em. `--text-h2` 1.25rem to 1.3125rem (21px, one 1.25 step above body), weight 650. New `--space-7` 3rem.
+  - New motion tokens: `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`, `--press-scale` 0.98 (rows, cards) and `--press-scale-small` 0.96 (compact controls). One press recipe in `global.css`: the surface tints with no delay, shrinks slightly (70ms in), and eases back (160ms out). Under `prefers-reduced-motion: reduce` the shrink is dropped and the tint stays. Motion is `scale`, `opacity` and colour only.
+  - The Settings panel drops in 6px and fades (160ms, `--ease-out`; it moves but never resizes, so its targets stay 48px); a revealed detail fades in and settles 4px (200ms); page changes crossfade in 150ms.
+  - Layout: the rail is a full-height panel with a tinted current item; the spoiler dial stays on one row beside its label at 600px and up; the content column is at most 64rem; the Ask and Checklist screens share one drawn tick box.
 - Night uses colour for state only (selected tab, links, the dial); surfaces stay quiet. Day is warm and flat.
 - System font stack for text. `ui-monospace` for anything a player copies or reads as a value: sizes, button names, times, version numbers.
 - Button names are text in `<kbd>`, switched by the console setting (✕ ○ □ △ and L1/R1, or A B X Y and LB/RB). No glyph images.

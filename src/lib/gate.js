@@ -69,7 +69,7 @@ export const loginPage = (error) => `<!doctype html>
   --bg: #f6efe2; --surface: #fffaf0; --text: #1c2a2e; --muted: #55666b; --accent: #0b6f75; --accent-2: #c2401f;
   --on-accent: var(--surface);
   --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem; --space-5: 1.5rem; --space-6: 2rem;
-  --tap: 3rem; --text-input: 1rem; --text-small: 0.9375rem; --radius: 0.5rem;
+  --tap: 3rem; --text-input: 1rem; --text-small: 0.9375rem; --radius: 0.75rem;
   --ease: cubic-bezier(0.23, 1, 0.32, 1);
   color-scheme: light;
 }
@@ -99,6 +99,7 @@ input {
   font: inherit; font-size: max(var(--text-input), 1em);
   color: var(--text); background: var(--surface); border: 2px solid var(--muted); border-radius: var(--radius);
 }
+input:focus { border-color: var(--accent); }
 input[aria-invalid] { border-color: var(--accent-2); }
 .error { margin-block-start: var(--space-2); font-size: var(--text-small); font-weight: 600; color: var(--accent-2); }
 button {
@@ -110,7 +111,8 @@ input:focus-visible, button:focus-visible { outline: 3px solid var(--accent); ou
 button:active { opacity: 0.85; }
 @media (hover: hover) and (pointer: fine) { button:hover { background: color-mix(in srgb, var(--accent) 88%, var(--text)); } }
 @media (prefers-reduced-motion: no-preference) {
-  button { transition: transform 160ms var(--ease); }
+  input { transition: border-color 140ms var(--ease); }
+  button { transition: transform 160ms var(--ease), background-color 140ms var(--ease); }
   button:active { transform: scale(0.97); opacity: 1; }
 }
 .note { margin-block-start: var(--space-6); font-size: var(--text-small); color: var(--muted); }

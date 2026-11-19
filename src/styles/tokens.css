@@ -7,6 +7,7 @@
   --muted: #55666b;
   --accent: #0b6f75;
   --accent-2: #c2401f;
+  --shadow: 0 1px 2px rgb(28 42 46 / 0.08), 0 2px 8px rgb(28 42 46 / 0.05);
   color-scheme: light;
 }
 
@@ -19,6 +20,7 @@
     --muted: #a3acd0;
     --accent: #3ee6e0;
     --accent-2: #ff6f91;
+    --shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
     color-scheme: dark;
   }
 }
@@ -31,6 +33,7 @@
   --muted: #a3acd0;
   --accent: #3ee6e0;
   --accent-2: #ff6f91;
+  --shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
   color-scheme: dark;
 }
 
@@ -42,14 +45,15 @@
   --space-4: 1rem;
   --space-5: 1.5rem;
   --space-6: 2rem;
+  --space-7: 3rem;
 
   --font-text: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
   --text-body: 1.0625rem; /* 17px at the default size */
   --text-small: 0.9375rem;
-  --text-h1: clamp(1.5rem, 1.1rem + 2vw, 2.25rem);
-  --text-h2: 1.25rem;
+  --text-h1: clamp(1.625rem, 1.2rem + 2vw, 2.5rem);
+  --text-h2: 1.3125rem; /* 21px: one 1.25 step above body */
 
   --tap: 3rem; /* 48px: minimum size of anything tappable */
   --gap-tap: 0.5rem; /* 8px: minimum space between tappable neighbours */
@@ -59,5 +63,12 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
   --rail: 8rem;
-  --radius: 0.5rem;
+  --radius: 0.75rem;
+
+  /* Tints and motion shared by every tappable thing. */
+  --wash: color-mix(in srgb, var(--accent) 12%, var(--surface)); /* hover, current */
+  --press: color-mix(in srgb, var(--accent) 22%, var(--surface)); /* :active */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --press-scale: 0.98; /* rows and cards */
+  --press-scale-small: 0.96; /* compact controls */
 }
