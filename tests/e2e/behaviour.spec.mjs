@@ -83,11 +83,11 @@ test('tap to show opens a hidden detail in place and leaves the dial alone', asy
   await press(page.getByRole('link', { name: '1 mild detail hidden. Show' }));
   await expect(note).toBeVisible();
   await expect(page).toHaveURL(/\/a\/sample-02\/$/);
-  await expect(page.getByRole('radio', { name: 'Off', exact: true })).toBeChecked();
+  await expect(chip(page, 'dial')).toHaveText('Spoilers: Off', { useInnerText: true });
   await expect(page.getByText('Quokka note one')).toHaveCount(0);
   await press(page.getByRole('link', { name: '1 places detail hidden. Show' }));
   await expect(page.getByText('Quokka note one')).toBeVisible();
-  await expect(page.getByRole('radio', { name: 'Off', exact: true })).toBeChecked();
+  await expect(chip(page, 'dial')).toHaveText('Spoilers: Off', { useInnerText: true });
 });
 
 test('the theme switch works and is remembered', async ({ page }) => {
@@ -109,7 +109,7 @@ test('the console switch changes the button names', async ({ page }) => {
   const answer = page.locator('.answer__a');
   // What is on screen, not the text of hidden spans: both consoles' names are in the page.
   const shows = (text) => expect.poll(() => answer.innerText()).toContain(text);
-  await shows('Press ✕A to open the sample menu.'); // nothing chosen yet: both names
+  await shows('Press ✕ / A to open the sample menu.'); // nothing chosen yet: both names, with a spaced slash
   await press(page.getByRole('button', { name: 'Xbox X', exact: true }));
   await shows('Press A to open the sample menu on this console.');
   await press(page.getByRole('button', { name: 'PS5', exact: true }));
@@ -149,19 +149,45 @@ const seen = async (page) => {
   return page.evaluate(() => document.body.innerText);
 };
 
-test('first open asks which console, with three big buttons, and the choice sticks', async ({ page }) => {
+test('first open: search comes first, then a slim one-row console prompt, and the choice sticks', async ({ page }) => {
   await page.goto('/');
   const card = page.getByRole('region', { name: 'Which console do you play on?' });
   await expect(card).toBeVisible();
-  const first = await page.evaluate(() => document.querySelector('main').firstElementChild.className);
-  expect(first).toContain('console-card');
-  for (const name of ['PS5', 'Xbox Series X', 'Xbox Series S']) expect((await card.getByRole('button', { name, exact: true }).boundingBox()).height).toBeGreaterThanOrEqual(60);
+  const search = await box(page.getByRole('searchbox'));
+  const prompt = await box(card);
+  expect(search.y, 'search is above the prompt').toBeLessThan(prompt.y);
+  expect(prompt.b, 'the prompt is on the first screen').toBeLessThanOrEqual(page.viewportSize().height);
+  const buttons = card.getByRole('button');
+  await expect(buttons).toHaveCount(3);
+  const rows = new Set();
+  for (const name of ['PS5', 'Xbox Series X', 'Xbox Series S']) {
+    const b = await box(card.getByRole('button', { name, exact: true }));
+    expect(b.h, `${name} is a 48px target`).toBeGreaterThanOrEqual(48);
+    rows.add(Math.round(b.y));
+  }
+  expect(rows.size, 'the three buttons share one row').toBe(1);
+  expect(prompt.h, 'a slim prompt, not a card').toBeLessThanOrEqual(120);
   await press(card.getByRole('button', { name: 'Xbox Series S', exact: true }));
   await expect(card).toBeHidden();
   await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
   await page.reload();
   await expect(card).toBeHidden();
   expect(await page.evaluate(() => document.documentElement.dataset.console)).toBe('xbox-s');
+});
+
+// Both consoles' button names show until one is chosen, always with a spaced slash: never "L3LS" or "✕A".
+const GLUED = /✕A|○B|□X|△Y|L1LB|R1RB|L2LT|R2RT|L3LS|R3RS|OptionsMenu|CreateView/;
+test('button names on a never-chosen device read "L3 / LS", on screen and in search results', async ({ page }) => {
+  await page.goto('/a/sample-04/');
+  const answer = await page.locator('.answer__a').innerText();
+  expect(answer).toContain('✕ / A');
+  expect(answer).not.toMatch(GLUED);
+  await page.goto('/');
+  await page.getByRole('searchbox').fill('sample menu');
+  const results = page.locator('#q-results');
+  await expect(results).toContainText('✕ / A');
+  expect(await results.innerText()).not.toMatch(GLUED);
+  expect(await page.evaluate(() => document.body.innerText)).not.toMatch(GLUED);
 });
 
 test('until a console is chosen only every-console steps show, the rest wait in the Other consoles fold', async ({ page }) => {
@@ -226,19 +252,38 @@ test('the checklist lists steps in the order the Ask screen does', async ({ page
 // ---- Header and settings sheet ----
 const tapAt = (page, x, y) => (test.info().project.use.hasTouch ? page.touchscreen.tap(x, y) : page.mouse.click(x, y));
 const box = (locator) => locator.evaluate((el) => { const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height, b: r.bottom, r: r.right }; });
-const chip = (page) => page.locator('.chip');
+const chip = (page, which = 'console') => page.locator(`.chip--${which}`);
 const sheet = (page) => page.locator('#settings');
+const rowsOf = (page, ...locators) => Promise.all(locators.map((l) => box(l)));
 
-test('the header takes at most a fifth of the screen, also at 130% text', async ({ page }) => {
+test('the header is one row: a mark, the console chip and a spoiler chip that says the level in words', async ({ page }) => {
+  await saved(page, { console: 'xbox-s', dial: 'places' });
   await page.goto('/');
-  const vh = page.viewportSize().height;
-  expect((await box(page.locator('.site-header'))).h).toBeLessThanOrEqual(vh * 0.2);
-  await page.addStyleTag({ content: 'html { font-size: 130%; }' });
-  const big = (await box(page.locator('.site-header'))).h;
-  expect(big, `header is ${big}px at 130% text`).toBeLessThanOrEqual(Math.max(170, vh * 0.2));
+  await expect(chip(page, 'dial')).toHaveText('Spoilers: Places', { useInnerText: true });
+  await expect(chip(page)).toHaveText(/Xbox S/);
+  const [mark, c, d] = await rowsOf(page, page.locator('.site-name'), chip(page), chip(page, 'dial'));
+  expect(new Set([mark, c, d].map((r) => Math.round(r.y))).size, 'one row').toBe(1);
+  expect(c.h).toBeGreaterThanOrEqual(48);
+  expect(d.h).toBeGreaterThanOrEqual(48);
+  await expect(page.getByRole('link', { name: 'Leonida Field Guide' })).toBeVisible(); // the mark is named, whether or not its text shows
+  for (const level of ['mild', 'off']) {
+    await page.evaluate((l) => (document.documentElement.dataset.dial = l), level);
+    await expect(chip(page, 'dial')).toHaveText(`Spoilers: ${level === 'mild' ? 'Mild' : 'Off'}`, { useInnerText: true });
+  }
 });
 
-test('the header stays on screen while you scroll, with the dial and the console in reach', async ({ page }) => {
+test('the header and the bottom bar take at most a fifth of a phone screen, also at 130% text', async ({ page }) => {
+  await page.goto('/');
+  const { width, height } = page.viewportSize();
+  const chrome = async () => (await box(page.locator('.site-header'))).h + (await box(page.locator('.nav'))).h;
+  if (width < 600) expect(await chrome(), 'header plus bottom bar').toBeLessThanOrEqual(height * 0.2);
+  else expect((await box(page.locator('.site-header'))).h, 'the header alone').toBeLessThanOrEqual(height * 0.2);
+  await page.addStyleTag({ content: 'html { font-size: 130%; }' });
+  if (width < 600) expect(await chrome(), 'at 130% text').toBeLessThanOrEqual(height * 0.2);
+  else expect((await box(page.locator('.site-header'))).h, 'at 130% text').toBeLessThanOrEqual(height * 0.2);
+});
+
+test('the header stays on screen while you scroll, with the console and the level in reach', async ({ page }) => {
   await saved(page, { console: 'xbox-s' });
   await page.goto('/checklist/');
   await page.evaluate(() => scrollTo(0, 600));
@@ -246,15 +291,16 @@ test('the header stays on screen while you scroll, with the dial and the console
   expect((await box(page.locator('.site-header'))).y).toBe(0);
   await expect(chip(page)).toHaveText(/Xbox S/);
   await setDial(page, 'Places');
-  await expect(page.getByRole('radio', { name: 'Places', exact: true })).toBeChecked();
+  await expect(chip(page, 'dial')).toHaveText('Spoilers: Places', { useInnerText: true });
 });
 
-test('every screen names the console in use in the header', async ({ page }) => {
+test('every screen names the console in use and the spoiler level in the header', async ({ page }) => {
   for (const [c, name] of [['ps5', 'PS5'], ['xbox-x', 'Xbox X'], ['xbox-s', 'Xbox S']]) {
     await saved(page, { console: c });
     for (const path of SCREENS) {
       await page.goto(path);
       await expect(chip(page), path).toContainText(name);
+      await expect(chip(page, 'dial'), path).toHaveText('Spoilers: Off', { useInnerText: true });
     }
   }
   await page.addInitScript(() => localStorage.clear());
@@ -262,49 +308,51 @@ test('every screen names the console in use in the header', async ({ page }) => 
   await expect(chip(page)).toContainText('Console'); // never chosen: it asks
 });
 
-test('the settings sheet sits below the dial and closes on Escape, a tap outside, a choice and Done', async ({ page }) => {
+test('either chip opens the sheet, with a scrim behind it, and it closes on Escape, the scrim, a choice and Done', async ({ page }) => {
   await page.goto('/about/');
-  const open = async () => { await press(chip(page)); await expect(sheet(page)).toBeVisible(); };
-  await open();
+  const open = async (which) => { await press(chip(page, which)); await expect(sheet(page)).toBeVisible(); };
+  await open('console');
   const vh = page.viewportSize().height;
   await expect.poll(async () => Math.round((await box(sheet(page))).b), 'it settles at the bottom of the screen, in thumb reach').toBe(vh);
   const s = await box(sheet(page));
-  const d = await box(page.locator('.dial'));
-  const h = await box(page.locator('.site-header'));
-  expect(s.y, 'the sheet starts below the header').toBeGreaterThanOrEqual(h.b - 1);
-  expect(d.b <= s.y || d.y >= s.b, 'the sheet covers the dial').toBe(true);
-  // what is under the middle of the dial is the dial
-  expect(await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest('.dial') !== null, [d.x + d.w / 2, d.y + d.h / 2])).toBe(true);
+  const scrim = await page.evaluate(() => getComputedStyle(document.querySelector('#settings'), '::backdrop').backgroundColor);
+  expect(scrim, 'a scrim behind the sheet').not.toMatch(/rgba\(0, 0, 0, 0\)|transparent/);
 
   await page.keyboard.press('Escape');
   await expect(sheet(page)).toBeHidden();
 
-  await open();
-  await tapAt(page, 4, Math.round((h.b + s.y) / 2)); // the page margin between the header and the sheet
+  await open('dial');
+  const h = await box(page.locator('.site-header'));
+  await tapAt(page, 4, Math.round((h.b + s.y) / 2)); // the scrim above the sheet
   await expect(sheet(page)).toBeHidden();
 
-  await open();
+  await open('console');
   await press(sheet(page).getByRole('radio', { name: 'Night', exact: true }));
   await expect(sheet(page)).toBeHidden();
   await expect(page.locator('body')).toHaveCSS('background-color', NIGHT);
 
-  await open();
+  await open('dial');
   await press(sheet(page).getByRole('button', { name: 'Done' }));
   await expect(sheet(page)).toBeHidden();
 
-  await open(); // the dial works while it is open, in the same tap that closes the sheet
-  await setDial(page, 'Places');
-  await expect(page.getByRole('radio', { name: 'Places', exact: true })).toBeChecked();
+  await setDial(page, 'Mild'); // a spoiler choice closes it too, and the chip follows
+  await expect(sheet(page)).toBeHidden();
+  await expect(chip(page, 'dial')).toHaveText('Spoilers: Mild', { useInnerText: true });
 });
 
-test('the sheet explains the three dial levels', async ({ page }) => {
+test('the sheet holds the three spoiler levels as radios with their meanings, the console and the theme', async ({ page }) => {
   await page.goto('/');
-  await press(chip(page));
-  const help = sheet(page).locator('#dial-help');
-  await expect(help).toContainText('Off');
-  await expect(help).toContainText('how-to answers only');
-  await expect(help).toContainText('adds where things are');
-  await expect(help).toContainText('adds light gameplay hints');
+  await press(chip(page, 'dial'));
+  const levels = sheet(page).locator('.levels');
+  await expect(levels.getByRole('radio')).toHaveCount(3);
+  await expect(levels.getByRole('radio', { name: /Off/ })).toBeChecked();
+  await expect(levels).toContainText('what the game itself teaches every player');
+  await expect(levels).toContainText('adds where things are');
+  await expect(levels).toContainText('adds things you would rather find out by playing');
+  await expect(sheet(page)).not.toContainText('light gameplay hints');
+  await expect(sheet(page).getByRole('radio', { name: 'PS5', exact: true })).toBeVisible();
+  await expect(sheet(page).getByRole('radio', { name: 'Night', exact: true })).toBeVisible();
+  for (const r of await levels.locator('label').all()) expect((await box(r)).h).toBeGreaterThanOrEqual(48);
 });
 
 // ---- Hidden pages, outside links, footer ----

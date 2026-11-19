@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { SCREENS, saved, measure, press } from './helpers.mjs';
+import { SCREENS, saved, measure, press, setDial } from './helpers.mjs';
 
 const screens = [...SCREENS, '/a/sample-04/', '/a/sample-05/', '/places/list/'];
 // Every screen is measured twice: as a first-time visitor sees it, and with a console chosen, everything shown and every fold open.
@@ -26,7 +26,7 @@ for (const path of ['/', '/checklist/', '/a/sample-04/']) {
   test(`the open settings sheet on ${path} holds to the same rules`, async ({ page }) => {
     await saved(page, { console: 'ps5' });
     await page.goto(path);
-    await press(page.locator('.chip'));
+    await press(page.locator(path === '/checklist/' ? '.chip--dial' : '.chip--console'));
     await expect(page.locator('#settings')).toBeVisible();
     const { problems, smallest } = await measure(page);
     test.info().annotations.push({ type: 'smallest', description: `${path}|settings sheet open|${smallest}` });
@@ -66,8 +66,8 @@ test('the device has no hover, and hovering changes nothing a player sees', asyn
 
 test('every control is a plain tap away: dial, theme, search, tick', async ({ page }) => {
   await page.goto('/');
-  await press(page.getByRole('radio', { name: 'Mild', exact: true }));
-  await expect(page.getByRole('radio', { name: 'Mild', exact: true })).toBeChecked();
+  await setDial(page, 'Mild');
+  await expect(page.locator('.chip--dial')).toHaveText('Spoilers: Mild', { useInnerText: true });
   await press(page.getByRole('checkbox', { name: 'Do sample thing 01' }));
   await expect(page.getByRole('checkbox', { name: 'Do sample thing 01' })).toBeChecked();
   await press(page.getByRole('searchbox'));
