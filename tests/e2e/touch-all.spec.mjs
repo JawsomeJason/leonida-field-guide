@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { readdirSync } from 'node:fs';
-import { PAGES, saved, measure } from './helpers.mjs';
+import { PAGES, OLD_ADDRESSES, saved, measure } from './helpers.mjs';
 
 // Every page of the build, at 320, 390 and 820 wide with touch (the projects own the widths): every link, button, summary, input,
 // select, textarea and [tabindex] is 48px in its real hit area AND in its own box, with 8px clear of the next. A first-time visitor,
@@ -14,7 +14,8 @@ const states = [
 test('the page list is every page the build wrote', () => {
   const built = readdirSync('.e2e-dist', { recursive: true })
     .filter((f) => f.endsWith('index.html') && !f.startsWith('h/') && f !== 'index.html')
-    .map((f) => `/${f.replace(/index\.html$/, '')}`);
+    .map((f) => `/${f.replace(/index\.html$/, '')}`)
+    .filter((p) => !OLD_ADDRESSES.includes(p)); // a redirect page, not a screen
   expect(PAGES.filter((p) => p !== '/no-such-page/' && p !== '/').sort()).toEqual(built.sort());
 });
 

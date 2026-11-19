@@ -19,6 +19,9 @@ export const PAGES = [
   }),
 ];
 
+/** The old /a/<id>/ addresses of hidden-tier records: redirect pages in the build, not screens (the page list leaves them out). */
+export const OLD_ADDRESSES = records.filter((a) => a.tier !== 'none').map((a) => `/a/${a.id}/`);
+
 export const NIGHT = 'rgb(24, 19, 32)';
 export const DAY = 'rgb(246, 239, 226)';
 

@@ -15,10 +15,10 @@ export default defineConfig({
   // No test is skipped at run time: each project simply owns the files that apply to it.
   projects: [
     { name: 'phone-320', use: { viewport: { width: 320, height: 640 }, ...touch }, ...only('touch', 'touch-all', 'ui2', 'hidden-gate', 'nextup', 'consoles') },
-    { name: 'phone-390', use: { viewport: { width: 390, height: 844 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'touch-all', 'a11y', 'search', 'notfound', 'design', 'ui2', 'hidden-gate', 'nextup', 'outside', 'consoles') },
-    { name: 'tablet-820', use: { viewport: { width: 820, height: 1180 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'touch-all', 'search', 'design', 'ui2', 'hidden-gate', 'nextup', 'outside') },
+    { name: 'phone-390', use: { viewport: { width: 390, height: 844 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'touch-all', 'a11y', 'search', 'notfound', 'design', 'ui2', 'hidden-gate', 'nextup', 'outside', 'consoles', 'round4') },
+    { name: 'tablet-820', use: { viewport: { width: 820, height: 1180 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'touch-all', 'search', 'design', 'ui2', 'hidden-gate', 'nextup', 'outside', 'round4') },
     { name: 'sync', ...only('sync') },
     { name: 'new-screen', use: { viewport: { width: 390, height: 844 }, ...touch }, ...only('new') },
-    { name: 'desktop-1440', use: { viewport: { width: 1440, height: 900 } }, ...only('behaviour', 'nojs', 'a11y', 'overflow', 'leak', 'search', 'notfound', 'design', 'ui2', 'hidden-gate', 'nextup', 'outside', 'consoles') },
+    { name: 'desktop-1440', use: { viewport: { width: 1440, height: 900 } }, ...only('behaviour', 'nojs', 'a11y', 'overflow', 'leak', 'search', 'notfound', 'design', 'ui2', 'hidden-gate', 'nextup', 'outside', 'consoles', 'round4') },
   ],
 });
