@@ -12,6 +12,13 @@ const TIERS = ['places', 'mild'];
 
 // Only a real page or asset is kept: not an error, a redirect (a hidden URL below the player's dial is sent to a 200 gate
 // page: storing that would poison the cache) or the gate's login page.
+// A document navigation to a hidden address that is not on the device while offline gets this small page, not the browser's error page.
+// It holds no hidden text: only what it is and a way back.
+const NOTICE = '<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Not available offline</title><style>:root{color-scheme:light dark}body{font:1rem/1.5 system-ui,sans-serif;margin:0;padding:1rem;max-inline-size:40rem}a{display:flex;align-items:center;min-block-size:3rem}</style><h1>Not available offline</h1><p>This page cannot load without a connection. Once you have opened it online, it will work offline.</p><a href="/">Go back to Ask</a>';
+const HIDDEN = /^\/(places|mild|h)\//;
+// One item's fragment: the player's own tap (the reveal header) puts just this one in the cache, so it opens again offline.
+const FRAGMENT = /^\/h\/(places|mild)\/a\/[^/]+\/$/;
+
 const keepable = (res) => res.ok && !res.redirected && !res.headers.has('x-lfg-gate') && !res.headers.has('x-lfg-redirect');
 
 const store = async (cache, url) => {
@@ -51,9 +58,11 @@ async function addTier(tier) {
   } catch {}
 }
 
-// The player lowered the dial: delete that tier's pages, fragments, search index and its cached mark.
-async function dropTier(tier) {
+// The player lowered the dial (`lowered`: the page says the dial just went down) or the tier was cached whole before: delete its pages,
+// fragments, search index and its cached mark. Otherwise (a page loading at Off, or the dial going up) a detail the player opened with one tap stays for offline use.
+async function dropTier(tier, lowered) {
   const cache = await caches.open(CACHE);
+  if (!lowered && !(await cache.match(`/__lfg-tier-${tier}`))) return;
   for (const req of await cache.keys()) {
     const { pathname } = new URL(req.url);
     if (pathname.startsWith(`/${tier}/`) || pathname.startsWith(`/h/${tier}/`) || pathname === `/__lfg-tier-${tier}`) await cache.delete(req);
@@ -77,7 +86,7 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('message', (e) => {
   // `tiers` is every hidden tier that is on now: those are added, all the others are dropped.
   if (e.data?.type === 'tiers' && Array.isArray(e.data.tiers)) {
-    e.waitUntil(Promise.all(TIERS.map((t) => (e.data.tiers.includes(t) ? addTier(t) : dropTier(t)))));
+    e.waitUntil(Promise.all(TIERS.map((t) => (e.data.tiers.includes(t) ? addTier(t) : dropTier(t, e.data.lowered)))));
   }
 });
 
@@ -106,7 +115,7 @@ self.addEventListener('fetch', (e) => {
           if (held && keepable(res)) await cache.put(new URL(req.url).pathname, res.clone());
           return res;
         } catch {
-          return held || Response.error();
+          return held || (HIDDEN.test(pathname) ? new Response(NOTICE, { status: 503, headers: { 'content-type': 'text/html; charset=utf-8' } }) : Response.error());
         }
       })(),
     );
@@ -116,8 +125,12 @@ self.addEventListener('fetch', (e) => {
   e.respondWith(
     (async () => {
       const cache = await caches.open(CACHE);
-      const held = await cache.match(req);
-      if (!held) return fetch(req);
+      const held = await cache.match(req, { ignoreVary: true }); // the reveal header must not make a cached fragment a miss
+      if (!held) {
+        const res = await fetch(req);
+        if (FRAGMENT.test(pathname) && req.headers.get('x-lfg-reveal') && keepable(res)) e.waitUntil(cache.put(pathname, res.clone()));
+        return res;
+      }
       e.waitUntil(refresh(cache)); // cache first, refreshed in the background
       return held;
     })(),

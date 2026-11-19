@@ -47,3 +47,4 @@
   @keyframes reveal-in { from { opacity: 0; translate: 0 -0.25rem; } }
 }
 .answer__a + .reveal--warn { margin-block-end: var(--space-4); } /* the body that follows is not squeezed against the button */
+.reveal__note { margin-block: var(--space-2) 0; font-size: var(--text-small); line-height: 1.4; } /* offline-note.js: why a tap changed nothing */

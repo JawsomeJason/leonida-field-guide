@@ -170,3 +170,70 @@ test('offline: a page and a fragment already revealed are read from the cache, w
   sw.listeners.fetch({ request: { method: 'GET', url: `${ORIGIN}/h/places/a/y/`, mode: 'cors' }, respondWith: (p) => (fragment = p), waitUntil() {} });
   assert.equal(await (await fragment).text(), 'the fragment');
 });
+
+// Fix round 8: a detail opened with one tap is kept for offline use, and a hidden page that is not on the device answers a small notice.
+const fetchEvent = (path, headers = {}) => {
+  const jobs = [];
+  let shown;
+  return { jobs, event: { request: new Request(`${ORIGIN}${path}`, { headers }), respondWith: (p) => (shown = p), waitUntil: (p) => jobs.push(p) }, shown: () => shown };
+};
+const ask = async (sw, path, headers) => {
+  const f = fetchEvent(path, headers);
+  sw.listeners.fetch(f.event);
+  const res = await f.shown();
+  await Promise.all(f.jobs);
+  return res;
+};
+
+test('a fragment fetched with the reveal header is stored by that one tap, and a later request is answered from the cache', async () => {
+  let online = true;
+  const sw = boot((path) => {
+    if (!online) throw new TypeError('offline');
+    return page(`detail ${path}`);
+  });
+  const cache = await sw.cache;
+  await ask(sw, '/h/mild/a/x/', { 'x-lfg-reveal': '1' });
+  assert.equal(await (await cache.match('/h/mild/a/x/')).text(), 'detail /h/mild/a/x/');
+  online = false;
+  assert.equal(await (await ask(sw, '/h/mild/a/x/', { 'x-lfg-reveal': '1' })).text(), 'detail /h/mild/a/x/'); // the header does not make it a miss
+
+  // Not stored: a fetch with no tap, an index, or a refused (redirected) answer.
+  online = true;
+  await ask(sw, '/h/mild/a/y/');
+  await ask(sw, '/h/mild/search.json', { 'x-lfg-reveal': '1' });
+  assert.equal(await cache.match('/h/mild/a/y/'), undefined);
+  assert.equal(await cache.match('/h/mild/search.json'), undefined);
+  const refusing = boot(() => redirected('gate page'));
+  await ask(refusing, '/h/mild/a/z/', { 'x-lfg-reveal': '1' });
+  assert.equal(await (await refusing.cache).match('/h/mild/a/z/'), undefined);
+});
+
+test('a page loading at Off keeps a detail opened by a tap; lowering the dial removes it', async () => {
+  const sw = boot((path) => page(path));
+  const cache = await sw.cache;
+  await ask(sw, '/h/mild/a/x/', { 'x-lfg-reveal': '1' });
+  await sw.send({ type: 'tiers', tiers: [], lowered: false }); // a page load at Off
+  assert.notEqual(await cache.match('/h/mild/a/x/'), undefined);
+  await sw.send({ type: 'tiers', tiers: ['places'], lowered: false }); // the dial goes up
+  assert.notEqual(await cache.match('/h/mild/a/x/'), undefined);
+  await sw.send({ type: 'tiers', tiers: [], lowered: true }); // and down
+  assert.equal(await cache.match('/h/mild/a/x/'), undefined);
+});
+
+test('offline, a navigation to a hidden address that is not on the device gets a small notice with a way back and no hidden text', async () => {
+  const sw = boot(() => {
+    throw new TypeError('offline');
+  });
+  for (const path of ['/mild/x/show/?reveal=1', '/places/', '/h/mild/a/x/']) {
+    const res = await navigate(sw, path);
+    assert.equal(res.status, 503, path);
+    const body = await res.text();
+    assert.match(body, /cannot load without a connection/);
+    assert.match(body, /href="\/"/);
+    assert.ok(!body.includes('reveal') && !body.includes('x/show'), path); // nothing of the address is echoed
+  }
+  // An ordinary page that is not cached keeps the browser's own answer; a cached hidden page is still served.
+  assert.equal((await navigate(sw, '/nope/')).type, 'error');
+  await (await sw.cache).put('/mild/y/show/', page('held'));
+  assert.equal(await (await navigate(sw, '/mild/y/show/?reveal=1')).text(), 'held');
+});

@@ -22,8 +22,12 @@ async function start() {
 
   // The dial lives in settings.js; its data-dial attribute is the one signal every change goes through.
   const root = document.documentElement;
+  let on = 0; // how many tiers were on before this message: a lower number is the dial being lowered, which clears every tier that is off now
   const sendTiers = async () => {
-    (await sw.ready).active?.postMessage({ type: 'tiers', tiers: TIERS[root.dataset.dial || 'off'] ?? [] });
+    const tiers = TIERS[root.dataset.dial || 'off'] ?? [];
+    const lowered = tiers.length < on;
+    on = tiers.length;
+    (await sw.ready).active?.postMessage({ type: 'tiers', tiers, lowered });
   };
   new MutationObserver(sendTiers).observe(root, { attributes: true, attributeFilter: ['data-dial'] });
   sendTiers();

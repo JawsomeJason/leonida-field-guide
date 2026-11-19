@@ -3,6 +3,7 @@
 // Below the tier the server refuses these files (302 to the gate page) unless the request carries the reveal marker,
 // which only a tap adds, so a redirected answer is a refusal, never content.
 import { read } from './settings.js';
+import { cannotLoad, say, unsay } from './offline-note.js';
 
 const RANK = { off: 0, places: 1, mild: 2 };
 const allowed = (tier) => RANK[tier] <= RANK[read().dial];
@@ -10,7 +11,7 @@ const allowed = (tier) => RANK[tier] <= RANK[read().dial];
 const pages = new Map();
 function load(url, tap) {
   if (!pages.has(url)) {
-    const p = fetch(url, tap ? { headers: { 'x-lfg-reveal': '1' } } : undefined).then((r) => (r.ok && !r.redirected ? r.text() : Promise.reject(r.status)));
+    const p = fetch(url, tap ? { headers: { 'x-lfg-reveal': '1' } } : undefined).then((r) => (r.redirected ? Promise.reject('refused') : r.ok ? r.text() : Promise.reject(r.status)));
     p.catch(() => pages.delete(url)); // a failed load can be tried again
     pages.set(url, p);
   }
@@ -29,10 +30,13 @@ async function open(box, auto) {
     out.replaceChildren(parse(await load(btn.dataset.src, !auto)));
     // A detail the player opened with a tap can be put away again, from the top of it (no scrolling past the text to find Hide); one the dial itself shows goes when the dial drops.
     if (!auto) out.prepend(Object.assign(document.createElement('button'), { type: 'button', className: 'reveal__hide', innerHTML: 'Hide<span class="sr-only"> this detail</span>' }));
-  } catch {
-    if (!auto) location.href = btn.href; // no script path: the detail's own page
+  } catch (e) {
+    // A redirect is the server refusing: the detail's own page. Anything else (offline, a failed or non-ok answer) stays on the page and says so.
+    if (e === 'refused') !auto && (location.href = btn.href);
+    else say(btn, cannotLoad('This detail'), auto);
     return;
   }
+  unsay(btn);
   box.dataset.open = auto ? 'auto' : 'tap';
   btn.hidden = true;
   out.hidden = false;
@@ -58,10 +62,17 @@ async function sync() {
   const lowered = RANK[read().dial] < RANK[level];
   level = read().dial;
   // A gate page forwards to its explicit address once the dial reaches its tier. The link carries the marker, so a missing cookie cannot loop.
-  for (const gate of document.querySelectorAll('[data-gate]')) if (allowed(gate.dataset.gate)) return location.replace(gate.querySelector('.guard__show').href);
+  // Offline it forwards only to a page the device already holds; otherwise it stays and says so (the browser's error page would lose the place).
+  for (const gate of document.querySelectorAll('[data-gate]')) {
+    if (!allowed(gate.dataset.gate)) continue;
+    const show = gate.querySelector('.guard__show');
+    if (navigator.onLine || (await caches?.match(show.href, { ignoreSearch: true }).catch(() => null))) return location.replace(show.href);
+    return say(show, cannotLoad('This page'));
+  }
   for (const box of document.querySelectorAll('[data-reveal]')) {
     if (allowed(box.dataset.tier)) box.dataset.open || open(box, true);
-    else if (box.dataset.open && (lowered || box.dataset.open === 'auto')) close(box); // lowering the dial takes every revealed detail out of the page at once
+    else if (box.dataset.open && (lowered || box.dataset.open === 'auto')) close(box);
+    else if (lowered) unsay(box.querySelector('.reveal__btn')); // lowering the dial takes every revealed detail out of the page at once
   }
   for (const mount of document.querySelectorAll('[data-hidden-list]')) {
     const tiers = mount.dataset.tiers.split(' ').filter(allowed);
@@ -72,8 +83,8 @@ async function sync() {
     if (mount.dataset.topic) for (const li of [...ul.children]) if (li.dataset.topic !== mount.dataset.topic) li.remove();
     const note = (text) => Object.assign(document.createElement('p'), { textContent: text, role: 'status' });
     mount.replaceChildren(
-      ...(ul.children.length ? [ul] : tiers.length && mount.dataset.empty ? [note(mount.dataset.empty)] : []),
-      ...(parts.includes(null) ? [note('Some answers did not load. Check your connection and try again.')] : []),
+      ...(ul.children.length ? [ul] : tiers.length && mount.dataset.empty && !parts.includes(null) ? [note(mount.dataset.empty)] : []), // "nothing here" is only true when every load worked
+      ...(parts.includes(null) ? [note(cannotLoad('These answers', 'them'))] : []),
     );
   }
 }
@@ -89,4 +100,5 @@ addEventListener('click', (e) => {
   if (hide) close(hide.closest('[data-reveal]'));
 });
 addEventListener('lfg:change', sync);
+addEventListener('online', sync); // a detail or list that could not load is tried again when the connection returns
 sync();
