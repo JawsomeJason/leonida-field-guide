@@ -1,6 +1,6 @@
 // Vercel Routing Middleware: the password gate in front of every page and asset. Thin wrapper over src/lib/gate.ts.
 import { next } from '@vercel/functions';
-import { decide, loginPage } from './src/lib/gate';
+import { decide, loginPage } from './src/lib/gate.ts';
 
 declare const process: { env: Record<string, string | undefined> };
 
