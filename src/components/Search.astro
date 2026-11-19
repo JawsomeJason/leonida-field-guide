@@ -30,6 +30,10 @@ import OutsideLink from './OutsideLink.astro';
       <li><OutsideLink href="https://fullsweepmap.com" title="FullSweep" /></li>
     </ul>
   </div>
+  <div id="q-mild" hidden>
+    <p>Some answers sit behind the Mild spoiler setting.</p>
+    <button type="button" class="ask-more" popovertarget="settings">Spoiler settings</button>
+  </div>
   <h2 id="q-related" class="ask-related" hidden>Possibly related</h2>
   <ul id="q-results" class="tap-list ask-rows" hidden></ul>
   <button id="q-more" type="button" class="ask-more" hidden>Show more</button>
@@ -83,6 +87,7 @@ import OutsideLink from './OutsideLink.astro';
     touch-action: manipulation;
   }
   .ask-more:active { scale: var(--press-scale-small); background: var(--press); }
+  #q-mild p { margin: 0 0 var(--space-2); }
   #q-where p { margin: 0 0 var(--space-2); }
 
   .tap-list.ask-rows a { flex-direction: column; align-items: flex-start; justify-content: center; }

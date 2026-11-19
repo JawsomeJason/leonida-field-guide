@@ -44,6 +44,27 @@ for (const query of ['zzyzx qqqq', 'how do i get a million dollars fast', 'my ki
   });
 }
 
+test('no answer below Mild carries one generic line and opens the spoiler settings', async ({ page }) => {
+  await ask(page, 'zzyzx qqqq');
+  const note = page.locator('#q-mild');
+  await expect(note).toContainText('Some answers sit behind the Mild spoiler setting.');
+  expect(await note.innerText()).not.toMatch(/place|mission|story|travel|police|car/i); // it names no topic and hints at nothing
+  await press(note.getByRole('button', { name: 'Spoiler settings' }));
+  await expect(page.locator('#settings')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await page.getByRole('searchbox').fill('how do i save my game'); // an answer: no line
+  await expect(note).toBeHidden();
+  await page.getByRole('searchbox').fill('where is the gun shop'); // the places note says it already
+  await expect(note).toBeHidden();
+});
+
+test('at Mild the generic line is gone', async ({ page }) => {
+  await saved(page, { dial: 'mild' });
+  await ask(page, 'zzyzx qqqq');
+  await expect(page.getByRole('status')).toHaveText('This guide has no answer for that yet.');
+  await expect(page.locator('#q-mild')).toBeHidden();
+});
+
 test('an answer shows no floor line and no Possibly related heading', async ({ page }) => {
   await ask(page, 'how do i save my game');
   await expect(page.getByRole('status')).not.toHaveText(/no answer/);

@@ -17,6 +17,7 @@ const list = document.querySelector('#q-results');
 const where = document.querySelector('#q-where');
 const maybe = document.querySelector('#q-related');
 const more = document.querySelector('#q-more');
+const mildNote = document.querySelector('#q-mild');
 
 const cache = new Map();
 function load(tier) {
@@ -80,6 +81,7 @@ async function update() {
   more.hidden = !cut;
   where.hidden = !(typed && asksWhere(query) && (dial ?? 'off') === 'off'); // places are only hidden at Off
   // The places note says it all: no count above it.
+  mildNote.hidden = !(none && where.hidden && dial !== 'mild'); // one generic line: some answers wait behind Mild, and it names none of them
   status.toggleAttribute('data-floor', none && where.hidden);
   status.textContent = !typed || !where.hidden ? '' : found.length ? `${found.length} ${found.length === 1 ? 'answer' : 'answers'}` : 'This guide has no answer for that yet.';
 }

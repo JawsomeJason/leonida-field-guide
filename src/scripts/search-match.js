@@ -9,7 +9,7 @@ const STOP = new Set(
   `a an the is are was were be am i me my we you your it its do does did how what whats when who which will would can could should
    to of on in at for with and or no if get there this that any have has about from so just much many where thats im ive
    keep keeps keeping want wants wanna need needs needed got gonna going go goes let lets like know tell take make use way ways thing things stuff some one
-   play plays playing played game games gta best fast too also very really actually still again please thanks hey then than them they same
+   play plays playing played game games gta best fast too also very really actually still again please thanks hey then than them they same anything everything something
    she her him his our out off over into`.split(/\s+/),
 );
 // Words so common in questions that matching one alone is no answer (mode, change, work): they rank, but never make a confident answer by themselves.
