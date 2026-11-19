@@ -4,10 +4,10 @@
   --surface: #fffaf0;
   --line: #dccfb6;
   --text: #1c2a2e;
-  --muted: #55666b;
-  --accent: #0b6f75;
-  --accent-2: #c2401f;
-  --action: #0b6f75; /* filled buttons, rules: the call to act (day: the same teal as --accent) */
+  --muted: #4d5d62;
+  --accent: #0a6369;
+  --accent-2: #b93a1a;
+  --action: #0a6369; /* filled buttons, rules: the call to act (day: the same teal as --accent) */
   --shadow: 0 1px 2px rgb(28 42 46 / 0.08), 0 2px 8px rgb(28 42 46 / 0.05);
   color-scheme: light;
 }

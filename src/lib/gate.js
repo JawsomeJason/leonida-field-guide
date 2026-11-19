@@ -114,7 +114,7 @@ export const loginPage = (error) => `<!doctype html>
 <title>Leonida Field Guide</title>
 <style>
 :root {
-  --bg: #f6efe2; --surface: #fffaf0; --text: #1c2a2e; --muted: #55666b; --accent: #0b6f75; --accent-2: #c2401f;
+  --bg: #f6efe2; --surface: #fffaf0; --text: #1c2a2e; --muted: #4d5d62; --accent: #0a6369; --accent-2: #b93a1a;
   --on-accent: var(--surface);
   --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem; --space-5: 1.5rem; --space-6: 2rem;
   --tap: 3rem; --text-input: 1rem; --text-small: 0.9375rem; --radius: 0.75rem;

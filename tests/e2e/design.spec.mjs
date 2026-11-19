@@ -233,7 +233,7 @@ test.describe('the sunset on the Ask screen', () => {
       expect(paint.image).toContain('gradient');
       expect(paint.mask, 'the sun has bands').toContain('gradient');
       expect(paint.animation, 'it never moves').toBe('none');
-      const [accent, accent2] = theme === 'night' ? ['rgb(255, 159, 69)', 'rgb(255, 111, 97)'] : ['rgb(11, 111, 117)', 'rgb(194, 64, 31)'];
+      const [accent, accent2] = theme === 'night' ? ['rgb(255, 159, 69)', 'rgb(255, 111, 97)'] : ['rgb(10, 99, 105)', 'rgb(185, 58, 26)'];
       for (const c of [accent, accent2]) expect(paint.image + paint.rule, `uses ${c}`).toContain(c);
       const { y, h } = (await rects(page.locator('#q')))[0];
       if (width(page) === 390) expect(y, 'the search box is not pushed below y=300').toBeLessThanOrEqual(300);
