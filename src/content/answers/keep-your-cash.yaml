@@ -1,11 +1,8 @@
 id: keep-your-cash
 question: "How do I keep my cash from being lost?"
-short: "Money in the bank is safe. Cash you carry is lost if you die before depositing it at an ATM, and so is loot carried in bags. The sources do not say what happens on arrest."
+short: "Cash you carry can be lost if you die. How money works in play is a Mild detail. For what else you can lose, see the \"Will I lose anything?\" answer."
 body: |-
-  - Vice Atlas (before launch) says cash on hand is lost if you die before you deposit it at an ATM, and that money in the bank is safe.
-  - GameSpot (after playing) says dying while you hold loot bags loses the bags and your cash on hand. It does not mention ATMs or the bank, so the deposit detail rests on Vice Atlas alone.
-  - Neither source covers being arrested, so we do not claim anything there.
-  - Habit worth building: deposit after a big score, before you take risks.
+  - Installs, saves and cash are gathered in [Will I lose anything?](/a/will-i-lose-anything/).
 topic: money
 stage: day-1
 tier: none
@@ -13,9 +10,11 @@ consoles: all
 confidence: reported
 sources:
   - url: "https://www.vice-atlas.com/briefings/gta6-economy-and-businesses/"
-    title: "GTA VI economy and businesses briefing (Vice Atlas)"
+    title: "GTA VI money briefing (Vice Atlas)"
   - url: "https://www.gamespot.com/articles/gta-6-tips-everything-i-wish-i-knew-before-i-started-playing/"
     title: "GTA 6 Tips: Everything I Wish I Knew Before I Started Playing (GameSpot)"
 checked: "2026-11-19"
-rank: 9
-todo: "Deposit carried cash at an ATM before risky moves"
+rank: 10
+reveal:
+  - tier: mild
+    text: "Vice Atlas (before launch) says cash on hand is lost if you die before you deposit it at an ATM, and that money in the bank is safe. GameSpot (after playing) says dying while you hold loot bags loses the bags and your cash on hand; it does not mention ATMs or the bank, so the deposit detail rests on Vice Atlas alone. Neither source covers being arrested, so we claim nothing there. Habit worth building: deposit after a big score, before you take risks."

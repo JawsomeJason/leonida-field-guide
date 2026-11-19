@@ -39,9 +39,9 @@ export const todosOf = (all: AnswerData[]) =>
     .filter((a) => a.todo)
     .sort((a, b) => (a.order ?? 1e9) - (b.order ?? 1e9) || (a.rank ?? 1e9) - (b.rank ?? 1e9) || a.id.localeCompare(b.id));
 
-/** Same topic first, then same stage; never above the page's own tier. */
+/** Same topic first, then same stage. A hidden page (mild or places) lists only default answers and its own tier: another hidden tier's question is that tier's hidden text, so it may not sit on this page. */
 export function related(a: AnswerData, all: AnswerData[], limit = 4) {
-  const pool = all.filter((b) => b.id !== a.id && rank[b.tier] <= rank[a.tier]);
+  const pool = all.filter((b) => b.id !== a.id && (b.tier === 'none' || b.tier === a.tier));
   const score = (b: AnswerData) => (b.topic === a.topic ? 2 : 0) + (b.stage === a.stage ? 1 : 0);
   return pool
     .filter((b) => score(b) > 0)

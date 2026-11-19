@@ -17,5 +17,8 @@ confidence: official
 sources:
   - url: "https://support.rockstargames.com/articles/3SZF8cy8dG7lHsLf38uWK1"
     title: "Redeeming the One-Month GTA+ Membership Included with Your Grand Theft Auto VI Pre-Order (Rockstar Support)"
+  - url: "https://www.playstation.com/en-us/games/grand-theft-auto-vi/"
+    title: "Grand Theft Auto VI on PS5 (PlayStation Store)"
+    console: ps5
 checked: "2026-11-19"
 todo: "Claim the free GTA+ month if you pre-ordered digitally"

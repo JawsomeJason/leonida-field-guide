@@ -1,8 +1,8 @@
 id: early-unlock-trick
 question: "Is it safe to change my console's region to play early?"
-short: "Not recommended. Changing your console's region to play early breaks the platform's terms, and Rockstar says the game opens at midnight local time everywhere."
+short: "Not recommended. Notebookcheck reports that a console maker warned against it and that it could risk account restrictions. Rockstar says the game opens at midnight local time everywhere."
 body: |-
-  - The console maker reportedly warned against it, according to Notebookcheck.
+  - Notebookcheck says region switching technically goes against a console maker's terms of service. That is the outlet's reading; its report says the maker only allegedly warned journalists, and we have not seen the platform say it.
   - Rockstar's own page says midnight local time in every region. See the unlock time card for when that is.
 topic: good-to-know
 stage: before

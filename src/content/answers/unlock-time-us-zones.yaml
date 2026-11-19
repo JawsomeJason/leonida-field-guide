@@ -1,6 +1,6 @@
 id: unlock-time-us-zones
 question: "When does it unlock in each US time zone?"
-short: "Forbes reports US stores key the unlock to Eastern time: 9 p.m. Pacific and 7 p.m. in Hawaii on 18 November. Rockstar has posted no US breakdown, so check your console's countdown."
+short: "Forbes reports an earlier start in the western US: 9 p.m. Pacific on 18 November. Rockstar says midnight local time in every region, so the two sources disagree. Your console's countdown is the final word."
 body: |-
   Forbes's table (12 November), as a news report:
   - Eastern: 12 a.m. Thursday 19 November
@@ -10,7 +10,7 @@ body: |-
   - Alaska: 8 p.m. Wednesday 18 November
   - Hawaii: 7 p.m. Wednesday 18 November
 
-  Rockstar's own page says "midnight local time" in all regions and gives no US time-zone breakdown, and we found none either. Your console's countdown is the final word. See the unlock time card.
+  Which source says which: Forbes (above) says US stores key the unlock to Eastern time, so the west starts earlier. Rockstar's own page says "midnight local time" in all regions and gives no US time-zone breakdown, and we found none either. A console maker's pre-order help adds only that, in a country with several time zones, play can start late in some zones. Nobody official confirms the earlier times. Your console's countdown is the final word. See the unlock time card.
 topic: setup
 stage: before
 tier: none
@@ -21,5 +21,8 @@ sources:
     title: "GTA 6 Unlocks At Midnight On November 19, But Millions Of Americans Can Start Playing The Night Before (Forbes)"
   - url: "https://support.rockstargames.com/articles/29jV3Cv2cCgvwM1XgtMO5o/grand-theft-auto-vi-regional-pre-load-and-release-times-on-playstation-5-and-xbox-series-x-or-s"
     title: "Grand Theft Auto VI regional pre-load and release times (Rockstar Support)"
+  - url: "https://support.xbox.com/help/subscriptions-billing/buy-games-apps/pre-order-faq"
+    title: "Pre-order Xbox digital games in the Microsoft Store (Xbox Support)"
+    console: [xbox-x, xbox-s]
 checked: "2026-11-19"
 keywords: ["west coast", "pacific time", "eastern time", "central time", "time zone", "what time", "evening before", "hawaii"]

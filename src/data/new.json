@@ -9,7 +9,12 @@
       "Unlock time now cites Rockstar and the console makers only. The US time-zone times, which come from a news report, have their own Reported answer, and so does the report of sealed boxes with no code.",
       "The install-size answer now gives the usable space on a 512 GB Series S and links the answer behind it. The frame-rate answer now gives the measured dips and input lag.",
       "Before you start now runs in the order each step depends on: redeem the code, update the console, free the space, turn on automatic downloads, check the countdown.",
-      "Spelled out what each spoiler setting holds, moved a few gameplay sentences behind Mild, and put jargon after a plain phrase."
+      "Spelled out what each spoiler setting holds, moved a few gameplay sentences behind Mild, and put jargon after a plain phrase.",
+      "The default spoiler setting now shows only the basics: setup, settings, controls, saving and fixes. How the game's systems work in play moved behind Mild.",
+      "Added one answer on what you can lose: uninstalling, saves and carried cash, with what nobody has confirmed yet.",
+      "The two unlock-time answers now say where Rockstar and a news report disagree, and which says which. The install-size answer cites official pages only; the Series S usable-space figure stays in its own reported answer.",
+      "Sources can be marked for one console, so an answer can show the sources that match yours.",
+      "Launch day has come: steps that only made sense before launch were reworded."
     ],
     "problems": []
   }

@@ -29,7 +29,10 @@ const answers = defineCollection({
       consoles: z.union([z.literal('all'), z.array(consoleId).min(1)]),
       byConsole: z.partialRecord(consoleId, z.string().min(1)).optional(),
       confidence: z.enum(['official', 'reported', 'community']),
-      sources: z.array(z.strictObject({ url: z.url(), title: z.string().min(1) })).min(1),
+      // `console`: set on a source that is specific to one console family (a PlayStation support page: ps5; an Xbox support page: xbox-x and xbox-s). Absent means it applies to every console.
+      sources: z
+        .array(z.strictObject({ url: z.url(), title: z.string().min(1), console: z.union([consoleId, z.array(consoleId).min(1)]).optional() }))
+        .min(1),
       checked: z.iso.date(),
       rank: z.number().int().positive().optional(),
       order: z.number().int().positive().optional(), // to-dos in a stage: lower first, by what depends on what

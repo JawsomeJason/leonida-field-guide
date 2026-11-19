@@ -18,8 +18,10 @@ confidence: official
 sources:
   - url: "https://support.xbox.com/help/games-apps/troubleshooting/troubleshoot-game-or-app-installation-problems-on-xbox-one"
     title: "Troubleshoot game or app installation problems on your Xbox console (Xbox Support)"
+    console: [xbox-x, xbox-s]
   - url: "https://support.xbox.com/help/subscriptions-billing/redeem-codes-gifting/redeem-prepaid-codes"
     title: "How to redeem gift cards, codes, and offers (Xbox Support)"
+    console: [xbox-x, xbox-s]
   - url: "https://support.rockstargames.com/articles/3t8W3cKfObijZuwZuqT2eM/issues-installing-grand-theft-auto-vi"
     title: "Issues installing Grand Theft Auto VI (Rockstar Support)"
 checked: "2026-11-19"

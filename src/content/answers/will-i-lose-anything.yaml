@@ -1,0 +1,44 @@
+id: will-i-lose-anything
+question: "Will I lose my progress, saves or cash?"
+short: "Deleting the game does not take back what you bought, and your console can back up saved data. Carried cash can be lost. Below is what we know, and what nobody has confirmed yet."
+byConsole:
+  ps5: "Deleting the game does not lose it: you can download it again from your Game Library. PlayStation's page does not say what happens to saved data, so upload it first with PlayStation Plus. Carried cash can be lost."
+  xbox-x: "Uninstalling loses nothing: Xbox says your licence and game progress stay in the cloud, and saved data comes back when you reinstall. Carried cash can be lost. Cloud saves for this game are reported, not confirmed."
+  xbox-s: "Uninstalling loses nothing: Xbox says your licence and game progress stay in the cloud, and saved data comes back when you reinstall. Carried cash can be lost. Cloud saves for this game are reported, not confirmed."
+body: |-
+  What we know
+  - Your console maker says deleting or uninstalling a game does not remove your right to play it. You download it again from your library.
+  - A saved game is separate from the game files. Cloud backup depends on your console: see [Are my saves backed up in the cloud?](/a/cloud-saves-and-backup/).
+  - Carried cash can be lost. The details sit behind the Mild setting.
+
+  What we do not know
+  - Whether this game backs up saves to the cloud on every console. Rockstar has not said.
+  - Whether the game saves by itself, and how many save slots there are. See [How do I save?](/a/how-to-save/).
+  - Whether progress can move between console families. None has been announced.
+topic: saving
+stage: before
+tier: none
+consoles: all
+confidence: reported
+sources:
+  - url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
+    title: "How to manage storage space on your PS5 console (PlayStation Support)"
+    console: ps5
+  - url: "https://www.playstation.com/en-us/support/subscriptions/ps5-ps-plus-cloud-storage/"
+    title: "PlayStation Plus cloud storage for PS5 consoles (PlayStation Support)"
+    console: ps5
+  - url: "https://support.xbox.com/en-US/help/hardware-network/storage/manage-storage"
+    title: "Manage storage on your Xbox console (Xbox Support)"
+    console: [xbox-x, xbox-s]
+  - url: "https://culturedvultures.com/does-gta-6-have-cloud-saves-and-cross-progression/"
+    title: "Does GTA 6 Have Cloud Saves and Cross-Progression? (Cultured Vultures)"
+  - url: "https://www.vice-atlas.com/briefings/gta6-economy-and-businesses/"
+    title: "GTA VI money briefing (Vice Atlas)"
+  - url: "https://www.gamespot.com/articles/gta-6-tips-everything-i-wish-i-knew-before-i-started-playing/"
+    title: "GTA 6 Tips: Everything I Wish I Knew Before I Started Playing (GameSpot)"
+checked: "2026-11-19"
+rank: 6
+keywords: ["lose progress", "lose my save", "uninstall", "delete the game", "lose my money", "keep my progress"]
+reveal:
+  - tier: mild
+    text: "Cash you carry is lost if you die before you deposit it at an ATM, and money in the bank is safe (Vice Atlas, before launch). Dying while you hold loot bags loses the bags and your cash on hand (GameSpot, after playing). Neither source says what happens on arrest, so we claim nothing there."

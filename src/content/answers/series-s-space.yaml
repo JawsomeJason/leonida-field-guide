@@ -16,8 +16,10 @@ sources:
     title: "Xbox Series S Has 364GB of Usable Storage Space (IGN)"
   - url: "https://www.xbox.com/en-US/consoles/xbox-series-s"
     title: "Xbox Series S, 512 GB and 1 TB models (Xbox)"
+    console: xbox-s
   - url: "https://support.xbox.com/en-US/help/hardware-network/storage/manage-storage"
     title: "Manage storage on your Xbox console (Xbox Support)"
+    console: [xbox-x, xbox-s]
   - url: "https://support.rockstargames.com/articles/M6h7B5fJZMwG1dnzQkt4Z/grand-theft-auto-vi-installation-requirements"
     title: "Grand Theft Auto VI installation requirements (Rockstar Support)"
 checked: "2026-11-19"
