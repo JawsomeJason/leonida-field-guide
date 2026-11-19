@@ -1,8 +1,12 @@
 id: how-to-save
 question: "How do I save, and how many slots are there?"
-short: "Save by hand from the main menu: Game, then Save Game (reported, not confirmed by Rockstar). A PC Gamer guide reports 15 manual slots; no Rockstar page confirms the number."
+short: "Save by hand from the main menu: Game, then Save Game. That is reported, not confirmed by Rockstar. The 15-slot figure is from a PC Gamer report and is unconfirmed on console."
+byConsole:
+  ps5: "Save by hand from the main menu: Game, then Save Game. That is reported, not confirmed by Rockstar. How many save slots there are is not confirmed on this console."
+  xbox-x: "Save by hand from the main menu: Game, then Save Game. That is reported, not confirmed by Rockstar. How many save slots there are is not confirmed on this console."
+  xbox-s: "Save by hand from the main menu: Game, then Save Game. That is reported, not confirmed by Rockstar. How many save slots there are is not confirmed on this console."
 body: |-
-  - PC Gamer's guide gives the menu path and the 15-slot figure. It is a news guide, not a Rockstar page.
+  - PC Gamer's guide gives the menu path and the 15-slot figure. It is a PC-focused news guide, not a Rockstar page, and nothing says the figure holds on console.
   - GameSpot advises saving by hand often. Progress moves on, and you cannot go back to an older state without a manual save (a hard save).
   - No Rockstar page we read gives a slot count or describes autosave. For backups, see [Are my saves backed up in the cloud?](/a/cloud-saves-and-backup/).
 topic: saving

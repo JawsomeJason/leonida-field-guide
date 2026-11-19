@@ -17,14 +17,14 @@ test('Will I lose anything: saved-data backup is stated per console, each tied t
   const a = get('will-i-lose-anything');
   const hosts = (c) => a.sources.filter((s) => !s.console || [].concat(s.console).includes(c)).map((s) => new URL(s.url).hostname);
   // PlayStation: PlayStation Plus can upload saved data (the PlayStation cloud-storage page); this game's backup is not confirmed.
-  assert.match(a.byConsole.ps5, /PlayStation Plus members can upload saved data online/);
-  assert.match(a.byConsole.ps5, /Backup for this game is not confirmed/);
+  assert.match(a.byConsole.ps5, /upload them first \(PlayStation Plus; Settings/);
+  assert.match(a.byConsole.ps5, /Saves for this game are not confirmed as backed up/);
   assert.ok(hosts('ps5').includes('www.playstation.com'));
   assert.match(a.body, /<span data-only="ps5">PlayStation's own pages say PlayStation Plus members can upload saved data[^<]*for this game, backup is not confirmed\./);
   // Xbox: its support page says saved games are copied online when you sign in; one outlet reports this game supports it; no official confirmation.
   for (const c of ['xbox-x', 'xbox-s']) {
     assert.match(a.byConsole[c], /Xbox says saved games are copied online \(synced\) when you sign in/);
-    assert.match(a.byConsole[c], /Cultured Vultures reports this game supports it; not confirmed by Xbox/);
+    assert.match(a.byConsole[c], /This game's backup is not confirmed: stay signed in until it syncs/); // the outlet's report sits in the body, past the 240-character headline
     assert.ok(hosts(c).includes('support.xbox.com') && hosts(c).includes('culturedvultures.com'));
   }
   assert.match(a.body, /<span data-only="xbox-x xbox-s">Xbox's own page says saved games are copied online \(synced\)[^<]*Cultured Vultures reports[^<]*for this game it is not confirmed\./);

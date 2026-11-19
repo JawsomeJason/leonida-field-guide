@@ -22,3 +22,37 @@ sources:
     title: "Grand Theft Auto VI on PS5 (PlayStation Store)"
     console: ps5
 checked: "2026-11-19"
+support:
+  - claim: "Rockstar says Remote Play is fully supported"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "GTAVI will also fully support Remote Play on PlayStation and XBOX consoles."
+    checked: "2026-11-19"
+  - claim: "Rockstar warns connection speed can change performance"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "Connection speeds and other technical factors may influence game performance in ways that would not impact local gameplay."
+    checked: "2026-11-19"
+  - claim: "the PlayStation Store page lists Remote Play"
+    url: "https://www.playstation.com/en-us/games/grand-theft-auto-vi/"
+    quote: "Remote Play supported"
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "Rockstar lists cloud streaming for Xbox only"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "GTAVI will be available via XBOX Cloud Gaming on XBOX Series X|S and XBOX One consoles, utilizing XBOX Series S graphics settings."
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "Xbox Cloud Gaming streaming on Series X|S and Xbox One"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "GTAVI will be available via XBOX Cloud Gaming on XBOX Series X|S and XBOX One consoles, utilizing XBOX Series S graphics settings."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "what Xbox cloud streaming needs"
+    url: "https://www.xbox.com/en-us/games/grand-theft-auto-vi"
+    quote: "Stream with purchased cloud playtime, a qualifying Game Pass subscription (monthly cloud play time varies by plan), or ad-supported cloud gaming. Requires game purchase."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "Xbox cloud streaming is in select regions"
+    url: "https://www.xbox.com/en-us/games/grand-theft-auto-vi"
+    quote: "Select regions (xbox.com/regions)."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]

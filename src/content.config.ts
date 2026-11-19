@@ -30,6 +30,11 @@ const answers = defineCollection({
       sources: z
         .array(z.strictObject({ url: z.url(), title: z.string().min(1), console: z.union([consoleId, z.array(consoleId).min(1)]).optional() }))
         .min(1),
+      // Not shown to players. For each official claim: the url of the official page opened, a short quote of what it said, and the date it was read (`supportProblems()`, `npm run check:facts`).
+      support: z
+        .array(z.strictObject({ claim: z.string().min(1).max(200), url: z.url(), quote: z.string().min(1).max(200), checked: z.iso.date(), console: z.union([consoleId, z.array(consoleId).min(1)]).optional() }))
+        .min(1)
+        .optional(),
       checked: z.iso.date(),
       rank: z.number().int().positive().optional(),
       order: z.number().int().positive().optional(), // to-dos in a stage: lower first, by what depends on what

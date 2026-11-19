@@ -1,6 +1,6 @@
 id: cloud-saves-and-backup
 question: "Are my saves backed up in the cloud?"
-short: "Cloud backup depends on your console. Cultured Vultures reports that progress shared between consoles (cross-progression) has not been announced, so assume saves stay within your console family."
+short: "Not confirmed for this game, and it depends on your console. Cultured Vultures reports that progress shared between consoles (cross-progression) has not been announced, so assume saves stay within your console family."
 body: |-
   - Rockstar has not announced shared progress between consoles.
   - Assume saves stay within your console family.
@@ -11,8 +11,8 @@ tier: none
 consoles: all
 byConsole:
   ps5: "Not confirmed for this game. With PlayStation Plus you can upload saved data yourself: Settings, Saved Data and Game/App Settings, Saved Data (PS5), then Upload or Delete from Console Storage. Treat your save as local until Rockstar says more."
-  xbox-x: "Reported as supported: Cultured Vultures says the Xbox listing shows saves kept online (cloud saves), and they should be copied (synced) between your Xbox consoles on one account. We could not read that on the listing ourselves. Xbox says saves are copied online while you are connected, and playing offline can leave the online copy out of date: stay online before you uninstall."
-  xbox-s: "Reported as supported: Cultured Vultures says the Xbox listing shows saves kept online (cloud saves), and they should be copied (synced) between your Xbox consoles on one account. We could not read that on the listing ourselves. Xbox says saves are copied online while you are connected, and playing offline can leave the online copy out of date: stay online before you uninstall."
+  xbox-x: "Not confirmed for this game. Cultured Vultures says the Xbox listing shows saves kept online (cloud saves), and they should be copied (synced) between your Xbox consoles on one account. We could not read that on the listing ourselves. Xbox says saves are copied online while you are connected, and playing offline can leave the online copy out of date: stay online before you uninstall."
+  xbox-s: "Not confirmed for this game. Cultured Vultures says the Xbox listing shows saves kept online (cloud saves), and they should be copied (synced) between your Xbox consoles on one account. We could not read that on the listing ourselves. Xbox says saves are copied online while you are connected, and playing offline can leave the online copy out of date: stay online before you uninstall."
 confidence: reported
 basis:
   - claim: "how your console manages saved data"
@@ -31,3 +31,24 @@ sources:
 checked: "2026-11-19"
 rank: 20
 todo: "Check your save is backed up"
+support:
+  - claim: "how your console manages saved data"
+    url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
+    quote: "When you're a PlayStation Plus member, you can upload your saved data to cloud storage."
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "how your console manages saved data"
+    url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
+    quote: "Select Saved Data (PS5) or Saved Data (PS4). Select Upload or Delete from Console Storage."
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "how your console manages saved data"
+    url: "https://support.xbox.com/en-US/help/hardware-network/storage/manage-storage"
+    quote: "Any data for your games and apps (preferences, saved games) syncs online when you sign in"
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "how your console manages saved data"
+    url: "https://support.xbox.com/en-US/help/hardware-network/storage/manage-storage"
+    quote: "Playing offline could put your online data out of sync."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]

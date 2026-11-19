@@ -14,10 +14,12 @@ consoles: all
 byConsole:
   ps5: "It fits on any PS5: the smallest has 825 GB of storage. Rockstar says to plan for up to 212 GB free. To see your free space: Settings, then Storage. If you have less free than 212 GB, clear the difference."
   xbox-x: "It fits on a Series X, which has 1 TB or more of storage. Rockstar says to plan for up to 212 GB free. To see your free space: Profile & system, Settings, System, Storage devices. If you have less free than 212 GB, clear the difference."
-  xbox-s: "A 512 GB Series S should fit it, but not by much: IGN reports about 364 GB is usable and Rockstar says to plan for up to 212 GB free. Check free space: Profile & system, Settings, System, Storage devices."
+  xbox-s: "A 512 GB Series S should fit it, but not by much. IGN reports about 364 GB is usable, and Rockstar says to plan for up to 212 GB free. Check free space: Profile & system, Settings, System, Storage devices."
 confidence: reported
 basis:
   - claim: "the space the game needs"
+    confidence: official
+  - claim: "how much storage each console has"
     confidence: official
   - claim: "a 512 GB Series S's usable space"
     confidence: reported
@@ -47,3 +49,35 @@ rank: 1
 todo: "Free up 212 GB of space for the download"
 order: 30
 keywords: ["install", "instal", "install size", "download size", "file size", "size", "how many gb", "will it fit", "how much space", "space needed", "storage needed"]
+support:
+  - claim: "the space the game needs"
+    url: "https://support.rockstargames.com/articles/M6h7B5fJZMwG1dnzQkt4Z/grand-theft-auto-vi-installation-requirements"
+    quote: "Grand Theft Auto VI will require up to 212 GB of available space depending on your device."
+    checked: "2026-11-19"
+  - claim: "the space the game needs"
+    url: "https://support.rockstargames.com/articles/7nPqOA2uCbpEQHXx7KVrYd/grand-theft-auto-vi-pre-load-faq"
+    quote: "The Grand Theft Auto VI pre-load will require up to 212 GB of available space depending on your device"
+    checked: "2026-11-19"
+  - claim: "how much storage each console has"
+    url: "https://www.playstation.com/en-us/ps5/"
+    quote: "PS5 Digital Edition - 825GB"
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "how much storage each console has"
+    url: "https://www.xbox.com/en-US/consoles/xbox-series-x"
+    quote: "XBOX Series X - 1TB Disc Drive Carbon Black"
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "how much storage each console has"
+    url: "https://www.xbox.com/en-US/consoles/xbox-series-s"
+    quote: "512GB All-Digital Robot White $499.99 1TB All-Digital Robot White"
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "how much storage each console has"
+    url: "https://support.xbox.com/en-US/help/hardware-network/storage/manage-storage"
+    quote: "though some is reserved for saved games, console software, and other system functions."
+    checked: "2026-11-19"
+  - claim: "pre-load began on 10 November and boxed copies from 12 November"
+    url: "https://www.rockstargames.com/newswire/article/k4ak9okk485712/grand-theft-auto-vi-pre-load-begins-on-november-10"
+    quote: "Code-in-box versions for both consoles should be available from retailers beginning November 12."
+    checked: "2026-11-19"

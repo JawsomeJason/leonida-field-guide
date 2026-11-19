@@ -32,3 +32,46 @@ rank: 18
 todo: "Redeem your boxed-copy code"
 order: 10
 keywords: ["put the code in", "put my code in", "enter my code", "enter code", "redeem code", "activate code"]
+support:
+  - claim: "a boxed copy holds a download code and no disc"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "The physical version of GTAVI will contain a download code that can be used for the digital download of the game. A disc will not be included in the box."
+    checked: "2026-11-19"
+  - claim: "codes work for pre-load as soon as you have them"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "Codes can be used as soon as they are received to support pre-load."
+    checked: "2026-11-19"
+  - claim: "Rockstar's activation help sends you to your console maker's redeem page"
+    url: "https://support.rockstargames.com/articles/5gwDh0peG05GQhMej2ukbY/game-activation-for-grand-theft-auto-vi"
+    quote: "visit the support link of your platform below"
+    checked: "2026-11-19"
+  - claim: "PS5 redeem steps in the PlayStation Store"
+    url: "https://www.playstation.com/support/store/redeem-ps-store-voucher-code"
+    quote: "Go to PlayStation Store and then press the triangle button to access the menu. Select … (More) > Redeem Code."
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "PlayStation online redeem steps"
+    url: "https://www.playstation.com/support/store/redeem-ps-store-voucher-code"
+    quote: "Go to PlayStation Store and select your profile at the top of the screen. Select Redeem Code from the drop-down menu."
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "a PlayStation code cannot move between accounts"
+    url: "https://www.playstation.com/support/store/redeem-ps-store-voucher-code"
+    quote: "It isn't possible to transfer funds or content between accounts, so make sure to redeem your code on the correct account."
+    checked: "2026-11-19"
+    console: ps5
+  - claim: "Xbox console redeem steps"
+    url: "https://support.xbox.com/help/subscriptions-billing/redeem-codes-gifting/redeem-prepaid-codes"
+    quote: "and then select Store. Press the View button"
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "Xbox online redeem address"
+    url: "https://support.xbox.com/help/subscriptions-billing/redeem-codes-gifting/redeem-prepaid-codes"
+    quote: "To redeem a code now, go to xbox.com/redeem"
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]
+  - claim: "a redeemed Xbox code cannot move between accounts"
+    url: "https://support.xbox.com/help/subscriptions-billing/redeem-codes-gifting/redeem-prepaid-codes"
+    quote: "Redeemed codes cannot be transferred to another Microsoft account by XBOX Support."
+    checked: "2026-11-19"
+    console: [xbox-x, xbox-s]

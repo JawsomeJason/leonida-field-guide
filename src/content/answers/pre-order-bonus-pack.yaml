@@ -4,7 +4,6 @@ short: "Digital pre-orders and purchases of either edition before 20 November 20
 body: |-
   - The pack is a car with a garage, outfits and hairstyles, and a weapon pattern.
   - Rockstar's physical list names one code for the game and the pack. It does not list GTA+.
-  - Rockstar's newswire was showing "Last Chance for Pre-Order Bonuses" on launch day.
   - The title of Rockstar's page uses the word for downloading the game before launch (pre-load).
 topic: bonuses
 stage: before
@@ -17,3 +16,20 @@ sources:
   - url: "https://www.rockstargames.com/newswire/article/k4ak9okk485712/grand-theft-auto-vi-pre-load-begins-on-november-10"
     title: "Grand Theft Auto VI Pre-Load Begins on November 10 (Rockstar Newswire)"
 checked: "2026-11-19"
+support:
+  - claim: "digital pre-orders and purchases of either edition before 20 November include the pack"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "Digital pre-orders and purchases of either edition prior to November 20, 2026, will also contain the following:"
+    checked: "2026-11-19"
+  - claim: "and one month of GTA+"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "One month of GTA+ Membership"
+    checked: "2026-11-19"
+  - claim: "boxed copies list the pack but not GTA+"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "Physical pre-orders will contain the following: One code for digital download of Grand Theft Auto VI and the Vintage Vice City Pack, which includes:"
+    checked: "2026-11-19"
+  - claim: "what the pack holds"
+    url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    quote: "Garage Outfits and Hairstyles Exclusive Weapon Pattern"
+    checked: "2026-11-19"

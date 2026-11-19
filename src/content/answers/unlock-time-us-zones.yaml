@@ -33,3 +33,12 @@ sources:
     console: [xbox-x, xbox-s]
 checked: "2026-11-19"
 keywords: ["west coast", "pacific time", "eastern time", "central time", "time zone", "what time", "evening before", "hawaii"]
+support:
+  - claim: "that the game opens at midnight local time"
+    url: "https://support.rockstargames.com/articles/29jV3Cv2cCgvwM1XgtMO5o/grand-theft-auto-vi-regional-pre-load-and-release-times-on-playstation-5-and-xbox-series-x-or-s"
+    quote: "Grand Theft Auto VI will release midnight local time on November 19, 2026, in all regions for both PlayStation 5 and XBOX Series X|S."
+    checked: "2026-11-19"
+  - claim: "a console maker adds that play can start late in some zones"
+    url: "https://support.xbox.com/help/subscriptions-billing/buy-games-apps/pre-order-faq"
+    quote: "If you live in a country that has multiple time zones, there may be a delay in some zones."
+    checked: "2026-11-19"
