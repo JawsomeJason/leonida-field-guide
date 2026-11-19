@@ -144,7 +144,7 @@ type State = {
 Ticks and settings follow the owner across phone, tablet and desktop. Local first: the page works, and every change is saved, with no network at all.
 
 - **One function, one blob.** `api/progress.ts` is a Vercel Function (default export `{ fetch }`, Node.js runtime). It keeps one private Vercel Blob at `progress/state.json`, in the store `leonida-progress`, using `@vercel/blob` on the server only. The store's token is the Vercel env var `BLOB_READ_WRITE_TOKEN` (production, preview and development); it never appears in the repo, a commit, a log or a test. Nothing is added to the browser bundle.
-- **Behind the gate.** The route is `/api/progress`. The access-gate middleware matches every request, so it needs the gate cookie like any page. The function adds no auth, cookie, user id, database or sync library.
+- **Behind the gate.** The route is `/api/progress`. The middleware skips this one path (see "Access gate"), so the function checks the gate cookie itself. The function adds no auth, cookie, user id, database or sync library.
 - **GET** returns the saved state, or the empty state if there is none. **PUT** takes a state, merges it into the saved one, stores the result only if it changed, and returns it. Any other method is 405.
 - **Checked at the boundary.** The body must be JSON (`content-type: application/json`), at most 64 KB, exactly the v2 shape: only the four setting keys with their known values, ids that are slugs of at most 64 characters, at most 300 items, whole-number times. Anything else is 400 (413 when too large). The error body never carries storage detail.
 - **Merge** (`src/lib/merge.js`, plain JS, shared by the browser and the function). Per setting and per item the newer `at` wins. A tie keeps a tick over an untick, and the larger value string for a setting. It is idempotent, commutative and associative, so devices can sync in any order and two devices that tick different things offline both keep their ticks.
@@ -156,7 +156,7 @@ Ticks and settings follow the owner across phone, tablet and desktop. Local firs
 
 ## Access gate
 
-While the site is private, a Vercel Routing Middleware (`middleware.ts` at the repo root, one self-contained file whose pure `decide()` is exported for the tests) stands in front of every page and asset. Output stays static Astro; no adapter, no runtime dependency, nothing added to the browser.
+While the site is private, a Vercel Routing Middleware (`middleware.ts` at the repo root, with the pure `decide()` in `src/lib/gate.js`, plain JS so the platform's bundler can trace it) stands in front of every page and asset. Output stays static Astro; no adapter, no runtime dependency, nothing added to the browser.
 
 - **Password.** The Vercel env var `SITE_PASSWORD` (production and preview). It never appears in the repo, a commit, a log or a test. If it is unset or empty, the gate answers 503 to everything: closed, never open.
 - **No valid cookie.** 401 and a small login page: inline styles from the tokens in both themes, one labelled password field (16px or more), one big button, 48px targets, `no-store`, `noindex`, and a CSP that allows no script. Posting the right password sets the cookie and answers 303 to the page first asked for. Only a same-origin path is followed (a path starting `//` or `/\` goes to `/`). A wrong password re-shows the page, 401, with one plain error line.

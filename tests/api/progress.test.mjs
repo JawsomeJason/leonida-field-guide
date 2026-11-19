@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 // Loads the real function file the way the platform does (a bad relative import fails here, not only on Vercel),
 // then swaps its storage for memory. No network, no token.
 process.env.SITE_PASSWORD = 'a-made-up-test-password';
-const { decide } = await import('../../middleware.ts');
+const { decide } = await import('../../src/lib/gate.js');
 const signedIn = await decide({ path: '/', method: 'POST', cookie: null, formPassword: process.env.SITE_PASSWORD, expectedPassword: process.env.SITE_PASSWORD });
 const cookie = signedIn.setCookie.split(';')[0];
 const { default: fn } = await import('../../api/progress.ts');

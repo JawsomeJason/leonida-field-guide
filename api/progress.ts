@@ -4,7 +4,7 @@
 // If this function returns 500 on the live site, check the merge import first: it must keep its .js extension.
 import { get, put } from '@vercel/blob';
 import { empty, merge, parse } from '../src/lib/merge.js';
-import { decide } from '../middleware.ts';
+import { decide } from '../src/lib/gate.js';
 
 declare const process: { env: Record<string, string | undefined> };
 
