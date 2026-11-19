@@ -233,6 +233,7 @@ test.describe('the sunset on the Ask screen', () => {
       await saved(page, { theme, console: 'ps5' });
       await page.goto('/');
       const sun = page.locator('.sunset');
+      if (width(page) >= 768) return void (await expect(sun, 'fix round 9: no stray sun on tablet and desktop').toBeHidden());
       await expect(sun).toBeVisible();
       await expect(sun).toHaveAttribute('aria-hidden', 'true');
       expect((await sun.innerText()).trim(), 'no text in it').toBe('');
@@ -257,6 +258,7 @@ test.describe('the sunset on the Ask screen', () => {
       new PerformanceObserver((l) => l.getEntries().forEach((e) => { if (!e.hadRecentInput) window.__cls += e.value; })).observe({ type: 'layout-shift', buffered: true });
     });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
+    if (width(page) >= 768) return;
     await expect(page.locator('.sunset')).toBeVisible();
     const first = (await rects(page.locator('.sunset')))[0];
     await page.waitForLoadState('networkidle');

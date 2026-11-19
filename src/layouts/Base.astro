@@ -73,6 +73,9 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
           } catch (e) {}
           if (k === 'theme' && v === 'system') delete r.dataset.theme;
           else if (k !== 'stage') r.dataset[k] = v;
+          // The pressed and checked states follow at once too, so a chosen console shows on the prompt and in the sheet before settings.js arrives.
+          for (var b of document.querySelectorAll('button[data-set="' + k + '"]:not([data-action])')) b.setAttribute('aria-pressed', b.dataset.value === v);
+          for (var i of document.querySelectorAll('input[data-setting][name="' + k + '"]')) i.checked = i.value === v;
         }
         function click(e) {
           var b = e.target.closest && e.target.closest('[data-set]');
