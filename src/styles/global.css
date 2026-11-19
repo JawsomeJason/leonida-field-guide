@@ -14,7 +14,7 @@
 *, ::before, ::after { box-sizing: border-box; }
 
 html {
-  scroll-padding-block-start: var(--header-h, 9rem); /* a jump to an anchor lands below the sticky header */
+  scroll-padding-block-start: var(--header-h, 4.5rem); /* a jump to an anchor lands below the sticky header */
   -webkit-tap-highlight-color: transparent; /* our :active state is the feedback, not the browser's grey flash */
   overscroll-behavior-y: contain; /* no pull-to-refresh fights */
   scroll-padding-block-end: calc(var(--tap) + var(--safe-bottom)); /* focus stays clear of the bottom bar */
@@ -66,8 +66,12 @@ a, button, summary, label, input { touch-action: manipulation; }
 :is(.tap-list a, .nav a, .todo-list .todo label, .todo__tick, .todo__open, .backup summary, .reveal__btn, .tile):active,
 .card:has(.card__q a:active) { scale: var(--press-scale); transition-duration: 70ms, 0s, 140ms, 140ms; }
 :is(.seg label, .ctabs button, .btn, .gate__on, .console-btn, .other-consoles summary):active { scale: var(--press-scale-small); transition-duration: 70ms, 0s, 140ms, 140ms; }
+/* Reduced motion: no transitions and no animations anywhere (colour feedback then changes at once), and no page transition.
+   The cross-document @view-transition above only applies under no-preference; the rule here says so out loud. */
 @media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after, ::backdrop { transition: none !important; animation: none !important; }
   :is(a, button, summary, label, .card):active { scale: none !important; }
+  @view-transition { navigation: none; }
 }
 @media (hover: hover) {
   .tap-list a:hover, .nav a:hover, .chip:hover, .seg label:hover, .tile:hover, .todo-list .todo label:hover, .todo__tick:hover, .console-btn:hover, .other-consoles summary:hover, .card:has(.card__q a:hover) { background-color: var(--wash); }
@@ -107,7 +111,8 @@ a, button, summary, label, input { touch-action: manipulation; }
   .todo input { transition: background-color 140ms var(--ease-out), border-color 140ms var(--ease-out); }
 }
 
-/* Header */
+/* Header: one row at every width. The app icon (the name beside it from 600px), the console chip and the spoiler chip,
+   which always says the level in words. Both chips open the settings sheet. */
 .site-header { position: sticky; inset-block-start: 0; z-index: 6; background: var(--bg); padding-block-start: var(--safe-top); }
 .site-header::after {
   content: '';
@@ -117,15 +122,16 @@ a, button, summary, label, input { touch-action: manipulation; }
 }
 .site-header__row {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: var(--gap-tap) var(--space-4);
+  gap: var(--gap-tap);
   padding: var(--space-2) max(var(--space-4), var(--safe-right)) var(--space-2) max(var(--space-4), var(--safe-left));
 }
 .site-name {
-  flex: 1 1 8rem; /* the name gives way (wraps) before the chip drops to its own row */
+  flex: 1 1 auto;
+  min-inline-size: var(--tap);
   display: inline-flex;
   align-items: center;
+  gap: var(--space-3);
   min-block-size: var(--tap);
   line-height: 1.2;
   color: var(--text);
@@ -133,18 +139,15 @@ a, button, summary, label, input { touch-action: manipulation; }
   letter-spacing: -0.01em;
   text-decoration: none;
 }
-.dial { order: 3; flex: 1 1 100%; }
-@media (min-width: 37.5em) {
-  .dial { order: 0; flex: 0 0 auto; flex-wrap: nowrap; }
-  .dial .seg { flex: 0 0 auto; }
-  .dial .seg label { flex: 0 0 auto; padding-inline: var(--space-4); }
+.site-name img { flex: none; border-radius: var(--space-2); }
+@media (max-width: 37.49em) {
+  .site-name__text { position: absolute; inline-size: 1px; block-size: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } /* the icon is the mark on a phone; the name is still read */
 }
 
 fieldset { min-inline-size: 0; margin: 0; padding: 0; border: 0; }
-.dial, .setting { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-tap) var(--space-2); }
-.dial .seg label { padding-inline: var(--space-2); font-size: var(--text-small); }
-.dial legend, .setting legend {
-  font: 600 0.8125rem / 1 var(--font-text); /* 13px: the dial's name must fit beside its buttons, even at 130% text */
+.setting { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-tap) var(--space-2); }
+.setting legend, .levels legend {
+  font: 600 0.8125rem / 1 var(--font-text);
   color: var(--muted);
   float: inline-start; /* un-floated, a legend cannot sit beside the controls */
   padding: 0;
@@ -169,16 +172,16 @@ fieldset { min-inline-size: 0; margin: 0; padding: 0; border: 0; }
 .seg label:has(:checked) { background: var(--accent); border-color: var(--accent); color: var(--bg); }
 .seg label:has(:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; z-index: 1; }
 
-/* Without JS the console and theme controls cannot save anything, so they are hidden. The dial stays. */
+/* Without JS the console and theme controls cannot save anything, so they are hidden. */
 html:not(.js) .needs-js { display: none; }
 .sr-only { position: absolute; inline-size: 1px; block-size: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-/* The chip is the settings opener and always names the console in use. */
+/* The chips are the settings openers: one names the console in use, one names the spoiler level. */
 .chip {
   flex: none;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1);
   min-block-size: var(--tap);
   min-inline-size: var(--tap);
   padding-inline: var(--space-3);
@@ -187,24 +190,28 @@ html:not(.js) .needs-js { display: none; }
   background: var(--surface);
   color: var(--text);
   font: 600 var(--text-small) / 1 var(--font-text);
+  white-space: nowrap;
   cursor: pointer;
   box-shadow: var(--shadow);
 }
-.chip [data-c] { display: none; }
+.chip [data-c], .chip [data-d] { display: none; }
 html:not([data-console]) .chip [data-c=''],
 html[data-console='ps5'] .chip [data-c='ps5'],
 html[data-console='xbox-x'] .chip [data-c='xbox-x'],
-html[data-console='xbox-s'] .chip [data-c='xbox-s'] { display: inline; }
-.chip:has(:popover-open) svg, .chip[aria-expanded='true'] svg { rotate: 180deg; }
+html[data-console='xbox-s'] .chip [data-c='xbox-s'],
+html:not([data-dial='places'], [data-dial='mild']) .chip [data-d='off'],
+html[data-dial='places'] .chip [data-d='places'],
+html[data-dial='mild'] .chip [data-d='mild'] { display: inline; }
 .chip:active { scale: var(--press-scale-small); background-color: var(--press); transition: scale 70ms var(--ease-out); }
 
-/* Settings sheet: a native popover, so Esc, a tap outside and the Done button close it. A bottom sheet within thumb reach on a phone,
-   the same strip centred on wider screens. It sits below the sticky header, so the dial is never under it. */
+/* Settings sheet: a native popover, so Esc, a tap on the scrim and the Done button close it. A bottom sheet within thumb reach on a phone,
+   the same strip centred on wider screens. It holds the spoiler levels, the console and the theme. */
 .sheet {
   inset: auto 0 0 0;
   margin: 0 auto;
   inline-size: min(100%, 30rem);
-  max-block-size: calc(100dvh - var(--header-h, 9rem) - var(--space-2));
+  max-block-size: calc(100dvh - var(--space-5));
+  overflow-y: auto;
   padding: 0;
   border: 1px solid var(--line);
   border-block-end: 0;
@@ -214,23 +221,57 @@ html[data-console='xbox-s'] .chip [data-c='xbox-s'] { display: inline; }
   box-shadow: 0 -8px 24px rgb(0 0 0 / 0.16);
   overscroll-behavior: contain;
 }
-.sheet::backdrop { background: none; pointer-events: none; } /* the page stays tappable, dial included */
+.sheet::backdrop { background: rgb(0 0 0 / 0.5); } /* the scrim: a tap on it closes the sheet */
 .sheet__in { display: grid; gap: var(--space-4); padding: var(--space-4) max(var(--space-4), var(--safe-right)) max(var(--space-4), var(--safe-bottom)) max(var(--space-4), var(--safe-left)); }
 .sheet h2 { margin: 0; }
 .sheet .setting { display: grid; gap: var(--space-2); }
-.sheet .setting legend { float: none; margin-block-end: var(--space-2); }
+.sheet legend { float: none; margin-block-end: var(--space-2); }
 .sheet .setting .seg label { flex: 1 1 0; }
-.dial-help h3 { margin: 0 0 var(--space-1); color: var(--muted); font: 600 var(--text-small) / 1.3 var(--font-text); }
-.dial-help dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: var(--space-1) var(--space-3); font-size: var(--text-small); }
-.dial-help dt { font-weight: 650; }
-.dial-help dd { margin: 0; color: var(--muted); }
+/* The three spoiler levels: radios, each with its one-line meaning. The whole row is the target. */
+.levels { display: grid; gap: var(--gap-tap); }
+.levels label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-block-size: var(--tap);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+.levels label:has(:checked) { border-color: var(--accent); background: var(--wash); }
+.levels label:has(:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
+.levels span { color: var(--muted); font-size: var(--text-small); line-height: 1.35; }
+.levels strong { display: block; color: var(--text); font-size: var(--text-body); }
+.levels input {
+  appearance: none;
+  flex: none;
+  display: grid;
+  place-content: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  margin: 0;
+  border: 2px solid var(--muted);
+  border-radius: 50%;
+}
+.levels input::before { content: ''; inline-size: 0.75rem; aspect-ratio: 1; border-radius: 50%; background: var(--bg); scale: 0; }
+.levels input:checked { background: var(--accent); border-color: var(--accent); }
+.levels input:checked::before { scale: 1; }
+@media (forced-colors: active) { .levels input::before { background: CanvasText; } }
 @supports not selector(:popover-open) { .sheet { display: none; } }
 @media (prefers-reduced-motion: no-preference) {
-  /* It slides up and fades in; moving only, so its targets stay 48px while it settles. */
+  /* It slides up and fades in, the scrim with it; moving only, so its targets stay 48px while it settles. */
   .sheet { transition: translate 200ms var(--ease-out), opacity 160ms var(--ease-out), display 200ms allow-discrete, overlay 200ms allow-discrete; }
   .sheet:not(:popover-open) { translate: 0 1.5rem; opacity: 0; }
-  @starting-style { .sheet:popover-open { translate: 0 1.5rem; opacity: 0; } }
+  .sheet::backdrop { transition: opacity 200ms var(--ease-out), display 200ms allow-discrete, overlay 200ms allow-discrete; }
+  .sheet:not(:popover-open)::backdrop { opacity: 0; }
+  @starting-style { .sheet:popover-open { translate: 0 1.5rem; opacity: 0; } .sheet:popover-open::backdrop { opacity: 0; } }
 }
+
+/* Offline: one calm line under the header, only while the device is offline (online.js). */
+.offline-note { margin: 0; padding: var(--space-2) max(var(--space-4), var(--safe-right)) var(--space-2) max(var(--space-4), var(--safe-left)); background: var(--surface); border-block-end: 1px solid var(--line); color: var(--muted); font: var(--font-label); }
 
 /* Page frame: phone is one column with a bottom bar. */
 .frame { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); }
