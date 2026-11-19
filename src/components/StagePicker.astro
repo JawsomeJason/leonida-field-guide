@@ -105,13 +105,12 @@ const short: Record<string, string> = { before: 'Before', 'hour-1': 'Hour 1', 'd
     align-items: center;
     gap: var(--space-3);
     min-block-size: var(--tap);
-    padding: var(--space-2) var(--space-4);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: var(--surface);
+    margin-block: calc(var(--gap-tap) / 2);
+    margin-inline-start: calc(var(--space-2) * -1);
+    padding: var(--space-2);
     cursor: pointer;
   }
-  .todo-list .todo a.todo__open { justify-content: center; padding: 0; color: var(--muted); }
+  .todo-list .todo a.todo__open { justify-content: center; padding: 0; margin-inline: 0; border-inline-start: 0; color: var(--muted); }
 
   @media (prefers-reduced-motion: no-preference) {
     html.js .stage { animation: stage-in 160ms var(--ease-out); }
