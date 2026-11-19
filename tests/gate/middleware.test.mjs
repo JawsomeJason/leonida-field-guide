@@ -53,3 +53,32 @@ test('the right password still redirects (303) and sets the cookie', async () =>
   assert.match(res.headers.get('set-cookie'), /^lfg_gate=/);
   assert.equal(res.headers.get('x-lfg-gate'), null);
 });
+
+// Signed in, the spoiler dial is still enforced on the server: a hidden-tier address below the cookie's level goes to its gate page.
+test('signed in: hidden addresses are refused (302 to the gate page) below the dial cookie, allowed at or above it, or with the marker', async () => {
+  process.env.SITE_PASSWORD = 'a-made-up-test-password';
+  const { default: middleware } = await import('../../middleware.ts');
+  const signIn = await middleware(new Request('https://example.test/', { method: 'POST', body: new URLSearchParams({ password: 'a-made-up-test-password' }) }));
+  const gate = signIn.headers.get('set-cookie').split(';')[0];
+  const get = (path, dial, headers = {}) => middleware(new Request(`https://example.test${path}`, { headers: { cookie: dial ? `${gate}; lfg_dial=${dial}` : gate, ...headers } }));
+
+  for (const [path, to] of [['/h/mild/a/x/', '/mild/x/'], ['/h/places/search.json', '/places/'], ['/places/x/show/', '/places/x/'], ['/places/x/show/?reveal=0', '/places/x/']]) {
+    const res = await get(path, 'off');
+    assert.equal(res.status, 302, path);
+    assert.equal(res.headers.get('location'), to);
+    assert.equal(res.headers.get('x-lfg-redirect'), 'dial');
+    assert.equal(res.headers.get('cache-control'), 'no-store');
+  }
+  assert.equal((await get('/places/x/show/')).status, 302); // no dial cookie: Off
+  const through = (res) => res.status !== 302 && !res.headers.get('x-lfg-redirect');
+  assert.ok(through(await get('/places/x/show/', 'places')));
+  assert.equal((await get('/mild/x/show/', 'places')).status, 302);
+  assert.ok(through(await get('/mild/x/show/', 'mild')));
+  assert.ok(through(await get('/mild/x/show/?reveal=1', 'off')));
+  assert.ok(through(await get('/h/mild/a/x/', 'off', { 'x-lfg-reveal': '1' })));
+  assert.equal((await get('/h/mild/search.json', 'off', { 'x-lfg-reveal': '1' })).status, 302);
+  assert.ok(through(await get('/places/', 'off')));
+  assert.ok(through(await get('/places/x/', 'off')));
+  // Not signed in, a hidden address is the login page, not a redirect that would show a gate page's existence.
+  assert.equal((await middleware(new Request('https://example.test/mild/x/show/', { headers: { 'sec-fetch-dest': 'document', cookie: 'lfg_dial=mild' } }))).headers.get('x-lfg-gate'), 'login');
+});

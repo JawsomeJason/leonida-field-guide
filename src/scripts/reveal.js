@@ -1,14 +1,16 @@
 // Hidden text only ever arrives from /h/<tier>/ and only here: on a deliberate tap on a reveal
 // control, or because the dial allows that tier. Never on scroll, hover or a nearby tap.
+// Below the tier the server refuses these files (302 to the gate page) unless the request carries the reveal marker,
+// which only a tap adds, so a redirected answer is a refusal, never content.
 import { read } from './settings.js';
 
 const RANK = { off: 0, places: 1, mild: 2 };
 const allowed = (tier) => RANK[tier] <= RANK[read().dial];
 
 const pages = new Map();
-function load(url) {
+function load(url, tap) {
   if (!pages.has(url)) {
-    const p = fetch(url).then((r) => (r.ok ? r.text() : Promise.reject(r.status)));
+    const p = fetch(url, tap ? { headers: { 'x-lfg-reveal': '1' } } : undefined).then((r) => (r.ok && !r.redirected ? r.text() : Promise.reject(r.status)));
     p.catch(() => pages.delete(url)); // a failed load can be tried again
     pages.set(url, p);
   }
@@ -24,7 +26,7 @@ async function open(box, auto) {
   const btn = box.querySelector('.reveal__btn');
   const out = box.querySelector('.reveal__out');
   try {
-    out.replaceChildren(parse(await load(btn.dataset.src)));
+    out.replaceChildren(parse(await load(btn.dataset.src, !auto)));
   } catch {
     if (!auto) location.href = btn.href; // no script path: the detail's own page
     return;
@@ -44,16 +46,8 @@ function close(box) {
 let seq = 0;
 async function sync() {
   const n = ++seq;
-  // A hidden-tier page opens when the dial allows its tier, and closes again if the dial drops (unless the player opened it by hand).
-  for (const page of document.querySelectorAll('details[data-guard]')) {
-    if (allowed(page.dataset.guard)) {
-      page.open = true;
-      page.dataset.auto = '1';
-    } else if (page.dataset.auto) {
-      page.open = false;
-      delete page.dataset.auto;
-    }
-  }
+  // A gate page forwards to its explicit address once the dial reaches its tier. The link carries the marker, so a missing cookie cannot loop.
+  for (const gate of document.querySelectorAll('[data-gate]')) if (allowed(gate.dataset.gate)) return location.replace(gate.querySelector('.guard__show').href);
   for (const box of document.querySelectorAll('[data-reveal]')) {
     if (allowed(box.dataset.tier)) box.dataset.open || open(box, true);
     else if (box.dataset.open === 'auto') close(box);

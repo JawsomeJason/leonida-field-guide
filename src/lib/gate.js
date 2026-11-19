@@ -54,6 +54,54 @@ export async function decide({ path, method, cookie, formPassword, expectedPassw
   return { action: 'login' };
 }
 
+// The spoiler dial, mirrored into a device cookie by settings.js (the word only: off, places or mild), so the server can
+// back the setting. Hidden-tier addresses are refused unless that level reaches the tier, or the request is one explicit
+// reveal: the header x-lfg-reveal: 1 on an in-place fetch, or ?reveal=1 on the no-script Show link. The marker opens one
+// item (an explicit page or one item's fragment), never an index, a list or an offline list.
+export const DIAL_COOKIE = 'lfg_dial';
+const LEVEL = { off: 0, places: 1, mild: 2 };
+const TIERS = ['places', 'mild'];
+
+// Decoded once (what the file server does), backslashes as slashes, dot segments resolved, lower-cased.
+const segments = (path) => {
+  let p = path;
+  try {
+    p = decodeURIComponent(path);
+  } catch {} // a malformed escape stays as written: it still has to match a tier by name to matter
+  const out = [];
+  for (const s of p.replace(/\\/g, '/').toLowerCase().split('/')) {
+    if (s === '' || s === '.') continue;
+    if (s === '..') out.pop();
+    else out.push(s);
+  }
+  return out;
+};
+
+/**
+ * @param {{ path: string, search?: string, cookie?: string | null, revealHeader?: string | null }} input path is the pathname only.
+ * @returns {{ action: 'allow' } | { action: 'redirect', location: string }} redirect goes to the gate page of that item or tier.
+ */
+export function dialRule({ path, search = '', cookie, revealHeader }) {
+  const segs = segments(path);
+  let tier, item, gate;
+  if (TIERS.includes(segs[0])) {
+    tier = segs[0];
+    if (segs.length < 3) return { action: 'allow' }; // /<tier>/ and /<tier>/<id>/ are the gate pages: no hidden text
+    gate = `/${tier}/${segs[1]}/`;
+    item = segs[2] === 'show' ? segs[1] : undefined; // an explicit page; anything else deeper is refused without the marker
+  } else if (segs[0] === 'h' && TIERS.includes(segs[1])) {
+    tier = segs[1];
+    item = segs[2] === 'a' && segs[3] && segs[3] !== 'index.html' ? segs[3] : undefined; // one item's fragment
+    gate = item ? `/${tier}/${item}/` : `/${tier}/`;
+  } else return { action: 'allow' };
+
+  const have = LEVEL[cookie?.split(';').map((c) => c.trim()).find((c) => c.startsWith(DIAL_COOKIE + '='))?.slice(DIAL_COOKIE.length + 1)] ?? 0;
+  if (have >= LEVEL[tier]) return { action: 'allow' };
+  const marked = revealHeader === '1' || new URLSearchParams(search).get('reveal') === '1';
+  if (marked && item) return { action: 'allow' };
+  return { action: 'redirect', location: gate };
+}
+
 // Self-contained: the gate cannot serve the site's own CSS. Tokens mirror src/styles/tokens.css.
 export const loginPage = (error) => `<!doctype html>
 <html lang="en">

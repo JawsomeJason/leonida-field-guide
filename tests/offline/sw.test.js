@@ -16,7 +16,8 @@ function boot(network) {
     const key = (r) => new URL(typeof r === 'string' ? r : r.url, ORIGIN).href;
     return {
       put: async (r, res) => void m.set(key(r), res),
-      match: async (r) => m.get(key(r)),
+      // Like the real Cache: a fresh copy each time, and ignoreSearch drops the query from both sides.
+      match: async (r, opts) => (opts?.ignoreSearch ? [...m].find(([k]) => k.split('?')[0] === key(r).split('?')[0])?.[1] : m.get(key(r)))?.clone(),
       delete: async (r) => m.delete(key(r)),
       keys: async () => [...m.keys()].map((url) => new Request(url)),
     };
@@ -103,4 +104,69 @@ test('a good navigation response still refreshes the cached page', async () => {
   sw.listeners.fetch({ request: { method: 'GET', url: `${ORIGIN}/topics/`, mode: 'navigate' }, respondWith: (p) => (shown = p), waitUntil() {} });
   await shown;
   assert.equal(await (await cache.match('/topics/')).text(), 'fresh /topics/');
+});
+
+// Below the player's dial the server answers a hidden URL with a 302 to a 200 gate page: fetch follows it (redirected: true).
+const redirected = (body) => Object.defineProperty(new Response(body), 'redirected', { value: true });
+const hidden = /^\/(places|mild|h)\//;
+const navigate = (sw, path) => {
+  let shown;
+  sw.listeners.fetch({ request: { method: 'GET', url: `${ORIGIN}${path}`, mode: 'navigate' }, respondWith: (p) => (shown = p), waitUntil() {} });
+  return shown;
+};
+
+test('the worker does not store a redirected response or one with the redirect header under a hidden URL', async () => {
+  const gatePage = (path) => (hidden.test(path) ? redirected('gate page') : page(path));
+  // A tier turned on while the cookie is missing: every file is refused and sent to a gate page. Nothing is stored, no tier mark.
+  const sw = boot((path) => (path === '/h/mild/offline-urls.json' ? Response.json({ urls: ['/mild/x/show/', '/h/mild/search.json'] }) : gatePage(path)));
+  await sw.send({ type: 'tiers', tiers: ['mild'] });
+  const cache = await sw.cache;
+  assert.equal(await cache.match('/mild/x/show/'), undefined);
+  assert.equal(await cache.match('/h/mild/search.json'), undefined);
+  assert.equal(await cache.match('/__lfg-tier-mild'), undefined);
+
+  // The same through a refreshed navigation and the background refresh of a cached file.
+  const held = boot((path) => gatePage(path));
+  const c2 = await held.cache;
+  await c2.put('/mild/x/show/', page('the real page'));
+  await c2.put('/h/mild/a/x/', page('the real fragment'));
+  assert.equal(await (await navigate(held, '/mild/x/show/')).text(), 'gate page'); // the player sees the gate page, as the server meant
+  held.listeners.fetch({ request: { method: 'GET', url: `${ORIGIN}/h/mild/a/x/`, mode: 'cors' }, respondWith() {}, waitUntil() {} });
+  await new Promise((r) => setTimeout(r, 20));
+  assert.equal(await (await c2.match('/mild/x/show/')).text(), 'the real page');
+  assert.equal(await (await c2.match('/h/mild/a/x/')).text(), 'the real fragment');
+
+  // A 200 that carries the redirect header (a redirect that was already followed) is not kept either.
+  const header = boot((path) => (hidden.test(path) ? new Response('gate page', { headers: { 'x-lfg-redirect': 'dial' } }) : page(path)));
+  const c3 = await header.cache;
+  await c3.put('/places/x/show/', page('the real page'));
+  await navigate(header, '/places/x/show/');
+  assert.equal(await (await c3.match('/places/x/show/')).text(), 'the real page');
+});
+
+test('no warming: with the dial Off the worker fetches no hidden address, at install or when told so', async () => {
+  const asked = [];
+  const sw = boot((path) => {
+    asked.push(path);
+    return path === '/offline-urls.json' ? Response.json({ urls: ['/', '/topics/'] }) : page(path);
+  });
+  await sw.wait('install', {});
+  await sw.send({ type: 'tiers', tiers: [] });
+  assert.ok(asked.includes('/topics/'));
+  assert.deepEqual(asked.filter((p) => hidden.test(p)), []);
+  await sw.send({ type: 'tiers', tiers: ['places'] }); // only after the player raises the dial
+  assert.ok(asked.includes('/h/places/offline-urls.json'));
+  assert.equal(asked.some((p) => p.startsWith('/h/mild/') || p.startsWith('/mild/')), false);
+});
+
+test('offline: a page and a fragment already revealed are read from the cache, with or without the reveal marker in the address', async () => {
+  const sw = boot(() => Promise.reject(new Error('offline')));
+  const cache = await sw.cache;
+  await cache.put('/places/x/show/', page('the places page'));
+  await cache.put('/h/places/a/y/', page('the fragment'));
+  assert.equal(await (await navigate(sw, '/places/x/show/')).text(), 'the places page');
+  assert.equal(await (await navigate(sw, '/places/x/show/?reveal=1')).text(), 'the places page');
+  let fragment;
+  sw.listeners.fetch({ request: { method: 'GET', url: `${ORIGIN}/h/places/a/y/`, mode: 'cors' }, respondWith: (p) => (fragment = p), waitUntil() {} });
+  assert.equal(await (await fragment).text(), 'the fragment');
 });

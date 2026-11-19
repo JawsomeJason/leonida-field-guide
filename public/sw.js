@@ -10,8 +10,9 @@ const CACHE = `lfg-${VERSION}`;
 const READY = '/__lfg-ready';
 const TIERS = ['places', 'mild'];
 
-// Only a real page or asset is kept: not an error, a redirect or the gate's login page.
-const keepable = (res) => res.ok && !res.redirected && !res.headers.has('x-lfg-gate');
+// Only a real page or asset is kept: not an error, a redirect (a hidden URL below the player's dial is sent to a 200 gate
+// page: storing that would poison the cache) or the gate's login page.
+const keepable = (res) => res.ok && !res.redirected && !res.headers.has('x-lfg-gate') && !res.headers.has('x-lfg-redirect');
 
 const store = async (cache, url) => {
   try {

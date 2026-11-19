@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
+import { dialRule } from '../../src/lib/gate.js';
 import { emptyTicks } from '../../src/lib/merge.js';
 
 export const DIST = '.e2e-dist';
@@ -11,7 +12,11 @@ execFileSync('npx', ['astro', 'build', '--outDir', DIST], { stdio: 'inherit', en
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json' };
 createServer(async (req, res) => {
   try {
-    let path = normalize(decodeURIComponent(new URL(req.url, 'http://x').pathname)).replace(/^(\.\.[/\\])+/, '');
+    const url = new URL(req.url, 'http://x');
+    // The same pure rule the middleware applies on Vercel (the sign-in gate is not applied here): hidden addresses below the dial cookie go to their gate page.
+    const rule = dialRule({ path: url.pathname, search: url.search, cookie: req.headers.cookie, revealHeader: req.headers['x-lfg-reveal'] });
+    if (rule.action === 'redirect') return res.writeHead(302, { location: rule.location, 'x-lfg-redirect': 'dial', 'cache-control': 'no-store' }).end();
+    let path = normalize(decodeURIComponent(url.pathname)).replace(/^(\.\.[/\\])+/, '');
     if (path.endsWith('/')) path += 'index.html';
     // The real /api/progress is a Vercel Function; here a stand-in that stores nothing, so pages sync without a 404.
     if (path === '/api/progress') return res.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify(emptyTicks()));

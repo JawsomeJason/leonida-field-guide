@@ -29,6 +29,10 @@ function apply(s) {
   if (s.console) html.dataset.console = s.console;
   else delete html.dataset.console; // never chosen: the page shows only every-console records and asks
   html.dataset.dial = s.dial;
+  // The level word, mirrored for the server (src/lib/gate.js dialRule) on load and on every change; used for nothing else.
+  try {
+    document.cookie = `lfg_dial=${s.dial}; Path=/; Max-Age=31536000; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
+  } catch {} // cookies blocked: the server then treats the dial as Off
   if (s.theme === 'day' || s.theme === 'night') html.dataset.theme = s.theme;
   else delete html.dataset.theme;
   for (const input of document.querySelectorAll('input[data-setting]')) input.checked = input.value === s[input.name];

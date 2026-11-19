@@ -1,0 +1,33 @@
+---
+// The explicit address: the mild text in full. The gate page at /mild/<id>/ holds none of it.
+// The server only serves this below the Mild dial for an explicit tap (?reveal=1), see src/lib/gate.js.
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import AnswerCard from '../../../components/AnswerCard.astro';
+import RevealList from '../../../components/RevealList.astro';
+import '../../../components/ConsoleText.css';
+import { pageIds, related, revealsOf, textHtml } from '../../../lib/answers';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('answers')).map((e) => e.data);
+  return pageIds(all, 'mild').map(({ id, detail }) => {
+    const answer = all.find((a) => a.id === id)!;
+    return { params: { id }, props: { answer, detail, related: related(answer, all) } };
+  });
+}
+
+const { answer, detail } = Astro.props;
+---
+
+<Base title="Mild page" description="An answer you chose to show.">
+  <Fragment slot="list"><RevealList tiers="mild" topic={answer.topic} /></Fragment>
+  {detail ? (
+    <>
+      <h1>{answer.question}</h1>
+      {revealsOf(answer, 'mild').map((text) => <p set:html={textHtml(text)} />)}
+      <ul class="tap-list"><li><a href={`/a/${answer.id}/`}>Back to the answer</a></li></ul>
+    </>
+  ) : (
+    <AnswerCard answer={answer} related={Astro.props.related} full />
+  )}
+</Base>

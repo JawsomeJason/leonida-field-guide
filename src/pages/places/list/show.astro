@@ -1,0 +1,16 @@
+---
+// The explicit address of the no-script list: every places answer as its own link. Hidden text, so only here and under /h/places/.
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import AnswerCard from '../../../components/AnswerCard.astro';
+import { onlyOf } from '../../../lib/console.js';
+import { byTier } from '../../../lib/answers';
+
+const places = byTier((await getCollection('answers')).map((e) => e.data), 'places');
+---
+
+<Base title="Places page" description="Places answers, shown because you asked.">
+  <h1>Places</h1>
+  {places.length === 0 && <p>No places here yet.</p>}
+  <ul class="cards">{places.map((a) => <li data-only={onlyOf(a.consoles)}><AnswerCard answer={a} /></li>)}</ul>
+</Base>

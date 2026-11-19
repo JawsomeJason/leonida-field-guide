@@ -1,0 +1,18 @@
+---
+// The gate address of one mild page or detail: no record text here, only the slug. See HiddenGuard.astro.
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import HiddenGuard from '../../../components/HiddenGuard.astro';
+import { pageIds } from '../../../lib/answers';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('answers')).map((e) => e.data);
+  return pageIds(all, 'mild').map(({ id }) => ({ params: { id } }));
+}
+
+const { id } = Astro.params;
+---
+
+<Base title="Hidden page" description="A page that stays closed until the spoiler setting allows it.">
+  <HiddenGuard tier="mild" show={`/mild/${id}/show/`} />
+</Base>

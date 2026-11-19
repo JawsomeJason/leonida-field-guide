@@ -1,4 +1,6 @@
-// Spoiler-leak check. Every hidden string must appear only under its own tier's paths in the build.
+// Spoiler-leak check. Every hidden string must appear only in its own tier's explicit-show pages (/<tier>/<id>/show/,
+// /<tier>/list/show/), its /h/<tier>/ files (fragments, search index) and nowhere else: never in a gate page
+// (/<tier>/, /<tier>/<id>/, /<tier>/list/), attributes and meta tags included. Nothing may prefetch a hidden address.
 // Usage: node scripts/check-leak.mjs [distDir=dist] [contentDir=src/content/answers]
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
@@ -45,8 +47,12 @@ export function hiddenStrings(records) {
 
 const walk = (dir) => readdirSync(dir, { recursive: true, withFileTypes: true }).filter((e) => e.isFile()).map((e) => join(e.parentPath, e.name));
 const jsonStrings = (v) => (typeof v === 'string' ? [v] : v && typeof v === 'object' ? Object.values(v).flatMap(jsonStrings) : []);
+// HTML is searched with its attribute values (aria-label, meta content, alt, title) but not its urls: a slug is allowed in a gate page.
 const searchable = (file, raw) => {
-  if (!file.endsWith('.json')) return norm(raw.replace(/<[^>]*>/g, ' '));
+  if (!file.endsWith('.json')) {
+    const noUrls = raw.replace(/\s(?:href|src|action|srcset|poster)=(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, ' ');
+    return norm(noUrls.replace(/<[^>]*>/g, (tag) => ` ${[...tag.matchAll(/="([^"]*)"|='([^']*)'|=([^\s>"']+)/g)].map((m) => m[1] ?? m[2] ?? m[3]).join(' ')} `));
+  }
   try {
     return norm(jsonStrings(JSON.parse(raw)).join(' '));
   } catch {
@@ -54,8 +60,12 @@ const searchable = (file, raw) => {
   }
 };
 
-/** A build path belongs to a tier when it sits under /<tier>/ or /h/<tier>/. */
-const ownedBy = (path) => HIDDEN.find((t) => path.startsWith(`${t}/`) || path.startsWith(`h/${t}/`));
+/** A build path may hold a tier's text when it is that tier's explicit-show page or sits under /h/<tier>/. */
+const ownedBy = (path) => HIDDEN.find((t) => path.startsWith(`h/${t}/`) || new RegExp(`^${t}/[^/]+/show/`).test(path));
+// A hidden address named in a prefetch-like hint would fetch it ahead of the tap.
+const hintsHidden = (html) =>
+  /<script[^>]*speculationrules/i.test(html) ||
+  [...html.matchAll(/<link\b[^>]*>/gi)].some(([tag]) => /rel=["']?[^>]*(?:prefetch|prerender|preload|modulepreload)/i.test(tag) && /href=["']?\/(?:places|mild|h)\//i.test(tag));
 
 export function findLeaks({ dist, records }) {
   const problems = [];
@@ -67,6 +77,8 @@ export function findLeaks({ dist, records }) {
     const raw = readFileSync(file, 'utf8');
     const hay = searchable(file, raw);
     for (const s of strings) if (ownedBy(path) !== s.tier && hay.includes(s.text)) problems.push(`${path}: contains ${s.tier} text of "${s.id}"`);
+
+    if (path.endsWith('.html') && hintsHidden(raw)) problems.push(`${path}: prefetches a hidden address or has speculation rules`);
 
     // The lists a default visit loads or caches must not name a hidden record or path.
     const isList = path === 'search/none.json' || /^offline.*\.json$/.test(path);
