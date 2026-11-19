@@ -44,7 +44,9 @@ test('passing sample: plain words before the term, or its short definition after
 
 test('only the first use on a page needs its plain words', () => {
   assert.deepEqual(plainWordHits('/p/', 'A sharpening boost (PSSR) is on.\nPSSR looks sharp.'), []);
-  assert.equal(plainWordHits('/p/', 'PSSR looks sharp.\nA sharpening boost (PSSR) is on.').length, 1);
+  assert.equal(plainWordHits('/p/', 'PSSR looks sharp.\nIt runs well.\nA sharpening boost (PSSR) is on.').length, 1);
+  // The plain words may sit in the very next sentence.
+  assert.deepEqual(plainWordHits('/p/', 'PSSR looks sharp.\nIt is a sharpening boost.'), []);
 });
 
 test('page text leaves out scripts and a source link\'s own title, and script strings are read', () => {
@@ -69,15 +71,15 @@ test('the real build, its scripts and every record are clean', { skip: !existsSy
 });
 
 // Fix round 7: "Could not reach the online store (the sync service)" confused three reviewers. None of those words ships anywhere a player reads,
-// and the three sync sentences pass the plain-words rule on their own (they carry "copying online" beside "sync").
+// and the three sync sentences pass the plain-words rule on their own (the sentence after "Not syncing right now." says where the ticks are saved).
 test('the words sync service, sync store and online store are used nowhere in the site source, and the three sync sentences are plain', async () => {
   const { readFileSync, readdirSync, statSync } = await import('node:fs');
   const files = (dir) => readdirSync(dir).flatMap((n) => (statSync(`${dir}/${n}`).isDirectory() ? files(`${dir}/${n}`) : [`${dir}/${n}`]));
   const bad = files('src').filter((f) => /\b(sync service|sync store|online store)\b/i.test(readFileSync(f, 'utf8')));
   assert.deepEqual(bad, []);
   const sentences = [
-    'Not syncing (copying online) right now. Your ticks are saved on this device. We will try again.',
-    'Syncing (copying online) is not available here. Your ticks are saved on this device only.',
+    'Not syncing right now. Your ticks are saved on this device. We will try again.',
+    'Syncing is not available here. Your ticks are saved on this device only.',
     "Copied online (synced) at 3:04 PM: your ticks are saved on this device and in this site's private store.",
   ];
   for (const s of sentences) assert.deepEqual(plainWordHits('/checklist/', s), [], s);

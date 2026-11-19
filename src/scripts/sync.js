@@ -9,8 +9,8 @@ import { absorb, state } from './settings.js';
 const ENDPOINT = '/api/progress';
 const SAYS = {
   synced: (at) => `Copied online (synced) at ${at}: your ticks are saved on this device and in this site's private store.`,
-  kept: () => 'Not syncing (copying online) right now. Your ticks are saved on this device. We will try again.',
-  off: () => 'Syncing (copying online) is not available here. Your ticks are saved on this device only.',
+  kept: () => 'Not syncing right now. Your ticks are saved on this device. We will try again.',
+  off: () => 'Syncing is not available here. Your ticks are saved on this device only.',
 };
 const DELAY = 400; // debounce after a change, ms
 const MAX_RETRIES = 5; // then wait for the next change, page load or the online event

@@ -33,8 +33,8 @@ const html = (page) => page.evaluate(() => ({ ...document.documentElement.datase
 const phone = { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true };
 // The three things the status line may say, in the words a player reads (the line is one role=status region).
 const SYNCED = /^Copied online \(synced\) at .+: your ticks are saved on this device and in this site's private store\.$/;
-const KEPT = 'Not syncing (copying online) right now. Your ticks are saved on this device. We will try again.';
-const NOT_HERE = 'Syncing (copying online) is not available here. Your ticks are saved on this device only.';
+const KEPT = 'Not syncing right now. Your ticks are saved on this device. We will try again.';
+const NOT_HERE = 'Syncing is not available here. Your ticks are saved on this device only.';
 const status = (page) => page.locator('[data-sync]');
 
 // Opens the checklist and returns its first to-do (the fixture content always has some).
