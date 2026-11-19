@@ -1,0 +1,108 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const site = 'Leonida Field Guide';
+const {
+  title,
+  description = 'An unofficial, spoiler-safe second-screen guide for Grand Theft Auto VI.',
+} = Astro.props;
+const fullTitle = title ? `${title} · ${site}` : site;
+const path = Astro.url.pathname;
+const hasList = Astro.slots.has('list');
+
+const nav = [
+  { href: '/', label: 'Ask' },
+  { href: '/topics/', label: 'Topics' },
+  { href: '/checklist/', label: 'Checklist' },
+  { href: '/new/', label: 'New' },
+];
+const current = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+
+const dial = [['off', 'Off'], ['places', 'Places'], ['mild', 'Mild']];
+const consoles = [['ps5', 'PS5'], ['xbox-x', 'Xbox X'], ['xbox-s', 'Xbox S']];
+const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="text-scale" content="scale" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f6efe2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b1020" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- Applies saved settings before first paint, so the theme does not flash. -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      try {
+        var s = JSON.parse(localStorage.getItem('lfg:v1')), h = document.documentElement;
+        for (var k of ['theme', 'console', 'dial']) if (s[k] && s[k] !== 'system') h.dataset[k] = s[k];
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__row">
+        <a class="site-name" href="/">{site}</a>
+        <fieldset class="dial">
+          <legend>Spoilers</legend>
+          <div class="seg">
+            {dial.map(([value, label]) => (
+              <label><input type="radio" name="dial" value={value} data-setting checked={value === 'off'} />{label}</label>
+            ))}
+          </div>
+        </fieldset>
+        <details class="menu needs-js">
+          <summary>Settings</summary>
+          <div class="menu-panel">
+            <fieldset class="setting">
+              <legend>Console</legend>
+              <div class="seg">
+                {consoles.map(([value, label]) => (
+                  <label><input type="radio" name="console" value={value} data-setting checked={value === 'ps5'} />{label}</label>
+                ))}
+              </div>
+            </fieldset>
+            <fieldset class="setting">
+              <legend>Theme</legend>
+              <div class="seg">
+                {themes.map(([value, label]) => (
+                  <label><input type="radio" name="theme" value={value} data-setting checked={value === 'system'} />{label}</label>
+                ))}
+              </div>
+            </fieldset>
+          </div>
+        </details>
+      </div>
+    </header>
+
+    <div class:list={['frame', { 'frame--list': hasList }]}>
+      <nav class="nav" aria-label="Main">
+        {nav.map(({ href, label }) => (
+          <a href={href} aria-current={current(href) ? 'page' : undefined}>{label}</a>
+        ))}
+      </nav>
+      {hasList && <aside class="list" aria-label="More in this topic"><slot name="list" /></aside>}
+      <main class="main"><slot /></main>
+    </div>
+
+    <footer class="site-footer">
+      <p>
+        Leonida Field Guide is an unofficial fan project. It is not affiliated with or endorsed by
+        Rockstar Games or Take-Two Interactive. <a href="/about/">About</a>
+      </p>
+    </footer>
+
+    <script>
+      import '../scripts/settings.js';
+    </script>
+  </body>
+</html>
