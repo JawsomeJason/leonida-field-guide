@@ -376,3 +376,25 @@ test('About: at Off no hidden file is fetched; raising the level fetches that le
   await setDial(page, 'Places');
   await expect.poll(() => asked.filter((p) => p.startsWith('/h/'))).toEqual(expect.arrayContaining(['/h/places/search.json', '/h/places/maps/']));
 });
+
+// Fix round 10: a snippet follows the chosen console as the answer page does: that console's own line, and only that console's button names.
+for (const [owned, want, notWant] of [['xbox-x', 'Press A to open the sample menu on this console.', /✕| \/ /], ['ps5', 'Press ✕ to open the sample menu.', /\bA\b| \/ /]]) {
+  test(`a search line shows ${owned}'s own text and button names only`, async ({ page }) => {
+    await saved(page, { v: 2, settings: { console: { value: owned, at: 1 } }, items: {} });
+    await page.goto('/');
+    await ask(page, 'sample question 04 how do i do thing 04');
+    const line = results(page).locator('a[href="/a/sample-04/"] .s');
+    await expect(line).toBeVisible();
+    expect((await line.innerText()).trim()).toBe(want); // the text the player sees, hidden names left out
+    expect(await line.innerText()).not.toMatch(notWant);
+  });
+}
+
+test('with a console chosen, an answer for another console only is labelled as such when its name brings it in', async ({ page }) => {
+  await saved(page, { v: 2, settings: { console: { value: 'ps5', at: 1 } }, items: {} });
+  await page.goto('/');
+  await ask(page, 'xbox');
+  const only = results(page).locator('.only');
+  await expect(only.first()).toBeVisible();
+  await expect(only.first()).toContainText(/^Only for Xbox/);
+});
