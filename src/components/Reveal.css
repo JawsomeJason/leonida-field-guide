@@ -18,7 +18,7 @@
 .reveal--warn .reveal__btn:active { background-color: color-mix(in srgb, var(--action) 75%, var(--text)); }
 .reveal__btn[hidden] { display: none; }
 .reveal__why { color: var(--muted); font-size: var(--text-small); line-height: 1.3; }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .reveal__btn:hover { border-color: var(--accent); }
   .reveal--warn .reveal__btn:hover { background-color: color-mix(in srgb, var(--action) 85%, var(--text)); }
 }
@@ -39,7 +39,7 @@
   font: var(--font-label);
   cursor: pointer;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .reveal__hide:hover { border-color: var(--accent); }
 }
 @media (prefers-reduced-motion: no-preference) {

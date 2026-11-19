@@ -15,7 +15,11 @@ export const onOfficialHost = (url) => {
 const order = ['official', 'reported', 'community'];
 export const weakest = (basis) => order.findLast((c) => basis.some((b) => b.confidence === c));
 
-/** What is wrong with a record's `basis` (none when it has none): each claim's label needs a source of its own standing. */
+/**
+ * What is wrong with a record's `basis` (nothing when it has none): each claim's label needs a source of its own standing.
+ * @param {{ basis?: { claim: string, confidence: string }[], confidence: string, sources: { url: string }[] }} record
+ * @returns {string[]}
+ */
 export const basisProblems = ({ basis, confidence: own, sources }) =>
   !basis
     ? []
