@@ -135,7 +135,7 @@ test.describe('with script', () => {
     await page.goto('/a/sample-02/');
     await expect(page.getByText('Wombat note one')).toHaveCount(0);
     const asked = page.waitForRequest((r) => hiddenRequest.test(new URL(r.url()).pathname));
-    await press(page.getByRole('link', { name: '1 mild detail hidden. Show' }));
+    await press(page.locator('.reveal[data-tier="mild"] .reveal__btn'));
     expect((await asked).headers()['x-lfg-reveal']).toBe('1');
     await expect(page.getByText('Wombat note one')).toBeVisible();
     await expect(page).toHaveURL(/\/a\/sample-02\/$/);
@@ -144,7 +144,7 @@ test.describe('with script', () => {
 
   // Revealed detail (spec "The spoiler dial", Tap to show): a calm gold rule, a Hide control, and nothing left behind when the dial drops.
   const inDom = (page, text) => page.evaluate((t) => document.documentElement.outerHTML.includes(t), text);
-  const showMild = (page) => page.getByRole('link', { name: '1 mild detail hidden. Show' });
+  const showMild = (page) => page.locator('.reveal[data-tier="mild"] .reveal__btn');
 
   test('a revealed detail has the gold rule the answer uses, not the coral one, and a 48px Hide button that puts it away', async ({ page }) => {
     await page.goto('/a/sample-02/');
@@ -242,7 +242,7 @@ test.describe('a refused fetch', () => {
     await page.goto('/a/sample-02/');
     // Without the marker the real server refuses with a 302 to the gate page, which fetch follows to a 200 HTML page.
     await page.route('**/h/mild/a/sample-02/', (route) => route.continue({ headers: { ...route.request().headers(), 'x-lfg-reveal': '0' } }));
-    await press(page.getByRole('link', { name: '1 mild detail hidden. Show' }));
+    await press(page.locator('.reveal[data-tier="mild"] .reveal__btn'));
     await expect(page).toHaveURL(/\/mild\/sample-02\/show\/\?reveal=1$/); // fell back to the link
     await expect(page.getByText('Hidden page')).toHaveCount(0);
   });
@@ -263,7 +263,7 @@ test.describe('without script', () => {
 
   test('the Show control on an answer is a link to the detail\'s explicit page', async ({ page }) => {
     await page.goto('/a/sample-02/');
-    await press(page.getByRole('link', { name: '1 mild detail hidden. Show' }));
+    await press(page.locator('.reveal[data-tier="mild"] .reveal__btn'));
     await expect(page).toHaveURL('/mild/sample-02/show/?reveal=1');
     await expect(page.getByText('Wombat note one')).toBeVisible();
   });

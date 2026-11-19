@@ -76,6 +76,7 @@
 .facts dd { margin: 0; }
 /* How sure we are: the label is plain text, and the meaning is a native disclosure, a plain 48px row in the link colour. */
 .trust__now { margin: 0; }
+.label-key { margin: 0; color: var(--muted); font-size: var(--text-small); line-height: 1.35; } /* once per page, beside the first label */
 .trust summary {
   display: flex;
   align-items: center;

@@ -1,5 +1,5 @@
 ---
-// "1 mild detail hidden. Show" for a none answer. A plain link to the detail's explicit page (with the reveal marker
+// "Show this detail" (or the record's own generic reveal label) for a none answer. A plain link to the detail's explicit page (with the reveal marker
 // the server needs below the tier); reveal.js upgrades it to fetch the fragment in place. Nothing hidden is in this markup.
 import { revealTiers, revealsOf, type AnswerData } from '../lib/answers';
 import './Reveal.css';
@@ -10,13 +10,17 @@ interface Props {
 const { answer } = Astro.props;
 const boxes = revealTiers(answer).map((tier) => {
   const n = revealsOf(answer, tier).length;
-  return { tier, label: `${n} ${tier} detail${n > 1 ? 's' : ''} hidden. Show` };
+  const label = answer.reveal?.find((r) => r.tier === tier && r.label)?.label; // generic words, written for Off; the rule itself stays in the hidden text
+  return { tier, label, why: `${n} ${tier} detail${n > 1 ? 's' : ''}, hidden until you ask` };
 });
 ---
 
-{boxes.map(({ tier, label }) => (
+{boxes.map(({ tier, label, why }) => (
   <div class="reveal" data-reveal data-tier={tier}>
-    <a class="reveal__btn" href={`/${tier}/${answer.id}/show/?reveal=1`} data-src={`/h/${tier}/a/${answer.id}/`}>{label}</a>
+    <a class="reveal__btn" href={`/${tier}/${answer.id}/show/?reveal=1`} data-src={`/h/${tier}/a/${answer.id}/`}>
+      <span class="reveal__t">{label ?? 'Show this detail'}</span>
+      {!label && <span class="reveal__why">{why}</span>}
+    </a>
     <div class="reveal__out" tabindex="-1" hidden></div>
   </div>
 ))}

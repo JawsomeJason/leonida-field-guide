@@ -80,12 +80,12 @@ test('tap to show opens a hidden detail in place and leaves the dial alone', asy
   await page.goto('/a/sample-02/');
   const note = page.getByText('Wombat note one');
   await expect(note).toHaveCount(0);
-  await press(page.getByRole('link', { name: '1 mild detail hidden. Show' }));
+  await press(page.locator('.reveal[data-tier="mild"] .reveal__btn'));
   await expect(note).toBeVisible();
   await expect(page).toHaveURL(/\/a\/sample-02\/$/);
   await expect(chip(page, 'dial')).toHaveAccessibleName('Spoilers: Off, change');
   await expect(page.getByText('Quokka note one')).toHaveCount(0);
-  await press(page.getByRole('link', { name: '1 places detail hidden. Show' }));
+  await press(page.locator('.reveal[data-tier="places"] .reveal__btn'));
   await expect(page.getByText('Quokka note one')).toBeVisible();
   await expect(chip(page, 'dial')).toHaveAccessibleName('Spoilers: Off, change');
 });
@@ -307,8 +307,8 @@ test('every screen names the console in use and the spoiler level in the header'
   }
   await page.addInitScript(() => localStorage.clear());
   await page.goto('/');
-  expect(await shown(chip(page)), 'never chosen: it asks').toBe('Choose');
-  await expect(chip(page)).toHaveAccessibleName('Console: choose one, change');
+  expect(await shown(chip(page)), 'never chosen: it asks').toBe('Pick console');
+  await expect(chip(page)).toHaveAccessibleName('Pick console, change');
 });
 
 test('either chip opens the sheet, with a scrim behind it, and it closes on Escape, the scrim, a choice and Done', async ({ page }) => {

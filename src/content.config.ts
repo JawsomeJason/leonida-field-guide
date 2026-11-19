@@ -39,8 +39,9 @@ const answers = defineCollection({
       todo: z.string().min(1).optional(),
       // Words players use that the answer text does not (quicksave, instal). Search only; never shown on a page.
       keywords: z.array(z.string().min(1).max(40)).max(20).optional(),
+      // `label` on a reveal is the control's text at Off, so it is written in generic words; the rule itself stays in `text`.
       reveal: z
-        .array(z.strictObject({ tier: z.enum(['places', 'mild']), text: z.string().min(1) }))
+        .array(z.strictObject({ tier: z.enum(['places', 'mild']), text: z.string().min(1), label: z.string().min(1).max(80).optional() }))
         .optional(),
     })
     .refine((a) => a.topic !== 'places' || a.tier === 'places', {
