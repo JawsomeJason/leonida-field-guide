@@ -40,10 +40,11 @@ const consoles = [['ps5', 'PS5'], ['xbox-x', 'Xbox X'], ['xbox-s', 'Xbox S']];
     <Reveal answer={a} />
     <dl class="facts">
       <div>
-        <dt>Confidence</dt>
+        <dt>How sure we are</dt>
         <dd>
+          <p class="trust__now"><strong>{trust.label}, {trust.short}</strong></p>
           <details class="trust">
-            <summary><strong>{trust.label}</strong> <span>What this means</span></summary>
+            <summary>What does this mean?</summary>
             <p>{trust.text}</p>
           </details>
         </dd>
