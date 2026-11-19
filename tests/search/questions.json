@@ -227,5 +227,16 @@
   {"q": "is there enough space on my console", "first": "install-size-and-preload", "console": "xbox-x"},
   {"q": "will it fit on my console", "first": "series-s-space", "console": "xbox-s"},
   {"q": "is there enough space on my console", "first": "series-s-space", "console": "xbox-s"},
-  {"q": "does it fit on my series s", "first": "series-s-space", "console": "xbox-s"}
+  {"q": "does it fit on my series s", "first": "series-s-space", "console": "xbox-s"},
+  {"q": "crahs on startup", "first": ["crash-steps-ps5", "crashes-and-launch-problems"]},
+  {"q": "my game crahses", "first": ["crash-steps-ps5", "crashes-and-launch-problems"]},
+  {"q": "how do i svae my game", "first": "how-to-save"},
+  {"q": "how do i reedem my code", "first": "boxed-copy-redeem"},
+  {"q": "how big is the isntall on ps5", "first": "install-size-and-preload"},
+  {"q": "what are the contorls", "first": "control-schemes"},
+  {"q": "whats the best setitngs to change before i start", "first": "best-settings-first"},
+  {"q": "will i lsoe my cash if i die", "first": ["keep-your-cash", "will-i-lose-anything"]},
+  {"q": "mutliplayer", "first": "online-or-co-op"},
+  {"q": "wehre is the gun shop", "first": "NONE", "note": "places"},
+  {"q": "fast travle", "first": "fast-travel", "dial": "mild"}
 ]
