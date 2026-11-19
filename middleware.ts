@@ -10,8 +10,13 @@ const headers = {
   'content-security-policy': "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
 };
 
-const page = (error: boolean) =>
-  new Response(loginPage(error), { status: 401, headers: { ...headers, 'content-type': 'text/html; charset=utf-8' } });
+// A page navigation gets the login page as a 200: browsers log every 401 document in the console. Anything else
+// (assets, JSON, fetches, curl) still gets 401, so no content leaks. x-lfg-gate lets the service worker refuse to cache it.
+const page = (error: boolean, request: Request) =>
+  new Response(loginPage(error), {
+    status: request.headers.get('sec-fetch-dest') === 'document' ? 200 : 401,
+    headers: { ...headers, 'x-lfg-gate': 'login', 'content-type': 'text/html; charset=utf-8' },
+  });
 
 export default async function middleware(request: Request) {
   const url = new URL(request.url);
@@ -41,7 +46,7 @@ export default async function middleware(request: Request) {
     case 'refuse':
       return new Response('This site is closed.', { status: 503, headers });
     default:
-      return page(d.action === 'login-error');
+      return page(d.action === 'login-error', request);
   }
 }
 

@@ -10,24 +10,32 @@ const state = {
   items: { 'first-thing': { done: true, at }, 'second-thing': { done: false, at: at + 1 } },
 };
 const old = { console: 'xbox-x', dial: 'places', theme: 'night', stage: 'day-1', done: ['first-thing', 'second-thing'] };
-const code = (obj) => encode(obj);
+// Any JSON as a code, so the tests can hand over shapes encode() would never make.
+const code = (obj) => btoa(JSON.stringify(obj)).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '');
+const ticks = { v: 3, items: state.items };
 const rejects = (input) => {
   const r = decode(input);
   assert.equal(r.ok, false);
   assert.ok(r.error.length > 0);
 };
 
-test('a valid v2 code round-trips, and the code is base64url', () => {
+test('export code: ticks only. A device state round-trips to its ticks, and no setting is in the code', () => {
   const c = encode(state);
   assert.match(c, /^[A-Za-z0-9_-]+$/);
-  assert.deepEqual(decode(c), { ok: true, state });
+  assert.deepEqual(decode(c), { ok: true, state: ticks });
+  const text = atob(c.replaceAll('-', '+').replaceAll('_', '/'));
+  assert.deepEqual(JSON.parse(text), ticks);
+  assert.doesNotMatch(text, /settings|dial|console|theme|stage|places/);
 });
 
-test('a code made before synced progress is still accepted, as v2 at time 0', () => {
+test('an older v2 code is accepted but its settings are ignored', () => {
+  assert.deepEqual(decode(code(state)), { ok: true, state: ticks });
+});
+
+test('a code made before synced progress is still accepted: ticks at time 0, settings ignored', () => {
   const r = decode(code(old));
   assert.equal(r.ok, true);
-  assert.deepEqual(r.state.settings.dial, { value: 'places', at: 0 });
-  assert.deepEqual(r.state.items, { 'first-thing': { done: true, at: 0 }, 'second-thing': { done: true, at: 0 } });
+  assert.deepEqual(r.state, { v: 3, items: { 'first-thing': { done: true, at: 0 }, 'second-thing': { done: true, at: 0 } } });
 });
 
 test('line breaks and spaces from pasting are ignored', () => {
@@ -49,7 +57,8 @@ test('a tampered code is rejected', () => {
 });
 
 test('the wrong shape is rejected, in both shapes', () => {
-  rejects(code({ ...state, v: 3 }));
+  rejects(code({ ...state, v: 3 })); // v3 carries no settings
+  rejects(code({ ...ticks, extra: 1 }));
   rejects(code({ ...state, extra: 1 }));
   rejects(code({ ...state, settings: { dial: { value: 'story', at } } }));
   rejects(code({ ...state, settings: { dial: { value: 'off', at: -1 } } }));
@@ -78,8 +87,8 @@ test('an oversize code or list is rejected, and the biggest valid state still fi
   rejects(code({ ...old, done: ['a'.repeat(LIMITS.id + 1)] }));
   const items = Object.fromEntries(Array.from({ length: LIMITS.done }, (_, i) => [`${'x'.repeat(LIMITS.id - 6)}-${String(i).padStart(4, '0')}`, { done: false, at: 4e12 }]));
   const biggest = { ...state, items };
-  assert.ok(code(biggest).length <= LIMITS.code);
-  assert.equal(decode(code(biggest)).ok, true);
+  assert.ok(encode(biggest).length <= LIMITS.code);
+  assert.equal(decode(encode(biggest)).ok, true);
 });
 
 test('the stage list matches src/data/stages.ts', () => {

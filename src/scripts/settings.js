@@ -1,13 +1,14 @@
 // The one place that touches localStorage key `lfg:v1`. Other modules import read() and write().
-// The stored value is the v2 state from src/lib/merge.js, a timestamp on every setting and tick so devices can
-// sync. An old-shape value ({ console, dial, theme, stage, done }) is still read, and becomes v2 on first load.
+// The stored value is the v2 state from src/lib/merge.js (settings and ticks, each with a timestamp). An old-shape
+// value ({ console, dial, theme, stage, done }) is still read, and becomes v2 on first load.
 // read() and write() keep their flat shape: { console, dial, theme, stage, done: string[] }.
-import { ENUMS, load, merge, parse, validId } from '../lib/merge.js';
+// Settings live on this device only. Only ticks are ever synced or exported, and absorb() takes only ticks.
+import { ENUMS, load, merge, parse, ticksOf, validId } from '../lib/merge.js';
 
 const KEY = 'lfg:v1';
 const defaults = { console: 'ps5', dial: 'off', theme: 'system', stage: 'before' };
 
-// The saved v2 state (timestamps included). sync.js sends this.
+// The saved v2 state (timestamps included). Callers that send or export it go through ticksOf() first.
 export function state() {
   try {
     return load(JSON.parse(localStorage.getItem(KEY)));
@@ -51,20 +52,26 @@ export function write(patch) {
   for (const k of Object.keys(ENUMS)) {
     if (k in patch && patch[k] !== was[k] && ENUMS[k].includes(patch[k])) s.settings[k] = { value: patch[k], at: stamp(s.settings[k]) };
   }
+  let ticked = false;
   if (Array.isArray(patch.done)) {
     const next = new Set(patch.done.filter(validId));
-    for (const id of next) if (!was.done.includes(id)) s.items[id] = { done: true, at: stamp(s.items[id]) };
-    for (const id of was.done) if (!next.has(id)) s.items[id] = { done: false, at: stamp(s.items[id]) };
+    const flip = (id, done) => {
+      s.items[id] = { done, at: stamp(s.items[id]) };
+      ticked = true;
+    };
+    for (const id of next) if (!was.done.includes(id)) flip(id, true);
+    for (const id of was.done) if (!next.has(id)) flip(id, false);
   }
   const out = save(s);
-  dispatchEvent(new Event('lfg:write')); // sync.js pushes on this; absorb() below does not fire it
+  if (ticked) dispatchEvent(new Event('lfg:write')); // sync.js pushes on this; a setting change is not a tick and never syncs
   return out;
 }
 
-// Merge a v2 state from elsewhere (the server, an import code) into this device and apply it.
+// Merge the ticks of a state from elsewhere (the server, an import code) into this device and apply them.
+// Whatever settings it carries (an old v2 answer or code) are dropped: a setting never arrives from outside.
 export function absorb(remote) {
-  const next = parse(remote);
-  return next && save(merge(state(), next));
+  const next = ticksOf(remote);
+  return next && save(merge(state(), { v: 2, settings: {}, items: next.items }));
 }
 
 addEventListener('change', (e) => {

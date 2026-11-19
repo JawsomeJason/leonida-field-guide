@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { merge, parse, fromV1, load, empty, LIMITS } from '../../src/lib/merge.js';
+import { merge, parse, fromV1, load, empty, LIMITS, emptyTicks, mergeTicks, parseTicks, ticksOf } from '../../src/lib/merge.js';
 
 const item = (done, at) => ({ done, at });
 const set = (value, at) => ({ value, at });
@@ -104,4 +104,33 @@ test('load reads either shape', () => {
   const v2 = st({ dial: set('off', 3) }, { a: item(true, 3) });
   assert.deepEqual(load(v2), v2);
   assert.deepEqual(load({ dial: 'places', done: ['a'] }).settings.dial, set('places', 0));
+});
+
+// The wire shape: ticks only. A setting cannot be sent, stored or read back.
+const ticks = (items = {}) => ({ v: 3, items });
+
+test('parseTicks accepts only { v: 3, items }: a settings key, an unknown field and the v2 shape are all refused', () => {
+  const good = ticks({ a: item(true, 1) });
+  assert.deepEqual(parseTicks(good), good);
+  const bad = [
+    null, [], 'x', { ...good, settings: {} }, { ...good, settings: { dial: set('mild', 1) } }, { ...good, extra: 1 },
+    st({ dial: set('mild', 1) }, { a: item(true, 1) }), st(), { v: 3 }, { v: 4, items: {} },
+    ticks({ 'Not A Slug': item(true, 1) }), ticks({ a: { done: true, at: 1, extra: 1 } }), ticks({ a: item(true, -1) }),
+    ticks(Object.fromEntries(Array.from({ length: LIMITS.items + 1 }, (_, i) => [`i-${i}`, item(true, 1)]))),
+  ];
+  for (const x of bad) assert.equal(parseTicks(x), null, JSON.stringify(x).slice(0, 80));
+});
+
+test('mergeTicks: newest wins per tick, a tie keeps the tick, and it never carries a setting', () => {
+  const r = mergeTicks(ticks({ a: item(true, 5), b: item(true, 1) }), ticks({ a: item(false, 5), b: item(false, 2), c: item(true, 1) }));
+  assert.deepEqual(r, ticks({ a: item(true, 5), b: item(false, 2), c: item(true, 1) }));
+  assert.deepEqual(mergeTicks(), emptyTicks());
+  assert.deepEqual(Object.keys(r), ['v', 'items']);
+});
+
+test('ticksOf keeps the ticks of a v3 or v2 state and drops the settings; junk is null', () => {
+  const v2 = st({ dial: set('mild', 99) }, { a: item(true, 1) });
+  assert.deepEqual(ticksOf(v2), ticks({ a: item(true, 1) }));
+  assert.deepEqual(ticksOf(ticks({ a: item(true, 1) })), ticks({ a: item(true, 1) }));
+  for (const x of [null, 'x', {}, { v: 2 }, { v: 1, items: {} }]) assert.equal(ticksOf(x), null);
 });
