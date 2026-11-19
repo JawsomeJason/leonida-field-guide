@@ -1,6 +1,6 @@
 // Checklist ticks, progress, and the export/import panel. Reads and writes only through settings.js;
 // the code format lives in state-code.js.
-import { read, write } from './settings.js';
+import { absorb, read, state, write } from './settings.js';
 import { encode, decode } from './state-code.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -36,6 +36,7 @@ addEventListener('change', (e) => {
   fillExport();
 });
 addEventListener('storage', () => { paint(); fillExport(); }); // another tab changed it
+addEventListener('lfg:change', () => { paint(); fillExport(); }); // the sync brought in a change from another device
 
 // Export and import
 const out = $('#export-code');
@@ -45,7 +46,7 @@ const say = (note, text, error = false) => {
   note.toggleAttribute('data-error', error);
 };
 function fillExport() {
-  if (out) out.value = encode(read());
+  if (out) out.value = encode(state());
 }
 
 $('#backup')?.addEventListener('toggle', fillExport);
@@ -63,9 +64,8 @@ $('#import-go')?.addEventListener('click', () => {
   const note = $('#import-note');
   const result = decode(input.value);
   if (!result.ok) return say(note, result.error, true);
-  write(result.state);
-  paint();
-  fillExport();
+  absorb(result.state); // merged in: a newer tick or setting on this device is kept
+  dispatchEvent(new Event('lfg:write')); // so the sync copies it on (lfg:change has already repainted)
   input.value = '';
   say(note, 'Progress restored on this device.');
 });

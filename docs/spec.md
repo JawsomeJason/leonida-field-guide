@@ -8,7 +8,7 @@ This spec is the contract. Where it is silent, pick the smallest thing that work
 
 - No story content, at any setting. No mission names, plot, character fates or endings, anywhere in the repo.
 - No interactive map. Link to one (see "Links out").
-- No accounts, no ads, no analytics, no trackers, no cookies.
+- No accounts, no ads, no analytics, no trackers. The one cookie is the gate token (see "Access gate"). Synced progress is a single shared record behind the password gate, not an account: no sign-up, no user ids, no per-person data.
 - No Rockstar logos, artwork, screenshots, fonts or trade dress. The footer says the site is unofficial.
 - No copied guide text. Restate each fact in our own words and link the source.
 - No web fonts and no UI framework. No runtime dependency ships to the browser.
@@ -123,7 +123,36 @@ Two themes from one set of named tokens. The app follows the device setting, and
 
 ## Saved on the device
 
-One `localStorage` key, `lfg:v1`: `{ console, dial, theme, stage, done: string[] }`. The checklist export code is that object, base64url-encoded. Import validates before it writes. Nothing leaves the device.
+One `localStorage` key, `lfg:v1`, holding the v2 state:
+
+```ts
+type State = {
+  v: 2;
+  settings: { [K in 'console' | 'dial' | 'theme' | 'stage']?: { value: string; at: number } };
+  items: { [id: string]: { done: boolean; at: number } };   // id = an answer id; done:false is an untick
+};
+```
+
+`at` is a millisecond timestamp, set when that setting or tick last changed on any device. Saving is local first and works offline. The state is read and written only through `src/scripts/settings.js`, which still hands the rest of the code the flat shape `{ console, dial, theme, stage, done: string[] }`.
+
+- **Old shape.** Before synced progress the value was `{ console, dial, theme, stage, done: string[] }`. It is still read. On first load it is stored as v2 with every old value at time 0 (older than any change made since), so nothing is dropped and an old value never beats a newer one from another device. An old tab that writes the old shape afterwards is read the same way.
+- **Export code.** The v2 state, JSON, base64url. Import validates before it writes, accepts a v2 code or an old-shape code, and merges it into this device (see "Synced progress"). It does not replace what is already here.
+- **What leaves the device.** Only this state, sent to the owner's own private blob behind the password gate (see "Synced progress"). Nothing else: no analytics, no third party.
+
+## Synced progress
+
+Ticks and settings follow the owner across phone, tablet and desktop. Local first: the page works, and every change is saved, with no network at all.
+
+- **One function, one blob.** `api/progress.ts` is a Vercel Function (default export `{ fetch }`, Node.js runtime). It keeps one private Vercel Blob at `progress/state.json`, in the store `leonida-progress`, using `@vercel/blob` on the server only. The store's token is the Vercel env var `BLOB_READ_WRITE_TOKEN` (production, preview and development); it never appears in the repo, a commit, a log or a test. Nothing is added to the browser bundle.
+- **Behind the gate.** The route is `/api/progress`. The access-gate middleware matches every request, so it needs the gate cookie like any page. The function adds no auth, cookie, user id, database or sync library.
+- **GET** returns the saved state, or the empty state if there is none. **PUT** takes a state, merges it into the saved one, stores the result only if it changed, and returns it. Any other method is 405.
+- **Checked at the boundary.** The body must be JSON (`content-type: application/json`), at most 64 KB, exactly the v2 shape: only the four setting keys with their known values, ids that are slugs of at most 64 characters, at most 300 items, whole-number times. Anything else is 400 (413 when too large). The error body never carries storage detail.
+- **Merge** (`src/lib/merge.js`, plain JS, shared by the browser and the function). Per setting and per item the newer `at` wins. A tie keeps a tick over an untick, and the larger value string for a setting. It is idempotent, commutative and associative, so devices can sync in any order and two devices that tick different things offline both keep their ticks.
+- **No lock.** Read, merge, write. Two PUTs at the same moment can lose one update, and the next sync of the loser puts it back, because merge is idempotent and commutative.
+- **Client** (`src/scripts/sync.js`). On page load, and about 400 ms after a change, it PUTs the state and merges the answer into the device. A change made on this device always gets a time later than what it replaced, even on a slow clock. On failure it retries quietly (the `online` event, the next change, then backoff up to five tries) and never blocks the page or shows a dialog. A missing or failing endpoint (JavaScript off, offline, 401, 5xx) leaves the page fully working on local data.
+- **Offline cache.** `/api/` is network-only in `public/sw.js`; progress is never served from the cache.
+- **Status line.** The Checklist shows one line in a `role="status"` region: "Synced at <time>" after the last attempt succeeded, otherwise "Saved on this device only". It never says synced when the last attempt failed, and it says the second until the first attempt finishes.
+- **Known limits.** Last write wins per item, by clock: a device whose clock is far ahead will win ties it should not. A change of the dial that arrives from another device updates the page's own settings, but a search already open keeps its loaded results until the next search.
 
 ## Access gate
 
@@ -136,6 +165,7 @@ While the site is private, a Vercel Routing Middleware (`middleware.ts` at the r
 - **Offline.** The gate runs only on the network. Pages a signed-in device already cached stay readable offline, and the service worker is unchanged.
 - **Rotate.** Change `SITE_PASSWORD` and redeploy; every old cookie stops working.
 - **Tests.** `npm run test:unit` runs `node:test` over `tests/**` with invented passwords and no network. Run against the live site only by the build orchestrator.
+- **Progress sync.** `/api/progress` is a Vercel Function behind this gate (see "Synced progress"). Its Blob token is a separate env var and is never read by the gate.
 
 ## Needs JavaScript
 
