@@ -1,0 +1,25 @@
+id: boxed-copy-redeem
+question: "Does a boxed copy still need the full download?"
+short: "Yes. A boxed copy holds a download code and no disc, so you still download the whole game. Redeem the code on the PlayStation Store or Xbox Store, then download."
+body: |-
+  - Rockstar: "A disc will not be included in the box." The code works for pre-loading as soon as you have it.
+  - Redeeming, as Output Lag summarises Sony's and Microsoft's pages:
+    - PS5 console: PlayStation Store, press the triangle button, More, Redeem Code. Online: your profile, Redeem Code.
+    - Xbox console: Xbox button, Store, View button, Redeem. Online: xbox.com/redeem.
+  - A code redeems to one account and cannot be moved. Use the account you will play on.
+  - For Series S drive space, see the storage card.
+topic: setup
+stage: before
+tier: none
+consoles: all
+confidence: official
+sources:
+  - url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
+  - url: "https://support.rockstargames.com/articles/5gwDh0peG05GQhMej2ukbY/game-activation-for-grand-theft-auto-vi"
+    title: "Game Activation for Grand Theft Auto VI (Rockstar Support)"
+  - url: "https://outputlag.com/guides/gta-6-not-working-day-one-problems-fixes/"
+    title: "GTA 6 Not Working? Day One Problems and Official Fixes on PS5 and Xbox (Output Lag)"
+checked: "2026-11-19"
+rank: 18
+todo: "Redeem your boxed-copy code"

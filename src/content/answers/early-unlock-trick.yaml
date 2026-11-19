@@ -1,0 +1,19 @@
+id: early-unlock-trick
+question: "Is it safe to change my console's region to play early?"
+short: "Not recommended. Region switching breaks Microsoft's terms, Xbox reportedly warned against it, and Rockstar is said to be watching. Bans are reported to be rare, but streamers risk more."
+body: |-
+  - Notebookcheck says Xbox players can change region in settings. On PS5 it takes a New Zealand PlayStation account and a local gift card.
+  - Microsoft's terms warn against circumventing restrictions. Windows Central is cited saying Rockstar is watching for early play.
+  - A Twitch partner manager reportedly advised a streamer against showing early-unlock play.
+  - This is not Rockstar's position. Rockstar's page says midnight local time everywhere.
+topic: good-to-know
+stage: before
+tier: none
+consoles: all
+confidence: reported
+sources:
+  - url: "https://www.notebookcheck.net/Xbox-reportedly-warns-against-GTA-6-New-Zealand-trick-for-early-release-date-unlock.1452831.0.html"
+    title: "Xbox reportedly warns against GTA 6 New Zealand trick for early release date unlock (Notebookcheck)"
+  - url: "https://support.rockstargames.com/articles/29jV3Cv2cCgvwM1XgtMO5o/grand-theft-auto-vi-regional-pre-load-and-release-times-on-playstation-5-and-xbox-series-x-or-s"
+    title: "Grand Theft Auto VI regional pre-load and release times (Rockstar Support)"
+checked: "2026-11-19"

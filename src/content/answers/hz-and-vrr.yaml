@@ -1,0 +1,18 @@
+id: hz-and-vrr
+question: "Do 120 Hz or VRR help?"
+short: "Not for frame rate. The game targets 30 fps. KeenGamer says 120 Hz output has no effect; Digital Foundry says Xbox's 120 Hz VRR container can feel slightly smoother, and PlayStation has no 120 Hz option."
+body: |-
+  - Where sources differ: KeenGamer says leave 120 Hz on for other games but expect nothing here. Digital Foundry says Xbox runs the game inside a 120 Hz VRR container as an OS feature.
+  - Digital Foundry adds that PlayStation system VRR only works above 48 fps, so it does little at 30.
+  - Either way, there is no 40 or 60 fps mode to unlock.
+topic: settings
+stage: hour-1
+tier: none
+consoles: all
+confidence: reported
+sources:
+  - url: "https://www.keengamer.com/articles/guides/best-gta-6-settings-to-change-first-motion-blur-aim-and-ps5-pro/"
+    title: "Best GTA 6 Settings to Change First: Motion Blur, Aim, and PS5 Pro (KeenGamer)"
+  - url: "https://www.digitalfoundry.net/features/gta-6-ps5-vs-ps5-pro-xbox-series-x-and-series-s-which-console-plays-best"
+    title: "GTA 6: PS5 vs PS5 Pro, Xbox Series X and Series S: Which Console Plays Best? (Digital Foundry)"
+checked: "2026-11-19"

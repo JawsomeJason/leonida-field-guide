@@ -1,0 +1,73 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+
+// Loads the real function file the way the platform does (a bad relative import fails here, not only on Vercel),
+// then swaps its storage for memory. No network, no token.
+const { default: fn } = await import('../../api/progress.ts');
+let saved = null;
+let writes = 0;
+fn.store.read = async () => saved;
+fn.store.write = async (s) => { saved = JSON.parse(JSON.stringify(s)); writes++; };
+
+const url = 'https://example.test/api/progress';
+const put = (body, headers = {}) =>
+  fn.fetch(new Request(url, { method: 'PUT', headers: { 'content-type': 'application/json', ...headers }, body: typeof body === 'string' ? body : JSON.stringify(body) }));
+const state = (settings = {}, items = {}) => ({ v: 2, settings, items });
+const empty = state();
+
+test('the function file loads and exports a fetch handler', () => {
+  assert.equal(typeof fn.fetch, 'function');
+});
+
+test('GET on nothing saved returns the empty state', async () => {
+  const res = await fn.fetch(new Request(url));
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get('cache-control'), 'no-store');
+  assert.deepEqual(await res.json(), empty);
+});
+
+test('PUT merges into what is saved and returns the merge', async () => {
+  const a = state({ dial: { value: 'mild', at: 10 } }, { 'first-thing': { done: true, at: 5 } });
+  const b = state({ dial: { value: 'off', at: 4 } }, { 'second-thing': { done: true, at: 6 } });
+  assert.equal((await put(a)).status, 200);
+  const res = await put(b);
+  const merged = await res.json();
+  assert.deepEqual(merged.settings.dial, { value: 'mild', at: 10 });
+  assert.deepEqual(Object.keys(merged.items), ['first-thing', 'second-thing']);
+  assert.deepEqual(await (await fn.fetch(new Request(url))).json(), merged);
+});
+
+test('a PUT that changes nothing does not write', async () => {
+  const before = writes;
+  await put(empty);
+  assert.equal(writes, before);
+});
+
+test('bad bodies are refused before anything is stored', async () => {
+  const before = writes;
+  assert.equal((await put('not json')).status, 400);
+  assert.equal((await put({ v: 1, settings: {}, items: {} })).status, 400);
+  assert.equal((await put(state({ dial: { value: 'story', at: 1 } }))).status, 400);
+  assert.equal((await put(state({}, { 'Bad Id': { done: true, at: 1 } }))).status, 400);
+  assert.equal((await put(empty, { 'content-type': 'text/plain' })).status, 400);
+  assert.equal((await put('x'.repeat(64 * 1024 + 1))).status, 413);
+  assert.equal((await put(empty, { 'content-length': '70000' })).status, 413);
+  assert.equal(writes, before);
+});
+
+test('other methods are 405', async () => {
+  for (const method of ['POST', 'DELETE', 'PATCH']) {
+    const res = await fn.fetch(new Request(url, { method }));
+    assert.equal(res.status, 405, method);
+    assert.equal(res.headers.get('allow'), 'GET, PUT');
+  }
+});
+
+test('a damaged saved blob reads as empty, and a storage failure is a plain 500', async () => {
+  saved = { nonsense: true };
+  assert.deepEqual(await (await fn.fetch(new Request(url))).json(), empty);
+  fn.store.read = async () => { throw new Error('secret detail'); };
+  const res = await fn.fetch(new Request(url));
+  assert.equal(res.status, 500);
+  assert.doesNotMatch(await res.text(), /secret/);
+});

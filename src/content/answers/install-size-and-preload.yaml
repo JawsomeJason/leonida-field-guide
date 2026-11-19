@@ -1,0 +1,24 @@
+id: install-size-and-preload
+question: "How big is it, and do I have space?"
+short: "Up to 212 GB free, depending on your console. Pre-load opened 10 November: PS5 at midnight local time, Xbox at 12 a.m. GMT worldwide."
+body: |-
+  - Rockstar's wording is "up to 212 GB of available space depending on your device". It gives no per-console figures.
+  - Boxed copies hold a download code. Rockstar says the code works for pre-loading as soon as you have it, and boxed copies were due at retailers from 12 November.
+  - Short of room? See the storage card for where the game can live.
+topic: setup
+stage: before
+tier: none
+consoles: all
+confidence: official
+sources:
+  - url: "https://support.rockstargames.com/articles/7nPqOA2uCbpEQHXx7KVrYd/grand-theft-auto-vi-pre-load-faq"
+    title: "Grand Theft Auto VI Pre-Load FAQ (Rockstar Support)"
+  - url: "https://support.rockstargames.com/articles/M6h7B5fJZMwG1dnzQkt4Z/grand-theft-auto-vi-installation-requirements"
+    title: "Grand Theft Auto VI installation requirements (Rockstar Support)"
+  - url: "https://www.rockstargames.com/newswire/article/k4ak9okk485712/grand-theft-auto-vi-pre-load-begins-on-november-10"
+    title: "Grand Theft Auto VI Pre-Load Begins on November 10 (Rockstar Newswire)"
+  - url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
+checked: "2026-11-19"
+rank: 2
+todo: "Free up 212 GB and finish the pre-load"

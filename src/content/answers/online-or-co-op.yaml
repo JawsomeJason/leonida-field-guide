@@ -1,0 +1,23 @@
+id: online-or-co-op
+question: "Is there online or co-op at launch?"
+short: "Two guides say the console store listings describe it as single-player, and Rockstar's launch pages list no online or co-op mode."
+body: |-
+  - Output Lag quotes the console store listings as calling it "a single-player experience". Cultured Vultures says the Xbox listing identifies it as a single-player game.
+  - Rockstar's service status page, checked on launch day, lists its online services but has no separate row for this game.
+  - If Rockstar announces an online mode, this card will change.
+topic: good-to-know
+stage: hour-1
+tier: none
+consoles: all
+confidence: reported
+sources:
+  - url: "https://outputlag.com/guides/gta-6-not-working-day-one-problems-fixes/"
+    title: "GTA 6 Not Working? Day One Problems and Official Fixes on PS5 and Xbox (Output Lag)"
+  - url: "https://culturedvultures.com/does-gta-6-have-cloud-saves-and-cross-progression/"
+    title: "Does GTA 6 Have Cloud Saves and Cross-Progression? (Cultured Vultures)"
+  - url: "https://www.rockstargames.com/VI"
+    title: "Grand Theft Auto VI (Rockstar Games)"
+  - url: "https://support.rockstargames.com/servicestatus"
+    title: "Service Status (Rockstar Support)"
+checked: "2026-11-19"
+rank: 4

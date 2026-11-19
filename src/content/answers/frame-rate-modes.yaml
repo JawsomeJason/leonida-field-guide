@@ -1,0 +1,19 @@
+id: frame-rate-modes
+question: "Is there a 60 fps or performance mode?"
+short: "No. Every console targets 30 fps, with no 40 or 60 fps mode, not even on PS5 Pro. The menu has no resolution or frame-rate option."
+body: |-
+  - TechPowerUp says Rockstar confirmed the 30 fps target. We have not seen that on a Rockstar page.
+  - Digital Foundry's testing: PS5 Pro holds 30 fps nearly all the time, with brief drops to about 24 in heavy scenes. Base PS5 and Series X drift between 30 and the high 20s. Series S often sits in the mid to high 20s.
+  - Turning on a 120 Hz output does not unlock more frames. See the 120 Hz and VRR card.
+topic: settings
+stage: hour-1
+tier: none
+consoles: all
+confidence: reported
+sources:
+  - url: "https://www.techpowerup.com/355004/gta-6-reportedly-plays-best-on-ps5-pro-xbox-series-s-struggles"
+    title: "GTA 6 Reportedly Plays Best on PS5 Pro, Xbox Series S Struggles (TechPowerUp)"
+  - url: "https://www.digitalfoundry.net/features/gta-6-ps5-vs-ps5-pro-xbox-series-x-and-series-s-which-console-plays-best"
+    title: "GTA 6: PS5 vs PS5 Pro, Xbox Series X and Series S: Which Console Plays Best? (Digital Foundry)"
+checked: "2026-11-19"
+rank: 8

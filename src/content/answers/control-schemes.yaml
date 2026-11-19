@@ -1,0 +1,22 @@
+id: control-schemes
+question: "Which control scheme should I use?"
+short: "One guide lists three layouts: Default, Classic and Left-Handed. In Default, run is on L3, aim on L2 and shoot on R2. Hold D-pad Up for the phone."
+body: |-
+  - In a car with Default: the right trigger accelerates and the left trigger brakes and reverses.
+  - Classic and Left-Handed move buttons around. We do not list them because the research behind this site found guides disagreeing on Classic.
+  - The source's Xbox section reuses PlayStation face-button names, so we only give the Xbox trigger, bumper and stick mappings.
+  - Rockstar has not published a control chart that we found. The in-game menu is the final word.
+topic: controls
+stage: hour-1
+tier: none
+consoles: all
+byConsole:
+  ps5: "One guide lists three layouts: Default, Classic and Left-Handed. In Default: run on L3, aim L2, shoot R2, cover R1, jump ✕, melee □. Hold L1 for holster and loadout, hold D-pad Up for the phone."
+  xbox-x: "One guide lists three layouts: Default, Classic and Left-Handed. In Default: run on L3 (click the left stick), aim LT, shoot RT, cover RB. Hold LB for holster and loadout, hold D-pad Up for the phone."
+  xbox-s: "One guide lists three layouts: Default, Classic and Left-Handed. In Default: run on L3 (click the left stick), aim LT, shoot RT, cover RB. Hold LB for holster and loadout, hold D-pad Up for the phone."
+confidence: reported
+sources:
+  - url: "https://insider-gaming.com/gta-6-control-settings/"
+    title: "All GTA 6 Controller Settings on PlayStation and Xbox: Full Control Scheme (Insider Gaming)"
+checked: "2026-11-19"
+rank: 14

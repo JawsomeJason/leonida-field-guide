@@ -1,0 +1,18 @@
+id: standard-vs-ultimate
+question: "Standard vs Ultimate: what do I get, and can I upgrade?"
+short: "Standard is the game. Ultimate adds bonus content on top. Standard owners can buy the Ultimate Edition Upgrade at any time from the PlayStation or Microsoft store, once their Standard code is redeemed."
+body: |-
+  - There is no boxed Ultimate Edition. A boxed Standard copy can still be upgraded in the store after you redeem its code.
+  - Rockstar's page lists the Ultimate contents. We do not repeat the list here.
+  - Rockstar's page gives no prices. Check your store.
+  - The separate Vintage Vice City Pack and the free GTA+ month depend on when and how you bought. See those cards.
+topic: bonuses
+stage: before
+tier: none
+consoles: all
+confidence: official
+sources:
+  - url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
+checked: "2026-11-19"
+rank: 9

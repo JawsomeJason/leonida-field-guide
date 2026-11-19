@@ -23,6 +23,8 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
     </div>
   )}
 
+  <p class="sync needs-js" role="status" data-sync>Saved on this device only</p>
+
   {groups.map((g) => (
     <section class="stage" data-stage aria-labelledby={g.id}>
       <h2 id={g.id}>{g.label}</h2>
@@ -73,6 +75,8 @@ const noun = (n: number) => `${n} to-do${n === 1 ? '' : 's'}`;
 
 <style>
   .quiet { color: var(--muted); margin-block: 0 var(--space-2); }
+  /* One quiet line. Same height whichever text it holds, so the page below never moves. */
+  .sync { min-block-size: 1.5em; margin-block: var(--space-2) 0; color: var(--muted); font: var(--text-small) / 1.5 var(--font-mono); }
   .stage { margin-block-start: var(--space-5); }
   .stage h2 { margin-block: 0 var(--space-1); }
 

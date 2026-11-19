@@ -1,0 +1,19 @@
+id: ps5-system-update
+question: "Do I need a PS5 system update to play?"
+short: "Reportedly yes. PlayStation Support said a PS5 system software update is required before playing, and to install it before midnight on 19 November. We could not confirm the version."
+body: |-
+  - Kotaku quotes a PlayStation Support post from 17 November. We did not open the post.
+  - Update from Settings, System, System Software, System Software Update and Settings.
+  - Neither Kotaku nor we know what the update changes.
+topic: setup
+stage: before
+tier: none
+consoles: [ps5]
+confidence: reported
+sources:
+  - url: "https://kotaku.com/ps5-gets-last-minute-software-update-thats-required-to-play-gta-6-2000757868"
+    title: "PS5 Gets Last-Minute Software Update That's Required To Play GTA 6 (Kotaku)"
+  - url: "https://outputlag.com/guides/gta-6-not-working-day-one-problems-fixes/"
+    title: "GTA 6 Not Working? Day One Problems and Official Fixes on PS5 and Xbox (Output Lag)"
+checked: "2026-11-19"
+todo: "Install the PS5 system software update"

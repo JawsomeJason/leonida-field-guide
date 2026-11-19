@@ -1,0 +1,21 @@
+id: error-codes-and-ownership
+question: "What do I do about sign-in, storage or ownership error codes?"
+short: "Rockstar sends you to PlayStation's PS5 error-code lookup or Xbox's error-code search. For purchases and downloads, it points to the console makers' support pages."
+body: |-
+  - Rockstar's error page (updated 18 November) lists no codes of its own.
+  - Our Xbox "you don't own it" card covers the most common ownership message.
+  - For stuck downloads, see the PS5 and Xbox download cards.
+topic: fixes
+stage: hour-1
+tier: none
+consoles: all
+confidence: official
+sources:
+  - url: "https://support.rockstargames.com/articles/28kSeQ3zMV0PtXdGOoD8Jo/grand-theft-auto-vi-error-troubleshooting"
+    title: "Grand Theft Auto VI Error Troubleshooting (Rockstar Support)"
+  - url: "https://support.rockstargames.com/articles/3t8W3cKfObijZuwZuqT2eM/issues-installing-grand-theft-auto-vi"
+    title: "Issues installing Grand Theft Auto VI (Rockstar Support)"
+  - url: "https://support.rockstargames.com/articles/40DHWEDBnq5jUuWJqKcH02/grand-theft-auto-vi-pre-order-purchase-support-faq"
+    title: "Grand Theft Auto VI Pre-Order Purchase Support FAQ (Rockstar Support)"
+checked: "2026-11-19"
+rank: 17
