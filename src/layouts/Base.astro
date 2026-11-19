@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import ConsoleName from '../components/ConsoleName.astro';
-import { consoleIds } from '../data/consoles.js';
+import { consoleIds, consoles } from '../data/consoles.js';
 
 interface Props {
   title?: string;
@@ -62,19 +62,23 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
   <body>
     <header class="site-header">
       <div class="site-header__row">
-        {/* A short mark on a phone (the app icon), the name beside it from 600px. Both chips open the settings sheet (a native popover). */}
+        {/* The sun mark (CSS, the Ask screen's sun in small) on every screen; the name beside it from 600px. Both chips open the settings sheet (a native popover). */}
         <a class="site-name" href="/">
-          <img src="/favicon.svg" width="32" height="32" alt="" />
+          <span class="sun-mark" aria-hidden="true"></span>
           <span class="site-name__text">{site}</span>
         </a>
-        <button class="chip chip--console needs-js" type="button" popovertarget="settings">
-          <span class="sr-only">Settings: </span>
-          {consoleIds.map((id) => <span data-c={id}><ConsoleName id={id} /></span>)}
-          <span data-c="">Choose console</span>
+        {/* The short name ("Series X") or "Choose". The full name ("Console: Xbox Series X, change") is the aria-label, kept current by settings.js; no visible
+            label word, because axe wants the visible text to sit whole inside the name and "Console" would split "Xbox Series X". */}
+        <button class="chip chip--console needs-js" type="button" popovertarget="settings" aria-label="Console: choose one, change">
+          <span class="chip__v">
+            {Object.entries(consoles).map(([id, c]) => <span data-c={id}>{c.short}</span>)}
+            <span data-c="">Choose</span>
+          </span>
         </button>
-        {/* Always says the spoiler level in words. Without script it still opens the sheet, where the dial is. */}
-        <button class="chip chip--dial" type="button" popovertarget="settings">
-          Spoilers: {dial.map(([value, label]) => <span data-d={value}>{label}</span>)}
+        {/* A small label over the level word, which is always there. The aria-label is "Spoilers: Off, change"; without script the chip still opens the sheet, where the dial is. */}
+        <button class="chip chip--dial" type="button" popovertarget="settings" aria-label="Spoilers: Off, change">
+          <span class="chip__k">Spoilers:</span>
+          <span class="chip__v">{dial.map(([value, label]) => <span data-d={value}>{label}</span>)}</span>
         </button>
       </div>
     </header>

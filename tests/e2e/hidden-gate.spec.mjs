@@ -142,6 +142,57 @@ test.describe('with script', () => {
     expect(await page.evaluate(() => document.documentElement.dataset.dial ?? 'off')).toBe('off'); // the dial does not change
   });
 
+  // Revealed detail (spec "The spoiler dial", Tap to show): a calm gold rule, a Hide control, and nothing left behind when the dial drops.
+  const inDom = (page, text) => page.evaluate((t) => document.documentElement.outerHTML.includes(t), text);
+  const showMild = (page) => page.getByRole('link', { name: '1 mild detail hidden. Show' });
+
+  test('a revealed detail has the gold rule the answer uses, not the coral one, and a 48px Hide button that puts it away', async ({ page }) => {
+    await page.goto('/a/sample-02/');
+    await press(showMild(page));
+    await expect(page.getByText('Wombat note one')).toBeVisible();
+    const rule = await page.locator('.reveal__out:not([hidden])').evaluate((el) => getComputedStyle(el).borderInlineStartColor);
+    const answerRule = await page.locator('.answer__a').evaluate((el) => getComputedStyle(el).borderInlineStartColor);
+    const coral = await page.evaluate(() => { const d = document.createElement('i'); d.style.color = 'var(--accent-2)'; document.body.append(d); const c = getComputedStyle(d).color; d.remove(); return c; });
+    expect(rule, 'the same gold as the answer block').toBe(answerRule);
+    expect(rule, 'not the error colour').not.toBe(coral);
+    const hide = page.getByRole('button', { name: /^Hide/ });
+    expect((await hide.boundingBox()).height).toBeGreaterThanOrEqual(48);
+    await press(hide);
+    await expect(page.getByText('Wombat note one')).toHaveCount(0);
+    expect(await inDom(page, 'Wombat note one'), 'the text is out of the page, not only out of sight').toBe(false);
+    await expect(showMild(page)).toBeVisible(); // the control is back, and works again
+    await press(showMild(page));
+    await expect(page.getByText('Wombat note one')).toBeVisible();
+  });
+
+  test('lowering the dial takes revealed text out of the page at once, without a reload, and raising it brings the text back', async ({ page }) => {
+    await page.goto('/a/sample-02/');
+    await setDial(page, 'Places');
+    await press(showMild(page)); // below its tier, so a tap still reveals one detail
+    await expect(page.getByText('Wombat note one')).toBeVisible();
+    await setDial(page, 'Off');
+    expect(await body(page), 'gone from what a player reads').not.toContain('Wombat note one');
+    expect(await inDom(page, 'Wombat note one'), 'gone from the DOM').toBe(false);
+    await expect(showMild(page)).toBeVisible();
+    await expect(page.getByRole('button', { name: /^Hide/ })).toHaveCount(0);
+    await setDial(page, 'Mild'); // the dial itself shows it again
+    await expect(page.getByText('Wombat note one')).toBeVisible();
+    await setDial(page, 'Off');
+    expect(await inDom(page, 'Wombat note one')).toBe(false);
+  });
+
+  test('lowering the dial also empties a topic list that script filled with hidden answers', async ({ page }) => {
+    await page.goto('/topics/settings/');
+    await setDial(page, 'Mild');
+    await expect(page.getByRole('heading', { name: 'What does the wombat switch do?' })).toBeVisible();
+    await setDial(page, 'Places');
+    expect(await inDom(page, 'What does the wombat switch do?'), 'mild answers leave at once when Mild goes').toBe(false);
+    await setDial(page, 'Mild');
+    await expect(page.getByRole('heading', { name: 'What does the wombat switch do?' })).toBeVisible();
+    await setDial(page, 'Off');
+    expect(await inDom(page, 'wombat switch'), 'and at Off').toBe(false);
+  });
+
   test('Show on a gate is a link to the explicit address and opens the page, whatever the dial', async ({ page }) => {
     for (const [gate, explicit, , secret] of pages) {
       await page.goto(gate);

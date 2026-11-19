@@ -23,9 +23,12 @@
     block-size: var(--sun);
     border-radius: var(--sun) var(--sun) 0 0;
     background: linear-gradient(to bottom, var(--accent) 0%, var(--accent-2) 100%);
-    /* The bands: gaps that get thicker towards the horizon. */
-    mask: linear-gradient(to bottom, #000 0 48%, transparent 48% 53%, #000 53% 66%, transparent 66% 73%, #000 73% 84%, transparent 84% 93%, #000 93%);
+    mask: var(--sun-bands);
     opacity: 0.9;
+  }
+  /* Large text on a phone: the container is few em wide (em here is the text size), so the sun gives the first screen back to Next up. */
+  @container (max-width: 17em) {
+    .sunset { --sun: 1.75rem; margin-block-start: 0; }
   }
   @container (min-width: 36rem) {
     .sunset { --sun: 4.5rem; }

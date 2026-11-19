@@ -153,3 +153,8 @@ export async function measure(page) {
   await page.setViewportSize({ width, height: was });
   return result;
 }
+
+/** The words a chip really shows: its label and the one visible value, without the screen-reader-only pieces ("Xbox ", ", change"). */
+export const shown = (chip) => chip.evaluate((el) => [...el.querySelectorAll('.chip__k, .chip__v > :not(.sr-only)')]
+  .filter((e) => getComputedStyle(e).display !== 'none')
+  .map((e) => [...e.childNodes].filter((n) => !n.classList?.contains('sr-only')).map((n) => n.textContent).join('')).join(' '));
