@@ -2,22 +2,9 @@
   {
     "date": "2026-11-19",
     "changed": [
-      "Fixed an answer that sounded too sure. \"Will I lose my progress, saves or cash?\" no longer says uninstalling loses nothing. It now says whether your saved data is backed up is not confirmed, and to check before you delete a game.",
-      "Where an answer warns that you could lose something, it now says in the same place what to do about it.",
-      "The Xbox answer on controls now says plainly that the A, B, X and Y buttons are not confirmed, instead of leaving them out without saying so.",
-      "Where an answer used to say \"see the other card\", it now links to it. The step \"Free up 212 GB\" now opens the answer on how big the game is, which links to how to make room for your console.",
-      "Plain words now come before the technical term, for example \"switch it fully off and on again (a power cycle)\".",
-      "Added plain answers on how big the game is, and how to check free space and make room, for PS5, Xbox Series X and Xbox Series S.",
-      "Added step-by-step help for a game that crashes, for PS5 and for Xbox, taken from PlayStation's and Xbox's own help pages.",
-      "If your boxed-copy code does not work, the answer now links Rockstar's activation help and its request form.",
-      "Where an answer leaned on a news report instead of an official page, it is now marked Reported, not Official.",
-      "Unlock time now uses Rockstar and the console makers only. The US time-zone times come from a news report, so they have their own Reported answer, and so does the report of boxed copies with no code inside.",
-      "The 512 GB Series S answer gives the usable space (from a news report) and the main install-size answer links to it. The frame-rate answer gives the measured dips and delay.",
-      "The two unlock-time answers now say where Rockstar and a news report disagree, and which one says what.",
-      "\"Before you start\" now follows the order each step depends on: redeem your code, update your console, free the space, turn on automatic downloads, check the game is ready.",
-      "The default spoiler setting now shows only the basics: setup, settings, controls, saving and fixes. How the game's systems work in play moved behind Mild.",
-      "Each answer now shows the links that match your console first.",
-      "Launch day has come, so steps that only made sense before launch were reworded."
+      "New answer: how big the game is and how to make room, for PS5, Xbox Series X and Xbox Series S.",
+      "New answer: step-by-step help when the game crashes, for PS5 and for Xbox.",
+      "Corrected: whether your saves are backed up is not confirmed, so check before you delete a game."
     ],
     "problems": []
   }
