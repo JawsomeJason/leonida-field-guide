@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { saved, targets, judge, press, records } from './helpers.mjs';
+import { saved, measure, press, records } from './helpers.mjs';
 import { FIXTURE_QUERIES } from '../search/queries.mjs';
 
 // The sync call never leaves this machine: the page is served locally and this answers it with an empty record.
@@ -34,7 +34,7 @@ test('nothing matches: three closest answers and a way to Topics, never a dead e
   await expect(links.last()).toHaveAttribute('href', '/topics/');
   await expect(links.first()).toHaveAttribute('href', /^\/a\//);
   if (test.info().project.use.hasTouch) {
-    const { problems } = judge(await targets(page));
+    const { problems } = await measure(page);
     expect(problems).toEqual([]);
   }
 });
@@ -45,10 +45,10 @@ test('where is something: places are hidden by design, with the gate and two out
   await expect(note).toBeVisible();
   await expect(note).toContainText('hidden by design');
   await expect(note.getByRole('link', { name: /Places/ })).toHaveAttribute('href', '/places/');
-  await expect(note.getByRole('link', { name: 'gtamap.io (outside site)' })).toHaveAttribute('href', 'https://gtamap.io');
-  await expect(note.getByRole('link', { name: 'FullSweep (outside site)' })).toHaveAttribute('href', 'https://fullsweepmap.com');
+  await expect(note.getByRole('link', { name: /gtamap\.io.*outside site/ })).toHaveAttribute('href', 'https://gtamap.io');
+  await expect(note.getByRole('link', { name: /FullSweep.*outside site/ })).toHaveAttribute('href', 'https://fullsweepmap.com');
   if (test.info().project.use.hasTouch) {
-    const { problems } = judge(await targets(page));
+    const { problems } = await measure(page);
     expect(problems).toEqual([]);
   }
   await page.getByRole('searchbox').fill('where can I put the game');

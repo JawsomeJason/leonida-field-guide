@@ -133,14 +133,15 @@ test('a server answer that carries settings changes nothing locally, and its tic
   const page = await ctx.newPage();
   await firstBox(page);
   await expect(status(page)).toContainText('Ticks synced');
-  expect(await html(page)).toMatchObject({ dial: 'off', console: 'ps5' });
+  expect(await html(page)).toMatchObject({ dial: 'off' });
   expect(await html(page)).not.toHaveProperty('theme');
+  expect(await html(page)).not.toHaveProperty('console'); // never chosen on this device, whatever the server holds
   const local = await page.evaluate(() => localStorage.getItem('lfg:v1'));
   expect(local ?? '').not.toMatch(/mild|xbox-s|night|week-1/);
   // The same with a v3 answer that has a settings key added.
   server.answer = { v: 3, settings: polluted().settings, items: {} };
   await page.reload();
-  expect(await html(page)).toMatchObject({ dial: 'off', console: 'ps5' });
+  expect(await html(page)).toMatchObject({ dial: 'off' });
   await ctx.close();
 });
 
@@ -153,7 +154,7 @@ test('a new device starts with the dial at Off, whatever the server holds', asyn
   await page.goto('/');
   await expect(page.getByRole('radio', { name: 'Off', exact: true })).toBeChecked();
   await expect.poll(() => server.puts.length).toBeGreaterThan(0); // the sync ran
-  expect(await html(page)).toMatchObject({ dial: 'off', console: 'ps5' });
+  expect(await html(page)).toMatchObject({ dial: 'off' });
   await expect(page.getByRole('radio', { name: 'Off', exact: true })).toBeChecked();
   await ctx.close();
 });

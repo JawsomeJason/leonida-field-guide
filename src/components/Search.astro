@@ -3,6 +3,7 @@ interface Props {
   answers: { id: string; question: string }[];
 }
 const { answers } = Astro.props;
+import OutsideLink from './OutsideLink.astro';
 ---
 
 <search class="ask-search">
@@ -25,8 +26,8 @@ const { answers } = Astro.props;
     <p>Places are hidden by design, so this guide does not say where things are. Turn them on, or use a map.</p>
     <ul class="tap-list">
       <li><a href="/places/">Places: turn them on</a></li>
-      <li><a href="https://gtamap.io">gtamap.io (outside site)</a></li>
-      <li><a href="https://fullsweepmap.com">FullSweep (outside site)</a></li>
+      <li><OutsideLink href="https://gtamap.io" title="gtamap.io" /></li>
+      <li><OutsideLink href="https://fullsweepmap.com" title="FullSweep" /></li>
     </ul>
   </div>
   <ul id="q-results" class="tap-list ask-rows" hidden></ul>
