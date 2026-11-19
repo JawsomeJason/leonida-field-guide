@@ -420,7 +420,7 @@ test('Checklist: "The code is text that holds your ticks only ... Copying it sen
   await expect(note).not.toContainText('stays on this device');
   await page.waitForTimeout(600);
   let sent = 0;
-  ctx.on('request', () => sent++);
+  ctx.on('request', (r) => { if (r.method() !== 'GET' || /\/api\/progress/.test(r.url())) sent++; }); // the worker may be filling its cache (GETs) at this moment; copying must send nothing and never touch the store
   await page.locator('#copy-code').click();
   await expect(page.locator('#export-note')).not.toBeEmpty();
   await page.waitForTimeout(800);
