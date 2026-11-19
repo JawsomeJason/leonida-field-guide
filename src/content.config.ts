@@ -40,7 +40,8 @@ const answers = defineCollection({
       // Words players use that the answer text does not (quicksave, instal). Search only; never shown on a page.
       keywords: z.array(z.string().min(1).max(40)).max(20).optional(),
       reveal: z
-        .array(z.strictObject({ tier: z.enum(['places', 'mild']), text: z.string().min(1) }))
+        // `label` is the control's own text, for a detail whose wording is fixed (the safe-keeping detail of a loss warning).
+        .array(z.strictObject({ tier: z.enum(['places', 'mild']), text: z.string().min(1), label: z.string().min(1).optional() }))
         .optional(),
     })
     .refine((a) => a.topic !== 'places' || a.tier === 'places', {
