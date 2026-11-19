@@ -179,7 +179,7 @@ test('every row that opens something ends in the chevron, and no row says 0 answ
 
 test('the cheat sheet of an all-hidden topic says which level holds its answers, until the dial reaches it', async ({ page }) => {
   await page.goto('/topics/getting-around/');
-  await expect(page.locator('.topic-hidden')).toHaveText('The answers on this topic are hidden until the spoiler setting is Mild.');
+  await expect(page.locator('.topic-hidden h2')).toHaveText('Hidden until the spoiler setting is Mild'); // the gate pattern: round7b.spec.mjs
   await expect(page.getByText('No answers here yet.')).toHaveCount(0);
   await saved(page, { dial: 'mild' });
   await page.goto('/topics/getting-around/');

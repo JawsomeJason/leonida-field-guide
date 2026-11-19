@@ -17,4 +17,4 @@
 }
 html.js a.gate__on { display: none; }
 .gate__on:active { background-color: color-mix(in srgb, var(--action) 75%, var(--text)); }
-html:is([data-dial='places'], [data-dial='mild']) .gate { display: none; }
+html:is([data-dial='places'], [data-dial='mild']) .gate:not(.topic-hidden) { display: none; } /* a locked topic's gate hides itself by its own level (topics/[topic].astro) */
