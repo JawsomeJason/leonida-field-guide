@@ -45,8 +45,12 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
     <script is:inline>
       document.documentElement.classList.add('js');
       try {
+        // Saved state is v2 ({ settings: { theme: { value, at } } }); an old tab may still have written { theme }.
         var s = JSON.parse(localStorage.getItem('lfg:v1')), h = document.documentElement;
-        for (var k of ['theme', 'console', 'dial']) if (s[k] && s[k] !== 'system') h.dataset[k] = s[k];
+        for (var k of ['theme', 'console', 'dial']) {
+          var v = s.settings ? s.settings[k] && s.settings[k].value : s[k];
+          if (v && v !== 'system') h.dataset[k] = v;
+        }
       } catch (e) {}
     </script>
   </head>
@@ -105,6 +109,7 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
 
     <script>
       import '../scripts/settings.js';
+      import '../scripts/sync.js';
       import '../scripts/offline.js';
     </script>
   </body>

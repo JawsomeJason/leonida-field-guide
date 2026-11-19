@@ -11,3 +11,5 @@ reports/
 # third-party skills installed for local agents; not ours to publish
 .claude/skills/
 skills-lock.json
+test-results/
+playwright-report/

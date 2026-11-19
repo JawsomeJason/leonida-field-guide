@@ -67,7 +67,9 @@ self.addEventListener('message', (e) => {
 // so a hidden page is never cached before its tier is on.
 self.addEventListener('fetch', (e) => {
   const req = e.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+  const { origin, pathname } = new URL(req.url);
+  // /api is network-only: synced progress must never come from the cache. Returning without respondWith leaves it to the browser.
+  if (req.method !== 'GET' || origin !== location.origin || pathname.startsWith('/api/')) return;
   const refresh = async (cache) => {
     try {
       const res = await fetch(req);

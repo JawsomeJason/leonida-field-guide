@@ -24,3 +24,4 @@ addEventListener('change', (e) => {
 });
 addEventListener('pageshow', sync); // also fires when the page comes back from the back-forward cache
 addEventListener('storage', sync);
+addEventListener('lfg:change', sync); // the sync brought in a change from another device
