@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.vercel/
+.DS_Store
+# research working files stay local
+research_notes/
+reports/
+.notes/
