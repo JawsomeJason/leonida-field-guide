@@ -100,6 +100,8 @@ a, button, summary, label, input { touch-action: manipulation; }
 }
 @media (hover: hover) {
   .tap-list a:hover, .nav a:hover, .chip:hover, .seg label:hover, .tile:hover, .todo-list .todo label:hover, .todo__tick:hover, .console-btn:hover, .other-consoles summary:hover, .card:has(.card__q a:hover) { background-color: var(--wash); }
+  /* A press beats the hover tint under a mouse (fix round 7: the pressed row went on showing the hover colour). */
+  .tap-list a:active, .nav a:active, .chip:active, .seg label:active, .tile:active, .console-btn:active, .other-consoles summary:active { background-color: var(--press); }
 }
 
 /* Tick box, shared by the Ask screen and the Checklist. */
@@ -284,6 +286,9 @@ html[data-dial='mild'] .chip [data-d='mild'] { display: inline; }
 .sheet::backdrop { background: rgb(0 0 0 / 0.5); overflow: hidden; overscroll-behavior: contain; } /* the scrim: a tap on it closes the sheet */
 /* A popover does not lock scroll by itself: while the sheet is open the page behind stays put (the gutter keeps the width, so nothing shifts). */
 html:has(.sheet:popover-open) { overflow: hidden; scrollbar-gutter: stable; }
+/* Done stays in reach: the content scrolls under it on a short screen (a 664px-tall phone), so it is never clipped. */
+.sheet__done { position: sticky; inset-block-end: 0; padding-block: var(--space-2); background: var(--surface); box-shadow: 0 -0.5rem 0.5rem -0.25rem var(--surface); }
+.sheet__done .btn { inline-size: 100%; }
 .sheet__in { display: grid; gap: var(--space-4); padding: var(--space-4) max(var(--space-4), var(--safe-right)) max(var(--space-4), var(--safe-bottom)) max(var(--space-4), var(--safe-left)); }
 .sheet h2 { margin: 0; }
 .sheet .setting { display: grid; gap: var(--space-2); }
@@ -325,12 +330,13 @@ html:has(.sheet:popover-open) { overflow: hidden; scrollbar-gutter: stable; }
 @media (forced-colors: active) { .levels input::before { background: CanvasText; } }
 @supports not selector(:popover-open) { .sheet { display: none; } }
 @media (prefers-reduced-motion: no-preference) {
-  /* It slides up and fades in, the scrim with it; moving only, so its targets stay 48px while it settles. */
-  .sheet { transition: translate 200ms var(--ease-out), opacity 160ms var(--ease-out), display 200ms allow-discrete, overlay 200ms allow-discrete; }
-  .sheet:not(:popover-open) { translate: 0 1.5rem; opacity: 0; }
-  .sheet::backdrop { transition: opacity 200ms var(--ease-out), display 200ms allow-discrete, overlay 200ms allow-discrete; }
+  /* It rises from the bottom edge: a translateY from its own full height to 0 (the origin is the bottom, so it reads as coming up out of the
+     screen, never down from the corner), and leaves the same way back. The drawer curve; the scrim fades with it. No opacity on the sheet itself. */
+  .sheet { transform-origin: bottom center; transition: translate 320ms cubic-bezier(0.32, 0.72, 0, 1), display 320ms allow-discrete, overlay 320ms allow-discrete; }
+  .sheet:not(:popover-open) { translate: 0 100%; }
+  .sheet::backdrop { transition: opacity 320ms var(--ease-out), display 320ms allow-discrete, overlay 320ms allow-discrete; }
   .sheet:not(:popover-open)::backdrop { opacity: 0; }
-  @starting-style { .sheet:popover-open { translate: 0 1.5rem; opacity: 0; } .sheet:popover-open::backdrop { opacity: 0; } }
+  @starting-style { .sheet:popover-open { translate: 0 100%; } .sheet:popover-open::backdrop { opacity: 0; } }
 }
 
 /* Offline: one calm line under the header, only while the device is offline (online.js). */
@@ -402,6 +408,26 @@ html:has(.sheet:popover-open) { overflow: hidden; scrollbar-gutter: stable; }
 
 /* Pressed feedback. Last, so it wins over the resting backgrounds above. */
 :is(a, button, summary, label):active { background-color: var(--press); }
+
+/* A to-do row (Checklist and the Ask stage list) is one target from edge to edge: the tick row, the 16px beside it and the arrow. The tint
+   (fix round 7) is a layer behind the whole row, so a thumb on the label and a thumb on the arrow both light the same row. Hover only
+   where there is a fine pointer; a touch screen has no hover to get stuck. */
+.tap-list > .todo { isolation: isolate; }
+.tap-list > .todo::before {
+  content: '';
+  position: absolute;
+  inset: 0 calc(var(--space-2) * -1);
+  z-index: -1;
+  border-radius: var(--radius);
+  pointer-events: none;
+  transition: background-color 140ms var(--ease-out);
+}
+.tap-list > .todo :is(.todo__tick, label, .todo__open):is(:hover, :active) { background-color: transparent; } /* the row's layer does the tinting, once */
+.tap-list > .todo:has(:is(.todo__tick, label, .todo__open):active)::before { background-color: var(--press); transition-duration: 0s; }
+@media (hover: hover) and (pointer: fine) {
+  .tap-list > .todo:has(:is(.todo__tick, label, .todo__open):hover)::before { background-color: var(--wash); }
+  .tap-list > .todo:has(:is(.todo__tick, label, .todo__open):active)::before { background-color: var(--press); }
+}
 
 .site-footer .footer-link {
   display: inline-flex;
