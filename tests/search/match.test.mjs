@@ -14,7 +14,10 @@ test('every query from the design owner finds its answer first (fixtures)', () =
 });
 test('every query from the design owner finds its answer first (real content)', () => {
   const real = index('src/content/answers');
-  for (const [query, id] of REAL_QUERIES) assert.equal(ids(real, query)[0], id, query);
+  for (const [query, id, owned = 'ps5'] of REAL_QUERIES) {
+    const shown = real.filter((r) => r.consoles === 'all' || r.consoles.includes(owned)); // the page hides other consoles' answers
+    assert.ok([id].flat().includes(ids(shown, query)[0]), `${query} (${owned}) found ${ids(shown, query)[0]}`);
+  }
 });
 
 test('empty, punctuation-only and filler-only queries match nothing', () => {
