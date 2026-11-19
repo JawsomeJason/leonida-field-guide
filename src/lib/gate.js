@@ -123,7 +123,7 @@ export const loginPage = (error) => `<!doctype html>
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #181320; --surface: #231c2a; --text: #f7efe6; --muted: #c5b6bd; --accent: #3ee6e0; --accent-2: #ff6f91;
+    --bg: #181320; --surface: #231c2a; --text: #f7efe6; --muted: #c5b6bd; --accent: #ff9f45; --accent-2: #ff6f61;
     --on-accent: var(--bg);
     color-scheme: dark;
   }

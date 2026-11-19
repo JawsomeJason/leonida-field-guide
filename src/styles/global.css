@@ -41,29 +41,43 @@ input, select, textarea { font-size: var(--text-input); }
 /* Touch rules shared by every screen: no double-tap delay, a pressed state, hover only where hover exists. */
 a, button, summary, label, input { touch-action: manipulation; }
 
-/* A list of whole-row targets. Use it for any list of links. */
-.tap-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--gap-tap); }
+/* A list of whole-row targets. Use it for any list of links. Plain by default (tertiary): no card, no shadow, a hairline between rows.
+   Each row keeps its 48px target; the 8px between neighbours is margin on the link, the hairline sits in the middle of it.
+   A list that is the main thing on its screen opts in with .tap-list--cards. */
+.tap-list { list-style: none; margin: 0; padding: 0; display: grid; }
+.tap-list > li { border-block-end: 1px solid var(--line); }
+.tap-list > li:last-child { border-block-end: 0; }
 .tap-list a {
   display: flex;
   align-items: center;
   min-block-size: var(--tap);
+  margin-block: calc(var(--gap-tap) / 2);
+  padding: var(--space-2) var(--space-2) var(--space-2) calc(var(--space-2) - 3px);
+  margin-inline: calc(var(--space-2) * -1);
+  border-inline-start: 3px solid transparent; /* the current row takes the accent here, so nothing shifts */
+  color: var(--text);
+  text-decoration: none;
+}
+/* Primary (the main answers on a screen): a raised card per row. Day lifts off the page; night adds a faint top edge and a soft drop. */
+.tap-list--cards { gap: var(--gap-tap); }
+.tap-list--cards > li { border-block-end: 0; }
+.tap-list--cards a {
+  margin: 0;
   padding: var(--space-2) var(--space-4);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
-  color: var(--text);
-  text-decoration: none;
+  box-shadow: var(--shadow);
 }
-/* Raised surfaces: one shadow token. Day lifts off the page; night gets a faint top edge instead. */
-.tap-list a, .seg label, .ctabs button, .todo-list .todo label, .todo__tick, .backup summary, .reveal__btn, .card, .tile, .console-btn, .other-consoles summary { box-shadow: var(--shadow); }
+.seg label, .ctabs button, .card, .console-btn { box-shadow: var(--shadow); }
 
-/* Pressed feedback, one recipe: the surface darkens on press-in with no delay, shrinks slightly, and eases back on release. */
+/* Pressed feedback, one recipe: the surface darkens on press-in with no delay, shrinks slightly, and eases back on release. Plain rows only tint. */
 .tap-list a, .nav a, .seg label, .ctabs button, .todo-list .todo label, .todo__tick, .todo__open, .backup summary, .reveal__btn, .btn, .gate__on, .tile, .card, .console-btn, .other-consoles summary {
   transition: scale 160ms var(--ease-out), background-color 160ms var(--ease-out), color 140ms var(--ease-out), border-color 140ms var(--ease-out);
 }
 /* A selected control flips colour at once: a half-faded fill under its label would fail contrast mid-change. */
 .seg label, .ctabs button { transition-property: scale; }
-:is(.tap-list a, .nav a, .todo-list .todo label, .todo__tick, .todo__open, .backup summary, .reveal__btn, .tile):active,
+:is(.tap-list--cards a, .nav a, .reveal__btn):active,
 .card:has(.card__q a:active) { scale: var(--press-scale); transition-duration: 70ms, 0s, 140ms, 140ms; }
 :is(.seg label, .ctabs button, .btn, .gate__on, .console-btn, .other-consoles summary):active { scale: var(--press-scale-small); transition-duration: 70ms, 0s, 140ms, 140ms; }
 /* Reduced motion: no transitions and no animations anywhere (colour feedback then changes at once), and no page transition.
@@ -118,7 +132,7 @@ a, button, summary, label, input { touch-action: manipulation; }
   content: '';
   display: block;
   block-size: 3px;
-  background: linear-gradient(90deg, var(--action), var(--accent-2));
+  background: linear-gradient(90deg, var(--accent), var(--accent-2)); /* night: amber to coral; day: the same teal to rust as before */
 }
 .site-header__row {
   display: flex;
