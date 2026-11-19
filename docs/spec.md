@@ -85,13 +85,14 @@ One stored setting, `console`: `ps5`, `xbox-x` or `xbox-s`. It is saved on the d
 
 | Route | Screen | Content |
 | --- | --- | --- |
-| `/` | Ask | The console card until a console is chosen (see "Console"), search box, "Most asked" (top 8 by `rank`), then "Your stage": the stage picker and that stage's to-dos |
-| `/topics/` | Topics | Ten tiles, one per topic. Places shows as locked while the dial is Off |
+| `/` | Ask | The console card until a console is chosen (see "Console"), the title with one line under it saying what the guide is for and that spoilers stay off until turned on (it names no console), search box, "Most asked" (top 8 by `rank`), then "Your stage": the stage picker and that stage's to-dos |
+| `/topics/` | Topics | Ten tiles, one per topic. While the dial is Off the Places tile is a full-width dashed tile that says "Hidden until the spoiler setting is raised to Places. That adds where things are."; once the dial allows places it says it is shown |
 | `/topics/<topic>/` | Cheat sheet | Every answer of the topic on one page as compact cards with anchors |
-| `/a/<id>/` | Answer | Question, short answer, console switch, optional body, hidden-detail controls, confidence, sources, date checked, related answers |
+| `/a/<id>/` | Answer | Question, short answer, console switch, optional body, hidden-detail controls, confidence, sources, date checked, related answers. The confidence label is a native disclosure (`<details>`, a 48px row): tap it and the plain-word meaning opens, in the words of the About page, which both read from `src/data/confidence.js`. Links to other sites inside the body say they are outside sites that may contain spoilers |
 | `/checklist/` | Checklist | All to-dos by stage with progress, plus export and import of the saved state as a code |
 | `/new/` | New | Known problems with fixes, then what the last refreshes changed. With no confirmed problem it says so plainly and links the crash answer (`/a/crashes-and-launch-problems/`); it never says only that nothing has changed |
 | `/places/` | Places gate | See "The spoiler dial" |
+| any unknown path | Not found | `src/pages/404.astro`, built as `404.html`, which Vercel serves with a 404 status for an unknown path on a static site. It has the header, the tab bar and links to Ask and Topics. The gate runs first, so it is shown to a signed-in player only; it is not in the offline list |
 | `/about/` | About | How spoilers are handled, how facts are sourced, links out, the unofficial notice |
 
 **Hidden-tier pages.** Every page of a hidden tier (`/places/list/`, `/places/<id>/`, `/mild/<id>/`) opens closed, even when opened by its address (`HiddenGuard.astro`). Above the fold it shows a generic title (the tab title is generic too), what kind of content it holds, that it is closed because the spoiler dial is below that tier, and one link to go back. One native `<details>` control, "Show this page", opens it with no script. With script the stored dial opens it when the dial reaches the tier (`reveal.js`, and closes it again if the dial drops). The topic's other hidden answers in the desktop list column are hidden until then.
@@ -103,8 +104,9 @@ Two-tap rule: from `/`, every answer with `rank` 1 to 20 is reachable in at most
 ## Layout
 
 - Phone (under 600px): a bottom tab bar with Ask, Topics, Checklist, New. One column. Tap targets at least 48px. Body text 17px or larger.
-- Tablet (600px to 1023px): the bar becomes a left rail. One column of content.
-- Desktop (1024px and up): rail, a list column and a detail column. On an answer page the list column shows the other answers of the same topic. This is CSS grid only, no script.
+- Tablet (600px to 1023px): the bar becomes a left rail. One column of content, with cells where a list has room.
+- Desktop (1024px and up): rail, a list column and a detail column. On an answer page the list column shows the other answers of the same topic; on a cheat sheet it shows the topics, the current one marked. This is CSS grid only, no script.
+- The width is used, not stretched. Container queries decide: "Most asked" is one column on a phone, two cells across from 32rem and four from 60rem, each row of equal-height cells, each cell still one whole-row target. On Ask, from 48rem the questions sit beside the player's stage (to-dos) in two columns. On the Checklist rows are at most 70ch wide (`max-inline-size: 70ch`) and from 56rem the four stages flow in two columns. The stage picker is two by two under 600px, so its labels never wrap. Topics tiles are in a grid at most 64rem wide. Text pages stay at 40rem.
 - Header on every screen, compact and sticky (`position: sticky`, so the dial and the console are always in reach). On a phone: row one is the site name and the console chip, row two is the spoiler dial with its name beside it; at 600px and up it is one row. It takes at most about a fifth of a phone screen: 123px at 390 wide, 159px with text at 130% (both measured by `behaviour.spec.mjs`, limit 170px at 844px high). Its height is published as `--header-h` (`panel.js`) so the rail and the sheet sit below it; scroll-padding keeps anchors clear of it.
 - **Settings sheet.** The chip opens a native popover (`popover`, `popovertarget`), so Esc, a tap outside and the Done button close it with no script, and so does choosing a setting (`panel.js`). It is a sheet at the bottom of the screen (centred, 30rem wide, from 600px), within thumb reach, and it ends below the header, so it never covers the dial; its backdrop does not catch taps, so the dial stays usable while it is open. It holds the console and the theme, and a short list of what each dial level adds (Off: how-to answers only; Places: adds where things are; Mild: adds light gameplay hints), which the dial's fieldset also uses as its description. Without script, or in a browser without popover, the chip still names the console; the dial stays in the header.
 - The footer About link is its own 48px target under the notice.
@@ -130,24 +132,28 @@ Two themes from one set of named tokens. The app follows the device setting, and
 
 | Token | Night | Day |
 | --- | --- | --- |
-| `--bg` | `#0b1020` | `#f6efe2` |
-| `--surface` | `#141b34` | `#fffaf0` |
-| `--line` | `#2a3460` | `#dccfb6` |
-| `--text` | `#eef1ff` | `#1c2a2e` |
-| `--muted` | `#a3acd0` | `#55666b` |
+| `--bg` | `#181320` | `#f6efe2` |
+| `--surface` | `#231c2a` | `#fffaf0` |
+| `--line` | `#43364a` | `#dccfb6` |
+| `--text` | `#f7efe6` | `#1c2a2e` |
+| `--muted` | `#c5b6bd` | `#55666b` |
 | `--accent` | `#3ee6e0` | `#0b6f75` |
 | `--accent-2` | `#ff6f91` | `#c2401f` |
+| `--action` | `#f0c48a` | `#0b6f75` |
 
 - These are starting values. Every text and control pairing must pass WCAG AA contrast in both themes; adjust a value if axe says it fails, and record the change here.
-- **Visual pass (every change to a token or a value, in `tokens.css`).** The colour table above is unchanged.
+- **Night warmed (design craft pass).** Night was cold navy with cyan on everything. Every non-state surface now leans warm, a dark plum-brown instead of navy, and cyan is kept for state only. Night token changes: `--bg` `#0b1020` to `#181320`, `--surface` `#141b34` to `#231c2a`, `--line` `#2a3460` to `#43364a`, `--text` `#eef1ff` to `#f7efe6`, `--muted` `#a3acd0` to `#c5b6bd`. `--accent` and `--accent-2` are unchanged. New `--action` (night `#f0c48a`, a sand; day `#0b6f75`, the same teal as `--accent`): the fill of the one filled button (`.btn`, Show places), the answer's left rule and the left end of the header rule. Night contrast: text on bg 16.0, muted on surface 8.5, cyan on surface 10.7, `--bg` text on a sand fill 11.3. The login page, the `theme-color` meta tags and the web manifest use the same night values. The app icons keep their own look.
+  - Controls that are not state lose the cyan: the search field border is `--muted` at rest and `--accent` on focus; the console card border is `--line`.
+  - New `--font-label` (`600 0.9375rem / 1.3` in the text font): small labels and notices ("Spoilers", "Confidence", "Checked", "Sources", "PS5 only", "0 of 6 done", "10 answers", "Other consoles", the hidden-detail control, the sync line, the offline note, About notes). They were monospace.
+- **Visual pass (every change to a token or a value, in `tokens.css`).** The colour table above lists the current values; the pass below was made on the earlier ones and its other tokens are unchanged.
   - New `--shadow`: Day `0 1px 2px rgb(28 42 46 / .08), 0 2px 8px rgb(28 42 46 / .05)`; Night `inset 0 1px 0 rgb(255 255 255 / .04)` (a faint top edge, so surfaces stay quiet). Used on rows, tiles, cards and controls.
   - New `--wash` (accent 12% over `--surface`, hover and current) and `--press` (accent 22%, `:active`). They replace the repeated `color-mix` values.
   - `--radius` 0.5rem to 0.75rem. `--text-h1` `clamp(1.5rem, 1.1rem + 2vw, 2.25rem)` to `clamp(1.625rem, 1.2rem + 2vw, 2.5rem)`, weight 750, letter-spacing -0.02em. `--text-h2` 1.25rem to 1.3125rem (21px, one 1.25 step above body), weight 650. New `--space-7` 3rem.
   - New motion tokens: `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`, `--press-scale` 0.98 (rows, cards) and `--press-scale-small` 0.96 (compact controls). One press recipe in `global.css`: the surface tints with no delay, shrinks slightly (70ms in), and eases back (160ms out). Under `prefers-reduced-motion: reduce` the shrink is dropped and the tint stays. Motion is `scale`, `opacity` and colour only.
   - The settings sheet slides up 1.5rem and fades in (200ms, `--ease-out`, `@starting-style`; it moves but never resizes, so its targets stay 48px; under reduced motion it only fades); a revealed detail fades in and settles 4px (200ms); page changes crossfade in 150ms.
-  - Layout: the rail is a full-height panel with a tinted current item; the spoiler dial stays on one row beside its label at 600px and up; the content column is at most 64rem; the Ask and Checklist screens share one drawn tick box.
-- Night uses colour for state only (selected tab, links, the dial); surfaces stay quiet. Day is warm and flat.
-- System font stack for text. `ui-monospace` for anything a player copies or reads as a value: sizes, button names, times, version numbers.
+  - Layout: the rail is a full-height panel with a tinted current item; the spoiler dial stays on one row beside its label at 600px and up; the content column is at most 80rem (text and lists cap themselves: see "Layout"); the Ask and Checklist screens share one drawn tick box.
+- Night uses cyan for state only (selected tab, links, the dial, focus, ticks, progress); surfaces, lines and text lean warm and stay quiet, and calls to act use `--action`. Day is warm and flat.
+- System font stack for text. `ui-monospace` only for what a player copies or reads as a value: `<kbd>` button names, `<code>` (sizes, times, version numbers, codes) and the progress code boxes. Labels, headings and notices are sans (`--font-label`). A test fails if any other text is monospace.
 - Button names are text in `<kbd>`, switched by the console setting (✕ ○ □ △ and L1/R1, or A B X Y and LB/RB). No glyph images.
 - One decorative touch only: a thin sunset gradient rule under the header, built from the two accents.
 - Models to borrow from, not copy: Vercel Docs (mono values, tabs that swap the answer in place), Dash0 (warm accent on a dark ground, mono labels), Refero (search-first home). From rivals: FullSweep's bottom bar and default-on spoiler shield, gtamap.io's plain spoiler switch, thegta6guide.com's key number on the first screen. See `docs/design-inspiration.md`.
@@ -231,7 +237,7 @@ A hand-written service worker and a web app manifest. On install it caches the p
 
 ## Links out
 
-The About screen and the Places gate link to the best outside tools instead of rebuilding them: gtamap.io and FullSweep for maps (both hide spoilers by default), and Rockstar Support for account and code problems. Mark each as an outside site.
+The About screen and the Places gate link to the best outside tools instead of rebuilding them: gtamap.io and FullSweep for maps (both hide spoilers by default), and Rockstar Support for account and code problems. Mark each as an outside site. Every link to another site, wherever it sits, says "outside site, may contain spoilers" inside the link: the shared `<OutsideLink>` component for rows, and the same words after a link inside an answer body. A test crawls every screen for a bare one.
 
 ## First content
 
