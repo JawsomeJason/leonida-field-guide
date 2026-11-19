@@ -1,5 +1,5 @@
 import { read } from './settings.js';
-import { answersFor, asksWhere, asksKnown, pagePath } from './search-match.js';
+import { answersFor, asksWhere, asksStory, asksKnown, pagePath } from './search-match.js';
 import { textHtml } from '../lib/console.js';
 
 // Each tier's records live under that tier's own paths; hidden tiers load only when the dial allows them.
@@ -84,7 +84,7 @@ async function update() {
   where.hidden = !(typed && asksWhere(query));
   const offNote = !where.hidden && dial === 'off';
   status.toggleAttribute('data-floor', none && !offNote);
-  status.textContent = !typed || offNote || (known && !found.length) ? '' : found.length ? `${found.length} ${found.length === 1 ? 'answer' : 'answers'}` : 'This guide has no answer for that yet.';
+  status.textContent = !typed || offNote || (known && !found.length) ? '' : found.length ? `${found.length} ${found.length === 1 ? 'answer' : 'answers'}` : asksStory(query) ? 'This guide carries no story content, by design.' : 'This guide has no answer for that yet.';
 }
 
 input.addEventListener('input', update);

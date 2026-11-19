@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { search, asksWhere, asksKnown, answersFor, forConsoles } from '../../src/scripts/search-match.js';
+import { search, asksWhere, asksStory, noteFor, asksKnown, answersFor, forConsoles } from '../../src/scripts/search-match.js';
 import { loadRecords, hiddenStrings } from '../../scripts/check-leak.mjs';
 import { FIXTURE_QUERIES } from './queries.mjs';
 import { checkQuestions } from '../../scripts/check-search-questions.mjs';
@@ -156,6 +156,13 @@ test('swapped neighbouring letters are one typo, from four letters; other typos 
 test('asks where: only questions about where something is', () => {
   for (const q of ['where is the gun shop', 'Where can I find a car', 'location of the shop', "where's the nearest bank", 'nearest garage', 'map', 'is there a map']) assert.ok(asksWhere(q), q);
   for (const q of ['how do I save', 'where can I put the game', 'controls']) assert.ok(!asksWhere(q), q);
+});
+
+test('places words (collectibles, secrets, hidden packages, easter eggs, locations) ask where; story words get the story note', () => {
+  for (const q of ['how many secrets are there', 'collectibles', 'any easter egg', 'hidden packages', 'locations']) assert.equal(noteFor(q), 'places', q);
+  for (const q of ['what are the missions', 'what is the story about', 'how does the game end', 'who is the main character', "who's the boss character", 'the ending', 'how long is the campaign', 'any cutscenes']) assert.equal(noteFor(q), 'story', q);
+  for (const q of ['how do i save', 'my code does not work', 'who can play online', 'controls', 'where can i put the game']) assert.equal(noteFor(q), '', q);
+  assert.ok(asksStory('where is the story') && noteFor('where is the story') === 'places'); // a place question keeps the places note
 });
 
 test('a hidden record\'s keywords are hidden strings for the leak check', () => {

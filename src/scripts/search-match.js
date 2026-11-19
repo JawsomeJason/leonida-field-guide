@@ -195,7 +195,14 @@ export const asksKnown = (query) => {
 
 /** A question about where something is: the guide keeps places behind the dial. */
 export const asksWhere = (query) =>
-  /\bwhere(s| is| are| can i (find|get|buy)| do i (find|get|buy))\b|\blocations? (of|for)\b|\bnearest\b|\bwhereabouts\b|\bmaps?\b/.test(query.toLowerCase().replace(/['’]/g, ''));
+  /\bwhere(s| is| are| can i (find|get|buy)| do i (find|get|buy))\b|\blocations?\b|\bnearest\b|\bwhereabouts\b|\bmaps?\b|\b(collectibles?|secrets?|easter eggs?|hidden packages?)\b/.test(query.toLowerCase().replace(/['’]/g, ''));
+
+/** A question about the story: the guide carries none, by design, so with no real answer the page says so instead of "no answer yet". */
+export const asksStory = (query) =>
+  /\b(missions?|story|plot|endings?|campaign|characters?|cutscenes?|whos|who is)\b|\bhow (does|will) (the game|it) end\b/.test(String(query ?? '').toLowerCase().replace(/['’]/g, ''));
+
+/** Why a query with no real answer gets a reason: 'places' (hidden by design, where-is note) or 'story' (no story content), else ''. */
+export const noteFor = (query) => (asksWhere(query) ? 'places' : asksStory(query) ? 'story' : '');
 
 /** Where a record's own page lives: /a/<id>/ for none, /<tier>/<id>/ for a hidden tier. */
 export const pagePath = (tier, id) => (tier === 'none' ? `/a/${id}/` : `/${tier}/${id}/`);
