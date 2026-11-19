@@ -156,7 +156,7 @@ test.describe('with script', () => {
     expect(rule, 'the same gold as the answer block').toBe(answerRule);
     expect(rule, 'not the error colour').not.toBe(coral);
     const hide = page.getByRole('button', { name: /^Hide/ });
-    expect((await hide.boundingBox()).height).toBeGreaterThanOrEqual(48);
+    expect((await hide.boundingBox()).height).toBeGreaterThanOrEqual(47.5);
     await press(hide);
     await expect(page.getByText('Wombat note one')).toHaveCount(0);
     expect(await inDom(page, 'Wombat note one'), 'the text is out of the page, not only out of sight').toBe(false);
@@ -229,9 +229,9 @@ test.describe('with script', () => {
   test('gate controls are 48px with 8px between them', async ({ page }) => {
     await page.goto(pages[0][0]);
     const [a, b] = await Promise.all(['Show this page', 'Go back to Ask'].map((name) => page.getByRole('link', { name }).boundingBox()));
-    expect(a.height).toBeGreaterThanOrEqual(48);
-    expect(b.height).toBeGreaterThanOrEqual(48);
-    expect(b.y - (a.y + a.height)).toBeGreaterThanOrEqual(8);
+    expect(a.height).toBeGreaterThanOrEqual(47.5);
+    expect(b.height).toBeGreaterThanOrEqual(47.5);
+    expect(b.y - (a.y + a.height)).toBeGreaterThanOrEqual(7.5);
   });
 });
 

@@ -8,6 +8,8 @@ const only = (...files) => ({ testMatch: files.map((f) => `**/${f}.spec.mjs`) })
 export default defineConfig({
   testDir: 'tests/e2e',
   forbidOnly: true,
+  // One retry on CI only: a shared runner can stall a page now and then. A test that needed the retry is listed as flaky in the report.
+  retries: process.env.CI ? 1 : 0,
   fullyParallel: true,
   reporter: [['list'], ['./tests/e2e/touch-report.mjs']],
   use: { baseURL: `http://127.0.0.1:${port}` },

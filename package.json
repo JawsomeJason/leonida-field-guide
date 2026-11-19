@@ -18,6 +18,7 @@
     "check:console": "node scripts/check-console-text.mjs",
     "check:dates": "node scripts/check-dates.mjs",
     "check:search": "node scripts/check-search-questions.mjs",
+    "check:content": "npm run build && npm run test:unit && npm run check:leak && npm run check:links && npm run check:answer-links && npm run check:console && npm run check:dates && npm run check:search",
     "test:e2e": "playwright test"
   },
   "devDependencies": {

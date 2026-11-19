@@ -67,15 +67,23 @@ for (const path of ['/checklist/', '/']) {
   test(`${path}: the tick row and the arrow are two targets with 16px between, and the arrow has no word`, async ({ page }) => {
     await saved(page, { console: 'ps5' });
     await page.goto(path);
+    // The rows are drawn by script after load: wait until they exist and the page is quiet, then take both boxes in one go, so a
+    // slow machine cannot give a box from before the redraw and one from after it.
     const row = page.locator('.todo-list .todo:visible, .todos .todo:visible').first();
     const tick = row.locator('label');
     const open = row.locator('a.todo__open');
-    const [t, o] = [await box(tick), await box(open)];
-    // sub-pixel layout can give 47.9999: half a pixel of slack
+    await expect(open).toBeVisible();
+    await page.waitForLoadState('networkidle');
+    await page.evaluate(() => document.fonts?.ready);
+    const [t, o] = await row.evaluate((el) => {
+      const r = (e) => { const b = e.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height, r: b.right, b: b.bottom }; };
+      return [r(el.querySelector('label')), r(el.querySelector('a.todo__open'))];
+    });
+    // Relationships, not pixel counts: sub-pixel layout can give 47.9999, so half a pixel of slack.
     expect(t.h, 'the tick row').toBeGreaterThanOrEqual(47.5);
     expect(o.w).toBeGreaterThanOrEqual(47.5);
     expect(o.h).toBeGreaterThanOrEqual(47.5);
-    expect(o.x - t.r, 'between the tick row and the arrow').toBeGreaterThanOrEqual(16);
+    expect(o.x - t.r, 'between the tick row and the arrow').toBeGreaterThanOrEqual(15.5);
     expect((await open.innerText()).trim(), 'an arrow, not the word Answer').toBe('');
     await expect(open).toHaveAccessibleName(/^Open (the )?answer/);
     // The 16px between them belongs to neither (a tap is judged by what is under it; touch screens still snap a near miss to the closer one).
@@ -89,15 +97,15 @@ for (const path of ['/checklist/', '/']) {
     // Rows sit 8px apart.
     // The label is the tick target: the rows are plain (hairline) rows, so the 8px sits inside each row as the label's margin.
     const rows = await page.locator('.todo-list .todo:visible label, .todos .todo:visible label').evaluateAll((els) => els.map((e) => e.getBoundingClientRect()).slice(0, 3));
-    for (let i = 1; i < rows.length; i++) expect(rows[i].top - rows[i - 1].bottom).toBeGreaterThanOrEqual(8);
+    for (let i = 1; i < rows.length; i++) expect(rows[i].top - rows[i - 1].bottom).toBeGreaterThanOrEqual(7.5);
   });
 }
 
 test('the backup code is described as ticks only', async ({ page }) => {
   await page.goto('/checklist/');
-  const text = await page.locator('.backup__body').textContent();
-  expect(text).toContain('ticks only');
-  expect(text).not.toMatch(/to-dos and settings/);
+  // Wait for the sentence rather than read it once: a slow machine may not have drawn the page yet.
+  await expect(page.locator('.backup__body')).toContainText('ticks only');
+  expect(await page.locator('.backup__body').textContent()).not.toMatch(/to-dos and settings/);
 });
 
 // ---- Wording and the search count ----

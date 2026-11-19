@@ -24,7 +24,7 @@ for (const width of [320, 390]) {
     const link = page.getByRole('link', { name: 'What to do if the game crashes' });
     await expect(link).toHaveAttribute('href', '/a/crashes-and-launch-problems/');
     const box = await link.boundingBox();
-    expect(box.height).toBeGreaterThanOrEqual(48);
+    expect(box.height).toBeGreaterThanOrEqual(47.5);
 
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   });

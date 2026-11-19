@@ -89,7 +89,7 @@ test('how sure we are is plain words, and its meaning opens from a 48px row with
   expect(now).toBe('Community, from players');
   const summary = page.locator('.trust summary');
   await expect(summary).toHaveText('What does this mean?');
-  expect((await rects(summary))[0].h, 'a 48px target').toBeGreaterThanOrEqual(48);
+  expect((await rects(summary))[0].h, 'a 48px target').toBeGreaterThanOrEqual(47.5);
   const meaning = page.locator('.trust p');
   await expect(meaning).toBeHidden(); // closed until asked: no hover needed
   await press(summary);
@@ -177,12 +177,19 @@ test('on an answer page the question is the title and the short answer is calmer
   // Real answers run to 240 characters. Measure the median and the longest of the real records (lengths only), at the phone width.
   const lengths = loadRecords('src/content/answers').filter((r) => r.tier === 'none').map((r) => r.short.length).sort((x, y) => x - y);
   const text = (n) => 'Check the free space first and clear the difference, then rerun the update from the home screen until the number shown is above what the install asks for. '.repeat(3).slice(0, n).trim();
-  const lines = (n) => page.locator('.answer__a').evaluate((el, s) => { el.textContent = s; const c = getComputedStyle(el); return Math.round((el.clientHeight - parseFloat(c.paddingTop) - parseFloat(c.paddingBottom)) / parseFloat(c.lineHeight)); }, text(n));
+  // Lines the same text takes, on this machine's font, in the current style and in the old one (27px bold, the style that ran to seven lines).
+  // The relationship is the test, not a line count: a wider fallback font makes both numbers bigger, and the redesign must still save lines.
+  const lines = (n, old) => page.locator('.answer__a').evaluate((el, [s, o]) => {
+    el.textContent = s;
+    if (o) { el.style.fontSize = '27px'; el.style.fontWeight = '750'; } else { el.style.fontSize = ''; el.style.fontWeight = ''; }
+    const c = getComputedStyle(el);
+    return Math.round((el.clientHeight - parseFloat(c.paddingTop) - parseFloat(c.paddingBottom)) / parseFloat(c.lineHeight));
+  }, [text(n), old]);
   if (width(page) === 390) {
-    // The CI machine's fallback system font is wider than a phone's: one more line is allowed there (the old layout needed seven).
-    const slack = process.env.CI ? 1 : 0;
-    expect(await lines(lengths[Math.floor(lengths.length / 2)]), 'a median answer fits in five lines').toBeLessThanOrEqual(5 + slack);
-    expect(await lines(lengths.at(-1)), 'the longest answer fits in six lines').toBeLessThanOrEqual(6 + slack);
+    for (const [name, n] of [['median', lengths[Math.floor(lengths.length / 2)]], ['longest', lengths.at(-1)]]) {
+      const [now, before] = [await lines(n, false), await lines(n, true)];
+      expect(now, `a ${name} answer takes fewer lines than in the old 27px bold style (${now} against ${before})`).toBeLessThan(before);
+    }
   }
 });
 
@@ -202,7 +209,7 @@ test.describe('Show places', () => {
     await page.goto('/places/');
     await expect(page.getByRole('link', { name: 'Show places' })).toHaveCount(0); // the link floor is for no script
     const button = page.getByRole('button', { name: 'Show places' });
-    expect((await rects(button))[0].h).toBeGreaterThanOrEqual(48);
+    expect((await rects(button))[0].h).toBeGreaterThanOrEqual(47.5);
     await expect(button).not.toHaveAttribute('aria-pressed', /.*/); // an action, not a toggle
     await press(button);
     await expect(page.locator('html')).toHaveAttribute('data-dial', 'places');

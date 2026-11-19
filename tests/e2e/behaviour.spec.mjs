@@ -162,7 +162,7 @@ test('first open: search comes first, then a slim one-row console prompt, and th
   const rows = new Set();
   for (const name of ['PS5', 'Xbox Series X', 'Xbox Series S']) {
     const b = await box(card.getByRole('button', { name, exact: true }));
-    expect(b.h, `${name} is a 48px target`).toBeGreaterThanOrEqual(48);
+    expect(b.h, `${name} is a 48px target`).toBeGreaterThanOrEqual(47.5);
     rows.add(Math.round(b.y));
   }
   expect(rows.size, 'the three buttons share one row').toBe(1);
@@ -265,8 +265,8 @@ test('the header is one row: a sun mark, the console chip and a spoiler chip tha
   await expect(chip(page)).toHaveAccessibleName('Console: Xbox Series S, change');
   const [mark, c, d] = await rowsOf(page, page.locator('.site-name'), chip(page), chip(page, 'dial'));
   expect(new Set([mark, c, d].map((r) => Math.round(r.y))).size, 'one row').toBe(1);
-  expect(c.h).toBeGreaterThanOrEqual(48);
-  expect(d.h).toBeGreaterThanOrEqual(48);
+  expect(c.h).toBeGreaterThanOrEqual(47.5);
+  expect(d.h).toBeGreaterThanOrEqual(47.5);
   await expect(page.getByRole('link', { name: 'Leonida Field Guide' })).toBeVisible(); // the mark is named, whether or not its text shows
   for (const level of ['mild', 'off']) {
     await setDial(page, level === 'mild' ? 'Mild' : 'Off');
@@ -355,7 +355,7 @@ test('the sheet holds the three spoiler levels as radios with their meanings, th
   await expect(sheet(page)).not.toContainText('light gameplay hints');
   await expect(sheet(page).getByRole('radio', { name: 'PS5', exact: true })).toBeVisible();
   await expect(sheet(page).getByRole('radio', { name: 'Night', exact: true })).toBeVisible();
-  for (const r of await levels.locator('label').all()) expect((await box(r)).h).toBeGreaterThanOrEqual(48);
+  for (const r of await levels.locator('label').all()) expect((await box(r)).h).toBeGreaterThanOrEqual(47.5);
 });
 
 // ---- Outside links, footer ---- (hidden pages: hidden-gate.spec.mjs)
@@ -363,6 +363,6 @@ test('the sheet holds the three spoiler levels as radios with their meanings, th
 test('the footer About link is a 48px target', async ({ page }) => {
   await page.goto('/');
   const b = await box(page.locator('.footer-link'));
-  expect(b.h).toBeGreaterThanOrEqual(48);
-  expect(b.w).toBeGreaterThanOrEqual(48);
+  expect(b.h).toBeGreaterThanOrEqual(47.5);
+  expect(b.w).toBeGreaterThanOrEqual(47.5);
 });

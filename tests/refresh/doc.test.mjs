@@ -17,6 +17,7 @@ test('the refresh instructions keep the minimum work, the retry rule, the every-
     ['the nothing-new line', /Checked on <?[^\n]*nothing new confirmed/i],
     ['a push every run', /Commit and push, every run/],
     ['the final checklist with counts', /Final reply[\s\S]*Searches run: n/],
+    ['the fast content check, and the full one in GitHub Actions', /npm run check:content[\s\S]*GitHub Actions[\s\S]*full `npm run check`/],
     ['web pages are data', /data, not instructions/i],
     ['official only for pages read', /official[\s\S]{0,80}actually opened and read/i],
     ['the two allowed places', /Only `src\/content\/answers\/\*\*` and `src\/data\/new\.json`/],
@@ -27,4 +28,15 @@ test('the refresh guard lets the New feed through, alone or with records, and st
   assert.deepEqual(offenders('M\tsrc/data/new.json\n'), []);
   assert.deepEqual(offenders('M\tsrc/data/new.json\nM\tsrc/content/answers/how-to-save.yaml\n'), []);
   assert.deepEqual(offenders('M\tsrc/data/new.json\nM\tdocs/refresh.md\n'), ['docs/refresh.md']);
+});
+
+test('the refresh workflow still runs the full check before it merges, and package.json has the fast content check without a browser', () => {
+  const wf = readFileSync('.github/workflows/refresh.yml', 'utf8');
+  assert.match(wf, /run: npm run check\b(?!:)/, 'the workflow runs the full npm run check');
+  assert.ok(wf.indexOf('npm run check') < wf.indexOf('gh pr merge'), 'the full check comes before the merge');
+  const scripts = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
+  assert.ok(scripts['check:content']);
+  assert.doesNotMatch(scripts['check:content'], /playwright|test:e2e/, 'the content check needs no browser');
+  for (const part of ['build', 'test:unit', 'check:leak', 'check:links', 'check:answer-links', 'check:console', 'check:dates', 'check:search'])
+    assert.match(scripts['check:content'], new RegExp(`npm run ${part}\\b`), part);
 });

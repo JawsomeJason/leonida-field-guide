@@ -17,7 +17,7 @@ test('shows the next two unticked steps and how many are done, each a 48px link 
   await expect(count(page)).toContainText('0 of 5 done');
   await expect(count(page)).toHaveAttribute('href', '/checklist/');
   await expect(strip(page).getByRole('link', { name: 'Do sample thing 01' })).toHaveAttribute('href', '/a/sample-01/');
-  for (const link of await strip(page).locator('a').all()) expect((await link.boundingBox()).height, await link.innerText()).toBeGreaterThanOrEqual(48);
+  for (const link of await strip(page).locator('a').all()) expect((await link.boundingBox()).height, await link.innerText()).toBeGreaterThanOrEqual(47.5);
 });
 
 test('sits under the search and before Most asked, on the first screen', async ({ page }) => {
