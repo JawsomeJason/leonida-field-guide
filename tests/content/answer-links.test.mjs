@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { loadRecords } from '../../scripts/check-leak.mjs';
-import { unlinkedMentions, todoGaps } from '../../scripts/check-answer-links.mjs';
+import { unlinkedMentions, todoGaps, pointerGaps } from '../../scripts/check-answer-links.mjs';
 
 const records = loadRecords('src/content/answers');
 const rec = (id, o = {}) => ({ id, question: `Question number ${id} here?`, short: 'Short.', body: '- one\n- two', ...o });
@@ -10,6 +10,13 @@ const rec = (id, o = {}) => ({ id, question: `Question number ${id} here?`, shor
 test('the real answers hold no pointer without a link and no to-do without a how-to', () => {
   assert.deepEqual(unlinkedMentions(records), []);
   assert.deepEqual(todoGaps(records), []);
+  assert.deepEqual(pointerGaps(records), []);
+});
+
+test('"below" in a headline and a screen named in words fail; a linked screen name passes', () => {
+  for (const field of [{ short: 'Making space is covered below.' }, { byConsole: { ps5: 'Follow the links below.' } }, { short: 'It is linked above.' }, { body: 'It will be on the What\'s new screen.' }, { body: 'Use the Checklist page.' }, { reveal: [{ tier: 'mild', text: 'See the Places page.' }] }])
+    assert.equal(pointerGaps([rec('a', field)]).length, 1, JSON.stringify(field));
+  assert.deepEqual(pointerGaps([rec('a', { body: 'On the [What\'s new screen](/new/) and the [Checklist](/checklist/) page.', short: 'Plain.' })]), []);
 });
 
 test('a pointer in words with no link fails, wherever it sits: body, short, console text or a hidden detail', () => {
@@ -41,6 +48,13 @@ test('a to-do whose bullets are facts must link every how-to record the map name
   assert.deepEqual(todoGaps([rec('a', { todo: 'Do it', body: '[steps](/a/how-to/)' }), how], howto), []);
   assert.deepEqual(todoGaps([rec('a', { todo: 'Do it' }), how], howto).map((g) => g.why), ['its answer does not link how-to']);
   assert.deepEqual(todoGaps([rec('a', { todo: 'Do it', body: '[steps](/a/how-to/)' }), rec('how-to', { body: 'No list.' })], howto).map((g) => g.why), ['how-to is named as the how-to but holds no steps']);
+});
+
+test('the day-one patch step links a how-to for PS5 and for Xbox', () => {
+  const a = records.find((r) => r.id === 'day-one-patches');
+  assert.match(a.body, /data-only="ps5"[^>]*>[^<]*\(\/a\/crash-steps-ps5\/\)/);
+  assert.match(a.body, /data-only="xbox-x xbox-s"[^>]*>[^<]*\(\/a\/auto-preload-settings\/\)/);
+  assert.deepEqual(todoGaps(records.filter((r) => ['day-one-patches', 'crash-steps-ps5', 'auto-preload-settings'].includes(r.id))), []);
 });
 
 test('the install-size step links how to make room for every console', () => {

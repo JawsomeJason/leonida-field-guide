@@ -1,6 +1,6 @@
 id: unlock-time
 question: "When does it unlock in my region?"
-short: "Rockstar: midnight local time on 19 November in every region. If your console still shows a countdown, that is your exact time. Past it and still locked? Launch problem help is linked below."
+short: "Rockstar: midnight local time on 19 November in every region. If your console still shows a countdown, that is your exact time."
 body: |-
   - Past that time and still locked: [The game crashes or will not start. What do I do?](/a/crashes-and-launch-problems/)
   - Rockstar's support page says the game releases at "midnight local time on November 19, 2026, in all regions".

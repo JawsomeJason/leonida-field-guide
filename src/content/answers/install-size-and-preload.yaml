@@ -13,9 +13,9 @@ stage: before
 tier: none
 consoles: all
 byConsole:
-  ps5: "Plan for up to 212 GB free. It fits any PS5: the smallest has 825 GB of storage. To see your free space, go to Settings, then Storage. Short of room? Making space is covered below."
-  xbox-x: "Plan for up to 212 GB free. It fits a Series X, which has 1 TB. To see your free space: Xbox button, Profile & system, Settings, System, Storage devices. Short of room? Making space is covered below."
-  xbox-s: "Plan for up to 212 GB free. A 512 GB Series S can hold it, but Microsoft says part of the drive is reserved, so you will not see 512 GB free. Check your free space (Profile & system, Settings, System, Storage devices), then clear the difference. A reported usable figure is linked below."
+  ps5: "Plan for up to 212 GB free. It fits any PS5: the smallest has 825 GB of storage. To see your free space, go to Settings, then Storage."
+  xbox-x: "Plan for up to 212 GB free. It fits a Series X, which has 1 TB or more. To see your free space: Xbox button, Profile & system, Settings, System, Storage devices."
+  xbox-s: "Plan for up to 212 GB free. A 512 GB Series S can hold it, but Microsoft says part of the drive is reserved, so you will not see 512 GB free. Check your free space (Profile & system, Settings, System, Storage devices), then clear the difference."
 confidence: official
 sources:
   - url: "https://support.rockstargames.com/articles/M6h7B5fJZMwG1dnzQkt4Z/grand-theft-auto-vi-installation-requirements"

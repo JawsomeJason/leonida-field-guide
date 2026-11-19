@@ -1,6 +1,6 @@
 id: pc-download-scams
 question: "Are 'GTA 6 PC download' and early-access offers real?"
-short: "Rockstar has announced no Windows version. Notebookcheck reports fake PC downloads, 'dev builds' and early access carry malware, so treat any such offer as a red flag."
+short: "Rockstar has announced no Windows version. Notebookcheck reports fake PC downloads carry malware and fake 'dev builds' and early access are sold as scams, so treat any such offer as a red flag."
 body: |-
   - Notebookcheck's roundup cites Cynet, ESET, Huntress and Malwarebytes for password-stealing programs (infostealers) and ransomware (software that locks your files) hidden in fake installers.
   - One flagged file was caught by only 34 of 68 antivirus engines, so a clean single scan proves little.
