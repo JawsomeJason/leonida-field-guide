@@ -87,12 +87,14 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
     <div id="settings" class="sheet" popover role="dialog" aria-labelledby="settings-title">
       <div class="sheet__in">
         <h2 id="settings-title">Settings</h2>
-        <fieldset class="levels">
-          <legend>Spoilers</legend>
-          {dial.map(([value, label, meaning]) => (
-            <label><input type="radio" name="dial" value={value} data-setting checked={value === 'off'} /><span><strong>{label}</strong> {meaning}</span></label>
-          ))}
-          <p class="levels__why">Off names a game system only to say it exists; where you could lose something, Off says so and one tap shows how to avoid it.</p>
+        {/* Least used at the top, most used lowest (nearest the thumb): theme, console, then the spoiler level. */}
+        <fieldset class="setting needs-js">
+          <legend>Theme</legend>
+          <div class="seg">
+            {themes.map(([value, label]) => (
+              <label><input type="radio" name="theme" value={value} data-setting checked={value === 'system'} />{label}</label>
+            ))}
+          </div>
         </fieldset>
         <fieldset class="setting needs-js">
           <legend>Console</legend>
@@ -102,13 +104,12 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
             ))}
           </div>
         </fieldset>
-        <fieldset class="setting needs-js">
-          <legend>Theme</legend>
-          <div class="seg">
-            {themes.map(([value, label]) => (
-              <label><input type="radio" name="theme" value={value} data-setting checked={value === 'system'} />{label}</label>
-            ))}
-          </div>
+        <fieldset class="levels">
+          <legend>Spoilers</legend>
+          {dial.map(([value, label, meaning]) => (
+            <label><input type="radio" name="dial" value={value} data-setting checked={value === 'off'} /><span><strong>{label}</strong> {meaning}</span></label>
+          ))}
+          <p class="levels__why">Off names a game system only to say it exists; where you could lose something, Off says so and one tap shows how to avoid it.</p>
         </fieldset>
         <div class="sheet__done"><button type="button" class="btn" popovertarget="settings" popovertargetaction="hide">Done</button></div>
       </div>

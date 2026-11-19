@@ -17,7 +17,7 @@ export default defineConfig({
   // No test is skipped at run time: each project simply owns the files that apply to it.
   projects: [
     { name: 'phone-320', use: { viewport: { width: 320, height: 640 }, ...touch }, ...only('touch', 'touch-all', 'ui2', 'hidden-gate', 'nextup', 'consoles', 'round5', 'round6b', 'round7', 'round7b', 'round8a') },
-    { name: 'phone-390', use: { viewport: { width: 390, height: 844 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'touch-all', 'a11y', 'search', 'notfound', 'design', 'ui2', 'hidden-gate', 'nextup', 'outside', 'consoles', 'pointers', 'round4', 'round5', 'round6', 'round6b', 'round7', 'round7b', 'round8a') },
+    { name: 'phone-390', use: { viewport: { width: 390, height: 844 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'touch-all', 'a11y', 'search', 'notfound', 'design', 'ui2', 'hidden-gate', 'nextup', 'outside', 'consoles', 'pointers', 'round4', 'round5', 'round6', 'round6b', 'round7', 'round7b', 'round8a', 'round8d') },
     { name: 'tablet-820', use: { viewport: { width: 820, height: 1180 }, ...touch }, ...only('behaviour', 'nojs', 'touch', 'touch-all', 'search', 'design', 'ui2', 'hidden-gate', 'nextup', 'outside', 'round4', 'round5', 'round6b', 'round7', 'round8a') },
     { name: 'sync', ...only('sync') },
     { name: 'new-screen', use: { viewport: { width: 390, height: 844 }, ...touch }, ...only('new') },

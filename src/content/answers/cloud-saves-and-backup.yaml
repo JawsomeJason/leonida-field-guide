@@ -14,6 +14,11 @@ byConsole:
   xbox-x: "Reported as supported: Cultured Vultures says the Xbox listing shows saves kept online (cloud saves), and they should be copied (synced) between your Xbox consoles on one account. We could not read that on the listing ourselves. Xbox says saves are copied online while you are connected, and playing offline can leave the online copy out of date: stay online before you uninstall."
   xbox-s: "Reported as supported: Cultured Vultures says the Xbox listing shows saves kept online (cloud saves), and they should be copied (synced) between your Xbox consoles on one account. We could not read that on the listing ourselves. Xbox says saves are copied online while you are connected, and playing offline can leave the online copy out of date: stay online before you uninstall."
 confidence: reported
+basis:
+  - claim: "how your console manages saved data"
+    confidence: official
+  - claim: "whether this game supports cloud saves"
+    confidence: reported
 sources:
   - url: "https://culturedvultures.com/does-gta-6-have-cloud-saves-and-cross-progression/"
     title: "Does GTA 6 Have Cloud Saves and Cross-Progression? (Cultured Vultures)"

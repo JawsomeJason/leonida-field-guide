@@ -21,6 +21,11 @@ stage: before
 tier: none
 consoles: all
 confidence: reported
+basis:
+  - claim: "that deleting a game keeps what you bought"
+    confidence: official
+  - claim: "how this game treats saves and in-game money"
+    confidence: reported
 sources:
   - url: "https://www.playstation.com/en-us/support/hardware/ps5-manage-storage-space/"
     title: "How to manage storage space on your PS5 console (PlayStation Support)"

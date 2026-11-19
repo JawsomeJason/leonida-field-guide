@@ -11,6 +11,11 @@ stage: before
 tier: none
 consoles: [xbox-s]
 confidence: reported
+basis:
+  - claim: "the space the game needs"
+    confidence: official
+  - claim: "a 512 GB Series S's usable space"
+    confidence: reported
 sources:
   - url: "https://www.ign.com/articles/xbox-series-s-has-364gb-of-usable-storage-space"
     title: "Xbox Series S Has 364GB of Usable Storage Space (IGN)"

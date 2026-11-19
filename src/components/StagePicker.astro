@@ -124,7 +124,7 @@ const short: Record<string, string> = { before: 'Before', 'hour-1': 'Hour 1', 'd
   }
   .stage-fold[open] > summary::after { rotate: 90deg; }
   html.js[data-console] .stage-fold[open] > summary { margin-block-end: var(--space-4); }
-  html.js[data-console] .stage-fold > summary:hover { background-color: var(--wash); }
+  @media (hover: hover) and (pointer: fine) { html.js[data-console] .stage-fold > summary:hover { background-color: var(--wash); } }
 
   /* With script, the picker's checked radio decides which stage shows. */
   html.js .stage { display: none; }

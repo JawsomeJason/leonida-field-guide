@@ -20,6 +20,10 @@ const { answer: a, full = false, related = [] } = Astro.props;
 
 const only = a.consoles === 'all' ? '' : `${a.consoles.map((c) => consoles[c].name).join(' and ')} only`;
 const trust = confidence[a.confidence];
+// A record that mixes sources names the label per claim, instead of one badge for the whole answer.
+const claims = a.basis?.map((b) => ({ ...b, ...confidence[b.confidence] }));
+const used = claims ? [...new Set(claims.map((c) => c.confidence))].map((c) => confidence[c]) : [];
+const upper = (t: string) => t[0].toUpperCase() + t.slice(1);
 const checked = new Date(`${a.checked}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 const body = full && a.body ? await renderBody(a.body) : '';
 ---
@@ -44,11 +48,15 @@ const body = full && a.body ? await renderBody(a.body) : '';
       <div>
         <dt>How sure we are</dt>
         <dd>
-          <p class="trust__now"><strong>{trust.label}, {trust.short}</strong></p>
+          {claims ? (
+            <p class="trust__now">{claims.map((c, i) => <>{i ? ' ' : ''}{i ? c.claim : upper(c.claim)}, <strong>{c.label.toLowerCase()}</strong> ({c.short}){i < claims.length - 1 ? ';' : '.'}</>)}</p>
+          ) : (
+            <p class="trust__now"><strong>{trust.label}, {trust.short}</strong></p>
+          )}
           <p class="label-key">Official: from the publisher or the console maker. Reported: from a news or guide site.</p>
           <details class="trust">
             <summary>What does this mean?</summary>
-            <p>{trust.text}</p>
+            {claims ? used.map((c) => <p><strong>{c.label}, {c.short}.</strong> {c.text}</p>) : <p>{trust.text}</p>}
           </details>
         </dd>
       </div>

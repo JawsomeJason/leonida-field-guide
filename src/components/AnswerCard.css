@@ -84,6 +84,7 @@
   color: var(--accent);
   cursor: pointer;
 }
+.trust p + p { margin-block-start: var(--space-2); }
 .trust p { margin: 0; padding-inline-start: var(--space-4); border-inline-start: 3px solid var(--line); }
 @container (min-width: 34rem) {
   .facts > div { grid-template-columns: 8rem minmax(0, 1fr); }

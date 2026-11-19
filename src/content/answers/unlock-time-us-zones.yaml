@@ -18,6 +18,11 @@ stage: before
 tier: none
 consoles: all
 confidence: reported
+basis:
+  - claim: "that the game opens at midnight local time"
+    confidence: official
+  - claim: "an earlier start in the western US"
+    confidence: reported
 sources:
   - url: "https://www.forbes.com/sites/brianmazique/2026/11/12/gta-6-unlocks-at-midnight-on-november-19-but-millions-of-americans-can-start-playing-the-night-before/"
     title: "GTA 6 Unlocks At Midnight On November 19, But Millions Of Americans Can Start Playing The Night Before (Forbes)"

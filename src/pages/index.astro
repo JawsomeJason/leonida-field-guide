@@ -21,7 +21,7 @@ const todos = todosOf(answers);
     <div class="home__ask">
       <Sunset />
       <h1 id="ask-title" tabindex="-1">Ask the field guide</h1>
-      <p class="lede">Plain answers about setup, settings and getting started. Spoilers stay off until you turn them on.</p>
+      <p class="lede">Plain answers about setup, settings and getting started. <span class="by-dial"><span data-d="off">Spoilers stay off until you turn them on.</span><span data-d="places">Spoilers are on at Places: that adds where things are.</span><span data-d="mild">Spoilers are on at Mild: that adds where things are and how the game's systems work.</span></span></p>
       <Search answers={answers} />
       <NextUp todos={todos} />
       <MostAsked answers={answers} />
