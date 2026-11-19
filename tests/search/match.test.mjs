@@ -242,3 +242,11 @@ test('a console name with other words is an ordinary search: the console word st
   assert.deepEqual(answersFor(records, 'xbox save', 'xbox-x').map((r) => r.id), ['s']);
   assert.deepEqual(answersFor(records, 'ps5 save', 'ps5').map((r) => r.id), ['s']);
 });
+
+test('one dropped, doubled or swapped letter in a word of four letters or more still matches; a real word does not turn into another', () => {
+  const records = [rec('money', 'How do I keep my money?', { keywords: ['money', 'cash'] }), rec('space', 'How much space does it need?', { keywords: ['space'] }), rec('crash', 'Why does it crash?', { keywords: ['crash'] })];
+  for (const [q, id] of [['mony', 'money'], ['monney', 'money'], ['sapce', 'space'], ['crahs', 'crash']]) assert.equal(ids(records, q)[0], id, q);
+  assert.equal(ids(records, 'cash')[0], 'money', 'cash is a word of the guide, not a slip of crash');
+  assert.equal(noteFor('colelctibles'), 'places');
+  assert.equal(noteFor('charcters'), 'story');
+});

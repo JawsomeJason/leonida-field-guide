@@ -10,7 +10,7 @@ stage: hour-1
 tier: none
 consoles: all
 byConsole:
-  ps5: "Rockstar sends you to PlayStation's PS5 error-code lookup (playstation.com/support/error-codes/ps5). For purchases and downloads, it points to PlayStation Support."
+  ps5: "Rockstar sends you to PlayStation's PS5 error-code lookup (playstation.com/en-us/support/error-codes/ps5). For purchases and downloads, it points to PlayStation Support."
   xbox-x: "Rockstar sends you to Xbox's error-code search (support.xbox.com/help/errors/error-code-search-guide). For purchases and downloads, it points to Xbox Support."
   xbox-s: "Rockstar sends you to Xbox's error-code search (support.xbox.com/help/errors/error-code-search-guide). For purchases and downloads, it points to Xbox Support."
 confidence: official
@@ -30,7 +30,7 @@ support:
     checked: "2026-11-19"
   - claim: "the PS5 error-code address"
     url: "https://support.rockstargames.com/articles/28kSeQ3zMV0PtXdGOoD8Jo/grand-theft-auto-vi-error-troubleshooting"
-    quote: "PlayStation 5: https://www.playstation.com/support/error-codes/ps5/"
+    quote: "PlayStation 5: https://www.playstation.com/en-us/support/error-codes/ps5/"
     checked: "2026-11-19"
     console: ps5
   - claim: "the Xbox error-code search address"

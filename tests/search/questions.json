@@ -238,5 +238,11 @@
   {"q": "will i lsoe my cash if i die", "first": ["keep-your-cash", "will-i-lose-anything"]},
   {"q": "mutliplayer", "first": "online-or-co-op"},
   {"q": "wehre is the gun shop", "first": "NONE", "note": "places"},
-  {"q": "fast travle", "first": "fast-travel", "dial": "mild"}
+  {"q": "fast travle", "first": "fast-travel", "dial": "mild"},
+  {"q": "how much sapce do i need", "first": ["install-size-and-preload", "free-space-ps5"]},
+  {"q": "mony", "first": ["keep-your-cash", "will-i-lose-anything"]},
+  {"q": "how do i savve my game", "first": "how-to-save"},
+  {"q": "colelctibles", "first": "NONE", "note": "places"},
+  {"q": "charcters", "first": "NONE", "note": "story"},
+  {"q": "what do i do with the code in the box", "first": "boxed-copy-redeem"}
 ]

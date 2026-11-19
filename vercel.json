@@ -1,0 +1,6 @@
+{
+  "headers": [
+    { "source": "/(places|mild)/(.*)", "headers": [{ "key": "Cache-Control", "value": "private, no-store" }] },
+    { "source": "/h/(.*)", "headers": [{ "key": "Cache-Control", "value": "private, no-store" }] }
+  ]
+}

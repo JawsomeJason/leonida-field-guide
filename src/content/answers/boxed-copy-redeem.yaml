@@ -21,7 +21,7 @@ sources:
     title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
   - url: "https://support.rockstargames.com/articles/5gwDh0peG05GQhMej2ukbY/game-activation-for-grand-theft-auto-vi"
     title: "Game Activation for Grand Theft Auto VI (Rockstar Support)"
-  - url: "https://www.playstation.com/support/store/redeem-ps-store-voucher-code"
+  - url: "https://www.playstation.com/en-us/support/store/redeem-ps-store-voucher-code"
     title: "How to redeem a PlayStation Store voucher code (PlayStation Support)"
     console: ps5
   - url: "https://support.xbox.com/help/subscriptions-billing/redeem-codes-gifting/redeem-prepaid-codes"
@@ -31,7 +31,7 @@ checked: "2026-11-19"
 rank: 18
 todo: "Redeem your boxed-copy code"
 order: 10
-keywords: ["put the code in", "put my code in", "enter my code", "enter code", "redeem code", "activate code"]
+keywords: ["put the code in", "put my code in", "enter my code", "enter code", "redeem code", "activate code", "code in the box"]
 support:
   - claim: "a boxed copy holds a download code and no disc"
     url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
@@ -46,17 +46,17 @@ support:
     quote: "visit the support link of your platform below"
     checked: "2026-11-19"
   - claim: "PS5 redeem steps in the PlayStation Store"
-    url: "https://www.playstation.com/support/store/redeem-ps-store-voucher-code"
+    url: "https://www.playstation.com/en-us/support/store/redeem-ps-store-voucher-code"
     quote: "Go to PlayStation Store and then press the triangle button to access the menu. Select … (More) > Redeem Code."
     checked: "2026-11-19"
     console: ps5
   - claim: "PlayStation online redeem steps"
-    url: "https://www.playstation.com/support/store/redeem-ps-store-voucher-code"
+    url: "https://www.playstation.com/en-us/support/store/redeem-ps-store-voucher-code"
     quote: "Go to PlayStation Store and select your profile at the top of the screen. Select Redeem Code from the drop-down menu."
     checked: "2026-11-19"
     console: ps5
   - claim: "a PlayStation code cannot move between accounts"
-    url: "https://www.playstation.com/support/store/redeem-ps-store-voucher-code"
+    url: "https://www.playstation.com/en-us/support/store/redeem-ps-store-voucher-code"
     quote: "It isn't possible to transfer funds or content between accounts, so make sure to redeem your code on the correct account."
     checked: "2026-11-19"
     console: ps5

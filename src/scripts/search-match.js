@@ -7,7 +7,7 @@
 // The one list of filler. A word here is never meaningful: it cannot make a match and cannot count against one.
 const STOP = new Set(
   `a an the is are was were be am i me my we you your it its do does did how what whats when who which will would can could should
-   to of on in at for with and or no if get there this that any have has about from so just much many where thats im ive
+   to of on in at for with and or if get there this that any have has about from so just much many where thats im ive
    keep keeps keeping want wants wanna need needs needed got gonna going go goes let lets like know tell take make use way ways thing things stuff some one
    play plays playing played game games gta best fast too also very really actually still again please thanks hey then than them they same anything everything something
    she her him his our out off over into`.split(/\s+/),
@@ -15,7 +15,7 @@ const STOP = new Set(
 // Words so common in questions that matching one alone is no answer (mode, change, work): they rank, but never make a confident answer by themselves.
 const GENERIC = new Set('mode change work problem issue help time new open first last tonight today now console version before after'.split(' ').map((w) => stem(w)));
 const FILLER = [...STOP].filter((w) => w.length > 2);
-const SHORT_OK = new Set(['pc', 'gb', 'tb', 'hz', 'tv', 'hd']); // real two-letter terms, and a number of two digits or more (60, 07); every other meaningful word has three letters or more
+const SHORT_OK = new Set(['no', 'pc', 'gb', 'tb', 'hz', 'tv', 'hd']); // real two-letter terms, and a number of two digits or more (60, 07); every other meaningful word has three letters or more
 
 // Words players use for the same thing share one name. A group's own name is a member too.
 const SYN = Object.fromEntries(
@@ -23,7 +23,7 @@ const SYN = Object.fromEntries(
     playstation: 'ps5 ps playstation',
     xbox: 'xbox series xsx xss',
     storage: 'storage space drive disk ssd hdd gb tb gigabyte',
-    not: 'not doesnt dont cant wont isnt didnt cannot never',
+    not: 'not no doesnt dont cant wont isnt didnt cannot never',
   }).flatMap(([name, words]) => words.split(' ').flatMap((w) => [[w, name], [stem(w), name]])), // stem(w) so drives and spaces fold too
 );
 const WEAK = new Set(['playstation', 'xbox', 'not']); // console words say what the player owns, not what they ask; a no only colours the question: they count for less
@@ -86,7 +86,7 @@ const swapped = (a, b) => a.length === b.length && a !== b && near(a, b) && [...
 const swapMemo = new Map();
 /** The stems of every word one neighbour swap from raw (empty under 4 letters: no typo there). */
 const swaps = (raw) => {
-  if (!swapMemo.has(raw)) swapMemo.set(raw, new Set(raw.length < 4 ? [] : [...raw.slice(1)].map((_, i) => stem(raw.slice(0, i) + raw[i + 1] + raw[i] + raw.slice(i + 2)))));
+  if (!swapMemo.has(raw)) swapMemo.set(raw, new Set(raw.length < 4 ? [] : [...raw.slice(1)].map((_, i) => canon(raw.slice(0, i) + raw[i + 1] + raw[i] + raw.slice(i + 2)))));
   return swapMemo.get(raw);
 };
 
@@ -112,7 +112,7 @@ const fieldsOf = (r) => ({
  * fewer or different counts when both stems have 5 letters or more (cash is not crash); two swapped neighbours are one typo, from 4 typed
  * letters. `verb` says the word met an action verb (ACTION) in the record's question or keywords. `typing` lets the word be an unfinished start.
  */
-function weigh(fields, q, typing, raw, acts) {
+function weigh(fields, q, typing, raw, acts, vocab) {
   const len = raw.length;
   let best = 0;
   let sum = 0;
@@ -122,7 +122,8 @@ function weigh(fields, q, typing, raw, acts) {
     if (!tol) return false;
     if (swaps(raw).has(w)) return true; // a swap is judged on the letters as typed: crahs would fold to crah (its s looks like a plural) and setitngs to setitng, though both are one swap from a word
     if (Math.abs(q.length - w.length) > tol) return false;
-    if (Math.min(q.length, w.length) < 5) return swapped(q, w);
+    // Short stems: a swap always; a dropped or doubled letter only in a word the guide never uses (mony, savve), so cash stays cash and never crash and plot never slot.
+    if (Math.min(q.length, w.length) < 5) return swapped(q, w) || (q.length > 3 && !vocab.has(q) && (q.length + 1 === w.length ? near(q, w) : q.length === w.length + 1 && [...q].some((c, i) => c === q[i + 1] && q.slice(0, i) + q.slice(i + 1) === w)));
     const d = osa(q, w);
     return d <= 1 || (d <= tol && !w.startsWith(q) && !q.startsWith(w)); // two edits never make a longer word of a shorter one (stream, streamer)
   };
@@ -148,10 +149,11 @@ export function search(records, query) {
   const typed = new Map(); // folded word -> longest spelling typed
   for (const t of raw) if (t.length > (typed.get(canon(t, true))?.length ?? 0)) typed.set(canon(t, true), t);
   const docs = records.map((r, i) => ({ r, i, f: fieldsOf(r), acts: actions(r), phrases: (r.keywords ?? []).map(words).filter((p) => p.length > 1) }));
+  const vocab = new Set(docs.flatMap((d) => Object.values(d.f).flat()));
   const subject = subjectVerbs(query);
   const last = raw.length ? canon(raw.at(-1), true) : '';
   const known = [...typed]
-    .map(([q, spelt]) => ({ q, len: spelt.length, spelt, hits: docs.filter((d) => weigh(d.f, q, q === last, spelt, d.acts).best).length }))
+    .map(([q, spelt]) => ({ q, len: spelt.length, spelt, hits: docs.filter((d) => weigh(d.f, q, q === last, spelt, d.acts, vocab).best).length }))
     .filter((k) => k.hits)
     .map((k) => ({ ...k, rare: Math.log(1 + docs.length / k.hits), info: !GENERIC.has(k.q) && !WEAK.has(k.q) })); // a word in few answers says more than one in most
   // A word no answer holds that is a typo of a filler word (wher, shoud, hwo) is filler too, not a word the guide has never seen.
@@ -168,7 +170,7 @@ export function search(records, query) {
       let verb = 0; // action verbs the query names that the record's question or keywords hold
       let any = false;
       for (const k of known) {
-        const { best, sum, verb: act } = weigh(d.f, k.q, k.q === last, k.spelt, d.acts);
+        const { best, sum, verb: act } = weigh(d.f, k.q, k.q === last, k.spelt, d.acts, vocab);
         if (!best) continue;
         const c = WEAK.has(k.q) ? 0.3 : 1;
         any = true;
@@ -240,13 +242,17 @@ export const asksKnown = (query) => {
   return text.split(SPLIT).some((w) => KNOWN.has(stem(w))) || /\b(not|isnt|arent|stopped) working\b/.test(text) || /\b(is|are)\b.*\bdown\b/.test(text);
 };
 
+// A one-letter slip in the long words that decide a note (colelctibles, charcters) still counts as the word.
+const NOTE_WORDS = 'collectibles collectible secrets locations whereabouts missions campaign characters character cutscenes'.split(' ');
+const mend = (query) => String(query ?? '').toLowerCase().replace(/['’]/g, '').replace(/\p{L}{6,}/gu, (w) => NOTE_WORDS.find((k) => near(w, k)) ?? w);
+
 /** A question about where something is: the guide keeps places behind the dial. */
 export const asksWhere = (query) =>
-  /\bwhere(s| is| are| can i (find|get|buy)| do i (find|get|buy))\b|\blocations?\b|\bnearest\b|\bwhereabouts\b|\bmaps?\b|\b(collectibles?|secrets?|easter eggs?|hidden packages?)\b/.test(query.toLowerCase().replace(/['’]/g, '').replace(/\b\p{L}{5}\b/gu, (w) => (swapped(w, 'where') ? 'where' : w))); // wehre is where
+  /\bwhere(s| is| are| can i (find|get|buy)| do i (find|get|buy))\b|\blocations?\b|\bnearest\b|\bwhereabouts\b|\bmaps?\b|\b(collectibles?|secrets?|easter eggs?|hidden packages?)\b/.test(mend(query).replace(/\b\p{L}{5}\b/gu, (w) => (swapped(w, 'where') ? 'where' : w))); // wehre is where
 
 /** A question about the story: the guide carries none, by design, so with no real answer the page says so instead of "no answer yet". */
 export const asksStory = (query) =>
-  /\b(missions?|story|plot|endings?|campaign|characters?|cutscenes?|whos|who is)\b|\bhow (does|will) (the game|it) end\b/.test(String(query ?? '').toLowerCase().replace(/['’]/g, ''));
+  /\b(missions?|story|plot|endings?|campaign|characters?|cutscenes?|whos|who is)\b|\bhow (does|will) (the game|it) end\b/.test(mend(query));
 
 /** Why a query with no real answer gets a reason: 'places' (hidden by design, where-is note) or 'story' (no story content), else ''. */
 export const noteFor = (query) => (asksWhere(query) ? 'places' : asksStory(query) ? 'story' : '');

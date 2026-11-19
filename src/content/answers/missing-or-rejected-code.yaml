@@ -30,7 +30,7 @@ sources:
     title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
   - url: "https://support.rockstargames.com/request"
     title: "Submit a Request (Rockstar Support)"
-  - url: "https://www.playstation.com/support/store/redeem-ps-store-voucher-code"
+  - url: "https://www.playstation.com/en-us/support/store/redeem-ps-store-voucher-code"
     title: "How to redeem a PlayStation Store voucher code (PlayStation Support)"
     console: ps5
   - url: "https://support.xbox.com/help/subscriptions-billing/redeem-codes-gifting/redeem-prepaid-codes"
@@ -66,7 +66,7 @@ support:
     checked: "2026-11-19"
     console: ps5
   - claim: "PS5: redeem on the account you play on"
-    url: "https://www.playstation.com/support/store/redeem-ps-store-voucher-code"
+    url: "https://www.playstation.com/en-us/support/store/redeem-ps-store-voucher-code"
     quote: "It isn't possible to transfer funds or content between accounts, so make sure to redeem your code on the correct account."
     checked: "2026-11-19"
     console: ps5
