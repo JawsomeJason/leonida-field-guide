@@ -1,14 +1,14 @@
 ---
-// First run on the Ask screen: which console? Shown until one is chosen (console.css hides it after). Needs script to save the choice.
-import { consoleLabels } from '../lib/answers';
+// First run on the Ask screen, under the search: which console? One slim row of three buttons, gone once a console is chosen
+// (console.css hides it after). Needs script to save the choice.
+const consoles = [['ps5', '', 'PS5'], ['xbox-x', 'Xbox ', 'Series X'], ['xbox-s', 'Xbox ', 'Series S']];
 ---
 
 <section class="console-card needs-js" aria-labelledby="console-title">
   <h2 id="console-title">Which console do you play on?</h2>
-  <p>Pick yours and the steps and button names match it. Until then you see only what fits every console.</p>
   <div class="console-card__btns">
-    {Object.entries(consoleLabels).map(([value, label]) => (
-      <button type="button" class="console-btn" data-set="console" data-value={value} data-focus="#ask-title">{label}</button>
+    {consoles.map(([value, hidden, label]) => (
+      <button type="button" class="console-btn" data-set="console" data-value={value} data-focus="#ask-title">{hidden && <span class="sr-only">{hidden}</span>}{label}</button>
     ))}
   </div>
 </section>

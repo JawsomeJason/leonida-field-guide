@@ -17,9 +17,13 @@ export const press = (locator) => (test.info().project.use.hasTouch ? locator.ta
 /** Start the page with these saved settings (runs before every load of the page). */
 export const saved = (page, settings) => page.addInitScript((s) => localStorage.setItem('lfg:v1', JSON.stringify(s)), settings);
 
-export const setDial = (page, label) => press(page.getByRole('radio', { name: label, exact: true }));
+/** The spoiler level lives in the settings sheet: open it from its chip, then choose (a choice closes the sheet). */
+export const setDial = async (page, label) => {
+  await press(page.locator('.chip--dial'));
+  await press(page.locator('#settings').getByRole('radio', { name: new RegExp(`^${label}\\b`) })); // a level's name carries its meaning: "Places adds where things are"
+};
 export const setTheme = async (page, label) => {
-  await press(page.locator('.chip'));
+  await press(page.locator('.chip--console'));
   await press(page.locator('#settings').getByRole('radio', { name: label, exact: true }));
 };
 

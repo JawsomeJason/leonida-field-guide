@@ -15,12 +15,12 @@ const todos = todosOf(answers);
 ---
 
 <Base>
-  <ConsoleCard />
   <div class="home"><div class="home__grid">
     <div class="home__ask">
       <h1 id="ask-title" tabindex="-1">Ask the field guide</h1>
       <p class="lede">Plain answers about setup, settings and getting started. Spoilers stay off until you turn them on.</p>
       <Search answers={answers} />
+      <ConsoleCard />
       <MostAsked answers={answers} />
     </div>
     <div class="home__stage"><StagePicker todos={todos} /></div>

@@ -152,10 +152,10 @@ test('a new device starts with the dial at Off, whatever the server holds', asyn
   await server.attach(ctx);
   const page = await ctx.newPage();
   await page.goto('/');
-  await expect(page.getByRole('radio', { name: 'Off', exact: true })).toBeChecked();
+  await expect(page.locator('.chip--dial')).toHaveText('Spoilers: Off', { useInnerText: true });
   await expect.poll(() => server.puts.length).toBeGreaterThan(0); // the sync ran
   expect(await html(page)).toMatchObject({ dial: 'off' });
-  await expect(page.getByRole('radio', { name: 'Off', exact: true })).toBeChecked();
+  await expect(page.locator('.chip--dial')).toHaveText('Spoilers: Off', { useInnerText: true });
   await ctx.close();
 });
 

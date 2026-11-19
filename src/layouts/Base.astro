@@ -23,7 +23,11 @@ const nav = [
 ];
 const current = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 
-const dial = [['off', 'Off'], ['places', 'Places'], ['mild', 'Mild']];
+const dial = [
+  ['off', 'Off', 'what the game itself teaches every player'],
+  ['places', 'Places', 'adds where things are'],
+  ['mild', 'Mild', 'adds things you would rather find out by playing'],
+];
 const consoles = [['ps5', 'PS5'], ['xbox-x', 'Xbox X'], ['xbox-s', 'Xbox S']];
 const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
 ---
@@ -57,29 +61,33 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
   <body>
     <header class="site-header">
       <div class="site-header__row">
-        <a class="site-name" href="/">{site}</a>
-        <fieldset class="dial" aria-describedby="dial-help">
-          <legend>Spoilers</legend>
-          <div class="seg">
-            {dial.map(([value, label]) => (
-              <label><input type="radio" name="dial" value={value} data-setting checked={value === 'off'} />{label}</label>
-            ))}
-          </div>
-        </fieldset>
-        {/* Always shows the console in use. Opens the settings sheet (a native popover: Esc, a tap outside and Done close it). */}
-        <button class="chip needs-js" type="button" popovertarget="settings">
+        {/* A short mark on a phone (the app icon), the name beside it from 600px. Both chips open the settings sheet (a native popover). */}
+        <a class="site-name" href="/">
+          <img src="/favicon.svg" width="32" height="32" alt="" />
+          <span class="site-name__text">{site}</span>
+        </a>
+        <button class="chip chip--console needs-js" type="button" popovertarget="settings">
           <span class="sr-only">Settings: </span>
           {consoles.map(([value, label]) => <span data-c={value}>{label}</span>)}
           <span data-c="">Console</span>
-          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="m6 15 6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+        {/* Always says the spoiler level in words. Without script it still opens the sheet, where the dial is. */}
+        <button class="chip chip--dial" type="button" popovertarget="settings">
+          Spoilers: {dial.map(([value, label]) => <span data-d={value}>{label}</span>)}
         </button>
       </div>
     </header>
 
-    <div id="settings" class="sheet needs-js" popover role="dialog" aria-labelledby="settings-title">
+    <div id="settings" class="sheet" popover role="dialog" aria-labelledby="settings-title">
       <div class="sheet__in">
         <h2 id="settings-title">Settings</h2>
-        <fieldset class="setting">
+        <fieldset class="levels">
+          <legend>Spoilers</legend>
+          {dial.map(([value, label, meaning]) => (
+            <label><input type="radio" name="dial" value={value} data-setting checked={value === 'off'} /><span><strong>{label}</strong> {meaning}</span></label>
+          ))}
+        </fieldset>
+        <fieldset class="setting needs-js">
           <legend>Console</legend>
           <div class="seg">
             {consoles.map(([value, label]) => (
@@ -87,7 +95,7 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
             ))}
           </div>
         </fieldset>
-        <fieldset class="setting">
+        <fieldset class="setting needs-js">
           <legend>Theme</legend>
           <div class="seg">
             {themes.map(([value, label]) => (
@@ -95,17 +103,12 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
             ))}
           </div>
         </fieldset>
-        <section id="dial-help" class="dial-help" aria-labelledby="dial-help-title">
-          <h3 id="dial-help-title">What the spoiler dial shows</h3>
-          <dl>
-            <dt>Off</dt><dd>how-to answers only</dd>
-            <dt>Places</dt><dd>adds where things are</dd>
-            <dt>Mild</dt><dd>adds light gameplay hints</dd>
-          </dl>
-        </section>
         <button type="button" class="btn" popovertarget="settings" popovertargetaction="hide">Done</button>
       </div>
     </div>
+
+    {/* Only while the device is offline (online.js); empty and hidden otherwise. */}
+    <p id="offline" class="offline-note" role="status" hidden></p>
 
     <div class:list={['frame', { 'frame--list': hasList }]}>
       <nav class="nav" aria-label="Main">
@@ -129,6 +132,7 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
       import '../scripts/settings.js';
       import '../scripts/sync.js';
       import '../scripts/offline.js';
+      import '../scripts/online.js';
       import '../scripts/panel.js';
     </script>
   </body>
