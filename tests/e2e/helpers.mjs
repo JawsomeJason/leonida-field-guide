@@ -8,6 +8,17 @@ export const ranked = records.filter((a) => a.tier === 'none' && a.rank <= 20).s
 /** One screen of every kind, as paths of the fixture build. */
 export const SCREENS = ['/', '/topics/', '/topics/settings/', '/a/sample-02/', '/checklist/', '/new/', '/places/', '/about/'];
 
+/** Every page of the fixture build (a test keeps this list equal to what the build wrote): screens, cheat sheets, answers, the hidden
+ *  tiers' gate and explicit pages, and the 404 (served for any unknown path). */
+const TOPICS = ['setup', 'settings', 'controls', 'saving', 'money', 'getting-around', 'bonuses', 'fixes', 'good-to-know', 'places'];
+export const PAGES = [
+  '/', '/topics/', ...TOPICS.map((t) => `/topics/${t}/`), '/checklist/', '/new/', '/about/', '/places/', '/mild/', '/places/list/', '/places/list/show/', '/no-such-page/',
+  ...records.flatMap((a) => {
+    const tiers = a.tier === 'none' ? [...new Set((a.reveal ?? []).map((r) => r.tier))] : [a.tier];
+    return [...(a.tier === 'none' ? [`/a/${a.id}/`] : []), ...tiers.flatMap((t) => [`/${t}/${a.id}/`, `/${t}/${a.id}/show/`])];
+  }),
+];
+
 export const NIGHT = 'rgb(24, 19, 32)';
 export const DAY = 'rgb(246, 239, 226)';
 
@@ -34,6 +45,9 @@ export const setTheme = async (page, label) => {
  * or a link stretched over a card. The bounding box of those points is the hit area. A 24px checkbox in a 48px label is judged
  * as the label, and a control another element covers is judged as what is left. Nothing is skipped for being "part of" something
  * bigger. The page is measured in one tall viewport, so nothing needs scrolling.
+ * A link, button or summary must ALSO be 48px in its own box (getBoundingClientRect): a link stretched over a card passes the tap test
+ * because the card is the target, but a tool that reads boxes (a reviewer, Lighthouse, voice control) sees the bare 20px line, so both
+ * must hold. Inputs are judged by the tap only: a 24px tick box inside a 48px label is the label's target.
  * Problems: a hit area under 48px either way; a hit area with another control's hit area closer than 8px (measured between the
  * tappable points, so a button inside a stretched card is judged by the padding around it). Fixed and sticky layers (the header,
  * the tab bar, an open sheet) are neighbours only of what is in the same layer: they float over the page and move against it.
@@ -63,8 +77,9 @@ export async function measure(page) {
       const hit = document.elementFromPoint(x, y)?.closest(`${SEL}, label`);
       return hit?.matches('label') ? hit.control : hit;
     };
-    // A link inside a sentence is exempt (spec "Touch"): inline, and the text around it is more than the link.
-    const inSentence = (el) => el.tagName === 'A' && getComputedStyle(el).display === 'inline' && el.parentElement.textContent.trim() !== el.textContent.trim();
+    // The one exemption (spec "Touch"): a link inside a sentence of running text in an answer body or a text page (.prose): inline,
+    // with more text around it than the link. A link that is the whole line, or a list item, is not in a sentence.
+    const inSentence = (el) => el.tagName === 'A' && !!el.closest('.prose') && getComputedStyle(el).display === 'inline' && el.parentElement.textContent.trim() !== el.textContent.trim();
 
     // What an open sheet covers is meant to be out of reach until it closes, so only the sheet and the header are judged then.
     const sheets = [...document.querySelectorAll(':popover-open')];
@@ -88,6 +103,7 @@ export async function measure(page) {
       const pts = [];
       for (let y = y0 + 0.5; y < y1; y += C) for (let x = x0 + 0.5; x < x1; x += C) if (activates(x, y) === el) pts.push([x, y]);
       const name = `${el.tagName.toLowerCase()} "${(el.getAttribute('aria-label') || el.textContent || el.id || el.name || '').trim().replace(/\s+/g, ' ').slice(0, 30)}"`;
+      const own = el.matches('a[href], button, summary, [tabindex]') ? el.getBoundingClientRect() : null; // inputs are judged by the tap alone
       if (!pts.length) { areas.push({ name, covered: true, layer: layerOf(el), pts }); continue; }
       // Pixel-exact edges: walk each side outward from the coarse points while a tap still reaches the control.
       const xs = [...new Set(pts.map((p) => p[0]))], ys = [...new Set(pts.map((p) => p[1]))];
@@ -97,13 +113,14 @@ export async function measure(page) {
       while (ys.some((y) => reach(r + 1, y))) r++;
       while (xs.some((x) => reach(x, t - 1))) t--;
       while (xs.some((x) => reach(x, b + 1))) b++;
-      areas.push({ name, layer: layerOf(el), x: l - 0.5, y: t - 0.5, w: r - l + 1, h: b - t + 1, pts });
+      areas.push({ name, layer: layerOf(el), x: l - 0.5, y: t - 0.5, w: r - l + 1, h: b - t + 1, pts, own: own && { w: own.width, h: own.height } });
     }
     // Sampling to the pixel is good to about a pixel: sizes under 47 and gaps under 7 are the failures.
     const problems = [];
     for (const a of areas) {
       if (a.covered) problems.push(`${a.name} is covered: a tap on it lands elsewhere`);
       else if (a.w < 47 || a.h < 47) problems.push(`${a.name} has a hit area of ${Math.round(a.w)}x${Math.round(a.h)}`);
+      else if (a.own && (a.own.w < 47 || a.own.h < 47)) problems.push(`${a.name} is ${Math.round(a.own.w)}x${Math.round(a.own.h)} itself, though a tap reaches it`);
     }
     const closest = (as, bs) => {
       let m = Infinity;
@@ -126,7 +143,12 @@ export async function measure(page) {
     });
     const live = areas.filter((a) => !a.covered);
     const small = live.reduce((m, a) => (Math.min(a.w, a.h) < Math.min(m.w, m.h) ? a : m), live[0]);
-    return { problems, smallest: `${Math.round(small.w)}x${Math.round(small.h)} ${small.name}`, count: live.length };
+    const bare = live.filter((a) => a.own).reduce((m, a) => (!m || Math.min(a.own.w, a.own.h) < Math.min(m.own.w, m.own.h) ? a : m), null);
+    return {
+      problems,
+      smallest: `${Math.round(small.w)}x${Math.round(small.h)} ${small.name}` + (bare ? `; smallest box ${Math.round(bare.own.w)}x${Math.round(bare.own.h)} ${bare.name}` : ''),
+      count: live.length,
+    };
   });
   await page.setViewportSize({ width, height: was });
   return result;

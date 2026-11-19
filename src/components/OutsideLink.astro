@@ -1,17 +1,19 @@
 ---
-// A link to another site. Any of them can show spoilers, so the note is part of the link: read before the tap, and read out by a screen reader.
+// One link to another site: its title, then its host, so the target is read before the tap. The shared note about spoilers is
+// said once per list (OutsideList.astro), not on every link.
 import './OutsideLink.css';
 
 interface Props {
   href: string;
   title: string;
+  about?: string;
 }
-const { href, title } = Astro.props;
+const { href, title, about } = Astro.props;
 const host = new URL(href).hostname.replace(/^www\./, '');
 ---
 
 <a class="outside" href={href} rel="noopener">
   <span class="outside__title">{title}</span>
-  {Astro.slots.has('default') && <span class="outside__about"><slot /></span>}
-  <span class="outside__note">{host === title ? '' : `${host} · `}outside site, may contain spoilers</span>
+  {about && <span class="outside__about">{about}</span>}
+  {host !== title && <span class="outside__host">{host}</span>}
 </a>

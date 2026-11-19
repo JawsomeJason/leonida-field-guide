@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import ConsoleName from '../components/ConsoleName.astro';
+import { consoleIds } from '../data/consoles.js';
 
 interface Props {
   title?: string;
@@ -28,7 +30,6 @@ const dial = [
   ['places', 'Places', 'adds where things are'],
   ['mild', 'Mild', 'adds things you would rather find out by playing'],
 ];
-const consoles = [['ps5', 'PS5'], ['xbox-x', 'Xbox X'], ['xbox-s', 'Xbox S']];
 const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
 ---
 
@@ -68,8 +69,8 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
         </a>
         <button class="chip chip--console needs-js" type="button" popovertarget="settings">
           <span class="sr-only">Settings: </span>
-          {consoles.map(([value, label]) => <span data-c={value}>{label}</span>)}
-          <span data-c="">Console</span>
+          {consoleIds.map((id) => <span data-c={id}><ConsoleName id={id} /></span>)}
+          <span data-c="">Choose console</span>
         </button>
         {/* Always says the spoiler level in words. Without script it still opens the sheet, where the dial is. */}
         <button class="chip chip--dial" type="button" popovertarget="settings">
@@ -90,8 +91,8 @@ const themes = [['system', 'Auto'], ['day', 'Day'], ['night', 'Night']];
         <fieldset class="setting needs-js">
           <legend>Console</legend>
           <div class="seg">
-            {consoles.map(([value, label]) => (
-              <label><input type="radio" name="console" value={value} data-setting />{label}</label>
+            {consoleIds.map((id) => (
+              <label><input type="radio" name="console" value={id} data-setting /><ConsoleName id={id} /></label>
             ))}
           </div>
         </fieldset>

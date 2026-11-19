@@ -165,7 +165,7 @@ test('changing console on a single-console page folds and unfolds it', async ({ 
   await pageFor(page, 'ps5', '/a/console-ps5/');
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await press(page.locator('.chip--console'));
-  await press(page.locator('#settings').getByRole('radio', { name: 'Xbox X', exact: true }));
+  await press(page.locator('#settings').getByRole('radio', { name: 'Xbox Series X', exact: true }));
   await expect(page.locator('details.other-fold h1')).toBeHidden();
   await press(page.locator('.chip--console'));
   await press(page.locator('#settings').getByRole('radio', { name: 'PS5', exact: true }));
