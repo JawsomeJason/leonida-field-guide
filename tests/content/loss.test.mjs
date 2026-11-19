@@ -4,25 +4,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { loadRecords } from '../../scripts/check-leak.mjs';
+import { GENERIC, LABEL, rulesIn } from './loss-rules.mjs';
 
 const records = loadRecords('src/content/answers');
 const off = records.filter((a) => a.tier === 'none');
-export const GENERIC = 'You can lose in-game money.';
-export const LABEL = 'Show how to keep it safe (one small game rule)';
 
 const clean = (t) => t.replace(/^[-\s]+/, '').replace(/\[([^\]]*)\]\([^)]*\)/g, '$1');
 /** The lines a player reads at Off, one per body line. Source titles are the pages' own and are read for rule words too. */
 const lines = (a) => [a.short, ...Object.values(a.byConsole ?? {}), a.todo, ...(a.body ?? '').split('\n')].filter(Boolean);
 const readable = (a) => [a.question, ...lines(a), ...a.sources.map((s) => s.title)];
-
-// What makes a sentence a game rule rather than a generic warning: who carries what, the bank and ATM, dying, loot, deposits, drops of cash.
-// (A frame-rate "drop" is not a rule, so "drop" counts only beside cash, money or loot.)
-export const RULE_SIGNALS = [
-  /\bcarr(y|ied|ying)\b[^.]{0,30}\b(cash|money)\b|\b(cash|money)\b[^.]{0,30}\bcarr(y|ied)/i,
-  /\bbank(ed|ing|s)?\b/i, /\bATMs?\b/, /\b(die|dies|died|dying|death)\b/i, /\bloot\b/i, /\bdeposit(s|ed|ing)?\b/i,
-  /\bdrops?\b[^.]{0,20}\b(cash|money|loot)\b|\b(cash|money|loot)\b[^.]{0,20}\bdrops?\b/i,
-];
-export const rulesIn = (texts) => texts.flatMap((t) => RULE_SIGNALS.filter((re) => re.test(t)).map((re) => `${re}: "${t.slice(0, 70)}"`));
 
 const sentences = (t) => t.replace(/\[[^\]]*\]\([^)]*\)/g, '').split(/\n|(?<=[.!?])\s+/).map(clean).filter(Boolean); // a pointer's link text is not a statement
 const MONEY_LOSS = /\b(lose|loses|lost)\b[^.]*\b(money|cash)\b|\b(money|cash)\b[^.]*\b(lose|lost)\b/i;
