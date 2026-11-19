@@ -34,7 +34,10 @@ async function start() {
 }
 
 if ('serviceWorker' in navigator && 'caches' in window && import.meta.env.PROD) {
-  const go = () => start().catch(() => {});
+  // Not at load: the worker's first install fetches the whole guide, and on a slow phone that would sit in front of the player's first taps and page loads.
+  // Wait for the load event, a few seconds, and an idle moment.
+  const run = () => start().catch(() => {});
+  const go = () => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(run, { timeout: 3000 }) : run()), 3000);
   if (document.readyState === 'complete') go();
   else addEventListener('load', go, { once: true });
 }

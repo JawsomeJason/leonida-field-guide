@@ -31,7 +31,13 @@ const store = async (cache, url) => {
     return false;
   }
 };
-const storeAll = async (cache, urls) => (await Promise.all(urls.map((u) => store(cache, u)))).every(Boolean);
+// A few at a time: the first install must not fill the connection and keep the player's own requests waiting.
+const BATCH = 4;
+const storeAll = async (cache, urls) => {
+  let ok = true;
+  for (let i = 0; i < urls.length; i += BATCH) ok = (await Promise.all(urls.slice(i, i + BATCH).map((u) => store(cache, u)))).every(Boolean) && ok;
+  return ok;
+};
 
 async function precache() {
   const cache = await caches.open(CACHE);

@@ -82,4 +82,6 @@ addEventListener('online', () => {
   failures = 0;
   schedule(0);
 });
-schedule(0);
+// The first read waits for the load event and a moment more, so it never sits in front of a first tap on a slow connection.
+if (document.readyState === 'complete') schedule(1000);
+else addEventListener('load', () => schedule(1000), { once: true });

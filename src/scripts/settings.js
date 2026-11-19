@@ -83,6 +83,8 @@ export function absorb(remote) {
   return next && save(merge(state(), { v: 2, settings: {}, items: next.items }));
 }
 
+// The early script in Base.astro heard any tap made before this one arrived; from here on these handlers do it.
+window.lfgEarly?.();
 addEventListener('change', (e) => {
   if (e.target.matches?.('input[data-setting]')) write({ [e.target.name]: e.target.value });
 });
@@ -101,4 +103,11 @@ try {
   const raw = JSON.parse(localStorage.getItem(KEY));
   if (raw && !parse(raw)) localStorage.setItem(KEY, JSON.stringify(load(raw)));
 } catch {}
+// Ticks made before this script arrived are saved now, so the page's first paint of the saved state cannot undo them.
+const early = Object.entries(window.lfgTicks ?? {});
+if (early.length) {
+  const done = new Set(read().done);
+  for (const [id, on] of early) on ? done.add(id) : done.delete(id);
+  write({ done: [...done] });
+}
 apply(read());

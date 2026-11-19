@@ -15,3 +15,4 @@ skills-lock.json
 test-results/
 playwright-report/
 node_modules
+.lcp-dist/
