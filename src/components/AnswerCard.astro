@@ -36,9 +36,10 @@ const body = full && a.body ? await renderBody(a.body) : '';
       </fieldset>
     )}
     <p class="answer__a"><ConsoleText text={a.short} byConsole={a.byConsole} /></p>
+    <Reveal answer={a} labelled />
     {only && <p class="answer__note">{only}</p>}
     {body && <div class="prose" set:html={body} />}
-    <Reveal answer={a} />
+    <Reveal answer={a} labelled={false} />
     <dl class="facts">
       <div>
         <dt>How sure we are</dt>

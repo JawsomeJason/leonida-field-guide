@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { press, saved, DAY, NIGHT, PAGES } from './helpers.mjs';
 
 // Fix round 5 (UI): the hidden-detail control, the sheet's dial line, places cards with their evidence, the label key, Next up rows.
-const LABEL = 'Show how to keep it safe (one small game rule)'; // tests/fixtures/answers/sample-02.yaml, the mild reveal
+const LABEL = 'Show how to keep it safe'; // tests/fixtures/answers/sample-02.yaml, the mild reveal
 const SHEET_LINE = 'Off names a game system only to say it exists; where you could lose something, Off says so and one tap shows how to avoid it.';
 
 test('a reveal with a label: the control says it, is a 48px control, reveals in place, leaves the dial at Off, and Hide puts it away', async ({ page }) => {

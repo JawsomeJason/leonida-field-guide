@@ -33,5 +33,5 @@ test('Will I lose anything: saved-data backup is stated per console, each tied t
   assert.doesNotMatch(a.byConsole.ps5, /Xbox|Cultured/);
   assert.doesNotMatch(a.byConsole['xbox-x'], /PlayStation/);
   // The Off wording of the loss warning stays exact.
-  for (const line of [a.short, ...Object.values(a.byConsole)]) assert.match(line, /You can lose in-game money\.$/);
+  for (const line of [a.short, ...Object.values(a.byConsole)]) assert.match(line, /You can lose in-game money\. There is a simple way to keep it safe\.$/);
 });

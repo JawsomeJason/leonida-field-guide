@@ -4,6 +4,7 @@ interface Props {
 }
 const { answers } = Astro.props;
 import OutsideMaps from './OutsideMaps.astro';
+import './Reveal.css';
 import { mapsOffLine } from '../data/outside-maps.js';
 ---
 
@@ -90,6 +91,16 @@ import { mapsOffLine } from '../data/outside-maps.js';
   .tap-list.ask-rows a { flex-direction: column; align-items: flex-start; justify-content: center; }
   .ask-rows .q { color: var(--text); font-weight: 650; } /* a step heavier than the snippet under it */
   .ask-rows .s { color: var(--muted); font-size: var(--text-small); font-weight: 400; line-height: 1.35; }
+
+  /* A result that warns of a loss is a card: the answer link, then the one filled button under it. Two controls, 8px apart. */
+  .ask-rows li.ask-loss { padding: 0 var(--space-4) var(--space-3); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+  .ask-rows li.ask-loss::after { display: none; }
+  .tap-list.ask-rows li.ask-loss a:not(.reveal__btn) { margin: 0; padding-inline: 0 1.75rem; border-inline-start: 0; }
+  .ask-rows li.ask-loss a:not(.reveal__btn)::after { inset-inline-end: 0; }
+  .ask-rows li.ask-loss .reveal { margin-block-start: var(--gap-tap); }
+  /* The button is an <a> inside .tap-list: take back the list row's margin, padding, left edge and arrow. */
+  .tap-list.ask-rows li.ask-loss .reveal__btn { margin: 0; padding: var(--space-2) var(--space-4); border: 1px solid var(--action); align-items: center; }
+  .tap-list.ask-rows li.ask-loss .reveal__btn::after { display: none; }
 
   /* The known-problems row ahead of the answers: a raised row with the arrow the checklist rows end on, like the other primary rows. */
   .ask-rows li.ask-known { margin-block-end: var(--gap-tap); border-block-end: 0; }

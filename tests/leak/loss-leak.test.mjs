@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { loadRecords } from '../../scripts/check-leak.mjs';
-import { GENERIC, rulesIn } from '../content/loss-rules.mjs';
+import { GENERIC, LABEL, rulesIn } from '../content/loss-rules.mjs';
 
 const skip = !existsSync('dist') && 'no build at dist';
 const records = loadRecords('src/content/answers');
@@ -31,7 +31,10 @@ test('the Off search data holds only the generic line for money loss and no game
     const row = rows.find((r) => r.id === id);
     assert.ok(row, id);
     assert.ok(row.short.endsWith(GENERIC), `${id}: ${row.short}`);
+    // Round 7: the row carries the marker the result card is made from, with the Off-safe label and the tier, and none of the detail.
+    assert.deepEqual(row.loss, { tier: 'mild', label: LABEL }, id);
   }
+  assert.deepEqual(rows.filter((r) => r.loss).map((r) => r.id).sort(), ['keep-your-cash', 'will-i-lose-anything'], 'only records with a labelled reveal carry the marker');
   assert.deepEqual(rows.flatMap((r) => rulesIn([r.question, r.short]).map((m) => `${r.id}: ${m}`)), []);
 });
 

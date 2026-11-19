@@ -1,6 +1,7 @@
 import { read } from './settings.js';
 import { answersFor, asksWhere, asksKnown, pagePath } from './search-match.js';
 import { textHtml } from '../lib/console.js';
+import './reveal.js'; // the loss rows' button opens in place, as on an answer page
 
 // Each tier's records live under that tier's own paths; hidden tiers load only when the dial allows them.
 const tiers = {
@@ -33,6 +34,7 @@ function load(tier) {
 
 function row(r) {
   const li = document.createElement('li');
+  li.className = r.loss ? 'ask-loss' : '';
   const a = document.createElement('a');
   const q = document.createElement('span');
   const s = document.createElement('span');
@@ -43,7 +45,19 @@ function row(r) {
   s.innerHTML = textHtml((tiers[r.tier].label ? `${tiers[r.tier].label}. ` : '') + r.short); // button tokens become button names (both consoles' until one is chosen)
   a.append(q, s);
   li.append(a);
+  if (r.loss) li.append(lossBox(r)); // a result that warns of a loss never ends on the warning alone: the button is right under it
   return li;
+}
+
+// The same markup Reveal.astro writes, with the Off-safe label; reveal.js does the rest.
+function lossBox({ id, loss: { tier, label } }) {
+  const box = document.createElement('div');
+  box.className = 'reveal reveal--warn';
+  box.dataset.reveal = '';
+  box.dataset.tier = tier;
+  box.innerHTML = `<a class="reveal__btn" href="/${tier}/${id}/show/?reveal=1" data-src="/h/${tier}/a/${id}/"><span class="reveal__t"></span></a><div class="reveal__out" tabindex="-1" hidden></div>`;
+  box.querySelector('.reveal__t').textContent = label;
+  return box;
 }
 
 // A link row in the results list, for the way out when nothing matches.

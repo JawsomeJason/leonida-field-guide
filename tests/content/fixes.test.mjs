@@ -163,7 +163,7 @@ test('Will I lose anything? is the one place for uninstalling, saves and cash, s
     assert.doesNotMatch(h, /loses nothing|comes? (right )?back|will be (kept|safe)|nothing (is|will be) lost/i, h);
     assert.match(h, /not confirmed|does not say/, `a headline says saves are unconfirmed: ${h}`);
     assert.match(h, /before you (delete|uninstall)|check first|upload (it|them) first|stay signed in/i, `a headline says what to do first: ${h}`);
-    assert.match(h, /You can lose in-game money\.$/, h);
+    assert.match(h, /You can lose in-game money\. There is a simple way to keep it safe\.$/, h);
   }
   for (const c of ['ps5', 'xbox-x', 'xbox-s']) assert.ok(a.byConsole[c].length <= 240, c);
   assert.match(a.byConsole.ps5, /Settings, Saved Data and Game\/App Settings/, 'PlayStation steps for checking, from its own support page');
@@ -176,7 +176,7 @@ test('Will I lose anything? is the one place for uninstalling, saves and cash, s
 test('keep your cash: Off says only that money can be lost, and the rule, with how to avoid it, is the Mild detail', () => {
   const a = get('keep-your-cash');
   assert.equal(a.tier, 'none');
-  assert.equal(a.short, 'You can lose in-game money.');
+  assert.equal(a.short, 'You can lose in-game money. There is a simple way to keep it safe.');
   assert.doesNotMatch([a.short, a.body].join(' '), /ATM|deposit|bank|die/i);
   assert.match(a.reveal[0].text, /ATM/);
   assert.match(a.reveal[0].text, /deposit after a big score, before you take risks/i);
