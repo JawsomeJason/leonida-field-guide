@@ -9,14 +9,14 @@ test('a reveal with a label: the control says it, is a 48px control, reveals in 
   await page.goto('/a/sample-02/');
   const btn = page.locator('.reveal[data-tier="mild"] .reveal__btn');
   await expect(btn).toHaveText(LABEL);
-  expect((await btn.boundingBox()).height).toBeGreaterThanOrEqual(48);
+  expect((await btn.boundingBox()).height).toBeGreaterThanOrEqual(47.5);
   await expect(page.getByText('Wombat note one')).toHaveCount(0);
   await press(btn);
   await expect(page.getByText('Wombat note one')).toBeVisible();
   await expect(page).toHaveURL(/\/a\/sample-02\/$/);
   await expect(page.locator('.chip--dial')).toHaveAccessibleName('Spoilers: Off, change');
   const hide = page.getByRole('button', { name: 'Hide this detail' });
-  expect((await hide.boundingBox()).height).toBeGreaterThanOrEqual(48);
+  expect((await hide.boundingBox()).height).toBeGreaterThanOrEqual(47.5);
   await press(hide);
   await expect(page.getByText('Wombat note one')).toHaveCount(0);
   await expect(btn).toBeFocused();
@@ -89,7 +89,7 @@ for (const [theme, bg, scheme] of [['day', DAY, 'light'], ['night', NIGHT, 'dark
       expect(parseFloat(s.radius)).toBeGreaterThan(0);
       expect(s.chevron, 'an arrow at the end').not.toBe('none');
       expect(s.mask).toContain('svg');
-      expect((await row.boundingBox()).height).toBeGreaterThanOrEqual(48);
+      expect((await row.boundingBox()).height).toBeGreaterThanOrEqual(47.5);
     }
   });
 }

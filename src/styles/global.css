@@ -236,6 +236,13 @@ html:not(.js) .needs-js { display: none; }
 @media (max-width: 400px) { .chip { padding-inline: var(--space-1); } } /* "Pick console" must stay on one row beside "Spoilers: Places" at 320px and 130% text */
 .chip__k { font: 600 0.75rem / 1.1 var(--font-text); color: var(--muted); }
 .chip__v { font: 650 var(--text-small) / 1.2 var(--font-text); }
+/* A wider font than ours (a phone's own, a user's) must not push the page sideways: from 360px down the header's own side padding and the small label shrink first. */
+@media (max-width: 360px) {
+  .site-header__row { padding-inline: max(var(--space-2), var(--safe-left)) max(var(--space-2), var(--safe-right)); }
+  .chip__k { font-size: 0.6875rem; }
+  /* Last resort for a very wide font at 130% text: "Pick console" may take two short lines inside the same 48px chip rather than push the page sideways. */
+  .chip { flex: 0 1 auto; white-space: normal; text-wrap: balance; }
+}
 .chip [data-c], .chip [data-d] { display: none; }
 html:not([data-console]) .chip [data-c=''],
 html[data-console='ps5'] .chip [data-c='ps5'],
