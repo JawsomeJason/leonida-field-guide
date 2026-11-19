@@ -89,7 +89,7 @@ test.describe('every result link opens', () => {
       const href = await link.first().getAttribute('href');
       expect((await page.request.get(href)).status()).toBe(200);
       await press(link.first());
-      await expect(page).toHaveURL(href);
+      await expect(page).toHaveURL(new RegExp(`${href}(show/)?`)); // at the dial a hidden gate forwards to its explicit address
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     });
   }
