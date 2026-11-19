@@ -89,3 +89,29 @@ test.describe('a tap at first paint, scripts still loading', () => {
     await expect(q).toHaveValue('save');
   });
 });
+
+// Fix round 8, item 4: the page's largest paint must be on screen at first paint, never something that appears once a script and the
+// store have answered. On the checklist the sync status line is hidden until the first sync ends; when it sat at the top it was wider than any
+// row, so it became the largest paint ~1 s late (LCP 1.05 s locally against 0.63 s with the line below the lists).
+test.describe('the largest paint is there at first paint', () => {
+  for (const path of ['/checklist/', '/', '/topics/']) {
+    test(`${path}: the last largest-paint candidate is not the sync line and is not waiting for the store`, async ({ page }) => {
+      await page.route('**/api/progress', async (route) => {
+        await new Promise((r) => setTimeout(r, 2500)); // a slow store: the status line fills in long after first paint
+        await route.fulfill({ json: { v: 3, items: {} } });
+      });
+      await page.addInitScript(() => {
+        window.__lcp = [];
+        new PerformanceObserver((list) => {
+          for (const e of list.getEntries()) window.__lcp.push({ t: e.startTime, sync: !!e.element?.closest('[data-sync]') });
+        }).observe({ type: 'largest-contentful-paint', buffered: true });
+      });
+      await page.goto(path);
+      await page.waitForTimeout(5500); // past the first sync: the read starts a second after load and the store answers 2.5 s later
+      const last = (await page.evaluate(() => window.__lcp)).at(-1);
+      expect(last, 'the page reported a largest paint').toBeTruthy();
+      expect(last.sync, 'the sync line is not the largest paint').toBe(false);
+      expect(last.t, 'the largest paint came before the slow store answered').toBeLessThan(2500);
+    });
+  }
+});
