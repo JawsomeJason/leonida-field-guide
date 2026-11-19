@@ -53,6 +53,9 @@ Rules the schema or the checks enforce:
 - `confidence: 'official'` requires a source on rockstargames.com, support.rockstargames.com, take2games.com, playstation.com or xbox.com that a person or agent opened and read. Otherwise use `reported`.
 - A `places` or `mild` record's `question`, `short`, `body` and `todo` are all hidden text. So is every `reveal[].text`.
 - `topic: 'places'` implies `tier: 'places'`.
+- **Confidence labels.** `official`: the claim was read on rockstargames.com, support.rockstargames.com, take2games.com, playstation.com or xbox.com. `reported`: news, guides and creators, and any claim we could not read on an official page. `community`: forums and player posts only; a news site or a console maker is never `community`. A page that returned no text is never a source for a claim.
+- **Console text.** `consoles: all` text (question, `short` where there is no `byConsole`, `body`, `todo`, `reveal`) names no console and uses no console's button names, except as the tokens `{cross}` `{circle}` `{square}` `{triangle}` `{l1}` `{r1}` `{l2}` `{r2}` `{l3}` `{r3}` `{options}` `{create}`. A fact that differs by console goes in `byConsole`, or in records limited with `consoles: [...]`. `scripts/check-console-text.mjs` (`npm run check:console`) reads what each console would show and fails on another console's name or buttons.
+- **Units.** Sizes are in GB, never bytes or GiB. Jargon is put in plain words where it first appears, for example pre-load (the download before launch) and Safe Mode (a start-up menu with repair tools).
 
 ## The spoiler dial
 
@@ -73,7 +76,7 @@ One setting for the whole app: **Off** (the default), **Places**, **Mild**.
 | `/topics/<topic>/` | Cheat sheet | Every answer of the topic on one page as compact cards with anchors |
 | `/a/<id>/` | Answer | Question, short answer, console switch, optional body, hidden-detail controls, confidence, sources, date checked, related answers |
 | `/checklist/` | Checklist | All to-dos by stage with progress, plus export and import of the saved state as a code |
-| `/new/` | New | What the last refreshes changed, and known problems with fixes |
+| `/new/` | New | Known problems with fixes, then what the last refreshes changed. With no confirmed problem it says so plainly and links the crash answer (`/a/crashes-and-launch-problems/`); it never says only that nothing has changed |
 | `/places/` | Places gate | See "The spoiler dial" |
 | `/about/` | About | How spoilers are handled, how facts are sourced, links out, the unofficial notice |
 
@@ -201,6 +204,10 @@ Table 1 is the ranked question list and Table 3 is 30 sourced facts.
 - The report's "official" tags were never checked against a live page. Open each official source (Orca's browser renders the Rockstar pages that plain fetches cannot) and keep `official` only where the page says it. Otherwise set `reported`.
 - Where sources disagree, say so in `short` and cite both.
 - Skip a question rather than guess. A missing answer is fine; a wrong one is not.
+- **Install size** is one answer with a short per console (all three: up to 212 GB free, whether it fits, where to check free space), a Series S 512 GB answer (reported: the usable-space figure is IGN's) and one "Make room" answer per console family (PS5; Xbox). Install size ranks 1.
+- **Crashes** have an answer for all consoles (status pages, a short per console, and where to report to Rockstar) and full numbered steps per console family from PlayStation's and Xbox's own support pages. The crash answer ranks in the top 8. Known problems go to the New screen when confirmed.
+- **Source choice.** Where two sources support a fact equally, cite the one whose page carries no story material. Rockstar's own pages are cited for the facts only they hold.
+- **Code problems.** A failed code says where to go next: Rockstar's activation help, its support request form, then the shop or console maker.
 
 ## Refresh
 
@@ -211,10 +218,11 @@ Table 1 is the ranked question list and Table 3 is 30 sourced facts.
 `npm run check` runs all of these, and CI runs it on every pull request:
 
 1. **Schema.** The build fails on a record missing a source, a date, a tier or a confidence.
-2. **Spoiler leak.** A script takes every hidden string (see "Data shape") and fails if it appears in any built file outside that tier's own paths. It also fails if the default search index or the offline list names a hidden record.
-3. **Behaviour**, in Playwright at 390, 820 and 1440 wide: each of the top 20 answers is reached in two taps from `/`; a ticked to-do survives a reload; the dial at Off shows no places and at Places shows them; the theme switch works and is remembered; nothing scrolls sideways; the main flows work with JavaScript off.
-4. **Accessibility.** axe finds no violations on every screen in both themes.
-5. **Speed.** Lighthouse on the deployed address scores 100 for performance, accessibility, best practices and SEO on mobile, with largest contentful paint under 1 second. This one runs against the live site, outside `npm run check`.
+2. **Console text.** `scripts/check-console-text.mjs` fails on a record that shows a console another console's name or buttons (see "Rules the schema or the checks enforce").
+3. **Spoiler leak.** A script takes every hidden string (see "Data shape") and fails if it appears in any built file outside that tier's own paths. It also fails if the default search index or the offline list names a hidden record.
+4. **Behaviour**, in Playwright at 390, 820 and 1440 wide: each of the top 20 answers is reached in two taps from `/`; a ticked to-do survives a reload; the dial at Off shows no places and at Places shows them; the theme switch works and is remembered; nothing scrolls sideways; the main flows work with JavaScript off.
+5. **Accessibility.** axe finds no violations on every screen in both themes.
+6. **Speed.** Lighthouse on the deployed address scores 100 for performance, accessibility, best practices and SEO on mobile, with largest contentful paint under 1 second. This one runs against the live site, outside `npm run check`.
 
 Tests assert what a player sees, never internals.
 
