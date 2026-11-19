@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
-import { ranked, press, NIGHT, DAY } from './helpers.mjs';
+import { records, press, NIGHT, DAY } from './helpers.mjs';
 
 test.use({ javaScriptEnabled: false });
 
 test('the search floor lists every answer and the links work', async ({ page }) => {
   await page.goto('/');
   const all = page.getByRole('region', { name: 'All answers' });
-  await expect(all.getByRole('link')).toHaveCount(ranked.length);
+  await expect(all.getByRole('link')).toHaveCount(records.filter((a) => a.tier === 'none').length);
   await press(all.getByRole('link', { name: /Sample question 07/ }));
   await expect(page.getByRole('heading', { level: 1, name: /Sample question 07/ })).toBeVisible();
 });
