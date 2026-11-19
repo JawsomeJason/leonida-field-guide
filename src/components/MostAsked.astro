@@ -1,0 +1,36 @@
+---
+interface Props {
+  answers: { id: string; question: string; rank?: number }[];
+}
+const top = [...Astro.props.answers]
+  .filter((a) => a.rank !== undefined)
+  .sort((a, b) => a.rank! - b.rank!)
+  .slice(0, 8);
+---
+
+{
+  top.length > 0 && (
+    <section class="most-asked" aria-labelledby="most-title">
+      <h2 id="most-title">Most asked</h2>
+      <ul class="tap-list most-asked__list">
+        {top.map((a) => (
+          <li>
+            <a href={`/a/${a.id}/`}>{a.question}</a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+<style>
+  .most-asked { margin-block-end: var(--space-6); container-type: inline-size; }
+  /* Two columns once the container has room; the rows stay whole-row targets either way. */
+  @container (min-width: 32rem) {
+    .most-asked__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .most-asked__list :global(a) { transition: scale 120ms cubic-bezier(0.23, 1, 0.32, 1); }
+    .most-asked__list :global(a:active) { scale: 0.98; }
+  }
+</style>

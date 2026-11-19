@@ -1,0 +1,146 @@
+---
+import { stages } from '../data/stages';
+
+interface Props {
+  todos: { id: string; stage: string; todo: string }[];
+}
+const { todos } = Astro.props;
+// Short names fit four across at 320px; the full name heads each list.
+const short: Record<string, string> = { before: 'Before', 'hour-1': 'Hour 1', 'day-1': 'Day 1', 'week-1': 'Week 1' };
+---
+
+<section class="stages" aria-labelledby="stage-title">
+  <h2 id="stage-title">Your stage</h2>
+
+  {/* The picker saves through settings.js, so it needs script. Without it every stage's list shows below. */}
+  <fieldset class="stage-pick needs-js">
+    <legend class="sr-only">Where are you in the game?</legend>
+    <div class="seg">
+      {stages.map((s) => (
+        <label>
+          <input type="radio" name="stage" value={s.id} data-setting checked={s.id === 'before'} />
+          {short[s.id]}
+        </label>
+      ))}
+    </div>
+  </fieldset>
+
+  {
+    stages.map((s) => {
+      const items = todos.filter((t) => t.stage === s.id);
+      return (
+        <div class="stage" data-stage={s.id}>
+          <h3>
+            {s.label} <span class="stage__count" data-count />
+          </h3>
+          {items.length === 0 ? (
+            <p class="stage__empty">Nothing to do here yet.</p>
+          ) : (
+            <>
+              {/* Script on: tick boxes. Script off: plain links to the answers. */}
+              <ul class="tap-list todo-list needs-js">
+                {items.map((t) => (
+                  <li class="todo">
+                    <label>
+                      <input type="checkbox" data-todo={t.id} />
+                      <span>{t.todo}</span>
+                    </label>
+                    <a class="todo__open" href={`/a/${t.id}/`} aria-label={`Open the answer: ${t.todo}`}>
+                      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <ul class="tap-list todo-links">
+                {items.map((t) => <li><a href={`/a/${t.id}/`}>{t.todo}</a></li>)}
+              </ul>
+            </>
+          )}
+        </div>
+      );
+    })
+  }
+</section>
+
+<script>
+  import '../scripts/home-todos.js';
+</script>
+
+<style is:global>
+  .stages { margin-block-end: var(--space-6); }
+  .stage-pick { margin-block-end: var(--space-4); }
+  .stage-pick .seg { flex-basis: 100%; }
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .stage h3 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--space-3); margin: 0 0 var(--space-3); font-size: var(--text-body); }
+  .stage__count { color: var(--muted); font: var(--text-small) / 1.5 var(--font-mono); }
+  .stage__empty { margin: 0; color: var(--muted); }
+  html:not(.js) .stage { margin-block-end: var(--space-5); }
+  html.js .todo-links { display: none; }
+
+  /* With script, the picker's checked radio decides which stage shows. */
+  html.js .stage { display: none; }
+  .stages:has([name='stage'][value='before']:checked) .stage[data-stage='before'],
+  .stages:has([name='stage'][value='hour-1']:checked) .stage[data-stage='hour-1'],
+  .stages:has([name='stage'][value='day-1']:checked) .stage[data-stage='day-1'],
+  .stages:has([name='stage'][value='week-1']:checked) .stage[data-stage='week-1'] { display: block; }
+
+  /* Row: the label is the big target; the small arrow on the end opens the answer. */
+  .todo-list .todo { display: grid; grid-template-columns: minmax(0, 1fr) var(--tap); gap: var(--gap-tap); }
+  .todo-list .todo label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-block-size: var(--tap);
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    cursor: pointer;
+  }
+  .todo-list .todo a.todo__open { justify-content: center; padding: 0; color: var(--muted); }
+
+  .todo input {
+    appearance: none;
+    flex: none;
+    display: grid;
+    place-content: center;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    margin: 0;
+    border: 2px solid var(--muted);
+    border-radius: 0.375rem;
+    background: transparent;
+  }
+  .todo input::before {
+    content: '';
+    inline-size: 0.9rem;
+    aspect-ratio: 1;
+    background: var(--bg);
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>") no-repeat center / contain;
+    scale: 0;
+  }
+  .todo input:checked { background: var(--accent); border-color: var(--accent); }
+  .todo input:checked::before { scale: 1; }
+  .todo input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .todo label:has(:checked) span { color: var(--muted); text-decoration: line-through; }
+  @media (forced-colors: active) {
+    .todo input::before { background: CanvasText; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .todo input::before { transition: scale 150ms cubic-bezier(0.23, 1, 0.32, 1); }
+    .todo-list .todo label, .todo-list a.todo__open { transition: scale 120ms cubic-bezier(0.23, 1, 0.32, 1); }
+    .todo-list .todo label:active, .todo-list a.todo__open:active { scale: 0.98; }
+    html.js .stage { animation: stage-in 160ms cubic-bezier(0.23, 1, 0.32, 1); }
+  }
+  @keyframes stage-in { from { opacity: 0; translate: 0 0.25rem; } }
+</style>
