@@ -1,0 +1,21 @@
+id: code-regions
+question: "Will my code work on my PlayStation or Xbox account?"
+short: "Xbox codes are not region-locked. PlayStation codes only work on accounts from the country group where the code was sold, for example Canada and the United States together, and the UK on its own."
+body: |-
+  Rockstar's PlayStation groups
+  - North America: Canada, United States.
+  - United Kingdom: United Kingdom only.
+  - Oceania: Australia, New Zealand.
+  - Brazil, Japan, South Korea and Saudi Arabia with the UAE each have their own group. Japanese codes expire 170 days after 19 November.
+  - Latin America, the rest of Asia, and the rest of Europe, the Middle East and Africa are separate groups. See Rockstar's page for the country lists.
+
+  Rockstar advises buying from a retailer in the country of your platform account.
+topic: bonuses
+stage: before
+tier: none
+consoles: all
+confidence: official
+sources:
+  - url: "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions"
+    title: "Grand Theft Auto VI Platforms, Editions, and Versions (Rockstar Support)"
+checked: "2026-11-19"

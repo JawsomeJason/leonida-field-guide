@@ -1,0 +1,18 @@
+id: aiming-options
+question: "Is there auto-aim, and how do I get used to manual aim?"
+short: "Targeting has three modes: Lock-On snaps to targets, Partial slows the reticle near enemies (the default), and Free Aim turns aim assist off. Aim Assist Strength runs from 0 to 4."
+body: |-
+  - A guide's pairing: Partial with a high strength for steady tracking, or Free Aim with strength 0 for raw aiming.
+  - Gameplay options include Tap Assist (one press counts as two to four) and Hold Assist, plus hold-to-toggle for actions such as aiming. They cut finger strain in long fights.
+  - On PS5 you can lower trigger effect intensity under Settings, Accessories.
+topic: controls
+stage: day-1
+tier: none
+consoles: all
+confidence: reported
+sources:
+  - url: "https://www.keengamer.com/articles/guides/best-gta-6-settings-to-change-first-motion-blur-aim-and-ps5-pro/"
+    title: "Best GTA 6 Settings to Change First: Motion Blur, Aim, and PS5 Pro (KeenGamer)"
+checked: "2026-11-19"
+rank: 16
+todo: "Try each Targeting mode and keep the one that suits you"

@@ -1,0 +1,27 @@
+id: unlock-time
+question: "When does it unlock in my region?"
+short: "Rockstar: midnight local time on 19 November in every region, on both consoles. Forbes reports US stores key off Eastern time, so western US players may start the evening before. Check your console's countdown."
+body: |-
+  Where sources disagree
+  - Rockstar's support page says "midnight local time on November 19, 2026, in all regions" for PS5 and Xbox Series X|S.
+  - Forbes (12 November) says US storefronts treat the country as one region on Eastern time, so a Hawaii player could unlock at 7 p.m. on 18 November. We could not confirm that on a Rockstar page.
+  - Output Lag quotes Microsoft's pre-order FAQ: play starts "usually shortly after 12:00 AM local time", and in countries with several time zones "there may be a delay in some zones".
+
+  What to do
+  - On PS5, the game in your Game Library shows a countdown timer until it unlocks.
+  - Output Lag says a pre-loaded game that will not start on the evening before launch is not broken. It is still locked.
+topic: setup
+stage: before
+tier: none
+consoles: all
+confidence: official
+sources:
+  - url: "https://support.rockstargames.com/articles/29jV3Cv2cCgvwM1XgtMO5o/grand-theft-auto-vi-regional-pre-load-and-release-times-on-playstation-5-and-xbox-series-x-or-s"
+    title: "Grand Theft Auto VI regional pre-load and release times (Rockstar Support)"
+  - url: "https://www.forbes.com/sites/brianmazique/2026/11/12/gta-6-unlocks-at-midnight-on-november-19-but-millions-of-americans-can-start-playing-the-night-before/"
+    title: "GTA 6 Unlocks At Midnight On November 19, But Millions Of Americans Can Start Playing The Night Before (Forbes)"
+  - url: "https://outputlag.com/guides/gta-6-not-working-day-one-problems-fixes/"
+    title: "GTA 6 Not Working? Day One Problems and Official Fixes on PS5 and Xbox (Output Lag)"
+checked: "2026-11-19"
+rank: 7
+todo: "Check the launch countdown on your console"

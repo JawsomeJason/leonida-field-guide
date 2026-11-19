@@ -1,0 +1,19 @@
+id: crashes-and-launch-problems
+question: "Crashes, errors, lost progress: is it just me?"
+short: "Rockstar's status page showed all services operational on 19 November (5:14 UTC) and has no separate row for this game. Check it, then PlayStation or Xbox network status, before troubleshooting."
+body: |-
+  - Output Lag's pre-launch check (17 November) found no known-issue articles for the game on Rockstar's support site, and no confirmed launch bugs. It lists the console status pages: status.playstation.com and support.xbox.com/xbox-live-status.
+  - We have no verified in-game bug list. Claims on pages that look auto-generated were left out.
+  - For error codes, see the error codes card.
+topic: fixes
+stage: hour-1
+tier: none
+consoles: all
+confidence: official
+sources:
+  - url: "https://support.rockstargames.com/servicestatus"
+    title: "Service Status (Rockstar Support)"
+  - url: "https://outputlag.com/guides/gta-6-not-working-day-one-problems-fixes/"
+    title: "GTA 6 Not Working? Day One Problems and Official Fixes on PS5 and Xbox (Output Lag)"
+checked: "2026-11-19"
+rank: 11

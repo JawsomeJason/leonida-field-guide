@@ -1,0 +1,22 @@
+id: xbox-download-stuck
+question: "My Xbox download won't start, is slow, or is stuck at Queued. What do I try?"
+short: "Check Xbox's status page, sign in with the profile that bought the game, look for low-storage warnings, and install any system update. For Queued, quit running games and choose Resume installation."
+body: |-
+  From Output Lag's summary of Microsoft's steps
+  - Updates: Profile and system, Settings, System, Updates. A "Download stopped" error can mean an update is needed first.
+  - Queue: My games and apps, Manage, Queue. Background downloads slow down while a game runs, so quit the game or choose Suspend my game.
+  - After a restart, if the game shows Queued or Paused, select it, press the Menu button and choose Resume installation.
+  - A wired connection or 5 GHz Wi-Fi helps.
+
+  Rockstar's install-issues page sends Xbox players to Microsoft's troubleshooter and adds no steps.
+topic: fixes
+stage: hour-1
+tier: none
+consoles: [xbox-x, xbox-s]
+confidence: community
+sources:
+  - url: "https://support.rockstargames.com/articles/3t8W3cKfObijZuwZuqT2eM/issues-installing-grand-theft-auto-vi"
+    title: "Issues installing Grand Theft Auto VI (Rockstar Support)"
+  - url: "https://outputlag.com/guides/gta-6-not-working-day-one-problems-fixes/"
+    title: "GTA 6 Not Working? Day One Problems and Official Fixes on PS5 and Xbox (Output Lag)"
+checked: "2026-11-19"

@@ -1,0 +1,20 @@
+id: hdr-calibration
+question: "How do I set up HDR?"
+short: "Set HDR to On When Supported, run your console's HDR calibration, then run the in-game HDR Calibration in the Display menu."
+body: |-
+  - KeenGamer says this keeps dark interiors and night streets detailed.
+  - Turn off your TV's motion smoothing too. It adds fake frames.
+topic: settings
+stage: hour-1
+tier: none
+consoles: all
+byConsole:
+  ps5: "Set HDR to On When Supported, run Adjust HDR (Settings, Screen and Video, Video Output), then the in-game HDR Calibration in the Display menu."
+  xbox-x: "Set HDR to On When Supported, run Calibrate HDR for Games (Settings, General, TV and display options), then the in-game HDR Calibration in the Display menu."
+  xbox-s: "Set HDR to On When Supported, run Calibrate HDR for Games (Settings, General, TV and display options), then the in-game HDR Calibration in the Display menu."
+confidence: reported
+sources:
+  - url: "https://www.keengamer.com/articles/guides/best-gta-6-settings-to-change-first-motion-blur-aim-and-ps5-pro/"
+    title: "Best GTA 6 Settings to Change First: Motion Blur, Aim, and PS5 Pro (KeenGamer)"
+checked: "2026-11-19"
+todo: "Calibrate HDR on the console, then in the game"

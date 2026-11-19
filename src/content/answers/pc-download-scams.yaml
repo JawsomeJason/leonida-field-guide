@@ -1,0 +1,18 @@
+id: pc-download-scams
+question: "Are 'GTA 6 PC download' and early-access offers real?"
+short: "No. Rockstar has announced no Windows version. Security firms report fake PC downloads, 'dev builds' and early access carry malware. Treat any such offer as a red flag."
+body: |-
+  - Notebookcheck's roundup cites Cynet, ESET, Huntress and Malwarebytes for infostealers and ransomware hidden in fake installers.
+  - One flagged file was caught by only 34 of 68 antivirus engines, so a clean single scan proves little.
+  - Only buy codes from sellers you trust. A code that will not redeem is hard to get back, and PS5 codes must match your account's region.
+topic: fixes
+stage: before
+tier: none
+consoles: all
+confidence: reported
+sources:
+  - url: "https://www.notebookcheck.net/GTA-6-launch-scams-The-traps-to-avoid-before-and-after-release.1450534.0.html"
+    title: "GTA 6 launch scams: The traps to avoid before and after release (Notebookcheck)"
+  - url: "https://www.rockstargames.com/VI"
+    title: "Grand Theft Auto VI (Rockstar Games)"
+checked: "2026-11-19"
