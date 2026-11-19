@@ -1,0 +1,109 @@
+name: refresh
+# A refresh branch is guarded, checked, then merged by a pull request this workflow opens.
+# A pull request made with GITHUB_TOKEN does not start check.yml, so the checks run here, on the pushed branch.
+# No secrets are used anywhere. The only job that can write never checks out or runs branch code.
+# It triggers on `create`, not `push`: a create event runs the workflow file from the default branch, while a push
+# runs the pushed branch's own copy, which a hostile branch could edit to skip the guard. The cost is that it fires
+# only when a branch is first created, so every refresh needs a new branch name. `create` has no branch filter,
+# so the jobs below check the ref type and name themselves.
+on: create
+
+# One run per branch.
+concurrency:
+  group: refresh-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  guard:
+    if: github.event.ref_type == 'branch' && startsWith(github.ref, 'refs/heads/refresh/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      changed: ${{ steps.diff.outputs.changed }}
+      sha: ${{ steps.diff.outputs.sha }}
+    steps:
+      - name: Branch name must be refresh/YYYY-MM-DD
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          if ! [[ "$BRANCH" =~ ^refresh/[0-9]{4}-[0-9]{2}-[0-9]{2}(-[a-z0-9]+)*$ ]]; then
+            echo "::error::'$BRANCH' is not named refresh/YYYY-MM-DD, so it will not merge."
+            exit 1
+          fi
+      # github.sha on a create event is not the branch head, so check out the ref and read the head from it.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+      # The guard comes from main, not from the branch under test, so a refresh branch cannot rewrite its own guard.
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: trusted
+          sparse-checkout: scripts/refresh-guard.mjs
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - id: diff
+        run: |
+          git fetch --no-tags origin main
+          git diff --name-status origin/main...HEAD > "$RUNNER_TEMP/diff.txt"
+          cat "$RUNNER_TEMP/diff.txt"
+          node trusted/scripts/refresh-guard.mjs < "$RUNNER_TEMP/diff.txt"
+          # The guard reads names only; a symlink under the allowed paths could still point anywhere.
+          if git ls-files -s -- src/content/answers src/data/new.json | grep -q '^120000'; then
+            echo "::error::A symlink sits in the refresh area."
+            exit 1
+          fi
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          if [ -s "$RUNNER_TEMP/diff.txt" ]; then echo "changed=true" >> "$GITHUB_OUTPUT"; else echo "changed=false" >> "$GITHUB_OUTPUT"; fi
+
+  check:
+    needs: guard
+    if: needs.guard.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.guard.outputs.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - run: npx playwright install --with-deps chromium
+      - run: npm run check
+
+  merge:
+    needs: [guard, check]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      BRANCH: ${{ github.ref_name }}
+      CHECKED_SHA: ${{ needs.guard.outputs.sha }}
+    steps:
+      - name: Open the pull request if there is none, then squash-merge the commit that was checked (refused if the branch moved)
+        run: |
+          pr=$(gh pr list --head "$BRANCH" --base main --state open --json number --jq '.[0].number // empty')
+          if [ -z "$pr" ]; then
+            gh pr create --base main --head "$BRANCH" \
+              --title "chore(content): refresh ${BRANCH#refresh/}" \
+              --body "Content refresh. Only answer records and the New feed changed; the guard and the full checks passed on this branch."
+          fi
+          gh pr merge "$BRANCH" --squash --match-head-commit "$CHECKED_SHA"
+          # No checkout here, so delete the merged branch through the API. A repo set to delete it on merge makes this a no-op.
+          gh api -X DELETE "repos/$GH_REPO/git/refs/heads/$BRANCH" || true
