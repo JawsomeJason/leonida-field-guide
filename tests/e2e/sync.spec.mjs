@@ -188,7 +188,7 @@ test('About: "Turning the spoiler setting down removes the hidden pages from tha
   const hidden = (paths, tier) => paths.filter((p) => p.startsWith(`/${tier}/`) || p.startsWith(`/h/${tier}/`));
   await page.goto('/');
   await page.evaluate(() => navigator.serviceWorker.ready);
-  await expect.poll(async () => (await cached()).includes('/__lfg-ready')).toBe(true);
+  await expect.poll(async () => (await cached()).includes('/__lfg-ready'), { timeout: 20_000 }).toBe(true); // the fill starts when the page has rested a second (fix round 9)
   expect(hidden(await cached(), 'places')).toEqual([]); // the default cache holds no hidden tier
 
   await setDial(page, 'Mild');
