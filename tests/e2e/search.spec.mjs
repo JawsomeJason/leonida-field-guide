@@ -177,3 +177,93 @@ for (const scheme of ['light', 'dark']) {
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   });
 }
+
+// Known problems: a query with a listed word starts with one real row to /new/; it is the answer when nothing else matches.
+const crash = { id: 'crash-widget', question: 'Why does the widget crash?', short: 'Restart it.', topic: 'fixes', consoles: 'all', rank: 1 };
+const KNOWN_ROW = { name: 'Known problems and what changed' };
+test.describe('known problems', () => {
+  for (const query of ['known bugs', 'known problems', 'any issues at launch', 'is it broken', 'are there glitches', 'is the game down', 'server outage', 'not working error']) {
+    test(`"${query}" leads to the known-problems list: one 48px row, no no-answer line`, async ({ page }) => {
+      await page.route('**/search/none.json', (route) => route.fulfill({ json: [crash] }));
+      await ask(page, query);
+      const links = results(page).getByRole('link');
+      await expect(links).toHaveCount(1);
+      await expect(links.first()).toHaveAttribute('href', '/new/');
+      await expect(links.first()).toHaveText(KNOWN_ROW.name);
+      expect((await links.first().boundingBox()).height).toBeGreaterThanOrEqual(47.5);
+      expect(await links.first().evaluate((a) => getComputedStyle(a, '::after').content)).not.toBe('none'); // the chevron: it is a row you can tap
+      await expect(page.getByRole('status')).toHaveText('');
+      await expect(page.getByRole('status')).not.toHaveAttribute('data-floor');
+      await expect(page.getByText('This guide has no answer for that yet.')).toHaveCount(0);
+      if (test.info().project.use.hasTouch) expect((await measure(page)).problems).toEqual([]);
+    });
+  }
+
+  test('real answer matches follow the row; Show more moves focus past it', async ({ page }) => {
+    await page.route('**/search/none.json', (route) => route.fulfill({ json: [crash, ...many] }));
+    await ask(page, 'widget crash bug');
+    await expect(results(page).getByRole('link')).toHaveText([KNOWN_ROW.name, `${crash.question}${crash.short}`]);
+    await expect(page.getByRole('status')).toHaveText('1 answer');
+    await ask(page, 'rotate widget broken');
+    const links = results(page).getByRole('link');
+    await expect(links).toHaveCount(6); // the row and five answers
+    await expect(links.first()).toHaveAttribute('href', '/new/');
+    await press(page.getByRole('button', { name: 'Show more' }));
+    await expect(links).toHaveCount(9);
+    await expect(links.nth(6)).toBeFocused();
+  });
+
+  test('a crash question without a listed word is unchanged: the crash answer first, no known-problems row', async ({ page }) => {
+    await page.route('**/search/none.json', (route) => route.fulfill({ json: [crash] }));
+    await ask(page, 'my game keeps crashing');
+    await expect(results(page).getByRole('link')).toHaveAttribute('href', '/a/crash-widget/');
+    await expect(results(page).locator('a[href="/new/"]')).toHaveCount(0);
+  });
+});
+
+// A console's name lists that console's answers (tagged first, then by rank); the other console's too when the player asks for it.
+const consoleIndex = [
+  { id: 'size', question: 'How big is the install?', short: 'Big.', topic: 'setup', consoles: 'all', forConsoles: ['ps5', 'xbox-x', 'xbox-s'], rank: 1 },
+  { id: 'xbox-stuck', question: 'Why is my download stuck?', short: 'Wait.', topic: 'fixes', consoles: ['xbox-x', 'xbox-s'], forConsoles: ['xbox-x', 'xbox-s'], rank: 4 },
+  { id: 'xbox-space', question: 'How do I free space?', short: 'Delete.', topic: 'fixes', consoles: ['xbox-x', 'xbox-s'], forConsoles: ['xbox-x', 'xbox-s'], rank: 3 },
+  { id: 'ps5-space', question: 'How do I free space on the drive?', short: 'Delete.', topic: 'fixes', consoles: ['ps5'], forConsoles: ['ps5'], rank: 2 },
+  { id: 'save', question: 'How do I save?', short: 'Press.', topic: 'saving', consoles: 'all', forConsoles: [], rank: 5 },
+];
+test.describe('a console name', () => {
+  test.beforeEach(({ page }) => page.route('**/search/none.json', (route) => route.fulfill({ json: consoleIndex })));
+  const hrefs = (page) => results(page).getByRole('link').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+
+  for (const query of ['xbox', 'x box', 'xbox series', 'series x', 'sx']) {
+    test(`"${query}" with Series X chosen lists its answers, tagged first`, async ({ page }) => {
+      await saved(page, { console: 'xbox-x' });
+      await ask(page, query);
+      await expect(page.getByRole('status')).toHaveText('3 answers');
+      await expect(page.getByRole('status')).not.toHaveAttribute('data-floor');
+      expect(await hrefs(page)).toEqual(['/a/xbox-space/', '/a/xbox-stuck/', '/a/size/']);
+    });
+  }
+  test('"playstation" with Series X chosen lists the PS5 answers, each linking as normal', async ({ page }) => {
+    await saved(page, { console: 'xbox-x' });
+    await ask(page, 'ps 5');
+    expect(await hrefs(page)).toEqual(['/a/ps5-space/', '/a/size/']);
+  });
+  test('with no console chosen any named console works', async ({ page }) => {
+    await ask(page, 'xbox');
+    expect(await hrefs(page)).toEqual(['/a/xbox-space/', '/a/xbox-stuck/', '/a/size/']);
+  });
+  test('a console name with other words keeps the ordinary search', async ({ page }) => {
+    await saved(page, { console: 'xbox-x' });
+    await ask(page, 'xbox download stuck');
+    expect(await hrefs(page)).toEqual(['/a/xbox-stuck/']);
+  });
+});
+
+test('the built index says which consoles each answer speaks to, and "xbox" finds the Xbox answer with Series S chosen', async ({ page }) => {
+  const rows = await (await page.request.get('/search/none.json')).json();
+  expect(rows.every((r) => Array.isArray(r.forConsoles))).toBe(true);
+  expect(rows.find((r) => r.id === 'find-xbox').forConsoles).toEqual(['xbox-x', 'xbox-s']);
+  await saved(page, { console: 'xbox-s' });
+  await ask(page, 'xbox');
+  await expect(results(page).locator('a[href="/a/find-xbox/"]')).toHaveCount(1);
+  await expect(results(page).locator('a[href="/a/find-ps5/"]')).toHaveCount(0);
+});
