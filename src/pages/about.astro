@@ -1,13 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
-import OutsideLink from '../components/OutsideLink.astro';
+import OutsideList from '../components/OutsideList.astro';
 import { confidence } from '../data/confidence.js';
 
-// Outside tools. Each opens normally, in the same tab, and says it is an outside site.
+// Outside tools. Each opens normally, in the same tab; the list says once that outside sites may contain spoilers.
 const outside = [
-  { href: 'https://gtamap.io', name: 'gtamap.io', note: 'A map. Spoilers are hidden by default.' },
-  { href: 'https://fullsweepmap.com', name: 'FullSweep', note: 'A map and checklists. Spoilers are hidden by default.' },
-  { href: 'https://support.rockstargames.com', name: 'Rockstar Support', note: 'For account, sign-in and code problems.' },
+  { href: 'https://gtamap.io', title: 'gtamap.io', about: 'A map. Spoilers are hidden by default.' },
+  { href: 'https://fullsweepmap.com', title: 'FullSweep', about: 'A map and checklists. Spoilers are hidden by default.' },
+  { href: 'https://support.rockstargames.com', title: 'Rockstar Support', about: 'For account, sign-in and code problems.' },
 ];
 ---
 
@@ -46,11 +46,7 @@ const outside = [
     <h2>Maps and help</h2>
     <p>We link to better tools instead of rebuilding them.</p>
   </div>
-  <ul class="tap-list links">
-    {outside.map((o) => (
-      <li><OutsideLink href={o.href} title={o.name}>{o.note}</OutsideLink></li>
-    ))}
-  </ul>
+  <div class="links"><OutsideList links={outside} /></div>
 
   <div class="prose">
     <h2>Unofficial</h2>

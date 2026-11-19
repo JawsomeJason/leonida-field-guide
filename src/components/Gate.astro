@@ -2,7 +2,7 @@
 // Shown wherever places would be: it says they are off and offers the switch. With JavaScript off the
 // switch is a plain link to the places pages. CSS hides the gate once the dial allows places.
 import './Gate.css';
-import OutsideLink from './OutsideLink.astro';
+import OutsideList from './OutsideList.astro';
 ---
 
 <section class="gate" aria-labelledby="gate-title">
@@ -10,8 +10,5 @@ import OutsideLink from './OutsideLink.astro';
   <p>Places are off. Open the spoiler setting (the Spoilers button at the top) and choose Places to see them, or tap Show places. Nothing about them is on this page.</p>
   <a class="gate__on" href="/places/list/" data-set="dial" data-value="places" data-focus="#hidden-list">Show places</a>
   <p>Prefer a map? These two hide spoilers by default.</p>
-  <ul class="tap-list">
-    <li><OutsideLink href="https://gtamap.io" title="gtamap.io" /></li>
-    <li><OutsideLink href="https://fullsweepmap.com" title="FullSweep" /></li>
-  </ul>
+  <OutsideList links={[{ href: 'https://gtamap.io', title: 'gtamap.io' }, { href: 'https://fullsweepmap.com', title: 'FullSweep' }]} />
 </section>

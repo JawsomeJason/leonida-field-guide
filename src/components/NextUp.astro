@@ -1,0 +1,35 @@
+---
+// Under the search, before "Most asked": the slim console prompt until a console is chosen, then "Next up": the next one or two
+// unticked steps of the player's stage, each a whole-row link to its answer, and a progress count that opens the checklist.
+// What is built here is the no-script floor (the first two steps of the first stage that fit every console); home-todos.js
+// redraws it from the stage lists below, which already hold every step with its tick and its console.
+import ConsoleCard from './ConsoleCard.astro';
+import type { AnswerData } from '../lib/answers';
+
+interface Props {
+  todos: AnswerData[];
+}
+const first = Astro.props.todos.filter((t) => t.stage === 'before' && t.consoles === 'all').slice(0, 2);
+---
+
+<ConsoleCard />
+{first.length > 0 && (
+  <section class="next-up" aria-labelledby="next-title">
+    <div class="next-up__head">
+      <h2 id="next-title">Next up</h2>
+      <a class="next-up__count" href="/checklist/">See the checklist</a>
+    </div>
+    <ul class="tap-list next-up__list">
+      {first.map((t) => <li><a href={`/a/${t.id}/`}>{t.todo}</a></li>)}
+    </ul>
+  </section>
+)}
+
+<style is:global>
+  /* With script and no console chosen, the prompt above takes this place. */
+  html.js:not([data-console]) .next-up { display: none; }
+  .next-up { margin-block: var(--space-4) var(--space-5); }
+  .next-up__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-block-end: var(--space-1); }
+  .next-up h2 { margin: 0; font-size: var(--text-body); }
+  .next-up__count { display: flex; align-items: center; min-block-size: var(--tap); padding-inline: var(--space-2); margin-inline-end: calc(var(--space-2) * -1); font: var(--font-label); }
+</style>

@@ -192,10 +192,13 @@ html:not(.js) .needs-js { display: none; }
 
 /* The chips are the settings openers: one names the console in use, one names the spoiler level. */
 .chip {
-  flex: none;
+  flex: 0 1 auto; /* at 320px "Choose console" and "Spoilers: Places" cannot share a row on one line each: the words wrap inside the chip */
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-1);
+  justify-content: center;
+  gap: 0 var(--space-1);
+  text-align: center;
   min-block-size: var(--tap);
   min-inline-size: var(--tap);
   padding-inline: var(--space-3);
@@ -203,8 +206,7 @@ html:not(.js) .needs-js { display: none; }
   border-radius: var(--radius);
   background: var(--surface);
   color: var(--text);
-  font: 600 var(--text-small) / 1 var(--font-text);
-  white-space: nowrap;
+  font: 600 var(--text-small) / 1.15 var(--font-text);
   cursor: pointer;
   box-shadow: var(--shadow);
 }

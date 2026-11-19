@@ -1,0 +1,28 @@
+---
+// Every list of links to other sites: the rows, then ONE note that they may contain spoilers (spec "Links out").
+// A link may carry `console` (one console or several): it then shows for those consoles and waits in an "Other consoles" fold for
+// the rest (console.css decides which copy shows). With no console chosen every link shows.
+import OutsideLink from './OutsideLink.astro';
+import './OutsideLink.css';
+
+interface Props {
+  links: { href: string; title: string; about?: string; console?: string | string[] }[];
+}
+const links = Astro.props.links.map((l) => ({ ...l, for: l.console ? [l.console].flat().join(' ') : undefined }));
+const others = links.filter((l) => l.for);
+---
+
+<div class="outside-list" data-outside>
+  <ul class="tap-list">
+    {links.map((l) => <li data-src-for={l.for}><OutsideLink href={l.href} title={l.title} about={l.about} /></li>)}
+  </ul>
+  {others.length > 0 && (
+    <details class="other-consoles other-sources">
+      <summary>Other consoles</summary>
+      <ul class="tap-list">
+        {others.map((l) => <li data-src-other={l.for}><OutsideLink href={l.href} title={l.title} /></li>)}
+      </ul>
+    </details>
+  )}
+  <p class="outside-note">Links go to other sites, which may contain spoilers.</p>
+</div>

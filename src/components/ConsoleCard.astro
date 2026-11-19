@@ -1,14 +1,15 @@
 ---
 // First run on the Ask screen, under the search: which console? One slim row of three buttons, gone once a console is chosen
 // (console.css hides it after). Needs script to save the choice.
-const consoles = [['ps5', '', 'PS5'], ['xbox-x', 'Xbox ', 'Series X'], ['xbox-s', 'Xbox ', 'Series S']];
+import ConsoleName from './ConsoleName.astro';
+import { consoleIds } from '../data/consoles.js';
 ---
 
 <section class="console-card needs-js" aria-labelledby="console-title">
   <h2 id="console-title">Which console do you play on?</h2>
   <div class="console-card__btns">
-    {consoles.map(([value, hidden, label]) => (
-      <button type="button" class="console-btn" data-set="console" data-value={value} data-focus="#ask-title">{hidden && <span class="sr-only">{hidden}</span>}{label}</button>
+    {consoleIds.map((id) => (
+      <button type="button" class="console-btn" data-set="console" data-value={id} data-focus="#ask-title"><ConsoleName id={id} /></button>
     ))}
   </div>
 </section>

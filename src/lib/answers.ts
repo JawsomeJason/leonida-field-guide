@@ -62,7 +62,5 @@ export async function renderBody(md: string) {
   return markOutside((await r.render(withButtons(md), { frontmatter: {} })).code);
 }
 
-export const consoleLabels = { ps5: 'PS5', 'xbox-x': 'Xbox Series X', 'xbox-s': 'Xbox Series S' } as const;
-
 /** Where a record's own page lives: /a/ for none, /<tier>/ otherwise. */
 export const pathOf = (a: Pick<AnswerData, 'id' | 'tier'>) => `/${a.tier === 'none' ? 'a' : a.tier}/${a.id}/`;
