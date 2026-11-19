@@ -1,7 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
+import OutsideLink from '../components/OutsideLink.astro';
+import { confidence } from '../data/confidence.js';
 
-// Outside tools. Each opens normally, in the same tab, and is marked as an outside site.
+// Outside tools. Each opens normally, in the same tab, and says it is an outside site.
 const outside = [
   { href: 'https://gtamap.io', name: 'gtamap.io', note: 'A map. Spoilers are hidden by default.' },
   { href: 'https://fullsweepmap.com', name: 'FullSweep', note: 'A map and checklists. Spoilers are hidden by default.' },
@@ -30,24 +32,16 @@ const outside = [
       own words. Each answer also carries a confidence level:
     </p>
     <ul>
-      <li><strong>Official.</strong> A Rockstar, Take-Two, PlayStation or Xbox page says it, and we read that page.</li>
-      <li><strong>Reported.</strong> A news outlet or creator says it and cites a source, but no official page confirms it.</li>
-      <li><strong>Community.</strong> Players report it. Treat it as likely, not certain.</li>
+      {Object.values(confidence).map((c) => <li><strong>{c.label}.</strong> {c.text}</li>)}
     </ul>
     <p>If we could not find a source, there is no answer. We do not guess.</p>
 
     <h2>Maps and help</h2>
     <p>We link to better tools instead of rebuilding them.</p>
   </div>
-  <ul class="tap-list outside">
+  <ul class="tap-list links">
     {outside.map((o) => (
-      <li>
-        <a href={o.href} rel="noopener noreferrer">
-          <span class="name">{o.name}</span>
-          <span class="note">{o.note}</span>
-          <span class="tag">outside site</span>
-        </a>
-      </li>
+      <li><OutsideLink href={o.href} title={o.name}>{o.note}</OutsideLink></li>
     ))}
   </ul>
 
@@ -80,9 +74,5 @@ const outside = [
   .prose h2 { margin-block: var(--space-5) var(--space-2); }
   .prose p, .prose ul { margin-block: 0 var(--space-3); }
   .prose ul { padding-inline-start: var(--space-5); display: grid; gap: var(--space-2); }
-  .outside { max-inline-size: 40rem; margin-block-end: var(--space-3); }
-  .outside a { display: grid; grid-template-columns: 1fr auto; column-gap: var(--space-3); align-items: center; }
-  .outside .name { font-weight: 600; }
-  .outside .note { grid-column: 1; color: var(--muted); font-size: var(--text-small); }
-  .outside .tag { grid-column: 2; grid-row: 1; font: var(--text-small) / 1 var(--font-mono); color: var(--muted); }
+  .links { max-inline-size: 40rem; margin-block-end: var(--space-3); }
 </style>

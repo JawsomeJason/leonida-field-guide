@@ -41,17 +41,17 @@ test('the dial at Off shows no places and at Places shows them', async ({ page }
   await expect(page.getByRole('heading', { name: 'Places are switched off' })).toBeVisible();
   await expect(page.getByText('quokka marker', { exact: false })).toHaveCount(0);
   await page.goto('/topics/');
-  await expect(page.locator('a[href="/topics/places/"]').getByText('Locked')).toBeVisible();
+  await expect(page.locator('a[href="/topics/places/"]').getByText(/Hidden until the spoiler setting is raised to Places/)).toBeVisible();
 
   await page.goto('/places/');
   await setDial(page, 'Places');
   await expect(page.getByRole('heading', { name: 'Where is the quokka marker?' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Places are switched off' })).toBeHidden();
   await page.goto('/topics/');
-  await expect(page.locator('a[href="/topics/places/"]').getByText('Open')).toBeVisible();
+  await expect(page.locator('a[href="/topics/places/"]').getByText(/Shown, because the spoiler setting/)).toBeVisible();
 
   await setDial(page, 'Off');
-  await expect(page.locator('a[href="/topics/places/"]').getByText('Locked')).toBeVisible();
+  await expect(page.locator('a[href="/topics/places/"]').getByText(/Hidden until the spoiler setting is raised to Places/)).toBeVisible();
 });
 
 test('search shows places only once the dial allows them', async ({ page }) => {
@@ -342,9 +342,10 @@ for (const [path, tier, secret] of hiddenPages) {
 }
 
 test('every link out says it is an outside site that may contain spoilers, before you tap', async ({ page }) => {
-  for (const path of ['/', '/a/sample-02/', '/a/sample-04/', '/places/', '/topics/places/']) {
+  // Every screen, every answer that has a body, the hidden pages: no link to another site is bare, wherever it sits (the footer too).
+  for (const path of [...SCREENS, '/a/sample-04/', '/a/sample-05/', '/places/list/', '/topics/places/']) {
     await page.goto(path);
-    const links = page.locator('main a[href^="http"]');
+    const links = page.locator('a[href^="http"]');
     const n = await links.count();
     for (let i = 0; i < n; i++) expect(await links.nth(i).innerText(), `${path} link ${i}`).toContain('outside site, may contain spoilers');
   }
@@ -352,6 +353,10 @@ test('every link out says it is an outside site that may contain spoilers, befor
   expect(await page.locator('main a[href^="http"]').count()).toBeGreaterThan(0);
   await page.goto('/places/');
   expect(await page.locator('main a[href^="http"]').count()).toBe(2);
+  await page.goto('/about/');
+  expect(await page.locator('main a[href^="http"]').count(), 'the About page links out to three tools').toBe(3);
+  await page.goto('/a/sample-05/');
+  await expect(page.locator('.prose a[href^="http"]')).toContainText('outside site, may contain spoilers'); // a link inside the body too
 });
 
 test('the footer About link is a 48px target', async ({ page }) => {

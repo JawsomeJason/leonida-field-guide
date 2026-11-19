@@ -1,7 +1,7 @@
 id: sample-05
 question: "Sample question 05: how do I do thing 05?"
 short: "Sample answer 05: do thing 05 like this."
-body: "Sample body for answer five, with **bold** text."
+body: "Sample body for answer five, with **bold** text. See [the maker's page](https://example.com/maker) for more."
 topic: money
 stage: before
 tier: none

@@ -62,11 +62,15 @@ export const escapeHtml = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.char
 /** Plain text to safe HTML with button names. */
 export const textHtml = (s: string) => withButtons(escapeHtml(s));
 
+/** A link to another site says so, inside the link: the other site may show spoilers (same words as <OutsideLink>). */
+export const markOutside = (html: string) =>
+  html.replace(/(<a href="https?:[^"]*"[^>]*>)(.*?)(<\/a>)/g, '$1$2 <span class="outside__note">(outside site, may contain spoilers)</span>$3');
+
 /** Markdown body to HTML with Astro's own renderer (a dependency of astro, so nothing new ships). */
 export async function renderBody(md: string) {
   const { satteri } = await import('@astrojs/markdown-satteri');
   const r = await satteri().createRenderer({ gfm: true, smartypants: true, syntaxHighlight: false });
-  return (await r.render(withButtons(md), { frontmatter: {} })).code;
+  return markOutside((await r.render(withButtons(md), { frontmatter: {} })).code);
 }
 
 export const consoleLabels = { ps5: 'PS5', 'xbox-x': 'Xbox Series X', 'xbox-s': 'Xbox Series S' } as const;
